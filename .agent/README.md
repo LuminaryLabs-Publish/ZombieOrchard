@@ -12,51 +12,58 @@ This folder stores timestamped internal breakdowns, project trackers, kit regist
 
 ## Current registry
 
-- `kit-registry.json` — current and target kit inventory for the orchard survival/economy shell, including runtime, interface, game-domain, renderer, diagnostics, transaction envelope, exchange result projection, market command dispatch, economy ledger, transaction history, price snapshot, capacity policy, inventory unlock, replay, and smoke-fixture kits.
+- `kit-registry.json` — current and target kit inventory for the orchard survival/economy shell, including runtime, scoped interface, composition, game-domain, renderer, diagnostics, Market command contracts, command result journal, price snapshots, capacity policy, transaction envelopes, transaction history, inventory purchase intake, exchange UI, fixture replay, and smoke kits.
 
 ## Current recommended slice
 
 ```txt
-Zombie Orchard Transaction Envelope + Exchange Result Projection Fixture Cutover
+Zombie Orchard Market Command Result Journal + Price / Capacity Snapshot Fixture Cutover
 ```
 
 Build order:
 
 ```txt
 preserve static host and current playable loop
--> add transaction-envelope-kit as the first economy contract
--> define transaction fields: id, type, command, itemId, quantity, unitPrice, delta, before, after, accepted, reason, frame, elapsed
--> add rejected transaction diagnostics for zero inventory, insufficient funds, capacity overflow, unknown item, and unknown command
--> add price-snapshot-kit with deterministic starter prices: apple-sell, basic-tool-buy, row-supply-buy
--> add capacity-policy-kit with starter caps for apples, money, wood, scrap, tools, and supplies
--> upgrade resource-ledger-kit into orchard-economy-ledger behavior while preserving snapshot.values
--> expose snapshot.transactions and snapshot.lastTransaction
--> add market-command-dispatch-kit for SELL_APPLES, BUY_TOOL, BUY_SUPPLY, and GET_PRICE_SNAPSHOT
--> add market-result-projection-kit so interface-composition snapshot includes lastResult
--> update exchange actions in orchard-preset to sell-apples, buy-basic-tool, buy-row-supply, and back
--> update html-interface-renderer exchange branch with prices, latest result, disabled reasons, and recent transaction cards
--> add inventory-market-unlock-kit for bought tools and supplies
+-> keep resource-ledger.values intact for HUD compatibility
+-> add market-command-contract-kit with SELL_APPLES, BUY_TOOL, BUY_SUPPLY, GET_PRICE_SNAPSHOT, and GET_CAPACITY_SNAPSHOT
+-> add price-snapshot-kit with deterministic starter prices for apple-sell, basic-tool-buy, and row-supply-buy
+-> add capacity-policy-kit with starter caps for apples, tools, supplies, money, wood, and scrap
+-> add transaction-envelope-kit as the canonical accepted/rejected economy record
+-> define TransactionEnvelope fields: id, type, command, itemId, quantity, unitPrice, delta, before, after, accepted, reason, frame, elapsed
+-> add market-command-result-kit to wrap transaction, price, capacity, and inventory side effects
+-> add market-command-result-journal-kit with accepted and rejected views
+-> upgrade resource-ledger-kit or add orchard-economy-ledger-kit while preserving old canPay/pay/add services
+-> expose resource-ledger.transactions and resource-ledger.lastTransaction
+-> add market-command-dispatch-kit for exchange action commands
+-> update orchard-preset exchange actions to sell-apples, buy-basic-tool, buy-row-supply, and back
+-> update interface-composition-kit so nested action.command results are returned and projected as lastResult
+-> add market-result-projection-kit on the interface-composition snapshot
+-> add inventory-market-unlock-kit by extending inventory-runtime-kit with add-purchase or intake-market-purchase
 -> auto-equip basic-tool only when current equipped item is still branch
--> extend GameHost with dispatch, getDiagnostics, getPriceSnapshot, getTransactionHistory, getCommandJournal, and runSmoke
--> extend tests/smoke.mjs with zero-apple rejection, collect/sell, buy-tool, buy-supply, transaction-history, and replay parity cases
--> defer worker assignment, save runtime, codex progression, and seeded pest spawning
+-> update html-interface-renderer exchange branch with price snapshot, capacity snapshot, latest result, disabled reasons, and recent transaction cards
+-> extend window.GameHost with dispatch, getDiagnostics, getPriceSnapshot, getCapacitySnapshot, getTransactionHistory, getCommandJournal, and runSmoke
+-> extend tests/smoke.mjs with zero-apple rejection, collect/sell, buy-tool, buy-supply, insufficient-funds rejection, capacity-full rejection, price snapshot, capacity snapshot, transaction history, and replay parity
+-> defer worker assignment, save runtime, codex progression, seeded pest spawning, and broad render-plan extraction
 ```
 
 Acceptance target:
 
 ```txt
 npm test passes
-GameHost.getState() keeps resource-ledger.values intact for HUD compatibility
+existing active-session HUD still reads snapshot["resource-ledger"].values
 exchange screen shows Sell Apples, Buy Basic Tool, Buy Row Supply, and Back
 Sell Apples with 0 apples returns accepted=false and reason=insufficient_inventory
-Collect then Sell Apples appends an accepted market_sell transaction
-Buy Basic Tool appends an accepted market_buy transaction and adds/equips the tool when branch is equipped
-Buy Row Supply appends an accepted market_buy transaction and adds a supply/inventory record
+Collect then Sell Apples appends accepted market_sell transaction
+Buy Basic Tool appends accepted market_buy transaction and adds/equips the tool when equipped item is branch
+Buy Row Supply appends accepted market_buy transaction and adds a supply/inventory record
 Insufficient money returns accepted=false and reason=insufficient_funds
 Capacity overflow returns accepted=false and reason=capacity_full
-snapshot.transactions is fixture-readable without DOM timing assumptions
+GET_PRICE_SNAPSHOT returns deterministic starter prices across equivalent fresh games
+GET_CAPACITY_SNAPSHOT returns deterministic starter caps across equivalent fresh games
 interface-composition snapshot exposes lastResult for accepted and rejected market actions
-price snapshots are deterministic across equivalent fresh games
+resource-ledger snapshot exposes transactions and lastTransaction without breaking values
+GameHost exposes transaction history and command journal helper methods
+market smoke fixtures run without DOM timing assumptions
 worker assignment remains explicitly out of scope
 ```
 
@@ -71,3 +78,4 @@ worker assignment remains explicitly out of scope
 - `trackers/2026-07-07T09-41-43-04-00/project-breakdown.md` — exchange-command-ui follow-up that narrows the next cut to market sell/buy actions, transaction-ledger records, price snapshots, inventory unlock intake, exchange transaction cards, and market smoke before worker assignment.
 - `trackers/2026-07-07T10-49-10-04-00/project-breakdown.md` — market-action-dispatch follow-up that narrows the first implementation seam to Market action dispatch, ledger snapshot compatibility, transaction fixture records, nested command result surfacing, exchange transaction cards, and DOM-free market smoke.
 - `trackers/2026-07-07T12-01-44-04-00/project-breakdown.md` — transaction-envelope follow-up that tightens the next implementation seam to canonical accepted/rejected transaction records, exchange result projection, price/capacity policy, inventory purchase intake, and fixture-readable Market replay before worker assignment.
+- `trackers/2026-07-07T13-30-34-04-00/project-breakdown.md` — market-command-result-journal follow-up that refines the next implementation seam around typed Market commands, command result records, price/capacity snapshots, nested result projection, transaction history, GameHost diagnostics, and DOM-free Market replay fixtures.
