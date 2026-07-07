@@ -12,34 +12,31 @@ This folder stores timestamped internal breakdowns, project trackers, kit regist
 
 ## Current registry
 
-- `kit-registry.json` — current and target kit inventory for the orchard survival/economy shell, including runtime, interface, game-domain, renderer, diagnostics, economy-command, replay, market, worker-assignment, save, codex, render-plan, and smoke-fixture kits.
+- `kit-registry.json` — current and target kit inventory for the orchard survival/economy shell, including runtime, interface, game-domain, renderer, diagnostics, command, transaction-ledger, market-exchange, market UI, replay, worker-assignment, save, codex, render-plan, and smoke-fixture kits.
 
 ## Current recommended slice
 
 ```txt
-Zombie Orchard Market Transaction Authority + Worker Assignment Prep Cutover
+Zombie Orchard Exchange Command UI + Transaction Ledger Contract Cutover
 ```
 
 Build order:
 
 ```txt
 preserve static host and current playable loop
--> add seeded-random-kit with named streams
--> replace direct Math.random calls with seeded stream APIs while keeping fallbacks
--> add orchard-command-contract-kit
--> add economy-command-replay-kit
--> extend resource-ledger into economy ledger with transaction history and capacity
--> add orchard-market-exchange-kit for sell apples and buy tool/supply actions
--> add exchange screen actions that call market commands
--> split collect into harvest-interaction-kit
--> split phase into day-night-phase-kit
--> split pest behavior into pest-pressure-kit
--> add building-effects-kit for storage capacity
--> add worker-assignment-kit command schema
--> add tool-effects-kit for harvest radius and clear strength
--> add codex-progression-kit and outcome-summary-kit after economy events exist
--> add render-plan-kit after state contracts stabilize
--> expand smoke fixtures for deterministic economy/replay coverage
+-> add seeded-random-kit with named streams while keeping fallbacks
+-> add orchard-command-contract-kit with command/result metadata
+-> upgrade resource-ledger-kit toward orchard-economy-ledger-kit with transaction records
+-> define transaction types: harvest_gain, market_sell, market_buy, build_spend, hire_spend, settlement_gain, capacity_reject
+-> add capacity-policy-kit with permissive starter defaults
+-> add price-snapshot-kit with fixed starter prices
+-> add orchard-market-exchange-kit with SELL_APPLES, BUY_TOOL, BUY_SUPPLY, and GET_PRICE_SNAPSHOT
+-> add exchange screen actions for Sell Apples, Buy Basic Tool, and Buy Row Supply
+-> render recent transaction cards on exchange screen
+-> route purchased tools into inventory-runtime-kit and auto-equip first purchased tool
+-> add market-transaction-smoke-kit for collect, sell, buy, insufficient funds, and transaction history
+-> add GameHost diagnostics for journal length, last transaction, prices, capacities, and seed
+-> defer worker assignment until transaction history and inventory purchase behavior are visible
 ```
 
 Acceptance target:
@@ -48,14 +45,14 @@ Acceptance target:
 npm test passes
 GameHost.getState() still returns all current domain snapshots
 GameHost exposes restart({ seed }), dispatch(command), getDiagnostics(), and getCommandJournal()
-The same seed plus same command journal replays to the same snapshot
-Apple collection smoke is deterministic
-Selling apples records a transaction and mutates money/apples
-Buying the first tool records a transaction and changes inventory/equipped tool state
-Storage shed changes apple capacity or capacity diagnostics
-Hiring one worker and assigning one role changes roster assignment state
-Night pest spawn is deterministic under seeded replay
-Outcome summary includes days, score, money, apples harvested, apples sold, workers, buildings, tools, pests cleared, and codex unlocks
+Resource snapshots include values plus transactions without breaking current HUD reads
+Exchange screen has visible sell/buy actions
+Selling apples mutates apples/money and records a market_sell transaction
+Buying a basic tool mutates money/inventory and records a market_buy transaction
+Insufficient money/apples returns accepted=false with a reason and no resource mutation
+Price snapshot is deterministic for the same seed/config
+Market transaction smoke runs without DOM timing assumptions
+Worker assignment remains a follow-on slice, not part of the first market UI cut
 ```
 
 ## Current tracker entries
@@ -66,3 +63,4 @@ Outcome summary includes days, score, money, apples harvested, apples sold, work
 - `trackers/2026-07-07T06-10-13-04-00/project-breakdown.md` — economy-command-contract follow-up that re-identifies the loop/domains/services/kits and frames the next cutover around deterministic seeded runtime, a single gameplay command facade, service extraction, economy behavior, save/codex/outcome, render-plan, and deterministic smoke fixtures.
 - `trackers/2026-07-07T07-21-19-04-00/project-breakdown.md` — economy-replay-market follow-up that tightens the next cutover around seeded replay, command journal parity, market service runtime, transaction history, worker/building/tool effects, render-plan projection, and deterministic economy smoke fixtures.
 - `trackers/2026-07-07T08-29-39-04-00/project-breakdown.md` — market-transaction-authority follow-up that keeps market runtime as the next visible product cut, adds worker-assignment prep, refines transaction/capacity history, and maps deterministic economy smoke coverage.
+- `trackers/2026-07-07T09-41-43-04-00/project-breakdown.md` — exchange-command-ui follow-up that narrows the next cut to market sell/buy actions, transaction-ledger records, price snapshots, inventory unlock intake, exchange transaction cards, and market smoke before worker assignment.
