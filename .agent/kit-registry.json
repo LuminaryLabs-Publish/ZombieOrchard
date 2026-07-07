@@ -1,11 +1,11 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-07T13:30:34-04:00",
-  "version": "0.9.0",
+  "updatedAt": "2026-07-07T14:40:17-04:00",
+  "version": "0.10.0",
   "purpose": "Track current and target kits for the standalone kit-composed orchard survival/economy shell.",
-  "status": "market-command-result-journal-price-capacity-fixture-needed",
-  "selectionNote": "Updated after the central rotation most recently documented LuminaryLabs-Publish/IntoTheMeadow. TheCavalryOfRome remains excluded.",
-  "latestTracker": ".agent/trackers/2026-07-07T13-30-34-04-00/project-breakdown.md",
+  "status": "market-price-inventory-action-fixture-gamehost-diagnostics-needed",
+  "selectionNote": "Updated because ZombieOrchard was the oldest eligible non-Cavalry Publish repo by latest central ledger timestamp.",
+  "latestTracker": ".agent/trackers/2026-07-07T14-40-17-04-00/project-breakdown.md",
   "runtimeShape": {
     "host": "index.html",
     "boot": "src/boot.js",
@@ -21,14 +21,14 @@
     "smoke": "tests/smoke.mjs"
   },
   "currentInteractionLoop": [
-    "open static host",
+    "open index.html",
     "src/boot.js imports src/start.js",
     "src/start.js creates createOrchardGame, createWorldCanvas, and createHtmlInterfaceRenderer",
-    "src/game.js installs resource, pressure, orchard-world, construction, roster, inventory, generated interface, active-session, and composition kits",
+    "src/game.js installs resource-ledger, pressure-field, orchard-world, construction-runtime, roster-runtime, inventory-runtime, generated interface domains, active-session, and interface-composition kits",
     "requestAnimationFrame calls engine.tick(1 / 60)",
     "engine snapshots all domains",
     "world-canvas renders trees, apples, pests, and player from raw snapshots",
-    "html-interface-renderer renders active-session HUD or the active interface screen",
+    "html-interface-renderer renders active-session HUD or generic active interface screen",
     "window.GameHost exposes engine, getState, and tick",
     "active-session commands move, collect, clear, and next-phase mutate gameplay",
     "construction build spends resources and appends built records",
@@ -45,15 +45,16 @@
     "market-action-ui-kit projects deterministic prices, capacity state, disabled reasons, latest result, and transaction cards",
     "interface-composition-kit activates exchange actions and preserves nested command results",
     "market-command-contract-kit normalizes actions into typed SELL_APPLES, BUY_TOOL, BUY_SUPPLY, GET_PRICE_SNAPSHOT, and GET_CAPACITY_SNAPSHOT commands",
-    "market-command-dispatch-kit routes typed commands to the economy layer",
     "price-snapshot-kit returns deterministic starter price metadata",
     "capacity-policy-kit validates starter resource, tool, and supply limits",
+    "market-command-dispatch-kit routes typed commands to the economy layer",
     "transaction-envelope-kit creates canonical accepted/rejected economy records",
-    "market-command-result-kit wraps transactions, price responses, capacity responses, and inventory side effects",
+    "market-command-result-kit wraps transactions, price responses, capacity responses, inventory side effects, and diagnostics",
     "market-command-result-journal-kit records accepted and rejected command results separately",
-    "orchard-economy-ledger-kit mutates resource-ledger values and appends transactions",
+    "orchard-economy-ledger-kit mutates resource-ledger values and appends transactions while preserving values",
     "inventory-market-unlock-kit adds bought tools and supplies to inventory-runtime",
     "market-result-projection-kit exposes lastResult on composition and renderer snapshots",
+    "game-host-market-diagnostics-kit exposes dispatch, price snapshot, capacity snapshot, transaction history, command journal, diagnostics, and runSmoke helpers",
     "market-fixture-replay-kit verifies replay parity without DOM timing assumptions",
     "worker-assignment remains deferred until market result records are deterministic"
   ],
@@ -62,9 +63,10 @@
       "static-browser-host",
       "kit-runtime",
       "engine-context",
+      "domain-registry",
       "command-router",
-      "command-result",
-      "nested-command-result",
+      "command-result-current-lightweight",
+      "nested-command-result-current-missing",
       "event-log",
       "tick-dispatcher",
       "snapshot-aggregator",
@@ -98,7 +100,7 @@
       "active-session",
       "world-canvas"
     ],
-    "marketCommandCutover": [
+    "marketAuthority": [
       "exchange-action-surface",
       "market-command-contract",
       "market-command-dispatch",
@@ -111,6 +113,7 @@
       "orchard-economy-ledger",
       "inventory-market-unlock",
       "market-result-projection",
+      "gamehost-market-diagnostics",
       "market-fixture-replay",
       "market-command-smoke"
     ],
@@ -154,7 +157,7 @@
       "status": "implemented-needs-nested-result-surface",
       "source": "src/kits/composition.js",
       "domain": "interface-composition",
-      "provides": ["active screen state", "previous screen", "transition command", "back command", "active-screen action activation", "command dispatch from actions", "automatic outcome routing"],
+      "provides": ["active screen state", "previous screen", "transition command", "back command", "active-screen action activation", "nested command dispatch", "automatic outcome routing"],
       "needs": ["return nested command result", "lastResult snapshot", "rejection reason surfacing", "market notification routing", "command journal projection"]
     },
     {
@@ -231,7 +234,7 @@
     },
     {
       "id": "game-host-diagnostics-kit",
-      "status": "implemented-as-window-surface-needs-diagnostics",
+      "status": "implemented-as-window-surface-needs-market-diagnostics",
       "source": "src/start.js",
       "domain": "GameHost",
       "provides": ["engine reference", "getState", "tick"],
@@ -259,38 +262,38 @@
       "source": "target: src/kits/market-command-dispatch.js",
       "domain": "market-command-dispatch",
       "provides": ["exchange action to command mapping", "nested command result forwarding", "market command diagnostics", "last market result snapshot"],
-      "dependsOn": ["interface-composition-kit", "market-command-contract-kit"]
+      "dependsOn": ["interface-composition-kit", "market-command-contract-kit", "orchard-economy-ledger-kit"]
     },
     {
       "id": "market-command-result-kit",
       "status": "target-next-cutover",
       "source": "target: src/kits/market-command-result.js",
       "domain": "market-command-result",
-      "provides": ["accepted command result", "rejected command result", "price response", "capacity response", "inventory side-effect summary", "stable reason codes"],
+      "provides": ["accepted flag", "reason", "transaction", "priceSnapshot", "capacitySnapshot", "inventoryEffect", "diagnostics"],
       "dependsOn": ["market-command-contract-kit", "transaction-envelope-kit"]
     },
     {
       "id": "market-command-result-journal-kit",
       "status": "target-next-cutover",
-      "source": "target: src/kits/market-command-result-journal.js or economy ledger snapshot surface",
+      "source": "target: src/kits/market-command-result-journal.js",
       "domain": "market-command-result-journal",
-      "provides": ["accepted command journal", "rejected diagnostics journal", "latest result", "fixture-readable command history"],
+      "provides": ["accepted result journal", "rejected result journal", "latest result", "fixture-readable command history"],
       "dependsOn": ["market-command-result-kit"]
     },
     {
       "id": "transaction-envelope-kit",
       "status": "target-next-cutover",
-      "source": "target: src/kits/transaction-envelope.js or resource-ledger-kit upgrade",
+      "source": "target: src/kits/transaction-envelope.js",
       "domain": "transaction-envelope",
-      "provides": ["canonical transaction id", "type", "command", "itemId", "quantity", "unitPrice", "delta", "before", "after", "accepted", "reason", "frame", "elapsed"],
-      "dependsOn": ["resource-ledger-kit", "kit-runtime"]
+      "provides": ["transaction id", "type", "command", "item id", "quantity", "unit price", "delta", "before", "after", "accepted", "reason", "frame", "elapsed"],
+      "dependsOn": ["resource-ledger-kit"]
     },
     {
       "id": "price-snapshot-kit",
       "status": "target-next-cutover",
-      "source": "target: src/kits/price-snapshot.js",
+      "source": "target: src/kits/market-prices.js",
       "domain": "price-snapshot",
-      "provides": ["apple sell price", "basic tool buy price", "row supply buy price", "deterministic price snapshot", "price labels"],
+      "provides": ["deterministic apple sell price", "basic tool buy price", "row supply buy price", "price snapshot API", "price smoke fixture"],
       "dependsOn": ["market-command-contract-kit"]
     },
     {
@@ -298,108 +301,102 @@
       "status": "target-next-cutover",
       "source": "target: src/kits/capacity-policy.js",
       "domain": "capacity-policy",
-      "provides": ["resource caps", "tool caps", "supply caps", "capacity_full rejection reason", "deterministic capacity snapshot", "starter permissive defaults"],
-      "dependsOn": ["orchard-economy-ledger-kit"]
+      "provides": ["apple cap", "tool cap", "supply cap", "resource cap", "capacity_full rejection reason", "capacity snapshot API"],
+      "dependsOn": ["resource-ledger-kit", "inventory-runtime-kit"]
     },
     {
       "id": "orchard-economy-ledger-kit",
       "status": "target-next-cutover",
-      "source": "target: src/kits/economy-ledger.js or resource-ledger-kit upgrade",
-      "domain": "orchard-economy-ledger",
-      "provides": ["HUD-compatible values snapshot", "transaction records", "lastTransaction", "applyDelta", "sell apples", "buy tool", "buy supply", "rejection records"],
-      "dependsOn": ["resource-ledger-kit", "transaction-envelope-kit", "price-snapshot-kit", "capacity-policy-kit"]
-    },
-    {
-      "id": "transaction-history-kit",
-      "status": "target-next-cutover",
-      "source": "target: src/kits/transaction-history.js or economy ledger snapshot surface",
-      "domain": "transaction-history",
-      "provides": ["recent transactions", "accepted-only view", "rejected diagnostics view", "fixture-readable history"],
-      "dependsOn": ["orchard-economy-ledger-kit"]
-    },
-    {
-      "id": "market-result-projection-kit",
-      "status": "target-next-cutover",
-      "source": "target: src/kits/market-result-projection.js or interface-composition-kit upgrade",
-      "domain": "market-result-projection",
-      "provides": ["lastResult snapshot", "accepted result card data", "rejected result card data", "exchange notification data"],
-      "dependsOn": ["interface-composition-kit", "market-command-result-kit"]
-    },
-    {
-      "id": "market-action-ui-kit",
-      "status": "target-next-cutover",
-      "source": "target: preset exchange actions plus html-interface-renderer exchange branch",
-      "domain": "market-action-ui",
-      "provides": ["Sell Apples action", "Buy Basic Tool action", "Buy Row Supply action", "Back action", "price labels", "capacity labels", "disabled reason text", "transaction card projection"],
-      "dependsOn": ["scoped-interface-domain-kit", "html-interface-render-kit"]
+      "source": "target: extension of src/kits/game-domains.js or src/kits/economy-ledger.js",
+      "domain": "resource-ledger",
+      "provides": ["HUD-compatible values", "transaction append", "lastTransaction", "accepted/rejected history", "market delta application"],
+      "dependsOn": ["resource-ledger-kit", "transaction-envelope-kit"]
     },
     {
       "id": "inventory-market-unlock-kit",
       "status": "target-next-cutover",
-      "source": "target: inventory-runtime-kit command extension or src/kits/inventory-market-unlock.js",
-      "domain": "inventory-market-unlock",
-      "provides": ["tool purchase intake", "supply purchase intake", "first tool auto-equip", "purchase item snapshots"],
-      "dependsOn": ["inventory-runtime-kit", "orchard-economy-ledger-kit"]
+      "source": "target: extension of inventory-runtime-kit",
+      "domain": "inventory-runtime",
+      "provides": ["add purchased tool", "add row supply", "auto-equip first tool when equipped is branch", "purchase intake diagnostics"],
+      "dependsOn": ["inventory-runtime-kit", "market-command-result-kit"]
+    },
+    {
+      "id": "market-result-projection-kit",
+      "status": "target-next-cutover",
+      "source": "target: src/kits/market-result-projection.js or composition extension",
+      "domain": "interface-composition",
+      "provides": ["lastResult snapshot", "latest transaction projection", "disabled reason projection", "renderer-ready market summary"],
+      "dependsOn": ["interface-composition-kit", "market-command-result-journal-kit"]
+    },
+    {
+      "id": "market-action-ui-kit",
+      "status": "target-next-cutover",
+      "source": "target: src/renderer/html-interface-renderer.js exchange branch",
+      "domain": "html-interface-renderer",
+      "provides": ["sell apples button", "buy basic tool button", "buy row supply button", "price rows", "capacity rows", "latest result card", "recent transaction cards", "disabled reason copy"],
+      "dependsOn": ["market-result-projection-kit", "price-snapshot-kit", "capacity-policy-kit"]
+    },
+    {
+      "id": "game-host-market-diagnostics-kit",
+      "status": "target-next-cutover",
+      "source": "target: src/start.js GameHost expansion",
+      "domain": "GameHost",
+      "provides": ["dispatch", "getDiagnostics", "getPriceSnapshot", "getCapacitySnapshot", "getTransactionHistory", "getCommandJournal", "runSmoke"],
+      "dependsOn": ["market-command-dispatch-kit", "market-command-result-journal-kit"]
     },
     {
       "id": "market-fixture-replay-kit",
       "status": "target-next-cutover",
-      "source": "target: src/kits/market-fixture-replay.js or tests/smoke.mjs helper",
-      "domain": "market-fixture-replay",
-      "provides": ["market command script", "accepted/rejected replay", "result parity assertions", "transaction history parity"],
-      "dependsOn": ["market-command-result-journal-kit", "transaction-history-kit"]
-    },
-    {
-      "id": "market-command-smoke-kit",
-      "status": "target-next-cutover",
-      "source": "target: tests/smoke.mjs expansion",
+      "source": "target: tests/smoke.mjs or tests/market-smoke.mjs",
       "domain": "testing",
-      "provides": ["zero-apple rejection smoke", "collect sell smoke", "buy basic tool smoke", "buy row supply smoke", "insufficient funds smoke", "capacity full smoke", "price snapshot smoke", "capacity snapshot smoke", "transaction history smoke", "replay parity smoke"],
-      "dependsOn": ["transaction-envelope-kit", "orchard-economy-ledger-kit", "market-command-dispatch-kit"]
+      "provides": ["zero apple sell rejection", "collect then sell", "buy basic tool", "buy row supply", "insufficient funds rejection", "capacity full rejection", "price snapshot determinism", "capacity snapshot determinism", "transaction history assertion", "replay parity assertion"],
+      "dependsOn": ["market-command-result-journal-kit", "game-host-market-diagnostics-kit"]
     }
   ],
-  "recommendedNextSlice": {
-    "title": "Zombie Orchard Market Command Result Journal + Price / Capacity Snapshot Fixture Cutover",
-    "buildOrder": [
-      "preserve static host and current playable loop",
-      "keep resource-ledger.values intact for HUD compatibility",
-      "add market-command-contract-kit with SELL_APPLES, BUY_TOOL, BUY_SUPPLY, GET_PRICE_SNAPSHOT, and GET_CAPACITY_SNAPSHOT",
-      "add price-snapshot-kit with deterministic starter prices for apple-sell, basic-tool-buy, and row-supply-buy",
-      "add capacity-policy-kit with starter caps for apples, tools, supplies, money, wood, and scrap",
-      "add transaction-envelope-kit as the canonical accepted/rejected economy record",
-      "define TransactionEnvelope fields: id, type, command, itemId, quantity, unitPrice, delta, before, after, accepted, reason, frame, elapsed",
-      "add market-command-result-kit to wrap transaction, price, capacity, and inventory side effects",
-      "add market-command-result-journal-kit with accepted and rejected views",
-      "upgrade resource-ledger-kit or add orchard-economy-ledger-kit while preserving old canPay/pay/add services",
-      "expose resource-ledger.transactions and resource-ledger.lastTransaction",
-      "add market-command-dispatch-kit for exchange action commands",
-      "update orchard-preset exchange actions to sell-apples, buy-basic-tool, buy-row-supply, and back",
-      "update interface-composition-kit so nested action.command results are returned and projected as lastResult",
-      "add market-result-projection-kit on the interface-composition snapshot",
-      "add inventory-market-unlock-kit by extending inventory-runtime-kit with add-purchase or intake-market-purchase",
-      "auto-equip basic-tool only when current equipped item is still branch",
-      "update html-interface-renderer exchange branch with price snapshot, capacity snapshot, latest result, disabled reasons, and recent transaction cards",
-      "extend window.GameHost with dispatch, getDiagnostics, getPriceSnapshot, getCapacitySnapshot, getTransactionHistory, getCommandJournal, and runSmoke",
-      "extend tests/smoke.mjs with zero-apple rejection, collect/sell, buy-tool, buy-supply, insufficient-funds rejection, capacity-full rejection, price snapshot, capacity snapshot, transaction history, and replay parity",
-      "defer worker assignment, save runtime, codex progression, seeded pest spawning, and broad render-plan extraction"
-    ],
-    "acceptance": [
-      "npm test passes",
-      "existing active-session HUD still reads snapshot[\"resource-ledger\"].values",
-      "exchange screen shows Sell Apples, Buy Basic Tool, Buy Row Supply, and Back",
-      "Sell Apples with 0 apples returns accepted=false and reason=insufficient_inventory",
-      "Collect then Sell Apples appends accepted market_sell transaction",
-      "Buy Basic Tool appends accepted market_buy transaction and adds/equips the tool when equipped item is branch",
-      "Buy Row Supply appends accepted market_buy transaction and adds a supply/inventory record",
-      "Insufficient money returns accepted=false and reason=insufficient_funds",
-      "Capacity overflow returns accepted=false and reason=capacity_full",
-      "GET_PRICE_SNAPSHOT returns deterministic starter prices across equivalent fresh games",
-      "GET_CAPACITY_SNAPSHOT returns deterministic starter caps across equivalent fresh games",
-      "interface-composition snapshot exposes lastResult for accepted and rejected market actions",
-      "resource-ledger snapshot exposes transactions and lastTransaction without breaking values",
-      "GameHost exposes transaction history and command journal helper methods",
-      "market smoke fixtures run without DOM timing assumptions",
-      "worker assignment remains explicitly out of scope"
-    ]
+  "nextBuildOrder": [
+    "preserve the current static host and playable active-session loop",
+    "keep snapshot[\"resource-ledger\"].values stable for HUD compatibility",
+    "add market-command-contract-kit with SELL_APPLES, BUY_TOOL, BUY_SUPPLY, GET_PRICE_SNAPSHOT, and GET_CAPACITY_SNAPSHOT",
+    "add price-snapshot-kit with deterministic starter price rows for apple-sell, basic-tool-buy, and row-supply-buy",
+    "add capacity-policy-kit with deterministic caps for apples, tools, supplies, money, wood, and scrap",
+    "add transaction-envelope-kit for accepted and rejected economy records",
+    "add market-command-result-kit for transaction, price, capacity, inventory, and diagnostics payloads",
+    "add market-command-result-journal-kit with accepted and rejected views",
+    "upgrade resource-ledger-kit into an economy-ledger surface while preserving canPay, pay, add, and values",
+    "expose resource-ledger.transactions and resource-ledger.lastTransaction",
+    "add market-command-dispatch-kit and route exchange actions into it",
+    "update orchard-preset exchange actions to sell-apples, buy-basic-tool, buy-row-supply, and back",
+    "update interface-composition-kit to preserve nested command results as lastResult",
+    "add market-result-projection-kit for active screen snapshots and host diagnostics",
+    "extend inventory-runtime-kit with market purchase intake",
+    "auto-equip basic-tool only when currently equipped item is branch",
+    "update html-interface-renderer exchange branch with price rows, capacity rows, latest result, disabled reasons, and recent transactions",
+    "extend window.GameHost with dispatch, getDiagnostics, getPriceSnapshot, getCapacitySnapshot, getTransactionHistory, getCommandJournal, and runSmoke",
+    "extend tests/smoke.mjs with Market command result fixture coverage",
+    "defer worker assignment, save runtime, codex progression, seeded pest spawning, and broad render-plan extraction"
+  ],
+  "acceptanceTargets": [
+    "npm test passes",
+    "active-session HUD still reads snapshot[\"resource-ledger\"].values",
+    "exchange screen shows Sell Apples, Buy Basic Tool, Buy Row Supply, and Back",
+    "Sell Apples with 0 apples returns accepted=false and reason=insufficient_inventory",
+    "Collect then Sell Apples appends accepted market_sell transaction",
+    "Buy Basic Tool appends accepted market_buy transaction and adds/equips the tool when equipped item is branch",
+    "Buy Row Supply appends accepted market_buy transaction and adds a supply/inventory record",
+    "Insufficient money returns accepted=false and reason=insufficient_funds",
+    "Capacity overflow returns accepted=false and reason=capacity_full",
+    "GET_PRICE_SNAPSHOT returns deterministic starter prices across equivalent fresh games",
+    "GET_CAPACITY_SNAPSHOT returns deterministic starter caps across equivalent fresh games",
+    "interface-composition snapshot exposes lastResult for accepted and rejected market actions",
+    "resource-ledger snapshot exposes transactions and lastTransaction without breaking values",
+    "GameHost exposes transaction history and command journal helper methods",
+    "Market smoke fixtures run without DOM timing assumptions",
+    "worker assignment remains explicitly out of scope"
+  ],
+  "validationStatus": {
+    "runtimeSourceChanged": false,
+    "localBuildRun": false,
+    "localSmokeRun": false,
+    "notes": "Documentation-only run. No runtime source code changed."
   }
 }
