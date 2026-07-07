@@ -12,31 +12,33 @@ This folder stores timestamped internal breakdowns, project trackers, kit regist
 
 ## Current registry
 
-- `kit-registry.json` — current and target kit inventory for the orchard survival/economy shell, including runtime, scoped interface, composition, game-domain, renderer, diagnostics, Market command envelopes, Market source snapshots, preflight/result contracts, deterministic price/capacity snapshots, transaction envelopes, inventory purchase intake, exchange renderer authority, GameHost diagnostics, fixture replay, and smoke contract kits.
+- `kit-registry.json` — current and target kit inventory for the orchard survival/economy shell, including runtime, scoped interface, composition, game-domain, renderer, diagnostics, Market command envelopes, Market source snapshots, preflight/result contracts, deterministic price/capacity snapshots, transaction envelopes, purchase intake, exchange renderer authority, GameHost diagnostics, fixture replay, and smoke contract kits.
 
 ## Current recommended slice
 
 ```txt
-Zombie Orchard Exchange Renderer Authority + Host Smoke Contract Cutover
+Zombie Orchard Market Smoke Authority + Purchase Intake Contract Lock
 ```
 
 Build order:
 
 ```txt
-preserve current static host, active-session HUD, and world canvas behavior
+preserve current static host, active-session HUD, world canvas, and existing snapshot shape
 -> keep snapshot["resource-ledger"].values backward compatible
 -> add MarketCommandEnvelope with id, type, source, itemId, quantity, frame, elapsed, rawActionId
--> add MarketSourceSnapshot with resources, inventory, price rows, capacity rows, frame, and elapsed
 -> add SELL_APPLES, BUY_BASIC_TOOL, BUY_ROW_SUPPLY, GET_PRICE_SNAPSHOT, and GET_CAPACITY_SNAPSHOT contracts
--> add stable rejection reasons: insufficient_inventory, insufficient_funds, capacity_full, unknown_market_command
 -> add deterministic price rows for apple sell, basic tool buy, and row supply buy
 -> add deterministic capacity rows for apples, tools, supplies, money, wood, and scrap
+-> add MarketSourceSnapshot from ledger and inventory snapshots
+-> add stable rejection reasons: insufficient_inventory, insufficient_funds, capacity_full, unknown_market_command
+-> add MarketCommandResult records for accepted and rejected commands
+-> append command results into a command result journal
 -> extend resource-ledger with appendTransaction, transactions, and lastTransaction while preserving values/canPay/pay/add
--> extend inventory-runtime with purchase intake for tool and row-supply records
--> auto-equip first purchased tool only when equipped is branch
+-> extend inventory-runtime with purchase intake for basic tool and row-supply records
+-> auto-equip first purchased basic tool only when equipped is branch
 -> update exchange preset with sell-apples, buy-basic-tool, buy-row-supply, and back actions
 -> update interface-composition-kit to return nested command result and store lastResult
--> add MarketResultProjection for latest result, latest transaction, price rows, capacity rows, and disabled reasons
+-> add MarketResultProjection for latest result, latest transaction, price rows, capacity rows, command journal, and disabled reasons
 -> add html-interface-renderer exchange branch with Market cards and recent transaction cards
 -> extend window.GameHost with dispatch, getDiagnostics, getPriceSnapshot, getCapacitySnapshot, getTransactionHistory, getCommandJournal, and runSmoke
 -> extend tests/smoke.mjs with DOM-free Market replay coverage
@@ -47,6 +49,7 @@ Acceptance target:
 
 ```txt
 npm test passes
+entry -> play smoke still passes
 active-session HUD still reads snapshot["resource-ledger"].values
 exchange screen shows Sell Apples, Buy Basic Tool, Buy Row Supply, and Back
 Sell Apples with 0 apples returns accepted=false reason=insufficient_inventory
@@ -56,6 +59,7 @@ First purchased basic tool auto-equips only if current equipped item is branch
 Buy Row Supply appends accepted market_buy transaction and adds supply record
 Insufficient money returns accepted=false reason=insufficient_funds
 Capacity overflow returns accepted=false reason=capacity_full
+Unknown Market command returns accepted=false reason=unknown_market_command
 GET_PRICE_SNAPSHOT is deterministic across fresh games
 GET_CAPACITY_SNAPSHOT is deterministic across fresh games
 interface-composition snapshot exposes lastResult for accepted and rejected Market actions
@@ -81,3 +85,4 @@ worker assignment remains out of scope
 - `trackers/2026-07-07T14-40-17-04-00/project-breakdown.md` — market-price/inventory action fixture follow-up that confirms the Market placeholder state and narrows the next cut to deterministic price/capacity snapshots, inventory purchase intake, nested result projection, GameHost diagnostics, and DOM-free Market smoke.
 - `trackers/2026-07-07T15-59-24-04-00/project-breakdown.md` — market-command-envelope/exchange-projection follow-up that tightens the immediate seam to canonical Market command envelopes, nested command result return, deterministic price/capacity sources, accepted/rejected transaction records, exchange projection, GameHost diagnostics, and DOM-free replay fixtures.
 - `trackers/2026-07-07T17-10-21-04-00/project-breakdown.md` — exchange-renderer/host-smoke follow-up that narrows the cut to Market source snapshots, stable preflight reasons, nested result persistence, exchange renderer authority, GameHost Market diagnostics, and DOM-free Market replay smoke.
+- `trackers/2026-07-07T18-28-54-04-00/project-breakdown.md` — market-smoke/purchase-intake follow-up that locks the next implementation seam to source-owned Market command contracts, deterministic price/capacity snapshots, accepted/rejected result journals, resource-ledger transaction history, inventory purchase intake, exchange projection, GameHost diagnostics, and DOM-free Market replay acceptance.
