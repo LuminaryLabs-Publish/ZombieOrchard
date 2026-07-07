@@ -1,9 +1,9 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-07T05:01:25-04:00",
+  "updatedAt": "2026-07-07T06:10:13-04:00",
   "purpose": "Track current and target kits for the standalone kit-composed orchard survival/economy shell.",
-  "status": "service-cutover-needed",
-  "selectionNote": "Created during the follow-up breakdown after ZombieOrchard was identified as the oldest eligible tracked Publish repo. TheCavalryOfRome remains excluded.",
+  "status": "economy-command-contract-needed",
+  "selectionNote": "Updated after the central rotation last documented LuminaryLabs-Publish/HorrorCorridor at 2026-07-07T06:01:21-04:00. TheCavalryOfRome remains excluded.",
   "runtimeShape": {
     "entry": "src/start.js",
     "factory": "src/game.js",
@@ -20,7 +20,8 @@
     "runtime": [
       "kit-runtime",
       "interface-composition",
-      "GameHost"
+      "GameHost",
+      "smoke-harness"
     ],
     "interface": [
       "entry",
@@ -48,6 +49,24 @@
     "hostRenderers": [
       "world-canvas",
       "html-interface-renderer"
+    ],
+    "targetExtraction": [
+      "seeded-random",
+      "orchard-command-contract",
+      "orchard-input",
+      "orchard-harvest-interaction",
+      "orchard-economy-ledger",
+      "orchard-market-exchange",
+      "orchard-building-effects",
+      "orchard-worker-assignment",
+      "orchard-tool-effects",
+      "orchard-day-night-phase",
+      "orchard-pest-pressure",
+      "orchard-save-runtime",
+      "orchard-codex-progression",
+      "orchard-outcome-summary",
+      "orchard-render-plan",
+      "orchard-smoke-fixtures"
     ]
   },
   "kits": [
@@ -60,15 +79,15 @@
         "kit installation",
         "domain registry",
         "command routing",
-        "fixed-ish tick dispatch",
+        "tick dispatch",
         "event emission",
         "snapshot aggregation",
         "subscriptions"
       ],
       "needs": [
-        "deterministic seed plumbing",
-        "reset/replay helpers",
-        "smoke fixture hooks"
+        "seeded reset",
+        "replay helper",
+        "command journal capture"
       ]
     },
     {
@@ -78,10 +97,11 @@
       "domain": "interface",
       "provides": [
         "screen state",
-        "action list normalization",
+        "action normalization",
         "select command",
         "set-field command",
         "activate command",
+        "action-request event",
         "snapshots"
       ],
       "generates": [
@@ -98,8 +118,8 @@
         "outcome-domain-kit"
       ],
       "needs": [
-        "action validation",
-        "disabled-reason metadata",
+        "route guards",
+        "disabled reason metadata",
         "input intent mapping"
       ]
     },
@@ -114,17 +134,17 @@
         "back command",
         "active-screen action activation",
         "command dispatch from actions",
-        "automatic outcome route when session ends"
+        "automatic outcome routing"
       ],
       "needs": [
+        "screen transition hooks",
         "route guards",
-        "transition hooks",
-        "per-screen state preservation"
+        "save/load transition handling"
       ]
     },
     {
       "id": "resource-ledger-kit",
-      "status": "implemented",
+      "status": "implemented-needs-economy-history",
       "source": "src/kits/game-domains.js",
       "domain": "resource-ledger",
       "provides": [
@@ -138,15 +158,15 @@
         "snapshots"
       ],
       "needs": [
-        "capacity limits",
         "transaction history",
-        "market pricing modifiers",
-        "daily settlement"
+        "capacity limits",
+        "market prices",
+        "daily settlement deltas"
       ]
     },
     {
       "id": "pressure-field-kit",
-      "status": "implemented",
+      "status": "implemented-needs-pest-contract",
       "source": "src/kits/game-domains.js",
       "domain": "pressure-field",
       "provides": [
@@ -160,13 +180,13 @@
       "needs": [
         "row-local pressure",
         "threshold events",
-        "pest spawn request events",
-        "building/tool/worker modifiers"
+        "deterministic pest spawn requests",
+        "building/worker/tool modifiers"
       ]
     },
     {
       "id": "orchard-world-kit",
-      "status": "implemented",
+      "status": "implemented-needs-seeded-random",
       "source": "src/kits/game-domains.js",
       "domain": "orchard-world",
       "provides": [
@@ -177,21 +197,21 @@
         "bounds snapshots"
       ],
       "needs": [
-        "seeded random",
-        "tree condition model",
+        "seeded apple positions",
         "row ids",
-        "building placement support",
+        "tree condition model",
+        "building placement points",
         "worker target points"
       ]
     },
     {
       "id": "construction-runtime-kit",
-      "status": "implemented",
+      "status": "implemented-needs-effects",
       "source": "src/kits/game-domains.js",
       "domain": "construction-runtime",
       "provides": [
         "build catalog",
-        "resource payment via resource-ledger",
+        "resource payment through resource-ledger",
         "built item records",
         "build messages",
         "snapshots"
@@ -201,32 +221,34 @@
         "capacity modifiers",
         "defense modifiers",
         "production modifiers",
+        "worker slot modifiers",
         "placement rules"
       ]
     },
     {
       "id": "roster-runtime-kit",
-      "status": "implemented",
+      "status": "implemented-needs-assignment",
       "source": "src/kits/game-domains.js",
       "domain": "roster-runtime",
       "provides": [
         "actor list",
         "role list",
         "hire command",
-        "hire payment via resource-ledger",
+        "hire payment through resource-ledger",
         "roster messages",
         "snapshots"
       ],
       "needs": [
         "worker assignment commands",
         "role output ticks",
-        "morale/fatigue",
-        "building slot occupancy"
+        "morale and fatigue",
+        "building slot occupancy",
+        "defense contribution"
       ]
     },
     {
       "id": "inventory-runtime-kit",
-      "status": "implemented",
+      "status": "implemented-needs-tool-effects",
       "source": "src/kits/game-domains.js",
       "domain": "inventory-runtime",
       "provides": [
@@ -238,8 +260,9 @@
       "needs": [
         "tool stats",
         "durability",
-        "unlock sources",
-        "effect hooks into harvest and clear commands"
+        "market unlock sources",
+        "harvest radius modifiers",
+        "clear strength modifiers"
       ]
     },
     {
@@ -262,11 +285,11 @@
         "snapshots"
       ],
       "needs": [
-        "split into smaller kits",
+        "split into movement/session/phase/pest/outcome services",
         "deterministic pest spawning",
+        "command-contract routing",
         "worker/building/tool modifiers",
-        "economy settlement hooks",
-        "outcome detail model"
+        "outcome summary model"
       ]
     },
     {
@@ -282,12 +305,12 @@
         "player rendering"
       ],
       "needs": [
-        "render plan input",
-        "orchard row layers",
+        "render-plan input",
+        "row layers",
         "building rendering",
         "worker rendering",
         "pressure overlays",
-        "better visual fidelity"
+        "higher visual fidelity"
       ]
     },
     {
@@ -324,7 +347,61 @@
         "restart",
         "loadScenario",
         "seeded reset",
+        "command journal",
         "smoke snapshots"
+      ]
+    },
+    {
+      "id": "smoke-fixture-kit",
+      "status": "implemented-minimal",
+      "source": "tests/smoke.mjs",
+      "domain": "testing",
+      "provides": [
+        "entry screen smoke",
+        "play transition smoke",
+        "active-session smoke",
+        "apple existence smoke"
+      ],
+      "needs": [
+        "deterministic collect smoke",
+        "build smoke",
+        "hire smoke",
+        "exchange smoke",
+        "night pest smoke",
+        "outcome smoke"
+      ]
+    },
+    {
+      "id": "seeded-random-kit",
+      "status": "target",
+      "source": "target: src/kits/seeded-random.js",
+      "domain": "seeded-random",
+      "provides": [
+        "named random streams",
+        "seeded apple placement",
+        "seeded pest spawning",
+        "replayable smoke fixtures"
+      ],
+      "dependsOn": [
+        "kit-runtime"
+      ]
+    },
+    {
+      "id": "orchard-command-contract-kit",
+      "status": "target",
+      "source": "target: src/kits/orchard-command-contract.js",
+      "domain": "orchard-command-contract",
+      "provides": [
+        "single gameplay mutation facade",
+        "typed command normalization",
+        "command validation",
+        "command journal entries",
+        "cross-kit dispatch"
+      ],
+      "dependsOn": [
+        "resource-ledger-kit",
+        "orchard-world-kit",
+        "active-session-domain-kit"
       ]
     },
     {
@@ -336,17 +413,50 @@
         "keyboard movement mapping",
         "pointer movement mapping",
         "virtual joystick mapping",
-        "active-session.move command emission"
+        "command-contract intent emission"
       ],
       "dependsOn": [
-        "active-session-domain-kit"
+        "orchard-command-contract-kit"
+      ]
+    },
+    {
+      "id": "orchard-harvest-interaction-kit",
+      "status": "target",
+      "source": "target: src/kits/harvest-interaction.js",
+      "domain": "orchard-harvest-interaction",
+      "provides": [
+        "tool-aware apple collection radius",
+        "collection scoring",
+        "resource payouts",
+        "pressure side effects"
+      ],
+      "dependsOn": [
+        "orchard-world-kit",
+        "resource-ledger-kit",
+        "pressure-field-kit",
+        "orchard-tool-effects-kit"
+      ]
+    },
+    {
+      "id": "orchard-economy-ledger-kit",
+      "status": "target",
+      "source": "target: src/kits/economy-ledger.js",
+      "domain": "orchard-economy-ledger",
+      "provides": [
+        "transaction history",
+        "capacity limits",
+        "daily settlement rows",
+        "economy diagnostics"
+      ],
+      "dependsOn": [
+        "resource-ledger-kit"
       ]
     },
     {
       "id": "orchard-market-exchange-kit",
       "status": "target",
       "source": "target: src/kits/exchange-runtime.js",
-      "domain": "exchange-runtime",
+      "domain": "orchard-market-exchange",
       "provides": [
         "sell apples",
         "buy tools",
@@ -356,36 +466,21 @@
       ],
       "dependsOn": [
         "resource-ledger-kit",
-        "inventory-runtime-kit"
-      ]
-    },
-    {
-      "id": "orchard-worker-assignment-kit",
-      "status": "target",
-      "source": "target: src/kits/worker-assignment.js",
-      "domain": "worker-assignment",
-      "provides": [
-        "assign worker to row/building/role",
-        "worker output tick",
-        "worker fatigue",
-        "harvest and defense contributions"
-      ],
-      "dependsOn": [
-        "roster-runtime-kit",
-        "orchard-world-kit",
-        "pressure-field-kit"
+        "inventory-runtime-kit",
+        "orchard-economy-ledger-kit"
       ]
     },
     {
       "id": "orchard-building-effects-kit",
       "status": "target",
       "source": "target: src/kits/building-effects.js",
-      "domain": "building-effects",
+      "domain": "orchard-building-effects",
       "provides": [
         "storage capacity changes",
         "row defense changes",
         "production modifiers",
-        "worker slot modifiers"
+        "worker slot modifiers",
+        "render-plan building records"
       ],
       "dependsOn": [
         "construction-runtime-kit",
@@ -394,10 +489,29 @@
       ]
     },
     {
+      "id": "orchard-worker-assignment-kit",
+      "status": "target",
+      "source": "target: src/kits/worker-assignment.js",
+      "domain": "orchard-worker-assignment",
+      "provides": [
+        "assign worker to row/building/role",
+        "harvest output tick",
+        "defense contribution tick",
+        "repair/rest role ticks",
+        "worker fatigue"
+      ],
+      "dependsOn": [
+        "roster-runtime-kit",
+        "orchard-world-kit",
+        "pressure-field-kit",
+        "orchard-building-effects-kit"
+      ]
+    },
+    {
       "id": "orchard-tool-effects-kit",
       "status": "target",
       "source": "target: src/kits/tool-effects.js",
-      "domain": "tool-effects",
+      "domain": "orchard-tool-effects",
       "provides": [
         "harvest radius modifiers",
         "clear strength modifiers",
@@ -405,15 +519,48 @@
         "tool value modifiers"
       ],
       "dependsOn": [
-        "inventory-runtime-kit",
-        "active-session-domain-kit"
+        "inventory-runtime-kit"
+      ]
+    },
+    {
+      "id": "orchard-day-night-phase-kit",
+      "status": "target",
+      "source": "target: src/kits/day-night-phase.js",
+      "domain": "orchard-day-night-phase",
+      "provides": [
+        "phase transition command",
+        "day increment",
+        "night start event",
+        "morning settlement event"
+      ],
+      "dependsOn": [
+        "pressure-field-kit",
+        "orchard-economy-ledger-kit"
+      ]
+    },
+    {
+      "id": "orchard-pest-pressure-kit",
+      "status": "target",
+      "source": "target: src/kits/pest-pressure.js",
+      "domain": "orchard-pest-pressure",
+      "provides": [
+        "deterministic pest spawning",
+        "pest chase",
+        "player damage",
+        "tool-aware clear strength",
+        "row damage pressure"
+      ],
+      "dependsOn": [
+        "seeded-random-kit",
+        "pressure-field-kit",
+        "orchard-tool-effects-kit"
       ]
     },
     {
       "id": "orchard-save-runtime-kit",
       "status": "target",
       "source": "target: src/kits/save-runtime.js",
-      "domain": "save-runtime",
+      "domain": "orchard-save-runtime",
       "provides": [
         "localStorage slot list",
         "save current run",
@@ -429,59 +576,102 @@
       "id": "orchard-codex-progression-kit",
       "status": "target",
       "source": "target: src/kits/codex-progression.js",
-      "domain": "codex-progression",
+      "domain": "orchard-codex-progression",
       "provides": [
-        "unlock codex notes",
-        "track first collect/build/hire/night/survive milestones",
-        "knowledge screen content"
+        "first collect/build/hire/night/survive unlocks",
+        "knowledge screen content",
+        "codex progress snapshot"
       ],
       "dependsOn": [
         "interface-composition-kit",
+        "orchard-command-contract-kit"
+      ]
+    },
+    {
+      "id": "orchard-outcome-summary-kit",
+      "status": "target",
+      "source": "target: src/kits/outcome-summary.js",
+      "domain": "orchard-outcome-summary",
+      "provides": [
+        "days survived summary",
+        "resources summary",
+        "workers/buildings/tools summary",
+        "codex unlock summary"
+      ],
+      "dependsOn": [
+        "active-session-domain-kit",
+        "resource-ledger-kit",
+        "construction-runtime-kit",
+        "roster-runtime-kit",
+        "inventory-runtime-kit"
+      ]
+    },
+    {
+      "id": "orchard-render-plan-kit",
+      "status": "target",
+      "source": "target: src/kits/render-plan.js",
+      "domain": "orchard-render-plan",
+      "provides": [
+        "tree/apple/pest/player/building/worker render records",
+        "pressure overlays",
+        "row status layers",
+        "renderer-independent world plan"
+      ],
+      "dependsOn": [
+        "orchard-world-kit",
         "active-session-domain-kit",
         "construction-runtime-kit",
         "roster-runtime-kit"
       ]
     },
     {
-      "id": "orchard-smoke-fixture-kit",
+      "id": "orchard-economy-smoke-fixture-kit",
       "status": "target",
       "source": "target: tests/smoke.mjs expansion",
       "domain": "testing",
       "provides": [
         "entry to active-session smoke",
-        "collect resource smoke",
-        "build smoke",
-        "hire smoke",
-        "night pest damage smoke",
-        "outcome route smoke"
+        "deterministic collect smoke",
+        "market sell smoke",
+        "build effect smoke",
+        "hire and assign smoke",
+        "night pest smoke",
+        "outcome smoke"
       ],
       "dependsOn": [
         "GameHost",
-        "kit-runtime"
+        "kit-runtime",
+        "seeded-random-kit"
       ]
     }
   ],
   "nextSlice": {
-    "name": "Zombie Orchard Economy Service Cutover",
+    "name": "Zombie Orchard Economy Command Contract Cutover",
     "goals": [
-      "preserve the current shell and GameHost",
-      "make runtime deterministic",
-      "split active-session into smaller services",
-      "make exchange, workers, buildings, and tools affect the survival loop",
+      "preserve the static shell and GameHost",
+      "make apple and pest generation deterministic",
+      "route gameplay mutations through one command contract",
+      "split active-session into focused services",
+      "make exchange, workers, buildings, tools, day/night, pests, save, codex, and outcome behavior testable",
       "expand smoke coverage around a full economy run"
     ],
     "orderedSteps": [
       "seeded-random-kit",
-      "orchard-input-kit",
+      "orchard-command-contract-kit",
       "active-session service split",
-      "exchange-runtime-kit",
-      "building-effects-kit",
-      "worker-assignment-kit",
-      "tool-effects-kit",
-      "save-runtime-kit",
-      "codex-progression-kit",
-      "world-canvas-render-plan upgrade",
-      "smoke fixture expansion"
+      "orchard-harvest-interaction-kit",
+      "orchard-economy-ledger-kit",
+      "orchard-market-exchange-kit",
+      "orchard-building-effects-kit",
+      "orchard-worker-assignment-kit",
+      "orchard-tool-effects-kit",
+      "orchard-day-night-phase-kit",
+      "orchard-pest-pressure-kit",
+      "orchard-codex-progression-kit",
+      "orchard-save-runtime-kit",
+      "orchard-outcome-summary-kit",
+      "orchard-render-plan-kit",
+      "orchard-economy-smoke-fixture-kit"
     ]
   }
 }
