@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-08T16-10-36-04-00`
+**Timestamp:** `2026-07-08T16-20-00-04-00`
 
 ## Available commands
 
@@ -40,7 +40,7 @@ root .agent update: performed
 architecture audit update: created
 render audit update: created
 gameplay audit update: created
-Market transaction ledger source splice map: created
+Market nested result source contract: created
 runtime source changed: no
 branch created: no
 pull request created: no
@@ -77,6 +77,7 @@ Market fixture cases:
   - accepted/rejected commands append MarketCommandJournal rows
   - accepted/rejected commands append MarketResultJournal rows
   - interface-composition exposes nested command result
+  - interface-composition snapshot exposes lastResult
   - html exchange projection renders from snapshot only
   - renderer readback proves projection rows consumed by renderer
   - GameHost baseline engine/getState/tick shape remains available
