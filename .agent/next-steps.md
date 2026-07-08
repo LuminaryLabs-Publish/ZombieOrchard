@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-08T19-10-54-04-00`
+**Timestamp:** `2026-07-08T19-21-15-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions durable, replayable, transaction-backed, renderer-readable, 
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Command Source Manifest + Nested Result Consumer Fixture Gate
+ZombieOrchard Market Source Manifest + Nested Result Consumer / Exchange Readback Fixture Gate
 ```
 
 ## Checklist
@@ -76,6 +76,7 @@ ZombieOrchard Market Command Source Manifest + Nested Result Consumer Fixture Ga
 .agent/market-authority-audit/2026-07-08T16-10-36-04-00-transaction-ledger-source-splice-map.md
 .agent/market-authority-audit/2026-07-08T16-20-00-04-00-nested-result-source-contract.md
 .agent/market-authority-audit/2026-07-08T19-10-54-04-00-command-source-manifest-fixture-gate.md
+.agent/market-authority-audit/2026-07-08T19-21-15-04-00-source-manifest-nested-result-contract.md
 ```
 
 Use those files as the source of truth for exact required result shapes, rejection reasons, transaction records, projection records, source files, and fixture cases.
