@@ -1,14 +1,14 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T19-10-54-04-00`
+**Timestamp:** `2026-07-08T19-21-15-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a standalone static orchard survival/economy shell with a kit-composed runtime and a playable browser baseline.
 
-The repo is not missing a route, runtime, command router, renderer, or smoke harness. The current blocker is narrower: the Market/exchange path has no source-owned command manifest, stable result shape, nested result propagation, transaction history, exchange projection, renderer readback, or DOM-free fixture matrix.
+The repo is not missing a route, runtime, command router, renderer, or smoke harness. The blocker is narrower: the Market/exchange path has no source-owned command manifest, stable result shape, nested result propagation, transaction history, exchange projection, renderer readback, or DOM-free fixture matrix.
 
-This pass keeps runtime code unchanged and updates the `.agent` docs around the next exact implementation gate.
+This pass keeps runtime code unchanged and updates the `.agent` docs around the exact source-manifest and nested-result consumer gate.
 
 ## Current interaction loop
 
@@ -28,7 +28,7 @@ index.html
 -> data-action clicks route through interface-composition.activate
 -> data-command clicks route directly to active-session
 -> nested action.command can call ctx.engine.command(...)
--> nested result is currently not retained
+-> nested result is currently not retained or returned
 -> window.GameHost exposes engine/getState/tick
 ```
 
@@ -73,9 +73,6 @@ src/kits/composition.js:
   action.command dispatch happens through ctx.engine.command.
   nested command result is currently dropped.
   snapshot exposes active/previous/activeSnapshot only.
-
-src/kits/scoped-interface-domains.js:
-  generated interface domains own action rows and action activation.
 
 src/presets/orchard-preset.js:
   exchange currently exposes only Back.
@@ -231,5 +228,5 @@ exchange action ids
 ## Current priority
 
 ```txt
-ZombieOrchard Market Command Source Manifest + Nested Result Consumer Fixture Gate
+ZombieOrchard Market Source Manifest + Nested Result Consumer / Exchange Readback Fixture Gate
 ```
