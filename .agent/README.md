@@ -17,31 +17,27 @@ This folder stores timestamped internal breakdowns, project trackers, kit regist
 ## Current recommended slice
 
 ```txt
-Zombie Orchard Market Command Replay Harness + Transaction Projection Gate
+Zombie Orchard Market Transaction Fixture Matrix + Exchange Projection Acceptance Gate
 ```
 
 Build order:
 
 ```txt
-preserve current static host, active-session HUD, canvas renderer, and snapshot["resource-ledger"].values
--> add stable Market action ids: sell-apples, buy-basic-tool, buy-row-supply, back
--> add Market command constants and action-to-command normalization helpers
--> add deterministic price rows for apple sell, basic tool buy, and row supply buy
--> add deterministic capacity rows for money, apples, tools, supplies, wood, and scrap
--> add MarketCommandEnvelope records with id, type, source, itemId, quantity, frame, elapsed, and rawActionId
--> add MarketSourceSnapshot from ledger, inventory, price, capacity, frame, elapsed, and active screen
--> add stable preflight reasons: insufficient_inventory, insufficient_funds, capacity_full, unknown_market_command
+preserve current static route, active-session HUD, world-canvas rendering, and snapshot["resource-ledger"].values
+-> add source-owned Market action ids and command constants
+-> extend exchange preset with Sell Apples, Buy Basic Tool, Buy Row Supply, and Back
+-> add deterministic price rows and capacity rows
+-> add MarketCommandEnvelope and MarketSourceSnapshot helpers
+-> add market preflight with stable rejection reasons
 -> add accepted/rejected MarketCommandResult records
--> append command result journal entries
--> extend resource-ledger with appendTransaction, transactions, and lastTransaction while preserving values/canPay/pay/add
--> extend inventory-runtime with purchase intake for basic tool and row supply records
--> auto-equip first purchased basic tool only when equipped is branch
--> update exchange preset actions
--> update interface-composition to return nested command result and store lastResult
--> add MarketResultProjection for renderer and host diagnostics
--> add exchange renderer branch with price cards, capacity rows, latest result, and recent transactions
--> extend GameHost with dispatch, getDiagnostics, getPriceSnapshot, getCapacitySnapshot, getTransactionHistory, getCommandJournal, and runSmoke
--> add DOM-free Market replay smoke for accepted and rejected cases
+-> add command result journal
+-> extend resource-ledger with transactions and lastTransaction while preserving values/canPay/pay/add
+-> extend inventory-runtime with purchase intake for basic tools and row supplies
+-> return nested command result through interface-composition and expose lastResult
+-> add renderer-ready MarketResultProjection
+-> add exchange renderer branch from snapshot projection only
+-> extend GameHost with dispatch, diagnostics, price/capacity snapshots, transaction history, command journal, and runSmoke
+-> add DOM-free fixture matrix for rejected sell, accepted sell, accepted buy, insufficient funds, capacity full, price determinism, and capacity determinism
 -> defer workers, saves, codex, seeded replay, render-plan extraction, and settlement parity
 ```
 
@@ -54,15 +50,14 @@ active-session HUD still reads snapshot["resource-ledger"].values
 exchange screen shows Sell Apples, Buy Basic Tool, Buy Row Supply, and Back
 Sell Apples with 0 apples returns accepted=false reason=insufficient_inventory
 Collect then Sell Apples appends accepted market_sell transaction
-Buy Basic Tool appends accepted market_buy transaction and adds tool to inventory
-First purchased basic tool auto-equips only when current equipped item is branch
+Buy Basic Tool appends accepted market_buy transaction and adds/equips tool when equipped is branch
 Buy Row Supply appends accepted market_buy transaction and adds supply record
 Insufficient money returns accepted=false reason=insufficient_funds
 Capacity overflow returns accepted=false reason=capacity_full
 Unknown Market command returns accepted=false reason=unknown_market_command
-GET_PRICE_SNAPSHOT is deterministic across fresh games
-GET_CAPACITY_SNAPSHOT is deterministic across fresh games
-interface-composition snapshot exposes lastResult for accepted and rejected Market actions
+Price snapshot is deterministic across fresh games
+Capacity snapshot is deterministic across fresh games
+interface-composition snapshot exposes lastResult for Market actions
 resource-ledger snapshot exposes transactions and lastTransaction without breaking values
 exchange renderer consumes Market projection from snapshot only
 GameHost exposes Market history, command journal, price snapshot, capacity snapshot, diagnostics, and runSmoke
@@ -89,3 +84,4 @@ worker assignment remains out of scope
 - `trackers/2026-07-07T19-51-43-04-00/project-breakdown.md` - market-runtime-command-gate follow-up that re-confirms the Market placeholder state and locks the next slice to stable action IDs, Market command envelopes, transaction projection, nested result surfacing, GameHost diagnostics, and DOM-free accepted/rejected replay parity.
 - `trackers/2026-07-07T21-09-57-04-00/project-breakdown.md` - market-projection/host-smoke follow-up that keeps the next slice on stable Market action IDs, command envelopes, price/capacity sources, purchase intake, nested result return, exchange projection, GameHost diagnostics, and DOM-free accepted/rejected replay parity.
 - `trackers/2026-07-07T22-31-24-04-00/project-breakdown.md` - market-command-replay/transaction-projection follow-up that re-confirms ZombieOrchard as the oldest eligible repo and locks the next slice to command replay harness, transaction projection, Market source snapshots, nested result persistence, exchange renderer authority, GameHost diagnostics, and DOM-free accepted/rejected replay parity.
+- `trackers/2026-07-07T23-48-44-04-00/project-breakdown.md` - market-transaction fixture/exchange projection acceptance follow-up that re-confirms ZombieOrchard as the oldest eligible repo after IntoTheMeadow and locks the next slice to Market action ids, command envelopes, transaction fixtures, nested result surfacing, exchange projection, GameHost diagnostics, and DOM-free accepted/rejected fixture parity.
