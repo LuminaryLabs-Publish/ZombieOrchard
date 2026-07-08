@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-08T19-10-54-04-00`
+**Timestamp:** `2026-07-08T19-21-15-04-00`
 
 ## Available commands
 
@@ -40,7 +40,7 @@ root .agent update: performed
 architecture audit update: created
 render audit update: created
 gameplay audit update: created
-Market command source manifest fixture gate: created
+Market source manifest / nested result fixture gate: created
 runtime source changed: no
 branch created: no
 pull request created: no
