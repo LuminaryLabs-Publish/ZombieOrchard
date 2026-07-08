@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-08T16-20-00-04-00`
+**Timestamp:** `2026-07-08T19-10-54-04-00`
 
 ## Available commands
 
@@ -40,7 +40,7 @@ root .agent update: performed
 architecture audit update: created
 render audit update: created
 gameplay audit update: created
-Market nested result source contract: created
+Market command source manifest fixture gate: created
 runtime source changed: no
 branch created: no
 pull request created: no
@@ -62,6 +62,11 @@ Market fixture cases:
   - entry to active-session still works
   - active-session to exchange still works
   - exchange exposes sell-apples, buy-basic-tool, buy-row-supply, and back
+  - MarketCommandSourceManifest has expected action ids
+  - MarketCommandSourceManifest has expected command types
+  - MarketCommandSourceManifest has expected reason catalog
+  - MarketCommandSourceManifest has price rows
+  - MarketCommandSourceManifest has capacity rows
   - sell-apples accepted when apples > 0
   - sell-apples rejected when apples = 0
   - buy-basic-tool accepted when money >= price and capacity available
@@ -105,5 +110,5 @@ npm test
 npm test passes after the Market fixture is added.
 npm run build passes after renderer and host changes.
 Manual browser smoke confirms active-session, Market, Build, Roster, Inventory, and Outcome remain reachable.
-Fixture output proves accepted, rejected, no-mutation, transaction history, Market command journal, Market result journal, nested result propagation, projection shape, renderer readback, and GameHost compatibility cases.
+Fixture output proves source manifest, accepted, rejected, no-mutation, transaction history, Market command journal, Market result journal, nested result propagation, projection shape, renderer readback, and GameHost compatibility cases.
 ```
