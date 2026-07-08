@@ -1,12 +1,12 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T04-49-40-04-00`
+**Timestamp:** `2026-07-08T06-39-20-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a standalone static orchard survival/economy shell. The architecture already uses composable kits for runtime, interface domains, composition, resources, pressure, orchard world, construction, roster, inventory, and active session behavior.
 
-The repo is not missing a game loop. It is missing stronger result authority around Market actions, transaction records, nested result propagation, and replayable DOM-free fixtures.
+The repo is not missing a game loop. It is missing stronger result authority around Market actions, transaction records, nested result propagation, renderer projection, and replayable DOM-free fixtures.
 
 ## Current interaction loop
 
@@ -55,6 +55,9 @@ interface:
 
 game:
   resource-ledger, pressure-field, orchard-world, construction-runtime, roster-runtime, inventory-runtime, active-session, world-canvas
+
+market-next:
+  market-action-id-catalog, market-command-envelope, market-source-snapshot, market-price-source, market-capacity-policy, market-preflight, market-command-result, market-rejection-reason-catalog, resource-transaction-history, inventory-purchase-intake, nested-command-result-propagation, market-result-projection, market-fixture-replay
 ```
 
 ## Current kit services
@@ -117,15 +120,15 @@ Source inspection confirms:
 ## Follow-up audit added
 
 ```txt
-.agent/market-authority-audit/transaction-result-projection-gate.md
+.agent/market-authority-audit/acceptance-ledger.md
 ```
 
-That file defines the target Market command envelopes, source snapshots, stable result reasons, transaction history shape, renderer projection shape, and fixture matrix.
+That file defines source-backed current facts, required Market action IDs, command envelope shape, source snapshot shape, stable result record shape, rejection reasons, transaction record shape, exchange projection shape, and the acceptance matrix for the next implementation pass.
 
 ## Next safe ledge
 
 ```txt
-Market Result Contract + Transaction Projection Fixture Gate
+ZombieOrchard Market Acceptance Fixture Implementation
 ```
 
 The next implementation pass should turn Market actions into stable command envelopes with deterministic prices, capacity checks, accepted/rejected results, transaction history, nested result propagation, renderer-ready projections, and DOM-free fixtures.
