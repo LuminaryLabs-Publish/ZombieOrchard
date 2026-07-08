@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-08T14-18-45-04-00`
+**Timestamp:** `2026-07-08T16-10-36-04-00`
 
 ## Available commands
 
@@ -40,7 +40,7 @@ root .agent update: performed
 architecture audit update: created
 render audit update: created
 gameplay audit update: created
-Market acceptance ledger fixture map: created
+Market transaction ledger source splice map: created
 runtime source changed: no
 branch created: no
 pull request created: no
@@ -90,10 +90,10 @@ npm run build
 python -m http.server 5173
 ```
 
-After the Market fixture implementation exists, add one of these fixture targets:
+After the Market transaction fixture implementation exists, add one of these fixture targets:
 
 ```bash
-node tests/market-fixture.mjs
+node tests/market-transaction-fixture.mjs
 # or
 npm test
 ```
