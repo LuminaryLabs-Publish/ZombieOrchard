@@ -1,14 +1,14 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T16-10-36-04-00`
+**Timestamp:** `2026-07-08T16-20-00-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a standalone static orchard survival/economy shell. The current runtime is already kit-composed and playable at the prototype level.
 
-The repo is not missing a route, runtime, command router, renderer, or smoke harness. The next blocker is narrower: the Market screen exists as an exchange shell, but sell/buy behavior still lacks stable source-owned command envelopes, transaction records, nested command result propagation, projection rows, renderer readback, and a DOM-free fixture matrix.
+The repo is not missing a route, runtime, command router, renderer, or smoke harness. The current blocker is narrower: the Market screen exists as an exchange shell, but sell/buy behavior still lacks stable source-owned command envelopes, before/after snapshots, transaction records, nested command result propagation, projection rows, renderer readback, and a DOM-free fixture matrix.
 
-This pass keeps runtime code unchanged and updates the `.agent` docs around the exact transaction-ledger splice needed before source implementation.
+This pass keeps runtime code unchanged and updates the `.agent` docs around the exact nested Market result source contract needed before implementation.
 
 ## Current interaction loop
 
@@ -27,6 +27,8 @@ index.html
 -> html-interface-renderer renders active HUD or active screen panel
 -> data-action clicks route through interface-composition.activate
 -> data-command clicks route directly to active-session
+-> nested action.command can call ctx.engine.command(...)
+-> nested result is currently not retained
 -> window.GameHost exposes engine/getState/tick
 ```
 
@@ -218,20 +220,17 @@ exchange action ids
 -> MarketCommandResult
 -> accepted mutation only
 -> rejected no-mutation proof
--> TransactionRecord
--> MarketCommandJournal
--> MarketResultJournal
--> MarketSourceSnapshot after
--> MarketResultProjection
--> nested command result propagation
--> exchange renderer readback
--> DOM-free fixture rows
+-> transaction record when accepted
+-> command/result journals
+-> interface-composition nestedResult
+-> snapshot.lastResult
+-> projection rows
+-> renderer readback
+-> fixture replay
 ```
 
-## Current next safe ledge
+## Current priority
 
 ```txt
-ZombieOrchard Market Transaction Ledger + Nested Result Source Splice Gate
+ZombieOrchard Nested Market Result Source Contract + Exchange Projection Readback Fixture Gate
 ```
-
-The implementation should preserve `index.html`, `src/start.js`, `createOrchardGame()`, `world-canvas`, active-session HUD, and `window.GameHost.engine/getState/tick` while adding source-owned Market transaction replay, stable command results, no-mutation rejection rows, nested result propagation, and renderer-readable projection snapshots.
