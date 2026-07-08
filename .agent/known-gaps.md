@@ -1,6 +1,6 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-08T16-10-36-04-00`
+**Timestamp:** `2026-07-08T16-20-00-04-00`
 
 ## Critical gaps
 
@@ -20,6 +20,7 @@
 - Resource changes are not recorded as transaction history.
 - Inventory purchases do not have a purchase-intake service.
 - interface-composition dispatches nested commands but does not retain, return, journal, or project the nested result.
+- interface-composition snapshots do not expose lastResult.
 - html-interface-renderer has no exchange-specific projection branch.
 - GameHost only exposes engine/getState/tick.
 - tests/smoke.mjs only checks entry, Play transition, and apple existence.
@@ -59,6 +60,7 @@
 - Market renderer readback has no stable projection report.
 - Market command journal rows do not exist for fixture replay.
 - Market result journal rows do not exist for fixture replay.
+- Nested result propagation has no fixture row.
 ```
 
 ## Render gaps
@@ -89,6 +91,7 @@
 - No fixture proves deterministic price rows.
 - No fixture proves deterministic capacity rows.
 - No fixture proves nested command result propagation.
+- No fixture proves snapshot.lastResult.
 - No fixture proves direct data-command commands are not mixed into Market authority.
 - No fixture proves transaction history shape.
 - No fixture proves Market command journal shape.
