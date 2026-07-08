@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-08T11-19-53-04-00`
+**Timestamp:** `2026-07-08T12-51-50-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions durable, replayable, transaction-backed, renderer-readable, 
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Result Propagation + Exchange Projection Fixture Gate
+ZombieOrchard Market Command Journal + Exchange Projection Fixture Boundary
 ```
 
 ## Checklist
@@ -23,7 +23,8 @@ ZombieOrchard Market Result Propagation + Exchange Projection Fixture Gate
 - [ ] Add `MarketSourceSnapshot` records.
 - [ ] Add Market preflight with stable rejection reasons.
 - [ ] Add accepted/rejected `MarketCommandResult` records.
-- [ ] Add `MarketResultJournal` records.
+- [ ] Add `MarketCommandJournal` rows.
+- [ ] Add `MarketResultJournal` rows.
 - [ ] Extend `resource-ledger` with transaction history while preserving `values`, `canPay`, `pay`, and `add`.
 - [ ] Extend `inventory-runtime` with purchase intake while keeping `equipped` and `items` stable.
 - [ ] Add a Market runtime/domain kit adjacent to the existing game-domain kits.
@@ -34,7 +35,7 @@ ZombieOrchard Market Result Propagation + Exchange Projection Fixture Gate
 - [ ] Add renderer readback that proves the exchange branch consumed projection rows and did not own price/capacity/transaction authority.
 - [ ] Keep `window.GameHost.engine`, `window.GameHost.getState`, and `window.GameHost.tick` stable.
 - [ ] Extend `window.GameHost` with optional fixture-readable Market diagnostics and smoke helpers.
-- [ ] Add DOM-free fixture cases for accepted sell, rejected sell, accepted buy, insufficient funds, insufficient apples, capacity full, unknown command, invalid quantity, price determinism, capacity determinism, nested result propagation, transaction history, projection shape, renderer readback, and GameHost compatibility.
+- [ ] Add DOM-free fixture cases for accepted sell, rejected sell, accepted buy, insufficient funds, insufficient apples, capacity full, unknown command, invalid quantity, price determinism, capacity determinism, nested result propagation, command journal shape, transaction history, projection shape, renderer readback, and GameHost compatibility.
 
 ## Suggested implementation order
 
@@ -42,7 +43,7 @@ ZombieOrchard Market Result Propagation + Exchange Projection Fixture Gate
 1. Create src/market/market-ids.js for action ids and reason constants.
 2. Create src/market/market-sources.js for deterministic price/capacity/source snapshots.
 3. Create src/market/market-command.js for command envelope normalization and preflight.
-4. Create src/market/market-results.js for MarketCommandResult, TransactionRecord, MarketResultJournal, and MarketResultProjection helpers.
+4. Create src/market/market-results.js for MarketCommandResult, TransactionRecord, MarketCommandJournal, MarketResultJournal, and MarketResultProjection helpers.
 5. Add exchange preset action rows that target a market dispatch command.
 6. Extend resource-ledger with transaction history helpers while keeping values/canPay/pay/add stable.
 7. Extend inventory-runtime with purchase intake while keeping equipped/items stable.
@@ -61,6 +62,7 @@ ZombieOrchard Market Result Propagation + Exchange Projection Fixture Gate
 .agent/market-authority-audit/fixture-implementation-map.md
 .agent/market-authority-audit/2026-07-08T09-48-58-04-00-transaction-replay-boundary.md
 .agent/market-authority-audit/2026-07-08T11-19-53-04-00-result-propagation-fixture-gate.md
+.agent/market-authority-audit/2026-07-08T12-51-50-04-00-command-journal-fixture-boundary.md
 ```
 
 Use those files as the source of truth for exact required result shapes, rejection reasons, transaction records, projection records, source files, and fixture cases.
@@ -97,6 +99,7 @@ Stop the implementation slice when these fixture-readable cases are inspectable 
 - invalid quantity rejected with stable reason
 - rejected command does not mutate resources or inventory
 - accepted command appends transaction history
+- accepted/rejected command appends MarketCommandJournal row
 - interface-composition exposes nested command result
 - exchange projection is renderer-ready
 - renderer readback proves projection consumption
