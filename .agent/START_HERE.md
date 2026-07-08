@@ -2,7 +2,7 @@
 
 **Repo:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-08T08-02-32-04-00`
+**Last aligned:** `2026-07-08T09-48-58-04-00`
 
 ## Purpose
 
@@ -14,11 +14,9 @@ Read this folder before changing implementation code.
 
 The accessible `LuminaryLabs-Publish` repo list was compared against `LuminaryLabs-Dev/LuminaryLabs` ledger state.
 
-No checked non-Cavalry Publish repo was found that was fully new, central-ledger absent, or missing root `.agent/START_HERE.md` state.
+No checked non-Cavalry Publish repo was found that was fully new, central-ledger absent, undocumented, or missing root `.agent/START_HERE.md` state.
 
-`TheUnmappedHouse` has the oldest visible alignment time, but its local start file explicitly records that the closed central rollup gap should no longer be used as a reason to repeatedly select that repo.
-
-`ZombieOrchard` was selected as the oldest eligible fallback follow-up with unresolved `.agent` implementation planning. The existing Market acceptance ledger is now narrowed into a concrete implementation map for the first runtime slice.
+`ZombieOrchard` was selected as the oldest eligible fallback follow-up in the current ledger rotation because its Market implementation plan was present, but the transaction replay and renderer readback boundary still needed to be separated from the HTML renderer before runtime source changes.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
@@ -33,8 +31,8 @@ LuminaryLabs-Publish/PhantomCommand      ledgered with root .agent
 LuminaryLabs-Publish/PrehistoricRush     ledgered with root .agent
 LuminaryLabs-Publish/TheCavalryOfRome    excluded by rule
 LuminaryLabs-Publish/TheOpenAbove        ledgered with root .agent
-LuminaryLabs-Publish/TheUnmappedHouse    ledgered; central rollup closure note says do not repeatedly select for that old gap
-LuminaryLabs-Publish/ZombieOrchard       selected follow-up: Market fixture implementation map
+LuminaryLabs-Publish/TheUnmappedHouse    ledgered; closed rollup-gap note is not reused
+LuminaryLabs-Publish/ZombieOrchard       selected follow-up: Market transaction replay boundary
 ```
 
 ## Current state
@@ -61,13 +59,13 @@ index.html
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/dsk-domain-breakdown.md
-.agent/render-audit/canvas-render-audit.md
-.agent/gameplay-audit/economy-market-audit.md
-.agent/market-authority-audit/acceptance-ledger.md
+.agent/architecture-audit/2026-07-08T09-48-58-04-00-dsk-domain-breakdown.md
+.agent/render-audit/2026-07-08T09-48-58-04-00-market-render-readback-boundary.md
+.agent/gameplay-audit/2026-07-08T09-48-58-04-00-economy-loop-command-boundary.md
+.agent/market-authority-audit/2026-07-08T09-48-58-04-00-transaction-replay-boundary.md
 .agent/market-authority-audit/fixture-implementation-map.md
-.agent/trackers/2026-07-08T08-02-32-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T08-02-32-04-00.md
+.agent/trackers/2026-07-08T09-48-58-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T09-48-58-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -103,16 +101,17 @@ exchange action
 -> MarketSourceSnapshot
 -> MarketPreflight
 -> MarketCommandResult
--> resource/inventory mutation only on accepted result
 -> TransactionRecord
+-> MarketResultJournal
 -> MarketResultProjection
--> DOM-free market fixture replay
+-> renderer readback snapshot
+-> DOM-free market replay fixture
 ```
 
 ## Current next safe ledge
 
 ```txt
-ZombieOrchard Market Fixture Implementation Map
+ZombieOrchard Market Transaction Replay Boundary
 ```
 
-Stop that ledge when a source-level implementation plan exists for the exact files, exports, result records, smoke cases, and renderer projection boundary needed to implement Market sell/buy behavior without changing the static route or hiding source authority inside DOM code.
+Stop that ledge when the next coder can implement Market sell/buy behavior with source-owned transaction replay, projection readback, nested command result propagation, and DOM-free fixtures without hiding price, capacity, transaction, or result authority in `html-interface-renderer.js`.
