@@ -1,12 +1,12 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-07T19:51:43-04:00",
-  "version": "0.14.0",
+  "updatedAt": "2026-07-07T21:09:57-04:00",
+  "version": "0.15.0",
   "purpose": "Track current and target kits for the standalone kit-composed orchard survival/economy shell.",
-  "status": "market-runtime-command-gate-transaction-projection-needed",
+  "status": "market-projection-host-smoke-purchase-intake-needed",
   "selectionNote": "Updated because ZombieOrchard was the oldest eligible non-Cavalry Publish repo by latest central ledger timestamp.",
-  "latestTracker": ".agent/trackers/2026-07-07T19-51-43-04-00/project-breakdown.md",
-  "recommendedNextSlice": "Zombie Orchard Market Runtime Command Gate + Transaction Projection Fixture Lock",
+  "latestTracker": ".agent/trackers/2026-07-07T21-09-57-04-00/project-breakdown.md",
+  "recommendedNextSlice": "Zombie Orchard Market Projection Host Smoke + Purchase Intake Replay Lock",
   "runtimeShape": {
     "host": "index.html",
     "boot": "src/boot.js",
@@ -245,7 +245,7 @@
       "source": "tests/smoke.mjs",
       "domain": "testing",
       "provides": ["entry screen smoke", "play transition smoke", "active-session smoke", "apple existence smoke"],
-      "needs": ["zero-apple rejection", "collect sell", "buy tool", "buy supply", "insufficient-funds", "capacity-full", "price determinism", "capacity determinism", "transaction history", "replay parity"]
+      "needs": ["zero-apple rejection", "collect-sell", "buy tool", "buy supply", "insufficient-funds", "capacity-full", "price determinism", "capacity determinism", "transaction history", "replay parity"]
     },
     {
       "id": "market-action-id-catalog-kit",
@@ -446,7 +446,7 @@
     "GameHost exposes Market diagnostics and runSmoke",
     "Market replay smoke runs without browser timing assumptions"
   ],
-  "deferredUntilAfterMarketRuntimeCommandGate": [
+  "deferredUntilAfterMarketProjectionHostSmoke": [
     "worker assignment",
     "save runtime",
     "codex progression",
