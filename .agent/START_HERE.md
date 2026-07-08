@@ -2,7 +2,7 @@
 
 **Repo:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-08T11-19-53-04-00`
+**Last aligned:** `2026-07-08T12-51-50-04-00`
 
 ## Purpose
 
@@ -14,9 +14,9 @@ Read this folder before changing implementation code.
 
 The accessible `LuminaryLabs-Publish` repo list was compared against `LuminaryLabs-Dev/LuminaryLabs` ledger state.
 
-No checked non-Cavalry Publish repo was found that was fully new, central-ledger absent, undocumented, or missing root `.agent/START_HERE.md` state.
+No checked non-Cavalry Publish repo was found that was fully new, central-ledger absent, undocumented, or missing sampled root `.agent/START_HERE.md` state.
 
-`ZombieOrchard` was selected as the oldest eligible fallback follow-up in this rotation because its Market plan exists, but the exact command-result propagation seam is still the next blocker: `interface-composition` dispatches nested commands and drops their results, while `exchange` has no source-owned sell/buy commands or renderer-readable projection.
+`ZombieOrchard` was selected as the oldest observed eligible fallback in this rotation because its previous central review was older than the other sampled non-excluded repos and the Market authority seam still blocks safe runtime implementation.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
@@ -32,7 +32,7 @@ LuminaryLabs-Publish/PrehistoricRush     ledgered with root .agent
 LuminaryLabs-Publish/TheCavalryOfRome    excluded by rule
 LuminaryLabs-Publish/TheOpenAbove        ledgered with root .agent
 LuminaryLabs-Publish/TheUnmappedHouse    ledgered with root .agent
-LuminaryLabs-Publish/ZombieOrchard       selected follow-up: Market result propagation gate
+LuminaryLabs-Publish/ZombieOrchard       selected follow-up: Market command journal fixture boundary
 ```
 
 ## Current state
@@ -52,7 +52,7 @@ index.html
 -> ui.render(snapshot)
 ```
 
-The Market route is present through the `exchange` interface domain, but the exchange screen currently only offers Back. The runtime command surface can already return command results, but nested command results from interface actions are not retained, projected, or exposed for fixtures.
+The Market route is present through the `exchange` interface domain, but the exchange screen currently only offers Back. The runtime command surface can already return command results, but nested command results from interface actions are not retained, projected, journaled, or exposed for fixtures.
 
 ## First files to read
 
@@ -61,13 +61,13 @@ The Market route is present through the `exchange` interface domain, but the exc
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-08T11-19-53-04-00-dsk-domain-breakdown.md
-.agent/render-audit/2026-07-08T11-19-53-04-00-exchange-render-projection-readback.md
-.agent/gameplay-audit/2026-07-08T11-19-53-04-00-market-command-result-loop.md
-.agent/market-authority-audit/2026-07-08T11-19-53-04-00-result-propagation-fixture-gate.md
+.agent/architecture-audit/2026-07-08T12-51-50-04-00-dsk-domain-breakdown.md
+.agent/render-audit/2026-07-08T12-51-50-04-00-market-projection-readback-handoff.md
+.agent/gameplay-audit/2026-07-08T12-51-50-04-00-market-command-journal-loop.md
+.agent/market-authority-audit/2026-07-08T12-51-50-04-00-command-journal-fixture-boundary.md
 .agent/market-authority-audit/fixture-implementation-map.md
-.agent/trackers/2026-07-08T11-19-53-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T11-19-53-04-00.md
+.agent/trackers/2026-07-08T12-51-50-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T12-51-50-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -96,7 +96,7 @@ Do not move economy authority into `html-interface-renderer.js`.
 
 Do not rewrite the whole loop.
 
-The next runtime change should add a Market command/result seam as an additive kit boundary:
+The next runtime change should add the Market seam as an additive authority boundary:
 
 ```txt
 exchange action
@@ -105,7 +105,7 @@ exchange action
 -> MarketPreflight
 -> MarketCommandResult
 -> TransactionRecord
--> MarketResultJournal
+-> MarketCommandJournal
 -> nested command result propagation through interface-composition
 -> MarketResultProjection
 -> renderer readback snapshot
@@ -115,7 +115,7 @@ exchange action
 ## Current next safe ledge
 
 ```txt
-ZombieOrchard Market Result Propagation + Exchange Projection Fixture Gate
+ZombieOrchard Market Command Journal + Exchange Projection Fixture Boundary
 ```
 
-Stop that ledge when the next coder can implement Market sell/buy behavior with source-owned transaction replay, stable accepted/rejected results, projection readback, nested command result propagation, and DOM-free fixtures without hiding price, capacity, transaction, or result authority in `html-interface-renderer.js`.
+Stop that ledge when the next coder can implement Market sell/buy behavior with source-owned command envelopes, stable accepted/rejected results, no-mutation rejected rows, transaction history, nested result propagation, projection readback, and DOM-free fixture rows without hiding price, capacity, transaction, or result authority in `html-interface-renderer.js`.
