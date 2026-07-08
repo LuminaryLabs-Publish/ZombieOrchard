@@ -1,15 +1,15 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-08T16-10-36-04-00`
+**Timestamp:** `2026-07-08T16-20-00-04-00`
 
 ## Goal
 
-Make Market actions durable, replayable, transaction-backed, renderer-readable, and fixture-verifiable before expanding the wider orchard economy.
+Make Market actions durable, replayable, transaction-backed, renderer-readable, nested-result-safe, and fixture-verifiable before expanding the wider orchard economy.
 
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Transaction Ledger + Nested Result Source Splice Gate
+ZombieOrchard Nested Market Result Source Contract + Exchange Projection Readback Fixture Gate
 ```
 
 ## Checklist
@@ -30,7 +30,8 @@ ZombieOrchard Market Transaction Ledger + Nested Result Source Splice Gate
 - [ ] Extend `resource-ledger` with transaction history while preserving `values`, `canPay`, `pay`, and `add`.
 - [ ] Extend `inventory-runtime` with purchase intake while keeping `equipped` and `items` stable.
 - [ ] Add a Market runtime/domain kit adjacent to the existing game-domain kits.
-- [ ] Return nested command results through `interface-composition` and expose `lastResult` in its snapshot.
+- [ ] Return nested command results through `interface-composition`.
+- [ ] Expose `lastResult` in `interface-composition.snapshot()`.
 - [ ] Preserve existing direct active-session `data-command` behavior for Collect/Clear/Next Phase while keeping Market commands inside Market authority.
 - [ ] Add renderer-ready `MarketResultProjection`.
 - [ ] Add an exchange renderer branch that consumes snapshot projection only.
@@ -70,6 +71,7 @@ ZombieOrchard Market Transaction Ledger + Nested Result Source Splice Gate
 .agent/market-authority-audit/2026-07-08T12-51-50-04-00-command-journal-fixture-boundary.md
 .agent/market-authority-audit/2026-07-08T14-18-45-04-00-acceptance-ledger-fixture-map.md
 .agent/market-authority-audit/2026-07-08T16-10-36-04-00-transaction-ledger-source-splice-map.md
+.agent/market-authority-audit/2026-07-08T16-20-00-04-00-nested-result-source-contract.md
 ```
 
 Use those files as the source of truth for exact required result shapes, rejection reasons, transaction records, projection records, source files, and fixture cases.
@@ -109,6 +111,7 @@ Stop the implementation slice when these fixture-readable cases are inspectable 
 - accepted/rejected command appends MarketCommandJournal rows
 - accepted/rejected command appends MarketResultJournal rows
 - interface-composition exposes nested command result
+- interface-composition snapshot exposes lastResult
 - exchange projection is renderer-ready
 - renderer readback proves projection rows consumed
 - GameHost baseline engine/getState/tick shape remains available
