@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-08T03-08-39-04-00`
+**Timestamp:** `2026-07-08T06-39-20-04-00`
 
 ## Available commands
 
@@ -32,6 +32,22 @@ tests/smoke.mjs:
 
 ## Validation status for this audit pass
 
+```txt
+repo-list comparison: performed
+central-ledger comparison: performed
+source readback: performed
+root .agent update: performed
+Market acceptance ledger: added
+runtime source changed: no
+branch created: no
+pull request created: no
+npm test: not run
+npm run build: not run
+browser smoke: not run
+Playwright smoke: not run
+GitHub Pages check: not run
+```
+
 No runtime code changed.
 
 No local command execution was performed in this connector-only documentation pass.
@@ -42,6 +58,7 @@ No local command execution was performed in this connector-only documentation pa
 Market fixture cases:
   - entry to active-session still works
   - active-session to exchange still works
+  - exchange exposes sell-apples, buy-basic-tool, buy-row-supply, and back
   - sell-apples accepted when apples > 0
   - sell-apples rejected when apples = 0
   - buy-basic-tool accepted when money >= price and capacity available
@@ -49,12 +66,14 @@ Market fixture cases:
   - buy-row-supply accepted when money >= price and capacity available
   - buy command rejected when inventory capacity is full
   - unknown Market command rejected with stable reason
+  - invalid quantity rejected with stable reason
   - price rows stable across snapshots
   - capacity rows stable across snapshots
   - rejected commands do not mutate resources or inventory
   - accepted commands append transaction history
   - interface-composition exposes nested command result
   - html exchange projection renders from snapshot only
+  - GameHost baseline engine/getState/tick shape remains available
 ```
 
 ## Do not claim complete until
