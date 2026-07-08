@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-08T16-20-00-04-00`
+**Timestamp:** `2026-07-08T19-10-54-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions durable, replayable, transaction-backed, renderer-readable, 
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Nested Market Result Source Contract + Exchange Projection Readback Fixture Gate
+ZombieOrchard Market Command Source Manifest + Nested Result Consumer Fixture Gate
 ```
 
 ## Checklist
@@ -17,6 +17,7 @@ ZombieOrchard Nested Market Result Source Contract + Exchange Projection Readbac
 - [ ] Preserve current `index.html`, `src/boot.js`, `src/start.js`, active-session HUD, world-canvas renderer, and `snapshot["resource-ledger"].values` compatibility.
 - [ ] Preserve `window.GameHost.engine`, `window.GameHost.getState`, and `window.GameHost.tick`.
 - [ ] Add stable Market action IDs: `sell-apples`, `buy-basic-tool`, `buy-row-supply`, `back`.
+- [ ] Add `MarketCommandSourceManifest` as the durable source of Market command/action/reason/price/capacity rows.
 - [ ] Extend the `exchange` preset so Market has real command actions.
 - [ ] Add deterministic price rows.
 - [ ] Add deterministic capacity rows.
@@ -37,28 +38,30 @@ ZombieOrchard Nested Market Result Source Contract + Exchange Projection Readbac
 - [ ] Add an exchange renderer branch that consumes snapshot projection only.
 - [ ] Add renderer readback that proves the exchange branch consumed projection rows and did not own price/capacity/transaction authority.
 - [ ] Extend `window.GameHost` with optional fixture-readable Market diagnostics and smoke helpers.
-- [ ] Add DOM-free fixture cases for accepted sell, rejected sell, accepted buy, insufficient funds, insufficient apples, capacity full, unknown command, invalid quantity, price determinism, capacity determinism, nested result propagation, command journal shape, result journal shape, transaction history, projection shape, renderer readback, and GameHost compatibility.
+- [ ] Add DOM-free fixture cases for source manifest, accepted sell, rejected sell, accepted buy, insufficient funds, insufficient apples, capacity full, unknown command, invalid quantity, price determinism, capacity determinism, nested result propagation, command journal shape, result journal shape, transaction history, projection shape, renderer readback, and GameHost compatibility.
 
 ## Suggested implementation order
 
 ```txt
 1. Create src/market/market-ids.js for action ids, command types, and reason constants.
-2. Create src/market/market-source-snapshot.js for deterministic resource/inventory/price/capacity snapshots.
-3. Create src/market/market-command-envelope.js for envelope normalization.
-4. Create src/market/market-preflight.js for accepted/rejected preflight.
-5. Create src/market/market-result.js for MarketCommandResult records.
-6. Create src/market/market-transaction-ledger.js for TransactionRecord, command journal, and result journal helpers.
-7. Create src/market/market-projection.js for MarketResultProjection rows.
-8. Create src/market/market-render-readback.js for exchange projection consumption reports.
-9. Add exchange preset action rows that target Market dispatch commands.
-10. Extend resource-ledger with transaction history helpers while keeping values/canPay/pay/add stable.
-11. Extend inventory-runtime with purchase intake while keeping equipped/items stable.
-12. Add a market-runtime-kit or Market dispatch service adjacent to game-domain kits.
-13. Return nested results through interface-composition and expose lastResult.
-14. Render exchange from MarketResultProjection only.
-15. Add renderer readback report for exchange projection consumption.
-16. Add tests/market-transaction-fixture.mjs or extend tests/smoke.mjs with the Market fixture matrix.
-17. Add optional GameHost diagnostics helpers for Market source/result/journal/projection inspection.
+2. Create src/market/market-command-source-manifest.js for durable Market command/action/reason/price/capacity rows.
+3. Create src/market/market-source-snapshot.js for deterministic resource/inventory/price/capacity snapshots.
+4. Create src/market/market-command-envelope.js for envelope normalization.
+5. Create src/market/market-preflight.js for accepted/rejected preflight.
+6. Create src/market/market-result.js for MarketCommandResult records.
+7. Create src/market/market-transaction-ledger.js for TransactionRecord, command journal, and result journal helpers.
+8. Create src/market/market-projection.js for MarketResultProjection rows.
+9. Create src/market/market-render-readback.js for exchange projection consumption reports.
+10. Create src/market/market-fixture-rows.js for source-manifest and command-result fixture cases.
+11. Add exchange preset action rows that target Market dispatch commands.
+12. Extend resource-ledger with transaction history helpers while keeping values/canPay/pay/add stable.
+13. Extend inventory-runtime with purchase intake while keeping equipped/items stable.
+14. Add a market-runtime-kit or Market dispatch service adjacent to game-domain kits.
+15. Return nested results through interface-composition and expose lastResult.
+16. Render exchange from MarketResultProjection only.
+17. Add renderer readback report for exchange projection consumption.
+18. Add tests/market-transaction-fixture.mjs or extend tests/smoke.mjs with the Market fixture matrix.
+19. Add optional GameHost diagnostics helpers for Market source/result/journal/projection inspection.
 ```
 
 ## Acceptance ledgers
@@ -72,6 +75,7 @@ ZombieOrchard Nested Market Result Source Contract + Exchange Projection Readbac
 .agent/market-authority-audit/2026-07-08T14-18-45-04-00-acceptance-ledger-fixture-map.md
 .agent/market-authority-audit/2026-07-08T16-10-36-04-00-transaction-ledger-source-splice-map.md
 .agent/market-authority-audit/2026-07-08T16-20-00-04-00-nested-result-source-contract.md
+.agent/market-authority-audit/2026-07-08T19-10-54-04-00-command-source-manifest-fixture-gate.md
 ```
 
 Use those files as the source of truth for exact required result shapes, rejection reasons, transaction records, projection records, source files, and fixture cases.
@@ -98,6 +102,7 @@ Stop the implementation slice when these fixture-readable cases are inspectable 
 - entry to active-session still works
 - active-session to exchange still works
 - exchange exposes sell-apples, buy-basic-tool, buy-row-supply, and back
+- MarketCommandSourceManifest exposes expected action, command, reason, price, and capacity rows
 - sell-apples accepted when apples > 0
 - sell-apples rejected when apples = 0
 - buy-basic-tool accepted when money >= price and capacity is available
