@@ -2,7 +2,7 @@
 
 **Repo:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-08T04-49-40-04-00`
+**Last aligned:** `2026-07-08T06-39-20-04-00`
 
 ## Purpose
 
@@ -14,7 +14,7 @@ Read this folder before changing implementation code.
 
 The full checked `LuminaryLabs-Publish` repo set was compared against `LuminaryLabs-Dev/LuminaryLabs` ledger state. No checked non-Cavalry Publish repo was found that was both central-ledger absent and missing root `.agent/START_HERE.md` state.
 
-`ZombieOrchard` was selected as the fallback follow-up because its root `.agent` state exists, but the Market authority seam remains unresolved and high-value.
+`ZombieOrchard` was selected as a fallback follow-up because its root `.agent` state exists, but the Market acceptance fixture is still the narrowest high-value unresolved proof.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
@@ -31,6 +31,11 @@ index.html
 -> createOrchardGame()
 -> createWorldCanvas(canvas)
 -> createHtmlInterfaceRenderer({ root, engine })
+-> requestAnimationFrame(draw)
+-> engine.tick(1 / 60)
+-> world.render(snapshot)
+-> ui.render(snapshot)
+-> window.GameHost
 ```
 
 ## Start every future pass here
@@ -45,15 +50,18 @@ index.html
 .agent/gameplay-audit/market-command-replay-fixture.md
 .agent/interaction-audit/screen-command-routing.md
 .agent/market-authority-audit/transaction-result-projection-gate.md
-.agent/trackers/2026-07-08T04-49-40-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T04-49-40-04-00.md
+.agent/market-authority-audit/acceptance-ledger.md
+.agent/trackers/2026-07-08T06-39-20-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T06-39-20-04-00.md
 .agent/kit-registry.json
 ```
 
 ## Source anchors
 
 ```txt
+README.md
 index.html
+package.json
 src/boot.js
 src/start.js
 src/game.js
@@ -76,7 +84,7 @@ Do not let Market business logic live in the HTML renderer.
 ## Current priority
 
 ```txt
-Market Result Contract + Transaction Projection Fixture Gate
+ZombieOrchard Market Acceptance Fixture Implementation
 ```
 
-The next implementation pass should keep the current static route, canvas renderer, active-session HUD, and `snapshot["resource-ledger"].values` shape stable while adding Market command envelopes, accepted/rejected result records, transaction history, nested result propagation, exchange projection, and DOM-free fixtures.
+The next implementation pass should keep the current static route, canvas renderer, active-session HUD, and `snapshot["resource-ledger"].values` shape stable while adding Market action IDs, command envelopes, deterministic price/capacity snapshots, accepted/rejected result records, transaction history, nested result propagation, exchange projection, and DOM-free fixtures.
