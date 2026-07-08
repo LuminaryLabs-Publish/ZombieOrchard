@@ -1,12 +1,12 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T11-19-53-04-00`
+**Timestamp:** `2026-07-08T12-51-50-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a standalone static orchard survival/economy shell. The architecture already uses composable kits for runtime, interface domains, composition, resources, pressure, orchard world, construction, roster, inventory, active-session behavior, world rendering, and HTML rendering.
 
-The repo is not missing a route or a game loop. The next blocker is that Market authority does not yet exist as a source-owned command/result seam, and the existing composition kit drops nested command results.
+The repo is not missing a route or a game loop. The next blocker is narrower: Market actions need a source-owned command journal and fixture boundary before sell/buy behavior lands in runtime source.
 
 This pass keeps runtime code unchanged and tightens the docs around the implementation seam needed before adding Market sell/buy behavior.
 
@@ -68,8 +68,12 @@ src/kits/runtime.js:
 
 src/kits/composition.js:
   action.command dispatch happens through ctx.engine.command.
-  nested command result is dropped.
+  nested command result is currently dropped.
   snapshot exposes active/previous/activeSnapshot only.
+
+src/kits/scoped-interface-domains.js:
+  exchange is one generated interface domain from INTERFACE_DOMAIN_IDS.
+  activate returns an action descriptor but no Market-specific command result contract.
 
 src/presets/orchard-preset.js:
   exchange currently exposes only Back.
@@ -101,7 +105,7 @@ game:
   resource-ledger, pressure-field, orchard-world, construction-runtime, roster-runtime, inventory-runtime, active-session, world-canvas
 
 market-next:
-  market-action-id-catalog, market-command-envelope, market-source-snapshot, market-price-source, market-capacity-policy, market-preflight, market-command-result, market-rejection-reason-catalog, market-result-journal, resource-transaction-history, inventory-purchase-intake, nested-command-result-propagation, market-result-projection, market-render-readback, market-fixture-replay
+  market-action-id-catalog, market-command-envelope, market-source-snapshot, market-price-source, market-capacity-policy, market-preflight, market-command-result, market-rejection-reason-catalog, market-command-journal, market-result-journal, resource-transaction-history, inventory-purchase-intake, nested-command-result-propagation, market-result-projection, market-render-readback, market-fixture-replay
 ```
 
 ## Current kit services
@@ -149,7 +153,7 @@ smoke-fixture-kit:
 
 ## Main finding
 
-The runtime already has a command-returning engine, so the safest path is not a full rewrite. The next implementation should add a Market command/result layer and then make `interface-composition` retain nested command results.
+The runtime already has a command-returning engine, so the safest path is not a full rewrite. The next implementation should add a Market command/result layer, then make `interface-composition` retain nested command results and expose a renderer/fixture-readable journal entry.
 
 The exact seam is:
 
@@ -161,9 +165,9 @@ exchange action ids
 -> MarketCommandResult
 -> accepted mutation only
 -> TransactionRecord
--> MarketResultJournal
--> nested command result propagation
+-> MarketCommandJournal
 -> MarketResultProjection
+-> nested command result propagation
 -> exchange renderer readback
 -> DOM-free smoke fixture
 ```
@@ -171,7 +175,7 @@ exchange action ids
 ## Current next safe ledge
 
 ```txt
-ZombieOrchard Market Result Propagation + Exchange Projection Fixture Gate
+ZombieOrchard Market Command Journal + Exchange Projection Fixture Boundary
 ```
 
-The implementation should preserve `index.html`, `src/start.js`, `createOrchardGame()`, `world-canvas`, active-session HUD, and `window.GameHost.engine/getState/tick` while adding source-owned Market transaction replay, stable command results, nested result propagation, and renderer-readable projection snapshots.
+The implementation should preserve `index.html`, `src/start.js`, `createOrchardGame()`, `world-canvas`, active-session HUD, and `window.GameHost.engine/getState/tick` while adding source-owned Market transaction replay, stable command results, no-mutation rejection rows, nested result propagation, and renderer-readable projection snapshots.
