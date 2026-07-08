@@ -17,33 +17,32 @@ This folder stores timestamped internal breakdowns, project trackers, kit regist
 ## Current recommended slice
 
 ```txt
-Zombie Orchard Market Runtime Command Gate + Transaction Projection Fixture Lock
+Zombie Orchard Market Projection Host Smoke + Purchase Intake Replay Lock
 ```
 
 Build order:
 
 ```txt
-preserve current static host, active-session HUD, world canvas, and existing snapshot shape
--> keep snapshot["resource-ledger"].values backward compatible
--> add stable Market action IDs: sell-apples, buy-basic-tool, buy-row-supply, back
--> add SELL_APPLES, BUY_BASIC_TOOL, BUY_ROW_SUPPLY, GET_PRICE_SNAPSHOT, and GET_CAPACITY_SNAPSHOT contracts
+preserve current static host, HUD, canvas renderer, and snapshot["resource-ledger"].values
+-> add stable Market action ids: sell-apples, buy-basic-tool, buy-row-supply, back
+-> add Market command constants and normalization helpers
 -> add deterministic price rows for apple sell, basic tool buy, and row supply buy
--> add deterministic capacity rows for apples, tools, supplies, money, wood, and scrap
--> add MarketCommandEnvelope with id, type, source, itemId, quantity, frame, elapsed, rawActionId
--> add MarketSourceSnapshot from ledger and inventory snapshots
--> add stable rejection reasons: insufficient_inventory, insufficient_funds, capacity_full, unknown_market_command
--> add MarketCommandResult records for accepted and rejected commands
--> append command results into a command result journal
+-> add deterministic capacity rows for money, apples, tools, supplies, wood, and scrap
+-> add MarketCommandEnvelope records with id/type/source/itemId/quantity/frame/elapsed/rawActionId
+-> add MarketSourceSnapshot from ledger, inventory, price, and capacity state
+-> add stable preflight reasons: insufficient_inventory, insufficient_funds, capacity_full, unknown_market_command
+-> add accepted/rejected MarketCommandResult records
+-> append command result journal entries
 -> extend resource-ledger with appendTransaction, transactions, and lastTransaction while preserving values/canPay/pay/add
 -> extend inventory-runtime with purchase intake for basic tool and row supply records
 -> auto-equip first purchased basic tool only when equipped is branch
--> update exchange preset with sell-apples, buy-basic-tool, buy-row-supply, and back actions
--> update interface-composition-kit to return nested command result and store lastResult
--> add MarketResultProjection for latest result, latest transaction, price rows, capacity rows, command journal, and disabled reasons
--> add html-interface-renderer exchange branch with Market cards and recent transaction cards
--> extend window.GameHost with dispatch, getDiagnostics, getPriceSnapshot, getCapacitySnapshot, getTransactionHistory, getCommandJournal, and runSmoke
--> extend tests/smoke.mjs with DOM-free Market replay coverage
--> defer worker assignment, save runtime, codex progression, seeded session replay, render-plan extraction, and settlement parity
+-> update exchange preset actions
+-> update interface-composition to return nested command result and store lastResult
+-> add MarketResultProjection for renderer and host diagnostics
+-> add exchange renderer branch with price cards, capacity rows, latest result, and recent transactions
+-> extend GameHost with dispatch/getDiagnostics/getPriceSnapshot/getCapacitySnapshot/getTransactionHistory/getCommandJournal/runSmoke
+-> add DOM-free Market replay smoke for accepted and rejected cases
+-> defer workers, saves, codex, seeded replay, render-plan extraction, and settlement parity
 ```
 
 Acceptance target:
@@ -56,7 +55,7 @@ exchange screen shows Sell Apples, Buy Basic Tool, Buy Row Supply, and Back
 Sell Apples with 0 apples returns accepted=false reason=insufficient_inventory
 Collect then Sell Apples appends accepted market_sell transaction
 Buy Basic Tool appends accepted market_buy transaction and adds tool to inventory
-First purchased basic tool auto-equips only if current equipped item is branch
+First purchased basic tool auto-equips only when current equipped item is branch
 Buy Row Supply appends accepted market_buy transaction and adds supply record
 Insufficient money returns accepted=false reason=insufficient_funds
 Capacity overflow returns accepted=false reason=capacity_full
@@ -65,7 +64,7 @@ GET_PRICE_SNAPSHOT is deterministic across fresh games
 GET_CAPACITY_SNAPSHOT is deterministic across fresh games
 interface-composition snapshot exposes lastResult for accepted and rejected Market actions
 resource-ledger snapshot exposes transactions and lastTransaction without breaking values
-exchange renderer can render latest result and recent transactions from snapshot only
+exchange renderer consumes Market projection from snapshot only
 GameHost exposes Market history, command journal, price snapshot, capacity snapshot, diagnostics, and runSmoke
 Market smoke fixtures run without DOM timing assumptions
 worker assignment remains out of scope
@@ -88,3 +87,4 @@ worker assignment remains out of scope
 - `trackers/2026-07-07T17-10-21-04-00/project-breakdown.md` — exchange-renderer/host-smoke follow-up that narrows the cut to Market source snapshots, stable preflight reasons, nested result persistence, exchange renderer authority, GameHost Market diagnostics, and DOM-free Market replay smoke.
 - `trackers/2026-07-07T18-28-54-04-00/project-breakdown.md` — market-smoke/purchase-intake follow-up that locks the next implementation seam to source-owned Market command contracts, deterministic price/capacity snapshots, accepted/rejected result journals, resource-ledger transaction history, inventory purchase intake, exchange projection, GameHost diagnostics, and DOM-free Market replay acceptance.
 - `trackers/2026-07-07T19-51-43-04-00/project-breakdown.md` — market-runtime-command-gate follow-up that re-confirms the Market placeholder state and locks the next slice to stable action IDs, Market command envelopes, transaction projection, nested result surfacing, GameHost diagnostics, and DOM-free accepted/rejected replay parity.
+- `trackers/2026-07-07T21-09-57-04-00/project-breakdown.md` — market-projection/host-smoke follow-up that keeps the next slice on stable Market action IDs, command envelopes, price/capacity sources, purchase intake, nested result return, exchange projection, GameHost diagnostics, and DOM-free accepted/rejected replay parity.
