@@ -1,15 +1,15 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-08T06-39-20-04-00`
+**Timestamp:** `2026-07-08T08-02-32-04-00`
 
 ## Goal
 
-Make Market actions durable, replayable, transaction-backed, and renderer-readable before expanding the wider economy.
+Make Market actions durable, replayable, transaction-backed, and renderer-readable before expanding the wider orchard economy.
 
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Acceptance Fixture Implementation
+ZombieOrchard Market Fixture Implementation Map
 ```
 
 ## Checklist
@@ -36,28 +36,28 @@ ZombieOrchard Market Acceptance Fixture Implementation
 ## Suggested implementation order
 
 ```txt
-1. market action id catalog
-2. exchange preset action rows
-3. market price/capacity source snapshots
-4. command envelope + preflight
-5. command result + stable reason catalog
-6. resource transaction history
-7. inventory purchase intake
-8. market dispatch service
-9. nested result propagation through interface-composition
-10. exchange projection snapshot
-11. DOM-free market fixture replay
-12. HTML exchange renderer branch
-13. GameHost diagnostics helpers
+1. Create src/market/market-ids.js for action ids and reason constants.
+2. Create src/market/market-sources.js for deterministic price/capacity/source snapshots.
+3. Create src/market/market-command.js for command envelope normalization and preflight.
+4. Create src/market/market-results.js for MarketCommandResult, TransactionRecord, and MarketResultProjection helpers.
+5. Add exchange preset action rows that target a market dispatch command.
+6. Extend resource-ledger with transaction history helpers while keeping values/canPay/pay/add stable.
+7. Extend inventory-runtime with purchase intake while keeping equipped/items stable.
+8. Add a market-runtime-kit or market dispatch service adjacent to game-domain kits.
+9. Return nested results through interface-composition and expose lastResult.
+10. Render exchange from MarketResultProjection only.
+11. Add tests/market-fixture.mjs or extend tests/smoke.mjs with the Market fixture matrix.
+12. Add optional GameHost diagnostics helpers for Market source/result/journal inspection.
 ```
 
-## Acceptance ledger
+## Acceptance ledgers
 
 ```txt
 .agent/market-authority-audit/acceptance-ledger.md
+.agent/market-authority-audit/fixture-implementation-map.md
 ```
 
-Use that file as the source of truth for exact required result shapes, rejection reasons, transaction records, projection records, and fixture cases.
+Use those files as the source of truth for exact required result shapes, rejection reasons, transaction records, projection records, source files, and fixture cases.
 
 ## Defer until after Market authority
 
@@ -93,6 +93,7 @@ Stop the implementation slice when these fixture-readable cases are inspectable 
 - accepted command appends transaction history
 - interface-composition exposes nested command result
 - exchange projection is renderer-ready
+- GameHost baseline engine/getState/tick remains stable
 ```
 
 The slice should remain additive. It should not rewrite the whole game loop, remove the static route, or move renderer ownership into reusable kits.
