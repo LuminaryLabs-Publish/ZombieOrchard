@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-08T09-48-58-04-00`
+**Timestamp:** `2026-07-08T11-19-53-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions durable, replayable, transaction-backed, renderer-readable, 
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Transaction Replay Boundary
+ZombieOrchard Market Result Propagation + Exchange Projection Fixture Gate
 ```
 
 ## Checklist
@@ -25,14 +25,16 @@ ZombieOrchard Market Transaction Replay Boundary
 - [ ] Add accepted/rejected `MarketCommandResult` records.
 - [ ] Add `MarketResultJournal` records.
 - [ ] Extend `resource-ledger` with transaction history while preserving `values`, `canPay`, `pay`, and `add`.
-- [ ] Extend `inventory-runtime` with purchase intake.
+- [ ] Extend `inventory-runtime` with purchase intake while keeping `equipped` and `items` stable.
+- [ ] Add a Market runtime/domain kit adjacent to the existing game-domain kits.
 - [ ] Return nested command results through `interface-composition` and expose `lastResult` in its snapshot.
+- [ ] Preserve existing direct active-session `data-command` behavior for Collect/Clear/Next Phase while keeping Market commands inside Market authority.
 - [ ] Add renderer-ready `MarketResultProjection`.
 - [ ] Add an exchange renderer branch that consumes snapshot projection only.
 - [ ] Add renderer readback that proves the exchange branch consumed projection rows and did not own price/capacity/transaction authority.
 - [ ] Keep `window.GameHost.engine`, `window.GameHost.getState`, and `window.GameHost.tick` stable.
 - [ ] Extend `window.GameHost` with optional fixture-readable Market diagnostics and smoke helpers.
-- [ ] Add DOM-free fixture cases for accepted sell, rejected sell, accepted buy, insufficient funds, capacity full, unknown command, invalid quantity, price determinism, capacity determinism, nested result propagation, transaction history, projection shape, renderer readback, and GameHost compatibility.
+- [ ] Add DOM-free fixture cases for accepted sell, rejected sell, accepted buy, insufficient funds, insufficient apples, capacity full, unknown command, invalid quantity, price determinism, capacity determinism, nested result propagation, transaction history, projection shape, renderer readback, and GameHost compatibility.
 
 ## Suggested implementation order
 
@@ -58,6 +60,7 @@ ZombieOrchard Market Transaction Replay Boundary
 .agent/market-authority-audit/acceptance-ledger.md
 .agent/market-authority-audit/fixture-implementation-map.md
 .agent/market-authority-audit/2026-07-08T09-48-58-04-00-transaction-replay-boundary.md
+.agent/market-authority-audit/2026-07-08T11-19-53-04-00-result-propagation-fixture-gate.md
 ```
 
 Use those files as the source of truth for exact required result shapes, rejection reasons, transaction records, projection records, source files, and fixture cases.
