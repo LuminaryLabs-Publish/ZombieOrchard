@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-08T14-18-45-04-00`
+**Timestamp:** `2026-07-08T16-10-36-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions durable, replayable, transaction-backed, renderer-readable, 
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Acceptance Ledger + Exchange Renderer Readback Fixture Gate
+ZombieOrchard Market Transaction Ledger + Nested Result Source Splice Gate
 ```
 
 ## Checklist
@@ -21,7 +21,7 @@ ZombieOrchard Market Acceptance Ledger + Exchange Renderer Readback Fixture Gate
 - [ ] Add deterministic price rows.
 - [ ] Add deterministic capacity rows.
 - [ ] Add `MarketCommandEnvelope` records.
-- [ ] Add `MarketSourceSnapshot` records.
+- [ ] Add `MarketSourceSnapshot` records before and after command execution.
 - [ ] Add Market preflight with stable rejection reasons.
 - [ ] Add accepted/rejected `MarketCommandResult` records.
 - [ ] Add rejected-command no-mutation before/after snapshots.
@@ -41,19 +41,23 @@ ZombieOrchard Market Acceptance Ledger + Exchange Renderer Readback Fixture Gate
 ## Suggested implementation order
 
 ```txt
-1. Create src/market/market-ids.js for action ids and reason constants.
-2. Create src/market/market-sources.js for deterministic price/capacity/source snapshots.
-3. Create src/market/market-command.js for command envelope normalization and preflight.
-4. Create src/market/market-results.js for MarketCommandResult, TransactionRecord, MarketCommandJournal, MarketResultJournal, MarketResultProjection, and renderer readback helpers.
-5. Add exchange preset action rows that target a market dispatch command.
-6. Extend resource-ledger with transaction history helpers while keeping values/canPay/pay/add stable.
-7. Extend inventory-runtime with purchase intake while keeping equipped/items stable.
-8. Add a market-runtime-kit or market dispatch service adjacent to game-domain kits.
-9. Return nested results through interface-composition and expose lastResult.
-10. Render exchange from MarketResultProjection only.
-11. Add renderer readback report for exchange projection consumption.
-12. Add tests/market-fixture.mjs or extend tests/smoke.mjs with the Market fixture matrix.
-13. Add optional GameHost diagnostics helpers for Market source/result/journal/projection inspection.
+1. Create src/market/market-ids.js for action ids, command types, and reason constants.
+2. Create src/market/market-source-snapshot.js for deterministic resource/inventory/price/capacity snapshots.
+3. Create src/market/market-command-envelope.js for envelope normalization.
+4. Create src/market/market-preflight.js for accepted/rejected preflight.
+5. Create src/market/market-result.js for MarketCommandResult records.
+6. Create src/market/market-transaction-ledger.js for TransactionRecord, command journal, and result journal helpers.
+7. Create src/market/market-projection.js for MarketResultProjection rows.
+8. Create src/market/market-render-readback.js for exchange projection consumption reports.
+9. Add exchange preset action rows that target Market dispatch commands.
+10. Extend resource-ledger with transaction history helpers while keeping values/canPay/pay/add stable.
+11. Extend inventory-runtime with purchase intake while keeping equipped/items stable.
+12. Add a market-runtime-kit or Market dispatch service adjacent to game-domain kits.
+13. Return nested results through interface-composition and expose lastResult.
+14. Render exchange from MarketResultProjection only.
+15. Add renderer readback report for exchange projection consumption.
+16. Add tests/market-transaction-fixture.mjs or extend tests/smoke.mjs with the Market fixture matrix.
+17. Add optional GameHost diagnostics helpers for Market source/result/journal/projection inspection.
 ```
 
 ## Acceptance ledgers
@@ -65,6 +69,7 @@ ZombieOrchard Market Acceptance Ledger + Exchange Renderer Readback Fixture Gate
 .agent/market-authority-audit/2026-07-08T11-19-53-04-00-result-propagation-fixture-gate.md
 .agent/market-authority-audit/2026-07-08T12-51-50-04-00-command-journal-fixture-boundary.md
 .agent/market-authority-audit/2026-07-08T14-18-45-04-00-acceptance-ledger-fixture-map.md
+.agent/market-authority-audit/2026-07-08T16-10-36-04-00-transaction-ledger-source-splice-map.md
 ```
 
 Use those files as the source of truth for exact required result shapes, rejection reasons, transaction records, projection records, source files, and fixture cases.
