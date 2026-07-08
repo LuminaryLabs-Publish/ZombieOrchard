@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-08T16-10-36-04-00`
+**Last aligned:** `2026-07-08T16-20-00-04-00`
 
 ## Purpose
 
@@ -18,21 +18,21 @@ No checked non-Cavalry Publish repo was fully new, absent from the central ledge
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`ZombieOrchard` was selected as the oldest observed eligible fallback because its last central/root alignment was `2026-07-08T14-18-45-04-00`, older than the other sampled non-excluded repos, and the Market transaction ledger source splice remains unresolved.
+`ZombieOrchard` was selected for the current pass because repo-local `.agent` state had advanced past the central ledger and because the Market transaction / nested-result source contract remains unresolved.
 
 ## Publish repos checked
 
 ```txt
-LuminaryLabs-Publish/AetherVale          tracked / root .agent present / latest sampled alignment 2026-07-08T15-20-41-04-00
-LuminaryLabs-Publish/HorrorCorridor      tracked / root .agent present / latest sampled alignment 2026-07-08T15:49:18-04:00
-LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present / latest sampled alignment 2026-07-08T15-28-13-04-00
-LuminaryLabs-Publish/MyCozyIsland        tracked / root .agent present / latest sampled alignment 2026-07-08T14-58-49-04-00
-LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present / latest sampled alignment 2026-07-08T15-58-59-04-00
-LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present / latest sampled alignment 2026-07-08T14:51:11-04:00
+LuminaryLabs-Publish/AetherVale          tracked / root .agent present / central last updated 2026-07-08T15-20-41-04-00
+LuminaryLabs-Publish/HorrorCorridor      tracked / root .agent present / central latest reviewed 2026-07-08T15:39:43-04:00
+LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present / central last updated 2026-07-08T15-28-13-04-00
+LuminaryLabs-Publish/MyCozyIsland        tracked / root .agent present / central last updated 2026-07-08T14-58-49-04-00
+LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present / central last updated 2026-07-08T15-58-59-04-00
+LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present / central last updated 2026-07-08T14:51:11-04:00
 LuminaryLabs-Publish/TheCavalryOfRome    excluded by rule
-LuminaryLabs-Publish/TheOpenAbove        tracked / root .agent present / latest sampled alignment 2026-07-08T15-11-18-04-00
-LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present / latest sampled alignment 2026-07-08T14-31-06-04-00
-LuminaryLabs-Publish/ZombieOrchard       selected fallback / previous alignment 2026-07-08T14-18-45-04-00
+LuminaryLabs-Publish/TheOpenAbove        tracked / root .agent present / central last updated 2026-07-08T15-11-18-04-00
+LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present / central latest reviewed 2026-07-08T14-31-06-04-00
+LuminaryLabs-Publish/ZombieOrchard       selected / central catch-up + Market nested-result source contract
 ```
 
 ## Current product read
@@ -58,7 +58,7 @@ The game already has a playable baseline: entry, active-session, collect apples,
 ```txt
 open route
   -> src/boot.js imports src/start.js
-  -> src/start.js creates engine, world canvas renderer, HTML interface renderer, and frame loop
+  -> src/start.js creates engine, world-canvas renderer, HTML interface renderer, and frame loop
   -> src/game.js installs runtime, interface, composition, resource, pressure, world, construction, roster, inventory, and active-session kits
   -> each animation frame calls engine.tick(1 / 60)
   -> tickable domains update pressure and active-session state
@@ -67,6 +67,8 @@ open route
   -> html-interface-renderer renders active-session HUD or active interface screen
   -> data-action clicks route through interface-composition.activate
   -> data-command clicks route directly to active-session command handlers
+  -> nested action.command calls can happen inside interface-composition
+  -> nested command result is currently discarded
   -> window.GameHost exposes engine/getState/tick
 ```
 
@@ -83,6 +85,7 @@ exchange action row
   -> MarketResultJournal row
   -> MarketSourceSnapshot after
   -> nested result propagated through interface-composition
+  -> interface-composition snapshot.lastResult
   -> MarketResultProjection
   -> exchange renderer readback
   -> optional GameHost market diagnostics
@@ -96,12 +99,12 @@ exchange action row
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-08T16-10-36-04-00-market-transaction-ledger-dsk-map.md
-.agent/render-audit/2026-07-08T16-10-36-04-00-exchange-projection-consumption-map.md
-.agent/gameplay-audit/2026-07-08T16-10-36-04-00-market-transaction-loop.md
-.agent/market-authority-audit/2026-07-08T16-10-36-04-00-transaction-ledger-source-splice-map.md
-.agent/trackers/2026-07-08T16-10-36-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T16-10-36-04-00.md
+.agent/architecture-audit/2026-07-08T16-20-00-04-00-market-source-splice-dsk-boundary.md
+.agent/render-audit/2026-07-08T16-20-00-04-00-exchange-projection-readback-contract.md
+.agent/gameplay-audit/2026-07-08T16-20-00-04-00-market-transaction-action-loop.md
+.agent/market-authority-audit/2026-07-08T16-20-00-04-00-nested-result-source-contract.md
+.agent/trackers/2026-07-08T16-20-00-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T16-20-00-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -147,7 +150,7 @@ Do not expand economy behavior until Market transaction ledger rows prove accept
 ## Current next safe ledge
 
 ```txt
-ZombieOrchard Market Transaction Ledger + Nested Result Source Splice Gate
+ZombieOrchard Nested Market Result Source Contract + Exchange Projection Readback Fixture Gate
 ```
 
 Stop that ledge when fixture rows prove exchange action catalog, accepted sell/buy, rejected sell/buy, stable rejection reasons, no-mutation before/after snapshots, transaction history, Market command/result journal shape, nested result propagation through `interface-composition`, renderer consumption of exchange projection rows, and unchanged GameHost baseline compatibility.
