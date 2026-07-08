@@ -1,14 +1,14 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T14-18-45-04-00`
+**Timestamp:** `2026-07-08T16-10-36-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a standalone static orchard survival/economy shell. The current runtime is already kit-composed and playable at the prototype level.
 
-The repo is not missing a route, runtime, command router, renderer, or smoke harness. The next blocker is narrower: the Market screen exists as an exchange shell, but sell/buy behavior still lacks a stable acceptance ledger, transaction journal, projection shape, nested result propagation, and renderer readback.
+The repo is not missing a route, runtime, command router, renderer, or smoke harness. The next blocker is narrower: the Market screen exists as an exchange shell, but sell/buy behavior still lacks stable source-owned command envelopes, transaction records, nested command result propagation, projection rows, renderer readback, and a DOM-free fixture matrix.
 
-This pass keeps runtime code unchanged and tightens the `.agent` docs around the exact fixture gate needed before source implementation.
+This pass keeps runtime code unchanged and updates the `.agent` docs around the exact transaction-ledger splice needed before source implementation.
 
 ## Current interaction loop
 
@@ -57,9 +57,6 @@ package.json:
   npm run dev starts a static Python server.
   npm test runs node tests/smoke.mjs.
   npm run build copies index.html and src/ into dist.
-
-src/boot.js:
-  imports src/start.js.
 
 src/start.js:
   creates createOrchardGame(), world-canvas, html-interface-renderer, animation loop, and window.GameHost.
@@ -209,14 +206,14 @@ target next-cut:
 
 ## Main finding
 
-The runtime already has the right central seam: `engine.command()` returns command results. The next implementation should not rewrite the app; it should add Market source/result helpers and then preserve/return nested Market results through `interface-composition` so the renderer and fixture harness can read the same authority output.
+The runtime already has the right central seam: `engine.command()` returns command results. The next implementation should not rewrite the app; it should add source-owned Market transaction helpers and preserve/return nested Market results through `interface-composition` so renderer projections, GameHost diagnostics, and fixture replay can consume the same accepted/rejected output.
 
 The exact seam is:
 
 ```txt
 exchange action ids
 -> MarketCommandEnvelope
--> MarketSourceSnapshot
+-> MarketSourceSnapshot before
 -> MarketPreflight
 -> MarketCommandResult
 -> accepted mutation only
@@ -224,6 +221,7 @@ exchange action ids
 -> TransactionRecord
 -> MarketCommandJournal
 -> MarketResultJournal
+-> MarketSourceSnapshot after
 -> MarketResultProjection
 -> nested command result propagation
 -> exchange renderer readback
@@ -233,7 +231,7 @@ exchange action ids
 ## Current next safe ledge
 
 ```txt
-ZombieOrchard Market Acceptance Ledger + Exchange Renderer Readback Fixture Gate
+ZombieOrchard Market Transaction Ledger + Nested Result Source Splice Gate
 ```
 
 The implementation should preserve `index.html`, `src/start.js`, `createOrchardGame()`, `world-canvas`, active-session HUD, and `window.GameHost.engine/getState/tick` while adding source-owned Market transaction replay, stable command results, no-mutation rejection rows, nested result propagation, and renderer-readable projection snapshots.
