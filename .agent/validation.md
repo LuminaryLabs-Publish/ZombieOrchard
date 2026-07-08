@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-08T06-39-20-04-00`
+**Timestamp:** `2026-07-08T08-02-32-04-00`
 
 ## Available commands
 
@@ -37,7 +37,10 @@ repo-list comparison: performed
 central-ledger comparison: performed
 source readback: performed
 root .agent update: performed
-Market acceptance ledger: added
+architecture audit update: created
+render audit update: created
+gameplay/economy audit update: created
+Market fixture implementation map: added
 runtime source changed: no
 branch created: no
 pull request created: no
@@ -76,10 +79,27 @@ Market fixture cases:
   - GameHost baseline engine/getState/tick shape remains available
 ```
 
+## Suggested future commands
+
+```bash
+npm test
+npm run build
+python -m http.server 5173
+```
+
+After the Market fixture implementation exists, add one of these fixture targets:
+
+```bash
+node tests/market-fixture.mjs
+# or
+npm test
+```
+
 ## Do not claim complete until
 
 ```txt
 npm test passes after the Market fixture is added.
 npm run build passes after renderer and host changes.
 Manual browser smoke confirms active-session, Market, Build, Roster, Inventory, and Outcome remain reachable.
+Fixture output proves accepted, rejected, no-mutation, transaction history, nested result propagation, and projection shape cases.
 ```
