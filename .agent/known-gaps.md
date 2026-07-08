@@ -1,6 +1,6 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-08T12-51-50-04-00`
+**Timestamp:** `2026-07-08T14-18-45-04-00`
 
 ## Critical gaps
 
@@ -13,10 +13,10 @@
 - There is no deterministic capacity source snapshot.
 - There is no Market preflight result with stable rejection reasons.
 - There is no accepted/rejected MarketCommandResult record.
+- There is no rejected-command no-mutation proof row.
 - There is no MarketCommandJournal.
 - There is no MarketResultJournal.
 - Resource changes are not recorded as transaction history.
-- Rejected Market commands are not proven side-effect free with before/after snapshots.
 - Inventory purchases do not have a purchase-intake service.
 - interface-composition dispatches nested commands but does not retain, return, journal, or project the nested result.
 - html-interface-renderer has no exchange-specific projection branch.
@@ -90,6 +90,7 @@
 - No fixture proves direct data-command commands are not mixed into Market authority.
 - No fixture proves transaction history shape.
 - No fixture proves Market command journal shape.
+- No fixture proves Market result journal shape.
 - No fixture proves exchange projection shape.
 - No fixture proves renderer readback of MarketResultProjection.
 - No fixture proves rejected command no-mutation before/after snapshots.
