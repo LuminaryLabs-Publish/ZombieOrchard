@@ -1,6 +1,6 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T08-02-32-04-00`
+**Timestamp:** `2026-07-08T09-48-58-04-00`
 
 ## Summary
 
@@ -8,7 +8,7 @@
 
 The repo is not missing a route or a game loop. It is missing a source-owned Market authority seam that turns the existing `exchange` shell into replayable sell/buy command results with transaction provenance and renderer projections.
 
-This pass keeps runtime code unchanged and updates the internal docs so the next implementation can be small, additive, and fixture-driven.
+This pass keeps runtime code unchanged and tightens the internal docs around the exact transaction replay boundary that should be implemented next.
 
 ## Current interaction loop
 
@@ -49,36 +49,29 @@ Entry
 ## Source-backed facts
 
 ```txt
-README.md:
-  standalone kit-composed orchard survival/economy game shell
-  reusable scoped interface domains and project presets
-
-src/start.js:
-  creates game engine, world renderer, and HTML renderer
-  ticks engine at 1/60 and renders both surfaces
-  exposes window.GameHost = { engine, getState, tick }
-
 src/game.js:
-  installs resource-ledger, pressure-field, orchard-world, construction-runtime, roster-runtime, inventory-runtime, generated interface domains, active-session, and interface-composition
+  installs resource-ledger, pressure-field, orchard-world, construction-runtime, roster-runtime, inventory-runtime, generated interface domains, active-session, and interface-composition.
 
 src/kits/runtime.js:
-  routes engine.command(domainId, type, payload)
-  returns command result records but has no command journal or replay helper
+  engine.command(domainId, type, payload) returns command result records from domain.command.
+  no command journal or replay helper exists.
 
 src/kits/composition.js:
-  can dispatch nested action.command from interface actions
-  drops nested command results instead of retaining/projection them
+  action.command dispatch happens through ctx.engine.command.
+  nested command result is dropped.
+  snapshot exposes active/previous/activeSnapshot only.
 
 src/presets/orchard-preset.js:
-  exchange currently exposes only Back
+  exchange currently exposes only Back.
 
 src/kits/game-domains.js:
-  resource-ledger owns values/canPay/pay/add but no transaction history
-  inventory-runtime owns equip only, no purchase intake
-  active-session owns move, collect, clear, next-phase, pest tick, score, and ending
+  resource-ledger owns values/canPay/pay/add but no transaction history.
+  inventory-runtime owns equip only, no purchase intake.
+  active-session owns move, collect, clear, next-phase, pest tick, score, and ending.
 
-tests/smoke.mjs:
-  covers entry, Play transition, active-session, and apple existence only
+package.json:
+  npm test runs node tests/smoke.mjs.
+  npm run build copies static files to dist.
 ```
 
 ## Implemented domains
@@ -94,7 +87,7 @@ game:
   resource-ledger, pressure-field, orchard-world, construction-runtime, roster-runtime, inventory-runtime, active-session, world-canvas
 
 market-next:
-  market-action-id-catalog, market-command-envelope, market-source-snapshot, market-price-source, market-capacity-policy, market-preflight, market-command-result, market-rejection-reason-catalog, market-result-journal, resource-transaction-history, inventory-purchase-intake, nested-command-result-propagation, market-result-projection, market-fixture-replay
+  market-action-id-catalog, market-command-envelope, market-source-snapshot, market-price-source, market-capacity-policy, market-preflight, market-command-result, market-rejection-reason-catalog, market-result-journal, resource-transaction-history, inventory-purchase-intake, nested-command-result-propagation, market-result-projection, market-render-readback, market-fixture-replay
 ```
 
 ## Current kit services
@@ -152,26 +145,18 @@ market action ids
 -> source snapshot
 -> preflight
 -> accepted/rejected result
--> resource/inventory mutation only on accepted result
+-> mutation only on accepted result
 -> transaction history
 -> nested result propagation
 -> projection snapshot
+-> renderer readback boundary
 -> DOM-free smoke fixture
 ```
 
-## Follow-up audits added or refreshed
+## Current next safe ledge
 
 ```txt
-.agent/architecture-audit/dsk-domain-breakdown.md
-.agent/render-audit/canvas-render-audit.md
-.agent/gameplay-audit/economy-market-audit.md
-.agent/market-authority-audit/fixture-implementation-map.md
+ZombieOrchard Market Transaction Replay Boundary
 ```
 
-## Next safe ledge
-
-```txt
-ZombieOrchard Market Fixture Implementation Map
-```
-
-The next implementation pass should turn the existing Market acceptance ledger into source files and fixture cases while preserving the current static route, active-session HUD, `snapshot["resource-ledger"].values`, `window.GameHost.engine/getState/tick`, and the entry/play/apple smoke baseline.
+The implementation should preserve `index.html`, `src/start.js`, `createOrchardGame()`, `world-canvas`, active-session HUD, and `window.GameHost.engine/getState/tick` while adding source-owned Market transaction replay and renderer-readable projection snapshots.
