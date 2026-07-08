@@ -1,6 +1,6 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-08T14-18-45-04-00`
+**Timestamp:** `2026-07-08T16-10-36-04-00`
 
 ## Critical gaps
 
@@ -8,7 +8,7 @@
 - The exchange / Market screen exists but only exposes Back.
 - Market actions do not yet have stable source-owned action IDs.
 - There is no MarketCommandEnvelope.
-- There is no MarketSourceSnapshot.
+- There is no MarketSourceSnapshot before/after pair.
 - There is no deterministic price source snapshot.
 - There is no deterministic capacity source snapshot.
 - There is no Market preflight result with stable rejection reasons.
@@ -16,6 +16,7 @@
 - There is no rejected-command no-mutation proof row.
 - There is no MarketCommandJournal.
 - There is no MarketResultJournal.
+- There is no Market transaction ledger.
 - Resource changes are not recorded as transaction history.
 - Inventory purchases do not have a purchase-intake service.
 - interface-composition dispatches nested commands but does not retain, return, journal, or project the nested result.
@@ -57,6 +58,7 @@
 - Market transaction replay has no source-owned fixture entrypoint.
 - Market renderer readback has no stable projection report.
 - Market command journal rows do not exist for fixture replay.
+- Market result journal rows do not exist for fixture replay.
 ```
 
 ## Render gaps
