@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-08T12-51-50-04-00`
+**Timestamp:** `2026-07-08T14-18-45-04-00`
 
 ## Available commands
 
@@ -39,8 +39,8 @@ source readback: performed
 root .agent update: performed
 architecture audit update: created
 render audit update: created
-gameplay/economy audit update: created
-Market command journal fixture boundary: added
+gameplay audit update: created
+Market acceptance ledger fixture map: created
 runtime source changed: no
 branch created: no
 pull request created: no
@@ -75,6 +75,7 @@ Market fixture cases:
   - rejected commands do not mutate resources or inventory
   - accepted commands append transaction history
   - accepted/rejected commands append MarketCommandJournal rows
+  - accepted/rejected commands append MarketResultJournal rows
   - interface-composition exposes nested command result
   - html exchange projection renders from snapshot only
   - renderer readback proves projection rows consumed by renderer
@@ -103,5 +104,5 @@ npm test
 npm test passes after the Market fixture is added.
 npm run build passes after renderer and host changes.
 Manual browser smoke confirms active-session, Market, Build, Roster, Inventory, and Outcome remain reachable.
-Fixture output proves accepted, rejected, no-mutation, transaction history, Market command journal, nested result propagation, projection shape, renderer readback, and GameHost compatibility cases.
+Fixture output proves accepted, rejected, no-mutation, transaction history, Market command journal, Market result journal, nested result propagation, projection shape, renderer readback, and GameHost compatibility cases.
 ```
