@@ -1,12 +1,13 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-08T16-20-00-04-00`
+**Timestamp:** `2026-07-08T19-10-54-04-00`
 
 ## Critical gaps
 
 ```txt
 - The exchange / Market screen exists but only exposes Back.
 - Market actions do not yet have stable source-owned action IDs.
+- There is no MarketCommandSourceManifest.
 - There is no MarketCommandEnvelope.
 - There is no MarketSourceSnapshot before/after pair.
 - There is no deterministic price source snapshot.
@@ -22,6 +23,7 @@
 - interface-composition dispatches nested commands but does not retain, return, journal, or project the nested result.
 - interface-composition snapshots do not expose lastResult.
 - html-interface-renderer has no exchange-specific projection branch.
+- html-interface-renderer has no exchange renderer readback report.
 - GameHost only exposes engine/getState/tick.
 - tests/smoke.mjs only checks entry, Play transition, and apple existence.
 ```
@@ -80,6 +82,7 @@
 ```txt
 - No fixture covers active-session to exchange.
 - No fixture covers exchange action catalog shape.
+- No fixture covers MarketCommandSourceManifest shape.
 - No fixture covers accepted Market sell.
 - No fixture covers rejected Market sell.
 - No fixture covers accepted purchase.
