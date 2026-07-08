@@ -1,12 +1,12 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T03-08-39-04-00`
+**Timestamp:** `2026-07-08T04-49-40-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a standalone static orchard survival/economy shell. The architecture already uses composable kits for runtime, interface domains, composition, resources, pressure, orchard world, construction, roster, inventory, and active session behavior.
 
-The repo is not missing a game loop. It is missing stronger result authority around Market actions, transaction records, and replayable DOM-free fixtures.
+The repo is not missing a game loop. It is missing stronger result authority around Market actions, transaction records, nested result propagation, and replayable DOM-free fixtures.
 
 ## Current interaction loop
 
@@ -38,6 +38,8 @@ Entry
 -> advance day/night phase
 -> build storage shed
 -> open Market/Roster/Inventory/Codex/Settings screens
+-> Market currently reaches exchange shell
+-> exchange currently only exposes Back
 -> session ends when condition reaches zero
 -> outcome screen
 ```
@@ -65,10 +67,10 @@ scoped-interface-domain-kit:
   screen state, action rows, selection state, fields, metadata, action activation, snapshots
 
 interface-composition-kit:
-  active screen, previous screen, transition/back, action activation, nested command dispatch, outcome route
+  active screen, previous screen, transition/back, action activation, nested command dispatch, active screen snapshot
 
 resource-ledger-kit:
-  resource values, canPay, pay, add, add/pay commands, snapshots
+  resource values, canPay, pay, add, snapshots
 
 pressure-field-kit:
   pressure channels, adjust api, pressure tick, curse tick, snapshots
@@ -100,4 +102,30 @@ smoke-fixture-kit:
 
 ## Main finding
 
-The Market route exists, but `exchange` currently behaves as a shell route instead of an economy authority. The next safe slice should turn Market actions into stable command envelopes with deterministic prices, capacity checks, accepted/rejected results, transaction history, and renderer-ready projections.
+The Market route exists, but `exchange` currently behaves as a shell route instead of an economy authority.
+
+Source inspection confirms:
+
+```txt
+- exchange has only Back in orchard-preset.js.
+- interface-composition dispatches nested action.command but drops the nested result.
+- resource-ledger has no transaction history.
+- inventory-runtime has no purchase-intake service.
+- tests/smoke.mjs has no Market fixture coverage.
+```
+
+## Follow-up audit added
+
+```txt
+.agent/market-authority-audit/transaction-result-projection-gate.md
+```
+
+That file defines the target Market command envelopes, source snapshots, stable result reasons, transaction history shape, renderer projection shape, and fixture matrix.
+
+## Next safe ledge
+
+```txt
+Market Result Contract + Transaction Projection Fixture Gate
+```
+
+The next implementation pass should turn Market actions into stable command envelopes with deterministic prices, capacity checks, accepted/rejected results, transaction history, nested result propagation, renderer-ready projections, and DOM-free fixtures.
