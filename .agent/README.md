@@ -17,7 +17,7 @@ This folder stores timestamped internal breakdowns, project trackers, kit regist
 ## Current recommended slice
 
 ```txt
-Zombie Orchard Market Transaction Fixture Matrix + Exchange Projection Acceptance Gate
+Zombie Orchard Market Command Replay Fixture + Transaction Projection Gate
 ```
 
 Build order:
@@ -30,27 +30,28 @@ preserve current static route, active-session HUD, world-canvas rendering, and s
 -> add MarketCommandEnvelope and MarketSourceSnapshot helpers
 -> add market preflight with stable rejection reasons
 -> add accepted/rejected MarketCommandResult records
--> add command result journal
+-> add Market command result journal
 -> extend resource-ledger with transactions and lastTransaction while preserving values/canPay/pay/add
 -> extend inventory-runtime with purchase intake for basic tools and row supplies
 -> return nested command result through interface-composition and expose lastResult
 -> add renderer-ready MarketResultProjection
 -> add exchange renderer branch from snapshot projection only
 -> extend GameHost with dispatch, diagnostics, price/capacity snapshots, transaction history, command journal, and runSmoke
--> add DOM-free fixture matrix for rejected sell, accepted sell, accepted buy, insufficient funds, capacity full, price determinism, and capacity determinism
--> defer workers, saves, codex, seeded replay, render-plan extraction, and settlement parity
+-> add DOM-free fixture matrix for rejected sell, accepted sell, accepted buy, insufficient funds, capacity full, unknown command, price determinism, and capacity determinism
+-> defer workers, saves, codex, global seeded replay, render-plan extraction, and settlement parity
 ```
 
 Acceptance target:
 
 ```txt
 npm test passes
-entry -> play smoke still passes
+entry -> Play smoke still passes
 active-session HUD still reads snapshot["resource-ledger"].values
+Market opens exchange
 exchange screen shows Sell Apples, Buy Basic Tool, Buy Row Supply, and Back
 Sell Apples with 0 apples returns accepted=false reason=insufficient_inventory
 Collect then Sell Apples appends accepted market_sell transaction
-Buy Basic Tool appends accepted market_buy transaction and adds/equips tool when equipped is branch
+Buy Basic Tool appends accepted market_buy transaction and adds/equips tool when policy accepts auto-equip
 Buy Row Supply appends accepted market_buy transaction and adds supply record
 Insufficient money returns accepted=false reason=insufficient_funds
 Capacity overflow returns accepted=false reason=capacity_full
@@ -85,3 +86,4 @@ worker assignment remains out of scope
 - `trackers/2026-07-07T21-09-57-04-00/project-breakdown.md` - market-projection/host-smoke follow-up that keeps the next slice on stable Market action IDs, command envelopes, price/capacity sources, purchase intake, nested result return, exchange projection, GameHost diagnostics, and DOM-free accepted/rejected replay parity.
 - `trackers/2026-07-07T22-31-24-04-00/project-breakdown.md` - market-command-replay/transaction-projection follow-up that re-confirms ZombieOrchard as the oldest eligible repo and locks the next slice to command replay harness, transaction projection, Market source snapshots, nested result persistence, exchange renderer authority, GameHost diagnostics, and DOM-free accepted/rejected replay parity.
 - `trackers/2026-07-07T23-48-44-04-00/project-breakdown.md` - market-transaction fixture/exchange projection acceptance follow-up that re-confirms ZombieOrchard as the oldest eligible repo after IntoTheMeadow and locks the next slice to Market action ids, command envelopes, transaction fixtures, nested result surfacing, exchange projection, GameHost diagnostics, and DOM-free accepted/rejected fixture parity.
+- `trackers/2026-07-08T01-20-35-04-00/project-breakdown.md` - market-command-replay fixture/transaction projection follow-up that re-confirms ZombieOrchard as the oldest eligible repo and locks the next slice to source-owned Market command replay, result journals, transaction projection, nested result persistence, exchange renderer authority, GameHost diagnostics, and DOM-free accepted/rejected replay parity.
