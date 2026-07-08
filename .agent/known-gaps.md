@@ -1,6 +1,6 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-08T08-02-32-04-00`
+**Timestamp:** `2026-07-08T09-48-58-04-00`
 
 ## Critical gaps
 
@@ -13,7 +13,7 @@
 - There is no deterministic capacity source snapshot.
 - There is no Market preflight result with stable rejection reasons.
 - There is no accepted/rejected MarketCommandResult record.
-- There is no command result journal.
+- There is no MarketResultJournal.
 - Resource changes are not recorded as transaction history.
 - Rejected Market commands are not proven side-effect free.
 - Inventory purchases do not have a purchase-intake service.
@@ -33,6 +33,7 @@
 - interface actions do not yet preserve command context for audit or replay.
 - nested command results are not available to GameHost diagnostics or renderer projections.
 - market-specific logic currently has no dedicated dispatch service.
+- Market projection snapshots are not separated from generic screen rendering.
 ```
 
 ## Market-specific gaps
@@ -48,6 +49,8 @@
 - accepted sell/buy records do not produce TransactionRecord data.
 - rejected command before/after snapshots do not exist.
 - Market projection rows do not exist for the exchange renderer.
+- Market transaction replay has no source-owned fixture entrypoint.
+- Market renderer readback has no stable projection report.
 ```
 
 ## Render gaps
@@ -59,6 +62,7 @@
 - exchange cards are not rendered from economy projections.
 - transaction cards are not rendered from transaction projections.
 - HTML renderer has no stable branch for MarketResultProjection rows.
+- There is no renderer readback report proving the exchange view consumed MarketResultProjection instead of owning authority.
 ```
 
 ## Validation gaps
@@ -78,6 +82,7 @@
 - No fixture proves nested command result propagation.
 - No fixture proves transaction history shape.
 - No fixture proves exchange projection shape.
+- No fixture proves renderer readback of MarketResultProjection.
 - No fixture proves rejected command no-mutation before/after snapshots.
 - No fixture proves GameHost baseline compatibility after Market helpers are added.
 ```
