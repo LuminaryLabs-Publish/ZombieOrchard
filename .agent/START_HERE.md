@@ -2,21 +2,53 @@
 
 **Repo:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Current state:** compact static browser orchard survival/economy shell with a kit runtime, scoped interface domains, game-domain kits, a canvas world renderer, and an HTML interface renderer.
+**Last aligned:** `2026-07-08T04-49-40-04-00`
 
-**Start every future pass here:**
+## Purpose
 
-1. Read `.agent/current-audit.md`.
-2. Read `.agent/known-gaps.md`.
-3. Read `.agent/next-steps.md`.
-4. Read `.agent/validation.md`.
-5. Read the latest `.agent/turn-ledger/` entry.
-6. Read the latest `.agent/trackers/` breakdown entry.
-7. Keep reusable logic in kits and keep render/DOM/browser ownership in host renderers.
+This `.agent/` folder is the repo-local operating memory for scheduled and manual breakdown work on `ZombieOrchard`.
 
-## Current priority
+Read this folder before changing implementation code.
 
-Build the **Market Command Replay Fixture + Transaction Projection Gate** before expanding worker assignment, saves, codex progression, or advanced economy loops.
+## Current selection result
+
+The full checked `LuminaryLabs-Publish` repo set was compared against `LuminaryLabs-Dev/LuminaryLabs` ledger state. No checked non-Cavalry Publish repo was found that was both central-ledger absent and missing root `.agent/START_HERE.md` state.
+
+`ZombieOrchard` was selected as the fallback follow-up because its root `.agent` state exists, but the Market authority seam remains unresolved and high-value.
+
+`LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
+
+## Current state
+
+`ZombieOrchard` is a compact static browser orchard survival/economy shell with a kit runtime, scoped interface domains, game-domain kits, a canvas world renderer, and an HTML interface renderer.
+
+The current route is:
+
+```txt
+index.html
+-> src/boot.js
+-> src/start.js
+-> createOrchardGame()
+-> createWorldCanvas(canvas)
+-> createHtmlInterfaceRenderer({ root, engine })
+```
+
+## Start every future pass here
+
+```txt
+.agent/current-audit.md
+.agent/known-gaps.md
+.agent/next-steps.md
+.agent/validation.md
+.agent/architecture-audit/domain-service-breakdown.md
+.agent/render-audit/canvas-html-render-audit.md
+.agent/gameplay-audit/market-command-replay-fixture.md
+.agent/interaction-audit/screen-command-routing.md
+.agent/market-authority-audit/transaction-result-projection-gate.md
+.agent/trackers/2026-07-08T04-49-40-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T04-49-40-04-00.md
+.agent/kit-registry.json
+```
 
 ## Source anchors
 
@@ -35,18 +67,16 @@ src/renderer/html-interface-renderer.js
 tests/smoke.mjs
 ```
 
-## Required operating docs
+## Main rule
+
+Do not expand worker assignment, saves, codex progression, or advanced economy loops before Market command/result authority is fixture-readable.
+
+Do not let Market business logic live in the HTML renderer.
+
+## Current priority
 
 ```txt
-.agent/current-audit.md
-.agent/next-steps.md
-.agent/known-gaps.md
-.agent/validation.md
-.agent/architecture-audit/domain-service-breakdown.md
-.agent/render-audit/canvas-html-render-audit.md
-.agent/gameplay-audit/market-command-replay-fixture.md
-.agent/interaction-audit/screen-command-routing.md
-.agent/trackers/2026-07-08T03-08-39-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T03-08-39-04-00.md
-.agent/kit-registry.json
+Market Result Contract + Transaction Projection Fixture Gate
 ```
+
+The next implementation pass should keep the current static route, canvas renderer, active-session HUD, and `snapshot["resource-ledger"].values` shape stable while adding Market command envelopes, accepted/rejected result records, transaction history, nested result propagation, exchange projection, and DOM-free fixtures.
