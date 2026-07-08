@@ -1,14 +1,14 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T09-48-58-04-00`
+**Timestamp:** `2026-07-08T11-19-53-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a standalone static orchard survival/economy shell. The architecture already uses composable kits for runtime, interface domains, composition, resources, pressure, orchard world, construction, roster, inventory, active-session behavior, world rendering, and HTML rendering.
 
-The repo is not missing a route or a game loop. It is missing a source-owned Market authority seam that turns the existing `exchange` shell into replayable sell/buy command results with transaction provenance and renderer projections.
+The repo is not missing a route or a game loop. The next blocker is that Market authority does not yet exist as a source-owned command/result seam, and the existing composition kit drops nested command results.
 
-This pass keeps runtime code unchanged and tightens the internal docs around the exact transaction replay boundary that should be implemented next.
+This pass keeps runtime code unchanged and tightens the docs around the implementation seam needed before adding Market sell/buy behavior.
 
 ## Current interaction loop
 
@@ -40,7 +40,7 @@ Entry
 -> advance day/night phase
 -> build storage shed
 -> open Market/Roster/Inventory/Codex/Settings screens
--> Market currently reaches exchange shell
+-> Market reaches exchange shell
 -> exchange currently only exposes Back
 -> session ends when condition reaches zero
 -> outcome screen
@@ -49,11 +49,21 @@ Entry
 ## Source-backed facts
 
 ```txt
+README.md:
+  describes a standalone kit-composed orchard survival/economy game shell.
+
+package.json:
+  npm test runs node tests/smoke.mjs.
+  npm run build copies static files to dist.
+
+src/start.js:
+  creates createOrchardGame(), world-canvas, html-interface-renderer, animation loop, and window.GameHost.
+
 src/game.js:
   installs resource-ledger, pressure-field, orchard-world, construction-runtime, roster-runtime, inventory-runtime, generated interface domains, active-session, and interface-composition.
 
 src/kits/runtime.js:
-  engine.command(domainId, type, payload) returns command result records from domain.command.
+  engine.command(domainId, type, payload) returns a command result from domain.command.
   no command journal or replay helper exists.
 
 src/kits/composition.js:
@@ -69,9 +79,13 @@ src/kits/game-domains.js:
   inventory-runtime owns equip only, no purchase intake.
   active-session owns move, collect, clear, next-phase, pest tick, score, and ending.
 
-package.json:
-  npm test runs node tests/smoke.mjs.
-  npm run build copies static files to dist.
+src/renderer/html-interface-renderer.js:
+  data-action clicks route to interface-composition.activate.
+  data-command clicks route directly to active-session.
+  there is no exchange-specific projection branch.
+
+tests/smoke.mjs:
+  proves entry, Play transition, active-session, and orchard apples only.
 ```
 
 ## Implemented domains
@@ -135,28 +149,29 @@ smoke-fixture-kit:
 
 ## Main finding
 
-The Market route is present, but the exchange domain is not yet an economy authority.
+The runtime already has a command-returning engine, so the safest path is not a full rewrite. The next implementation should add a Market command/result layer and then make `interface-composition` retain nested command results.
 
-The next source change should not start with visual polish. It should start with deterministic command authority and fixture replay:
+The exact seam is:
 
 ```txt
-market action ids
--> command envelope
--> source snapshot
--> preflight
--> accepted/rejected result
--> mutation only on accepted result
--> transaction history
--> nested result propagation
--> projection snapshot
--> renderer readback boundary
+exchange action ids
+-> MarketCommandEnvelope
+-> MarketSourceSnapshot
+-> MarketPreflight
+-> MarketCommandResult
+-> accepted mutation only
+-> TransactionRecord
+-> MarketResultJournal
+-> nested command result propagation
+-> MarketResultProjection
+-> exchange renderer readback
 -> DOM-free smoke fixture
 ```
 
 ## Current next safe ledge
 
 ```txt
-ZombieOrchard Market Transaction Replay Boundary
+ZombieOrchard Market Result Propagation + Exchange Projection Fixture Gate
 ```
 
-The implementation should preserve `index.html`, `src/start.js`, `createOrchardGame()`, `world-canvas`, active-session HUD, and `window.GameHost.engine/getState/tick` while adding source-owned Market transaction replay and renderer-readable projection snapshots.
+The implementation should preserve `index.html`, `src/start.js`, `createOrchardGame()`, `world-canvas`, active-session HUD, and `window.GameHost.engine/getState/tick` while adding source-owned Market transaction replay, stable command results, nested result propagation, and renderer-readable projection snapshots.
