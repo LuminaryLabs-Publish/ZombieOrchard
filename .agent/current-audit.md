@@ -1,14 +1,14 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T16-20-00-04-00`
+**Timestamp:** `2026-07-08T19-10-54-04-00`
 
 ## Summary
 
-`ZombieOrchard` is a standalone static orchard survival/economy shell. The current runtime is already kit-composed and playable at the prototype level.
+`ZombieOrchard` is a standalone static orchard survival/economy shell with a kit-composed runtime and a playable browser baseline.
 
-The repo is not missing a route, runtime, command router, renderer, or smoke harness. The current blocker is narrower: the Market screen exists as an exchange shell, but sell/buy behavior still lacks stable source-owned command envelopes, before/after snapshots, transaction records, nested command result propagation, projection rows, renderer readback, and a DOM-free fixture matrix.
+The repo is not missing a route, runtime, command router, renderer, or smoke harness. The current blocker is narrower: the Market/exchange path has no source-owned command manifest, stable result shape, nested result propagation, transaction history, exchange projection, renderer readback, or DOM-free fixture matrix.
 
-This pass keeps runtime code unchanged and updates the `.agent` docs around the exact nested Market result source contract needed before implementation.
+This pass keeps runtime code unchanged and updates the `.agent` docs around the next exact implementation gate.
 
 ## Current interaction loop
 
@@ -52,9 +52,6 @@ Entry
 ## Source-backed facts
 
 ```txt
-README.md:
-  describes a standalone kit-composed orchard survival/economy game shell.
-
 package.json:
   npm run dev starts a static Python server.
   npm test runs node tests/smoke.mjs.
@@ -77,6 +74,9 @@ src/kits/composition.js:
   nested command result is currently dropped.
   snapshot exposes active/previous/activeSnapshot only.
 
+src/kits/scoped-interface-domains.js:
+  generated interface domains own action rows and action activation.
+
 src/presets/orchard-preset.js:
   exchange currently exposes only Back.
 
@@ -90,9 +90,6 @@ src/renderer/html-interface-renderer.js:
   data-command clicks route directly to active-session.
   active-session has a dedicated HUD branch.
   exchange has no projection/readback branch.
-
-src/renderer/world-canvas.js:
-  draws trees, apples, pests, and player directly from snapshots.
 
 tests/smoke.mjs:
   proves entry, Play transition, active-session, and orchard apples only.
@@ -111,14 +108,14 @@ game:
   resource-ledger, pressure-field, orchard-world, construction-runtime, roster-runtime, inventory-runtime, active-session, world-canvas
 
 market-authority-next:
-  market-action-id-catalog, market-command-envelope, market-source-snapshot, market-price-source, market-capacity-policy, market-preflight, market-command-result, market-rejection-reason-catalog, market-command-journal, market-result-journal, resource-transaction-history, inventory-purchase-intake, nested-command-result-propagation, market-result-projection, market-render-readback, market-fixture-replay
+  market-action-id-catalog, market-command-source-manifest, market-command-envelope, market-source-snapshot, market-price-source, market-capacity-policy, market-preflight, market-command-result, market-rejection-reason-catalog, market-command-journal, market-result-journal, resource-transaction-history, inventory-purchase-intake, nested-command-result-propagation, market-result-projection, market-render-readback, market-fixture-replay
 ```
 
 ## Kit services
 
 ```txt
 kit-runtime:
-  install kits, register domains, route commands, tick domains, emit events, aggregate snapshots, notify subscribers
+  install kits, register domains, route commands, return command results, tick domains, emit events, aggregate snapshots, notify subscribers
 
 scoped-interface-domain-kit:
   screen state, action rows, fields, metadata, action activation, snapshots
@@ -127,7 +124,7 @@ interface-composition-kit:
   active screen, previous screen, transition/back, action activation, nested command dispatch, active screen snapshot
 
 resource-ledger-kit:
-  resource values, canPay, pay, add, snapshots
+  resource values, canPay, pay, add, command add/pay, snapshots
 
 pressure-field-kit:
   pressure channels, adjust api, pressure tick, curse tick, snapshots
@@ -189,6 +186,7 @@ implemented:
 
 target next-cut:
   market-action-id-catalog-kit
+  market-command-source-manifest-kit
   market-command-envelope-kit
   market-source-snapshot-kit
   market-price-source-kit
@@ -208,12 +206,13 @@ target next-cut:
 
 ## Main finding
 
-The runtime already has the right central seam: `engine.command()` returns command results. The next implementation should not rewrite the app; it should add source-owned Market transaction helpers and preserve/return nested Market results through `interface-composition` so renderer projections, GameHost diagnostics, and fixture replay can consume the same accepted/rejected output.
+The runtime already has the right central seam: `engine.command()` returns command results. The next implementation should not rewrite the app. It should add source-owned Market transaction helpers and preserve/return nested Market results through `interface-composition` so renderer projections, GameHost diagnostics, and fixture replay can consume the same accepted/rejected output.
 
 The exact seam is:
 
 ```txt
 exchange action ids
+-> MarketCommandSourceManifest
 -> MarketCommandEnvelope
 -> MarketSourceSnapshot before
 -> MarketPreflight
@@ -232,5 +231,5 @@ exchange action ids
 ## Current priority
 
 ```txt
-ZombieOrchard Nested Market Result Source Contract + Exchange Projection Readback Fixture Gate
+ZombieOrchard Market Command Source Manifest + Nested Result Consumer Fixture Gate
 ```
