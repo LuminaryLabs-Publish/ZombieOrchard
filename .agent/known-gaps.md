@@ -1,6 +1,6 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-08T09-48-58-04-00`
+**Timestamp:** `2026-07-08T11-19-53-04-00`
 
 ## Critical gaps
 
@@ -17,7 +17,7 @@
 - Resource changes are not recorded as transaction history.
 - Rejected Market commands are not proven side-effect free.
 - Inventory purchases do not have a purchase-intake service.
-- interface-composition dispatches nested commands but does not retain or project the nested result.
+- interface-composition dispatches nested commands but does not retain, return, journal, or project the nested result.
 - html-interface-renderer has no exchange-specific projection branch.
 - GameHost only exposes engine/getState/tick.
 - tests/smoke.mjs only checks entry, Play transition, and apple existence.
@@ -34,6 +34,7 @@
 - nested command results are not available to GameHost diagnostics or renderer projections.
 - market-specific logic currently has no dedicated dispatch service.
 - Market projection snapshots are not separated from generic screen rendering.
+- direct data-command clicks in html-interface-renderer bypass the interface-composition result ledger.
 ```
 
 ## Market-specific gaps
@@ -42,9 +43,11 @@
 - sell-apples is not implemented.
 - buy-basic-tool is not implemented.
 - buy-row-supply is not implemented.
+- market-return-to-active-session remains the only exchange action.
 - unknown Market command rejection is not stable.
 - invalid quantity rejection is not stable.
 - insufficient funds rejection is not Market-owned.
+- insufficient apples rejection is not Market-owned.
 - inventory capacity full rejection is not implemented.
 - accepted sell/buy records do not produce TransactionRecord data.
 - rejected command before/after snapshots do not exist.
@@ -74,12 +77,14 @@
 - No fixture covers rejected Market sell.
 - No fixture covers accepted purchase.
 - No fixture covers insufficient funds.
+- No fixture covers insufficient apples.
 - No fixture covers inventory capacity full.
 - No fixture covers unknown Market command.
 - No fixture covers invalid quantity.
 - No fixture proves deterministic price rows.
 - No fixture proves deterministic capacity rows.
 - No fixture proves nested command result propagation.
+- No fixture proves direct data-command commands are not mixed into Market authority.
 - No fixture proves transaction history shape.
 - No fixture proves exchange projection shape.
 - No fixture proves renderer readback of MarketResultProjection.
