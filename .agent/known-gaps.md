@@ -1,6 +1,6 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-08T11-19-53-04-00`
+**Timestamp:** `2026-07-08T12-51-50-04-00`
 
 ## Critical gaps
 
@@ -13,9 +13,10 @@
 - There is no deterministic capacity source snapshot.
 - There is no Market preflight result with stable rejection reasons.
 - There is no accepted/rejected MarketCommandResult record.
+- There is no MarketCommandJournal.
 - There is no MarketResultJournal.
 - Resource changes are not recorded as transaction history.
-- Rejected Market commands are not proven side-effect free.
+- Rejected Market commands are not proven side-effect free with before/after snapshots.
 - Inventory purchases do not have a purchase-intake service.
 - interface-composition dispatches nested commands but does not retain, return, journal, or project the nested result.
 - html-interface-renderer has no exchange-specific projection branch.
@@ -35,6 +36,7 @@
 - market-specific logic currently has no dedicated dispatch service.
 - Market projection snapshots are not separated from generic screen rendering.
 - direct data-command clicks in html-interface-renderer bypass the interface-composition result ledger.
+- command results do not include stable command IDs, source fingerprints, before snapshots, after snapshots, or mutation summaries.
 ```
 
 ## Market-specific gaps
@@ -54,6 +56,7 @@
 - Market projection rows do not exist for the exchange renderer.
 - Market transaction replay has no source-owned fixture entrypoint.
 - Market renderer readback has no stable projection report.
+- Market command journal rows do not exist for fixture replay.
 ```
 
 ## Render gaps
@@ -86,6 +89,7 @@
 - No fixture proves nested command result propagation.
 - No fixture proves direct data-command commands are not mixed into Market authority.
 - No fixture proves transaction history shape.
+- No fixture proves Market command journal shape.
 - No fixture proves exchange projection shape.
 - No fixture proves renderer readback of MarketResultProjection.
 - No fixture proves rejected command no-mutation before/after snapshots.
