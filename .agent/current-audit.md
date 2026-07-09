@@ -1,14 +1,14 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T23-29-18-04-00`
+**Timestamp:** `2026-07-08T23-40-55-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a standalone static browser orchard survival/economy shell with a kit-composed runtime and a playable browser baseline.
 
-The repo is not missing a route, runtime, command router, renderer, smoke harness, or browser deployment shape. The blocker is narrower: the Market/exchange path needs a source manifest, typed result envelope, nested-result adapter, transaction journal, renderer projection, GameHost readback, and DOM-free fixture gate.
+The repo is not missing a static route, kit runtime, command router, renderer, smoke harness, or deploy script. The blocker is narrower: Market/exchange still needs source-owned command/result authority plus consumer readback through `interface-composition`, `html-interface-renderer`, and `GameHost`.
 
-This pass keeps runtime code unchanged and updates the `.agent` docs around the exact Market source-manifest adapter and consumer fixture boundary.
+This pass keeps runtime code unchanged and aligns the repo-local docs and central ledger around the next implementation ledge.
 
 ## Current interaction loop
 
@@ -78,160 +78,38 @@ src/presets/orchard-preset.js:
   exchange currently reaches Market surface but does not source-own command rows.
 
 src/kits/game-domains.js:
-  resource-ledger owns values/canPay/pay/add but no transaction history.
-  inventory-runtime owns equip only, no purchase intake.
-  active-session owns move, collect, clear, next-phase, pest tick, score, and ending.
+  resource-ledger supports canPay/pay/add but not transaction history.
+  inventory-runtime supports equip only and has no purchase intake/capacity policy.
+  construction-runtime and roster-runtime can pay costs directly through resource-ledger.
 
 src/renderer/html-interface-renderer.js:
-  data-action clicks route to interface-composition.activate.
-  data-command clicks route directly to active-session.
-  active-session has a dedicated HUD branch.
-  exchange has no projection/readback branch.
-
-tests/smoke.mjs:
-  proves entry, Play transition, active-session, and orchard apples only.
+  data-action routes through interface-composition.
+  data-command routes directly to active-session.
+  active-session HUD is special-cased.
+  other screens, including exchange, are generic panels.
 ```
 
-## Domains in use
+## Main gap
+
+The engine can return command results, but the result is not yet durable, replayable, or visible to consumers.
+
+Market authority must own source manifests, envelopes, snapshots, preflight, results, transaction rows, journal rows, projections, and readback rows before HTML rendering or GameHost diagnostics consume them.
+
+## Current next safe ledge
 
 ```txt
-runtime:
-  static-browser-host, boot-module, runtime-entrypoint, game-factory, kit-runtime, engine-context, domain-registry, command-router, event-emitter, tick-dispatcher, snapshot-aggregator, subscription-bus, browser-animation-loop, GameHost, smoke-harness
-
-interface:
-  entry, session-select, run-setup, active-session, interrupt, construction, exchange, roster, inventory, knowledge, preferences, outcome, interface-composition, html-interface-renderer
-
-game:
-  resource-ledger, pressure-field, orchard-world, construction-runtime, roster-runtime, inventory-runtime, active-session, world-canvas
-
-market-authority-next:
-  market-action-id-catalog, market-command-source-manifest, market-command-envelope, market-source-snapshot, market-price-source, market-capacity-policy, market-preflight, market-command-result, market-rejection-reason-catalog, market-command-journal, market-result-journal, resource-transaction-history, inventory-purchase-intake, interface-nested-result-adapter, market-result-projection, market-render-readback, market-fixture-replay
+ZombieOrchard Market Consumer Fixture Readback + Central Ledger Sync Gate
 ```
 
-## Kit services
+## Validation status
 
 ```txt
-kit-runtime:
-  install kits, register domains, route commands, return command results, tick domains, emit events, aggregate snapshots, notify subscribers
-
-scoped-interface-domain-kit:
-  screen state, action rows, fields, metadata, action activation, snapshots
-
-interface-composition-kit:
-  active screen, previous screen, transition/back, action activation, nested command dispatch, active screen snapshot
-
-resource-ledger-kit:
-  resource values, canPay, pay, add, command add/pay, snapshots
-
-pressure-field-kit:
-  pressure channels, adjust api, pressure tick, curse tick, snapshots
-
-orchard-world-kit:
-  tree grid, random apple seed, nearest-apple collection, apple reseed, bounds snapshot
-
-construction-runtime-kit:
-  catalog, resource payment, built item records, build messages
-
-roster-runtime-kit:
-  actor list, hire command, payment, roster messages
-
-inventory-runtime-kit:
-  item list, equipped item, equip command
-
-active-session-domain-kit:
-  day/phase/player/pest/score/message state, move, collect, clear, next-phase, session tick
-
-world-canvas-render-kit:
-  canvas resize and simple tree/apple/pest/player drawing
-
-html-interface-render-kit:
-  active-session HUD, generic screen rendering, click-to-command routing
-
-smoke-fixture-kit:
-  entry/play/apple smoke through tests/smoke.mjs
-```
-
-## Kits identified
-
-```txt
-implemented:
-  kit-runtime
-  scoped-interface-domain-kit
-  entry-domain-kit
-  session-select-domain-kit
-  run-setup-domain-kit
-  active-session-domain-kit
-  interrupt-domain-kit
-  construction-domain-kit
-  exchange-domain-kit
-  roster-domain-kit
-  inventory-domain-kit
-  knowledge-domain-kit
-  preferences-domain-kit
-  outcome-domain-kit
-  interface-composition-kit
-  resource-ledger-kit
-  pressure-field-kit
-  orchard-world-kit
-  construction-runtime-kit
-  roster-runtime-kit
-  inventory-runtime-kit
-  world-canvas-render-kit
-  html-interface-render-kit
-  game-host-diagnostics-kit
-  smoke-fixture-kit
-
-target next-cut:
-  market-action-id-catalog-kit
-  market-command-source-manifest-kit
-  market-command-envelope-kit
-  market-source-snapshot-kit
-  market-price-source-kit
-  market-capacity-policy-kit
-  market-preflight-kit
-  market-command-result-kit
-  market-rejection-reason-catalog-kit
-  market-command-journal-kit
-  market-result-journal-kit
-  resource-transaction-history-kit
-  inventory-purchase-intake-kit
-  interface-nested-result-adapter-kit
-  market-result-projection-kit
-  market-render-readback-kit
-  market-fixture-replay-kit
-```
-
-## Main finding
-
-The runtime already has the right central seam: `engine.command()` returns command results. The next implementation should not rewrite the app. It should add source-owned Market transaction helpers, return nested Market results through `interface-composition`, and force the renderer plus GameHost to consume the same source-owned result/projection records.
-
-The exact seam is:
-
-```txt
-exchange action ids
--> MarketCommandSourceManifest
--> MarketCommandEnvelope
--> MarketSourceSnapshot before
--> MarketPreflight
--> MarketCommandResult
--> accepted mutation only
--> rejected no-mutation proof
--> TransactionRecord when accepted
--> command/result journals
--> InterfaceNestedResultAdapter
--> interface-composition snapshot.lastResult
--> MarketResultProjection
--> exchange renderer consumer
--> MarketRenderReadback
--> fixture replay
-```
-
-## Do not do next
-
-```txt
-- Do not add a larger economy before source-owned Market rows exist.
-- Do not let html-interface-renderer own price, capacity, or transaction authority.
-- Do not route exchange purchases through direct data-command shortcuts.
-- Do not alter the static route or GameHost baseline compatibility.
-- Do not refactor active-session before the Market fixture passes.
+runtime source changed: no
+branch created: no
+pull request created: no
+npm test: not run
+npm run build: not run
+browser smoke: not run
+DOM-free market fixture: not run because source files do not exist yet
+pushed to main: yes
 ```
