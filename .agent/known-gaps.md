@@ -1,6 +1,6 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-09T16-38-14-04-00`
+**Timestamp:** `2026-07-09T18-49-13-04-00`
 
 ## Critical gaps
 
@@ -28,7 +28,6 @@
 - window.GameHost has no Market diagnostics beyond raw engine snapshot.
 - tests/smoke.mjs does not exercise Market accepted/rejected command rows.
 - package.json has no dedicated Market fixture script yet.
-- central ledger was stale relative to repo-local `2026-07-09T16-34-14-04-00` state before this run.
 ```
 
 ## Non-blocking gaps
