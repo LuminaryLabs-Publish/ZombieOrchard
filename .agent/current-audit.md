@@ -1,12 +1,12 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-09T05-11-22-04-00`
+**Timestamp:** `2026-07-09T07-30-48-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a standalone static browser orchard survival/economy shell with a compact kit runtime, generated interface domains, game-domain kits, a canvas renderer, an HTML renderer, and a minimal smoke harness.
 
-The repo is not missing a route, game factory, static build command, command router, or first playable loop. The current blocker is narrower: Market/Exchange needs source-owned command/result records, nested command-result retention, exchange-specific projection, renderer readback, GameHost diagnostics, and a DOM-free fixture.
+The repo is not missing a route, game factory, static build command, command router, first playable loop, or smoke script. The current blocker is narrower: Market/Exchange needs source-owned command/result records, nested command-result retention, exchange-specific projection, renderer readback, GameHost diagnostics, and a DOM-free fixture.
 
 This pass keeps runtime code unchanged and updates repo-local docs plus central tracking.
 
@@ -72,6 +72,9 @@ roster-runtime
 inventory-runtime
 world-canvas
 smoke-harness
+market-authority-next
+market-render-readback-next
+market-fixture-next
 ```
 
 ## Services in use
@@ -141,10 +144,12 @@ smoke-fixture-kit
 
 That means a Market action that dispatches a nested command cannot yet be replayed, surfaced as `snapshot["interface-composition"].lastResult`, consumed by the Exchange renderer, or exposed through GameHost diagnostics.
 
+The exchange screen also only contains Back in `orchard-preset.js`, so there is no stable Market action catalog or source-owned transaction path yet.
+
 ## Next safe ledge
 
 ```txt
-ZombieOrchard Market Nested Result Consumer Central Catch-up + Exchange Projection Fixture Gate
+ZombieOrchard Market Nested Result Readback + Exchange Transaction Fixture Gate
 ```
 
 ## Do not start with
