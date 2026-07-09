@@ -1,6 +1,6 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-09T07-30-48-04-00`
+**Timestamp:** `2026-07-09T07-41-29-04-00`
 
 ## Critical gaps
 
@@ -27,6 +27,7 @@
 - There is no MarketRenderReadback record.
 - GameHost does not expose fixture-readable Market diagnostics.
 - There is no DOM-free Market result fixture.
+- The central repo ledger was behind repo-local .agent state before this pass.
 ```
 
 ## Secondary gaps
