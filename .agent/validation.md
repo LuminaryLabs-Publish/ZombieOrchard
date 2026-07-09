@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-09T07-41-29-04-00`
+**Timestamp:** `2026-07-09T10-40-00-04-00`
 
 ## Available commands
 
@@ -30,37 +30,38 @@ tests/smoke.mjs:
   - verify orchard apples exist
 ```
 
-## Validation status for this audit pass
+## Current pass validation
 
 ```txt
-repo-list comparison: performed
-central-ledger comparison: performed
-repo-local .agent readback: performed
-source readback: performed
-root .agent update: performed
-architecture audit update: created
-render audit update: created
-gameplay audit update: created
-market-authority audit update: created
-deploy audit update: created
-turn ledger update: created
-central ledger update: performed
-central change-log update: created
 runtime source changed: no
 branch created: no
 pull request created: no
-local npm test: not run
-local npm run build: not run
+npm test: not run
+npm run build: not run
 browser smoke: not run
-DOM-free Market fixture: not run because fixture files do not exist yet
+DOM-free market fixture: not run because fixture files do not exist yet
+pushed to main: yes
 ```
 
-## Next required validation
+## Validation gap
 
-```txt
-node scripts/zombie-orchard-market-result-fixture.mjs
+There is still no dedicated Market fixture, so the current smoke surface cannot prove Exchange action IDs, accepted/rejected Market results, no-mutation rejection behavior, transaction history, nested result retention, Exchange renderer readback, or GameHost market diagnostics.
+
+## Required validation after next implementation
+
+```bash
 npm test
 npm run build
 ```
 
-Run browser validation only after the DOM-free fixture proves accepted, rejected, no-mutation, nested-result, projection, readback, and GameHost rows.
+Add one of these before implementation is considered complete:
+
+```bash
+node tests/market-result-fixture.mjs
+```
+
+or wire the same fixture into:
+
+```bash
+npm test
+```
