@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-08T21-18-39-04-00`
+**Timestamp:** `2026-07-08T23-29-18-04-00`
 
 ## Available commands
 
@@ -40,7 +40,8 @@ root .agent update: performed
 architecture audit update: created
 render audit update: created
 gameplay audit update: created
-Market nested result / transaction fixture gate: created
+Market source manifest adapter / consumer fixture gate: created
+deploy audit update: created
 runtime source changed: no
 branch created: no
 pull request created: no
@@ -83,8 +84,10 @@ Market fixture cases:
   - accepted/rejected commands append MarketResultJournal rows
   - interface-composition exposes nested command result
   - interface-composition snapshot exposes lastResult
+  - InterfaceNestedResultAdapter normalizes nested source/result/projection metadata
   - html exchange projection renders from snapshot only
   - renderer readback proves projection rows consumed by renderer
+  - renderer readback proves renderer did not own price/capacity/transaction authority
   - GameHost baseline engine/getState/tick shape remains available
 ```
 
@@ -110,5 +113,5 @@ npm test
 npm test passes after the Market fixture is added.
 npm run build passes after renderer and host changes.
 Manual browser smoke confirms active-session, Market, Build, Roster, Inventory, and Outcome remain reachable.
-Fixture output proves source manifest, accepted, rejected, no-mutation, transaction history, Market command journal, Market result journal, nested result propagation, projection shape, renderer readback, and GameHost compatibility cases.
+Fixture output proves source manifest, accepted, rejected, no-mutation, transaction history, Market command journal, Market result journal, nested result propagation, projection shape, renderer readback, consumer boundary, and GameHost compatibility cases.
 ```
