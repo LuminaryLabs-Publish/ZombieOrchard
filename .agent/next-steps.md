@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-09T16-34-14-04-00`
+**Timestamp:** `2026-07-09T16-38-14-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions source-owned, replayable, nested-result-safe, transaction-ba
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Result Readback Ledger Refresh + Exchange Fixture Gate
+ZombieOrchard Market Readback Ledger Catch-Up + Exchange Fixture Gate
 ```
 
 ## Checklist
