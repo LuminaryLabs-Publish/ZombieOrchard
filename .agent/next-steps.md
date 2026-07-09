@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-09T05-11-22-04-00`
+**Timestamp:** `2026-07-09T07-30-48-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions source-owned, replayable, nested-result-safe, transaction-ba
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Nested Result Consumer Central Catch-up + Exchange Projection Fixture Gate
+ZombieOrchard Market Nested Result Readback + Exchange Transaction Fixture Gate
 ```
 
 ## Checklist
@@ -30,7 +30,7 @@ ZombieOrchard Market Nested Result Consumer Central Catch-up + Exchange Projecti
 - [ ] Expose `interface-composition.snapshot().lastResult` without breaking `active`, `previous`, or `activeSnapshot`.
 - [ ] Add Exchange-specific Market projection for `html-interface-renderer`.
 - [ ] Add `MarketRenderReadback` rows proving the renderer consumed Market projection.
-- [ ] Add additive `GameHost` Market diagnostics.
+- [ ] Add additive `GameHost` Market diagnostics under a new stable key.
 - [ ] Add `scripts/zombie-orchard-market-result-fixture.mjs`.
 - [ ] Add a separate `npm run test:market` script before chaining it into the main smoke.
 - [ ] Run the DOM-free Market fixture.
