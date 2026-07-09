@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-08T23-29-18-04-00`
+**Timestamp:** `2026-07-08T23-40-55-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions source-owned, replayable, transaction-backed, nested-result-
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Source Manifest Adapter + Consumer Fixture Gate
+ZombieOrchard Market Consumer Fixture Readback + Central Ledger Sync Gate
 ```
 
 ## Checklist
@@ -58,68 +58,17 @@ ZombieOrchard Market Source Manifest Adapter + Consumer Fixture Gate
 12. Extend resource-ledger with transaction history helpers while keeping values/canPay/pay/add stable.
 13. Extend inventory-runtime with purchase intake while keeping equipped/items stable.
 14. Add a market-runtime-kit or Market dispatch service adjacent to game-domain kits.
-15. Return nested results through interface-composition and expose lastResult.
-16. Add InterfaceNestedResultAdapter so consumers see a stable nested-result shape.
-17. Render exchange from MarketResultProjection only.
-18. Add renderer readback report for exchange projection consumption.
-19. Add tests/market-transaction-fixture.mjs or extend tests/smoke.mjs with the Market fixture matrix.
-20. Add optional GameHost diagnostics helpers for Market source/result/journal/projection inspection.
-```
-
-## Acceptance ledgers
-
-```txt
-.agent/market-authority-audit/2026-07-08T23-29-18-04-00-source-manifest-adapter-consumer-contract.md
-.agent/architecture-audit/2026-07-08T23-29-18-04-00-market-adapter-consumer-dsk-map.md
-.agent/render-audit/2026-07-08T23-29-18-04-00-exchange-projection-consumer-readback.md
-.agent/gameplay-audit/2026-07-08T23-29-18-04-00-market-command-to-transaction-consumer-loop.md
-.agent/deploy-audit/2026-07-08T23-29-18-04-00-market-fixture-check-integration.md
-```
-
-Use those files as the current source of truth for exact required result shapes, rejection reasons, transaction records, projection records, source files, fixture cases, and consumer stop conditions.
-
-## Defer until after Market authority
-
-```txt
-- worker assignment
-- save runtime
-- codex progression
-- advanced phase authority
-- seeded global replay
-- construction effects
-- roster morale/fatigue
-- render-plan extraction
-- settlement parity
+15. Update interface-composition so nested command results are retained and adapted.
+16. Update interface-composition snapshot to expose lastResult additively.
+17. Update html-interface-renderer exchange branch to consume MarketResultProjection only.
+18. Add MarketRenderReadback rows for renderer consumption proof.
+19. Extend GameHost additively with market diagnostics.
+20. Add tests/market-transaction-fixture.mjs.
+21. Add package script test:market after the fixture exists.
 ```
 
 ## Stop condition
 
-Stop the implementation slice when these fixture-readable cases are inspectable without DOM ownership:
-
 ```txt
-- entry to active-session still works
-- active-session to exchange still works
-- exchange exposes sell-apples, buy-basic-tool, buy-row-supply, and back
-- MarketCommandSourceManifest exposes expected action, command, reason, price, and capacity rows
-- sell-apples accepted when apples > 0
-- sell-apples rejected when apples = 0
-- buy-basic-tool accepted when money >= price and capacity is available
-- buy-basic-tool rejected on insufficient funds
-- buy-row-supply accepted when money >= price and capacity is available
-- buy command rejected when inventory capacity is full
-- unknown Market command rejected with stable reason
-- invalid quantity rejected with stable reason
-- rejected command does not mutate resources or inventory
-- accepted command appends transaction history
-- accepted/rejected command appends MarketCommandJournal rows
-- accepted/rejected command appends MarketResultJournal rows
-- interface-composition exposes nested command result
-- interface-composition snapshot exposes lastResult
-- InterfaceNestedResultAdapter exposes source/result/projection ids
-- exchange projection is renderer-ready
-- renderer readback proves projection rows consumed
-- renderer readback proves no price/capacity authority in renderer
-- GameHost baseline engine/getState/tick shape remains available
+Stop when the fixture proves source manifest rows, accepted mutation, rejected no-mutation, transaction history, nested result propagation, exchange projection, renderer readback, GameHost diagnostics, and baseline compatibility.
 ```
-
-The slice should remain additive. It should not rewrite the whole game loop, remove the static route, or move renderer ownership into reusable kits.
