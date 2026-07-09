@@ -1,14 +1,14 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-09T02-05-52-04-00`
+**Timestamp:** `2026-07-09T05-01-51-04-00`
 
 ## Summary
 
-`ZombieOrchard` is a standalone static browser orchard survival/economy shell with a kit-composed runtime and a playable browser baseline.
+`ZombieOrchard` is a standalone static browser orchard survival/economy shell with a compact kit runtime, generated interface domains, game-domain kits, a canvas renderer, an HTML renderer, and a minimal smoke harness.
 
-The repo is not missing a static route, kit runtime, command router, renderer, smoke harness, or deploy script. The blocker is narrower: Market/Exchange needs source-owned command/result authority, nested result retention, exchange projection/readback, and GameHost diagnostics.
+The repo is not missing a route, game factory, static build command, command router, or first playable loop. The current blocker is still narrower: Market/Exchange needs a source-owned result path, nested command-result retention, exchange-specific render projection, renderer readback, GameHost diagnostics, and a DOM-free fixture.
 
-This pass keeps runtime code unchanged and aligns repo-local docs plus central tracking around the next implementation ledge.
+This pass keeps runtime code unchanged and updates repo-local docs plus central tracking around the next implementation ledge.
 
 ## Current interaction loop
 
@@ -29,6 +29,7 @@ index.html
 -> data-command clicks route directly to active-session
 -> nested action.command can call ctx.engine.command(...)
 -> nested result is discarded
+-> exchange screen renders as a generic scoped-interface screen
 -> window.GameHost exposes engine/getState/tick
 ```
 
@@ -70,6 +71,7 @@ construction-runtime
 roster-runtime
 inventory-runtime
 world-canvas
+smoke-harness
 ```
 
 ## Services in use
@@ -95,8 +97,12 @@ collect apples near player
 build catalog items
 hire roster actors
 equip inventory
-move/collect/clear/phase active session
+move player
+collect apples
+clear rows
+advance day/night phase
 expose GameHost engine/getState/tick
+run minimal smoke from createOrchardGame
 ```
 
 ## Kits in use
@@ -131,12 +137,14 @@ smoke-fixture-kit
 
 ## Current blocker
 
-`engine.command()` returns command results, but `interface-composition.activate` does not preserve nested `ctx.engine.command(...)` results. That means Market commands cannot yet be tested as replayable rows or consumed by the Exchange renderer.
+`engine.command()` returns command results, but `interface-composition.activate` does not preserve nested `ctx.engine.command(...)` results.
+
+That means a Market action that dispatches a nested command cannot yet be replayed, surfaced as `snapshot["interface-composition"].lastResult`, consumed by the Exchange renderer, or exposed through GameHost diagnostics.
 
 ## Next safe ledge
 
 ```txt
-ZombieOrchard Market Result Readback Fixture + Exchange Projection Consumer Gate
+ZombieOrchard Market Nested Result Consumer + Exchange Projection Fixture Gate
 ```
 
 ## Do not start with
@@ -148,8 +156,9 @@ CSS redesign
 new orchard art
 new enemy types
 new worker AI
-save system
+save/load system
 larger economy expansion
+phase authority rewrite
 ```
 
-Start with source-owned Market command/result records and a DOM-free fixture.
+Start with source-owned Market command/result records and a DOM-free fixture that proves nested result retention without browser APIs.
