@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-09T07-30-48-04-00`
+**Timestamp:** `2026-07-09T07-41-29-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions source-owned, replayable, nested-result-safe, transaction-ba
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Nested Result Readback + Exchange Transaction Fixture Gate
+ZombieOrchard Market Result Ledger Central Sync + Exchange Transaction Fixture Gate
 ```
 
 ## Checklist
@@ -36,6 +36,7 @@ ZombieOrchard Market Nested Result Readback + Exchange Transaction Fixture Gate
 - [ ] Run the DOM-free Market fixture.
 - [ ] Run `npm test`.
 - [ ] Run `npm run build`.
+- [ ] Update central ledger after fixture proof lands.
 
 ## Stop condition
 
