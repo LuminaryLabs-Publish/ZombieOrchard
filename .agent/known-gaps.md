@@ -1,12 +1,13 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-09T02-05-52-04-00`
+**Timestamp:** `2026-07-09T05-01-51-04-00`
 
 ## Critical gaps
 
 ```txt
 - The exchange / Market screen exists but still falls through to generic screen rendering.
 - Market actions do not yet have stable source-owned action IDs.
+- There is no MarketActionCatalog.
 - There is no MarketCommandSourceManifest.
 - There is no MarketCommandEnvelope.
 - There is no MarketSourceSnapshot before/after pair.
@@ -37,11 +38,14 @@
 - Save/load is absent.
 - Codex progression is shallow.
 - Outcome summary is minimal.
+- World-canvas is adequate for the current proof but not yet render-plan driven.
 ```
 
 ## Current risk
 
 Adding more economy content before result readback will make Market bugs harder to isolate.
+
+The specific risk is that nested commands already execute, but their results are not retained, projected, or fixture-readable.
 
 ## Recommended handling
 
