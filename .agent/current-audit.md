@@ -1,14 +1,26 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-09T16-34-14-04-00`
+**Timestamp:** `2026-07-09T16-38-14-04-00`
 
 ## Summary
 
 `ZombieOrchard` remains a standalone static browser orchard survival/economy shell with a compact kit runtime, scoped interface domains, game-domain kits, a canvas renderer, an HTML renderer, `window.GameHost`, static build scripts, and a minimal smoke harness.
 
-The repo is not missing a route, game factory, static build command, command router, first playable loop, world renderer, UI renderer, or smoke script. The durable blocker is still the Exchange/Market path: source-owned Market actions, command/result ledgers, nested command-result retention, Exchange projection/readback, GameHost diagnostics, and DOM-free fixture proof.
+The repo is not missing a route, game factory, static build command, command router, first playable loop, world renderer, UI renderer, or smoke script.
 
-This pass keeps runtime code unchanged and refreshes repo-local docs from `2026-07-09T13-18-48-04-00` to `2026-07-09T16-34-14-04-00`.
+The durable blocker is still the Exchange/Market path:
+
+```txt
+source-owned Market actions
+command/result ledgers
+nested command-result retention
+Exchange projection/readback
+GameHost Market diagnostics
+DOM-free fixture proof
+central ledger parity
+```
+
+This pass keeps runtime code unchanged and refreshes repo-local docs from `2026-07-09T16-34-14-04-00` to `2026-07-09T16-38-14-04-00`.
 
 ## Current interaction loop
 
@@ -19,14 +31,23 @@ index.html
   -> createOrchardGame()
   -> createWorldCanvas(canvas)
   -> createHtmlInterfaceRenderer({ root, engine })
-  -> draw()
-  -> engine.tick(1 / 60)
-  -> world.render(snapshot)
-  -> ui.render(snapshot)
   -> requestAnimationFrame(draw)
+  -> engine.tick(1 / 60)
+  -> pressure-field and active-session tick
+  -> engine.snapshot()
+  -> world-canvas renders orchard trees, apples, pests, and player
+  -> html-interface-renderer renders active-session HUD or generic screen panel
+  -> [data-action] routes through interface-composition.activate
+  -> scoped interface domain returns action descriptor
+  -> optional action.command dispatches through ctx.engine.command(...)
+  -> nested command result is currently discarded
+  -> next action.to or transition table moves active screen
+  -> [data-command] routes directly to active-session
+  -> Exchange/Market remains a generic screen with Back only
+  -> window.GameHost exposes engine, getState, and tick
 ```
 
-Input routing:
+## Input routing
 
 ```txt
 [data-action] click
@@ -77,49 +98,56 @@ roster-runtime
 inventory-runtime
 world-canvas-renderer
 html-interface-renderer
-smoke-harness
-repo-local-agent-ledger
+market-action-catalog-next
+market-command-source-manifest-next
+market-command-envelope-next
+market-source-snapshot-next
+market-preflight-next
+market-command-result-next
+market-command-journal-next
+market-result-journal-next
+resource-transaction-history-next
+inventory-purchase-intake-next
+interface-nested-result-adapter-next
+market-result-projection-next
+market-render-readback-next
+market-gamehost-diagnostics-next
+market-fixture-replay-next
 central-ledger-readback
 ```
 
 ## Kit services in the current runtime
 
 ```txt
-kit-runtime:
-  register domains, route commands, return command results, tick domains, emit events, aggregate snapshots, subscribe listeners.
+- createKitRuntime registers domains, routes commands, returns results, ticks domains, emits events, aggregates snapshots, and notifies subscribers.
+- scoped interface domains expose screen descriptors, actions, activation descriptors, and snapshots.
+- interface-composition routes transitions/back, activates the active screen, dispatches nested commands, auto-routes outcome, and exposes activeSnapshot.
+- resource-ledger stores resources, affordability helpers, add/pay commands, and snapshots.
+- pressure-field tracks rowPressure/curse and pressure drift.
+- orchard-world generates trees/apples, supports apple collection, and exposes world bounds/state.
+- construction-runtime builds catalog items by paying resources.
+- roster-runtime tracks/hire actors.
+- inventory-runtime tracks equipped item and item list.
+- active-session handles movement, collection, clearing, phase advance, pests, session end, and HUD actions.
+- world-canvas renders orchard state from snapshots.
+- html-interface-renderer renders active-session HUD and generic screen panels, and routes data-action/data-command clicks.
+- tests/smoke.mjs covers entry -> play -> active-session plus apple existence.
+```
 
-scoped-interface-domain-kit:
-  expose screen descriptors, selectable actions, field mutation, activation descriptors, and interface snapshots.
+## Services needed next
 
-interface-composition-kit:
-  route transitions, route back actions, activate current interface screen, dispatch nested commands, auto-route outcome when active session ends, expose active screen snapshot.
-
-resource-ledger-kit:
-  store resource values, canPay, pay, add, add/pay commands, and ledger snapshot.
-
-pressure-field-kit:
-  adjust pressure channels, tick row pressure/curse, expose pressure snapshot.
-
-orchard-world-kit:
-  generate trees/apples, collect nearby apples, reseed apples, expose bounds and orchard snapshot.
-
-construction-runtime-kit:
-  build catalog entries by paying resources, append built items, expose built catalog snapshot.
-
-roster-runtime-kit:
-  hire workers by paying money, append actors, expose roster snapshot.
-
-inventory-runtime-kit:
-  equip inventory items and expose inventory snapshot.
-
-active-session-domain-kit:
-  move, collect, clear, advance phase, spawn/chase pests, end session, expose session and available actions.
-
-world-canvas-render-kit:
-  render trees, apples, pests, and player from snapshots.
-
-html-interface-render-kit:
-  render active-session HUD or generic screen panel and route click actions/commands.
+```txt
+- stable Market action IDs and source-owned catalog rows
+- Market command source manifest, envelope, before/after source snapshots, price and capacity policies
+- Market preflight with stable rejection reasons
+- accepted/rejected MarketCommandResult records with rejected no-mutation proof
+- resource transaction history and inventory intake rows for accepted Market commands
+- Market command/result journals
+- interface nested-result retention without breaking activate/back/transition compatibility
+- Exchange-specific projection and render readback in html-interface-renderer
+- GameHost market diagnostics compatible with current engine/getState/tick
+- DOM-free fixture for accepted sell, accepted buy, rejected insufficient resource, and rejected capacity rows
+- central ledger parity update after fixture proof
 ```
 
 ## Main finding
@@ -129,7 +157,7 @@ html-interface-render-kit:
 ## Recommended next ledge
 
 ```txt
-ZombieOrchard Market Result Readback Ledger Refresh + Exchange Fixture Gate
+ZombieOrchard Market Readback Ledger Catch-Up + Exchange Fixture Gate
 ```
 
 Start with pure source/result/readback modules and fixture rows. Do not rewrite the engine, canvas renderer, HTML shell, or orchard economy before Market accepted/rejected rows are fixture-proven.
