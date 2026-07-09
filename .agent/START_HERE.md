@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-08T23-40-55-04-00`
+**Last aligned:** `2026-07-09T02-05-52-04-00`
 
 ## Purpose
 
@@ -12,29 +12,29 @@ Read this folder before changing implementation code.
 
 ## Current selection result
 
-The full accessible `LuminaryLabs-Publish` organization repo list was compared against tracked repo-ledger state in `LuminaryLabs-Dev/LuminaryLabs` and sampled root `.agent/START_HERE.md` timestamps.
+The accessible `LuminaryLabs-Publish` organization repo list was compared against tracked repo-ledger state in `LuminaryLabs-Dev/LuminaryLabs` and sampled root `.agent/START_HERE.md` state.
 
 No checked non-Cavalry Publish repo was fully new, absent from the central ledger, recently added but undocumented, missing sampled root `.agent` state, or otherwise undocumented.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`ZombieOrchard` was selected because its repo-local `.agent` state had advanced beyond the central ledger and the Market adapter/consumer fixture gate remains unresolved.
+`ZombieOrchard` was selected by fallback because it was the oldest eligible checked repo in the central ledger after the latest catch-up pass.
 
-This pass keeps runtime code unchanged and tightens the next implementation into a Market consumer fixture readback gate.
+This pass keeps runtime code unchanged and tightens the next implementation into a Market result readback fixture and exchange projection consumer gate.
 
 ## Publish repos checked
 
 ```txt
-LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present / central alignment 2026-07-08T22-38-17-04-00
-LuminaryLabs-Publish/HorrorCorridor      tracked / root .agent present / central alignment 2026-07-08T22-51-43-04-00
-LuminaryLabs-Publish/AetherVale          tracked / root .agent present / central alignment 2026-07-08T21-31-35-04-00
-LuminaryLabs-Publish/ZombieOrchard       selected / repo-local newer than stale central ledger / latest root 2026-07-08T23-29-18-04-00
-LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present / central alignment 2026-07-08T23-19-33-04-00
-LuminaryLabs-Publish/MyCozyIsland        tracked / root .agent present / central alignment 2026-07-08T21-58-34-04-00
-LuminaryLabs-Publish/TheOpenAbove        tracked / root .agent present / central alignment 2026-07-08T22-19-38-04-00
-LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present / central alignment 2026-07-08T22-58-02-04-00
+LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present / central latest 2026-07-09T00-50-00-04-00
+LuminaryLabs-Publish/HorrorCorridor      tracked / root .agent present / central latest 2026-07-09T01-09-24-04-00
+LuminaryLabs-Publish/AetherVale          tracked / root .agent present / central latest 2026-07-09T00-00-41-04-00
+LuminaryLabs-Publish/ZombieOrchard       selected / oldest eligible central latest 2026-07-08T23-40-55-04-00
+LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present / central latest 2026-07-09T01-40-49-04-00
+LuminaryLabs-Publish/MyCozyIsland        tracked / root .agent present / central latest 2026-07-09T00-20-08-04-00
+LuminaryLabs-Publish/TheOpenAbove        tracked / root .agent present / central latest 2026-07-09T00-40-20-04-00
+LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present / central latest 2026-07-09T01-20-59-04-00
 LuminaryLabs-Publish/TheCavalryOfRome    excluded by rule
-LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present / central alignment 2026-07-08T21-50-56-04-00
+LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present / central latest 2026-07-09T00-09-22-04-00
 ```
 
 ## Current product read
@@ -53,7 +53,7 @@ index.html
   -> requestAnimationFrame(draw)
 ```
 
-The game has a playable baseline: Entry, Active Session, apple collection, pest clearing, day/night phase advance, Build, Market, Roster, Inventory, Codex, Settings, and Outcome screens.
+The game has a playable baseline: Entry, Active Session, apple collection, pest clearing, day/night phase advance, Build, Market/Exchange shell, Roster, Inventory, Codex, Settings, and Outcome screens.
 
 ## Current interaction loop
 
@@ -71,10 +71,11 @@ open route
   -> data-command clicks route directly to active-session command handlers
   -> nested action.command can happen inside interface-composition
   -> nested command result is currently discarded
+  -> interface-composition snapshot does not yet expose lastResult
   -> window.GameHost exposes engine/getState/tick
 ```
 
-## Target adapter/projection loop
+## Target result/readback loop
 
 ```txt
 exchange action row
@@ -104,13 +105,13 @@ exchange action row
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-08T23-40-55-04-00-market-consumer-fixture-readback-dsk-map.md
-.agent/render-audit/2026-07-08T23-40-55-04-00-exchange-projection-readback-consumer-map.md
-.agent/gameplay-audit/2026-07-08T23-40-55-04-00-market-command-result-replay-loop.md
-.agent/market-authority-audit/2026-07-08T23-40-55-04-00-consumer-fixture-readback-contract.md
-.agent/deploy-audit/2026-07-08T23-40-55-04-00-market-fixture-validation-map.md
-.agent/trackers/2026-07-08T23-40-55-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T23-40-55-04-00.md
+.agent/architecture-audit/2026-07-09T02-05-52-04-00-market-result-readback-dsk-map.md
+.agent/render-audit/2026-07-09T02-05-52-04-00-exchange-projection-consumer-readback.md
+.agent/gameplay-audit/2026-07-09T02-05-52-04-00-market-result-command-replay-loop.md
+.agent/market-authority-audit/2026-07-09T02-05-52-04-00-market-result-readback-fixture-contract.md
+.agent/deploy-audit/2026-07-09T02-05-52-04-00-market-result-fixture-script-map.md
+.agent/trackers/2026-07-09T02-05-52-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T02-05-52-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -127,36 +128,8 @@ src/kits/runtime.js
 src/kits/composition.js
 src/kits/scoped-interface-domains.js
 src/kits/game-domains.js
-src/presets/orchard-preset.js
 src/renderer/html-interface-renderer.js
 src/renderer/world-canvas.js
+src/presets/orchard-preset.js
 tests/smoke.mjs
-```
-
-## Source files to add next
-
-```txt
-src/market/market-ids.js
-src/market/market-command-source-manifest.js
-src/market/market-command-envelope.js
-src/market/market-source-snapshot.js
-src/market/market-preflight.js
-src/market/market-result.js
-src/market/market-transaction-ledger.js
-src/market/market-projection.js
-src/market/market-render-readback.js
-src/market/market-fixture-rows.js
-tests/market-transaction-fixture.mjs
-```
-
-## Main rule
-
-Keep the current static route, `createOrchardGame()`, `world-canvas`, active-session HUD, direct active-session `data-command` behavior, and `window.GameHost.engine/getState/tick` stable.
-
-Do not expand economy behavior until the Market fixture proves source manifest rows, accepted mutation, rejected no-mutation, transaction history, nested result propagation, exchange projection, renderer readback, GameHost diagnostics, and DOM-free replay.
-
-## Current next safe ledge
-
-```txt
-ZombieOrchard Market Consumer Fixture Readback + Central Ledger Sync Gate
 ```
