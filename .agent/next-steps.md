@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-08T19-21-15-04-00`
+**Timestamp:** `2026-07-08T21-18-39-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions durable, replayable, transaction-backed, renderer-readable, 
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Source Manifest + Nested Result Consumer / Exchange Readback Fixture Gate
+ZombieOrchard Market Transaction Result + Nested Result Projection Fixture Gate
 ```
 
 ## Checklist
@@ -67,19 +67,13 @@ ZombieOrchard Market Source Manifest + Nested Result Consumer / Exchange Readbac
 ## Acceptance ledgers
 
 ```txt
-.agent/market-authority-audit/acceptance-ledger.md
-.agent/market-authority-audit/fixture-implementation-map.md
-.agent/market-authority-audit/2026-07-08T09-48-58-04-00-transaction-replay-boundary.md
-.agent/market-authority-audit/2026-07-08T11-19-53-04-00-result-propagation-fixture-gate.md
-.agent/market-authority-audit/2026-07-08T12-51-50-04-00-command-journal-fixture-boundary.md
-.agent/market-authority-audit/2026-07-08T14-18-45-04-00-acceptance-ledger-fixture-map.md
-.agent/market-authority-audit/2026-07-08T16-10-36-04-00-transaction-ledger-source-splice-map.md
-.agent/market-authority-audit/2026-07-08T16-20-00-04-00-nested-result-source-contract.md
-.agent/market-authority-audit/2026-07-08T19-10-54-04-00-command-source-manifest-fixture-gate.md
-.agent/market-authority-audit/2026-07-08T19-21-15-04-00-source-manifest-nested-result-contract.md
+.agent/market-authority-audit/2026-07-08T21-18-39-04-00-nested-result-transaction-contract.md
+.agent/architecture-audit/2026-07-08T21-18-39-04-00-market-transaction-fixture-dsk-map.md
+.agent/render-audit/2026-07-08T21-18-39-04-00-exchange-result-projection-readback.md
+.agent/gameplay-audit/2026-07-08T21-18-39-04-00-market-transaction-result-loop.md
 ```
 
-Use those files as the source of truth for exact required result shapes, rejection reasons, transaction records, projection records, source files, and fixture cases.
+Use those files as the current source of truth for exact required result shapes, rejection reasons, transaction records, projection records, source files, and fixture cases.
 
 ## Defer until after Market authority
 
