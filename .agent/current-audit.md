@@ -1,14 +1,14 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-09T10-40-00-04-00`
+**Timestamp:** `2026-07-09T13-03-43-04-00`
 
 ## Summary
 
-`ZombieOrchard` is a standalone static browser orchard survival/economy shell with a compact kit runtime, generated interface domains, game-domain kits, a canvas renderer, an HTML renderer, and a minimal smoke harness.
+`ZombieOrchard` remains a standalone static browser orchard survival/economy shell with a compact kit runtime, scoped interface domains, game-domain kits, a canvas renderer, an HTML renderer, and a minimal smoke harness.
 
-The repo is not missing a route, game factory, static build command, command router, first playable loop, or smoke script. The current blocker remains narrower: the Market/Exchange path needs source-owned command/result records, nested command-result retention, exchange-specific projection, renderer readback, GameHost diagnostics, and a DOM-free fixture.
+The repo is not missing a route, game factory, static build command, command router, first playable loop, or smoke script. The narrow blocker remains the Exchange/Market path: source-owned Market actions, command/result ledgers, nested command-result retention, Exchange projection/readback, GameHost diagnostics, and DOM-free fixture proof.
 
-This pass keeps runtime code unchanged and refreshes repo-local docs plus central tracking from `2026-07-09T07-41-29-04-00` to `2026-07-09T10-40-00-04-00`.
+This pass keeps runtime code unchanged and refreshes repo-local docs plus central tracking from `2026-07-09T10-40-00-04-00` to `2026-07-09T13-03-43-04-00`.
 
 ## Current interaction loop
 
@@ -38,7 +38,6 @@ Input routing:
 
 [data-command] click
   -> engine.command("active-session", command)
-  -> active-session command mutates session/world/resource state
 ```
 
 ## Domains in use
@@ -55,7 +54,6 @@ command-router
 event-emitter
 tick-dispatcher
 snapshot-aggregator
-subscription-bus
 browser-animation-loop
 GameHost
 entry
@@ -71,148 +69,67 @@ knowledge
 preferences
 outcome
 interface-composition
-html-interface-renderer
 resource-ledger
 pressure-field
 orchard-world
 construction-runtime
 roster-runtime
 inventory-runtime
-world-canvas
+world-canvas-renderer
+html-interface-renderer
 smoke-harness
+repo-local-agent-ledger
+central-ledger-readback
 ```
 
-## Services kits offer today
+## Kit services in the current runtime
 
 ```txt
 kit-runtime:
-  install kits
-  register domains
-  route commands
-  return command results
-  tick domains
-  emit events
-  aggregate snapshots
-  notify subscribers
+  register domains, route commands, return command results, tick domains, emit events, aggregate snapshots, subscribe listeners.
 
-scoped-interface-domain-kit family:
-  expose screen title/description/actions
-  accept activate(actionId)
-  return action descriptors
-  support screen transitions
+scoped-interface-domain-kit:
+  expose screen descriptors, selectable actions, field mutation, activation descriptors, and interface snapshots.
 
 interface-composition-kit:
-  track active/previous screen
-  dispatch active screen actions
-  optionally dispatch nested action.command
-  transition screens
-  expose activeSnapshot
+  route transitions, route back actions, activate current interface screen, dispatch nested commands, auto-route outcome when active session ends, expose active screen snapshot.
 
 resource-ledger-kit:
-  store resource values
-  add resources
-  pay resources
-  answer affordability checks
+  store resource values, canPay, pay, add, add/pay commands, and ledger snapshot.
 
 pressure-field-kit:
-  track pressure channels
-  tick pressure changes
+  adjust pressure channels, tick row pressure/curse, expose pressure snapshot.
 
 orchard-world-kit:
-  generate orchard trees/apples/pests
-  move player
-  collect apples
-  clear pests
-  expose world snapshot
+  generate trees/apples, collect nearby apples, reseed apples, expose bounds and orchard snapshot.
 
 construction-runtime-kit:
-  expose build catalog
-  pay for builds
-  append built objects
+  build catalog entries by paying resources, append built items, expose built catalog snapshot.
 
 roster-runtime-kit:
-  expose actors
-  hire actors through resource payment
+  hire workers by paying money, append actors, expose roster snapshot.
 
 inventory-runtime-kit:
-  expose items
-  equip/own inventory rows
+  equip inventory items and expose inventory snapshot.
 
 active-session-domain-kit:
-  process collect/clear/next-phase commands
-  mutate day/phase/player/message/score
-  project session actions
+  move, collect, clear, advance phase, spawn/chase pests, end session, expose session and available actions.
 
 world-canvas-render-kit:
-  consume orchard snapshot
-  render trees/apples/pests/buildings/player
+  render trees, apples, pests, built objects, and player from snapshots.
 
 html-interface-render-kit:
-  consume interface/resource/session snapshots
-  render active-session HUD or generic screen panel
-```
-
-## Current kits
-
-```txt
-kit-runtime
-scoped-interface-domain-kit
-entry-domain-kit
-session-select-domain-kit
-run-setup-domain-kit
-active-session-domain-kit
-interrupt-domain-kit
-construction-domain-kit
-exchange-domain-kit
-roster-domain-kit
-inventory-domain-kit
-knowledge-domain-kit
-preferences-domain-kit
-outcome-domain-kit
-interface-composition-kit
-resource-ledger-kit
-pressure-field-kit
-orchard-world-kit
-construction-runtime-kit
-roster-runtime-kit
-inventory-runtime-kit
-world-canvas-render-kit
-html-interface-render-kit
-game-host-diagnostics-kit
-smoke-fixture-kit
-```
-
-## Next-cut kits
-
-```txt
-market-action-catalog-kit
-market-action-id-catalog-kit
-market-command-source-manifest-kit
-market-command-envelope-kit
-market-source-snapshot-kit
-market-price-source-kit
-market-capacity-policy-kit
-market-preflight-kit
-market-command-result-kit
-market-rejection-reason-catalog-kit
-market-command-journal-kit
-market-result-journal-kit
-resource-transaction-history-kit
-inventory-purchase-intake-kit
-interface-nested-result-adapter-kit
-market-result-projection-kit
-market-render-readback-kit
-market-gamehost-diagnostics-kit
-market-fixture-replay-kit
-central-ledger-readback-kit
+  render active-session HUD or generic screen panel and route click actions/commands.
 ```
 
 ## Main finding
 
-Do not replace the runtime next. `engine.command()` already returns command results, but `interface-composition.activate` still discards nested command results and the Exchange screen still has no Market-specific projection/readback branch.
+`engine.command()` already returns command results, so the runtime should not be replaced. The missing consumer boundary is inside the Market/Exchange path: `interface-composition` discards nested command results, `exchange` has no source-owned Market action catalog beyond Back, `html-interface-renderer` has no Exchange projection/readback branch, and `GameHost` has no Market diagnostics.
 
-## Next safe ledge
+## Recommended next ledge
 
 ```txt
-ZombieOrchard Market Readback Central Refresh + Exchange Result Fixture Gate
+ZombieOrchard Market Result Consumer Ledger Refresh + Exchange Fixture Gate
 ```
+
+Start with pure source/result/readback modules and fixture rows. Do not rewrite the engine, canvas renderer, HTML shell, or orchard economy before Market accepted/rejected rows are fixture-proven.
