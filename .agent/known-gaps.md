@@ -1,11 +1,12 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-09T05-11-22-04-00`
+**Timestamp:** `2026-07-09T07-30-48-04-00`
 
 ## Critical gaps
 
 ```txt
 - The exchange / Market screen exists but still falls through to generic screen rendering.
+- The exchange screen currently only exposes Back.
 - Market actions do not yet have stable source-owned action IDs.
 - There is no MarketActionCatalog.
 - There is no MarketCommandSourceManifest.
