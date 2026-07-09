@@ -1,11 +1,11 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-08T23-40-55-04-00`
+**Timestamp:** `2026-07-09T02-05-52-04-00`
 
 ## Critical gaps
 
 ```txt
-- The exchange / Market screen exists but only exposes Back.
+- The exchange / Market screen exists but still falls through to generic screen rendering.
 - Market actions do not yet have stable source-owned action IDs.
 - There is no MarketCommandSourceManifest.
 - There is no MarketCommandEnvelope.
@@ -18,69 +18,35 @@
 - There is no MarketCommandJournal.
 - There is no MarketResultJournal.
 - There is no Market transaction ledger.
-- Resource changes are not recorded as transaction history.
-- Inventory purchases do not have a purchase-intake service.
-- interface-composition dispatches nested commands but does not retain, return, journal, or project the nested result.
-- interface-composition snapshots do not expose lastResult.
-- html-interface-renderer has no exchange-specific projection branch.
-- html-interface-renderer has no exchange renderer readback report.
-- GameHost only exposes engine/getState/tick.
-- tests/smoke.mjs only checks entry, Play transition, and apple existence.
+- There is no inventory purchase intake record for accepted Market buys.
+- interface-composition currently drops nested command results.
+- interface-composition snapshot does not expose lastResult.
+- html-interface-renderer has no exchange-specific Market projection branch.
+- There is no MarketRenderReadback record.
+- GameHost does not expose fixture-readable Market diagnostics.
+- There is no DOM-free Market result fixture.
 ```
 
-## Architecture gaps
+## Secondary gaps
 
 ```txt
-- active-session-domain-kit is doing too many jobs: movement, harvest, pest clearing, phase changes, health, score, and session ending.
-- orchard-world uses Math.random directly, so apple and pest state is not replay-stable.
-- resource-ledger exposes value mutation but not provenance.
-- construction and roster payments mutate resources without shared transaction records.
-- interface actions do not yet preserve command context for audit or replay.
-- nested command results are not available to GameHost diagnostics or renderer projections.
-- market-specific logic currently has no dedicated dispatch service.
-- Market projection snapshots are not separated from generic screen rendering.
-- direct data-command clicks in html-interface-renderer bypass the interface-composition result ledger.
-- command results do not include stable command IDs, source fingerprints, before snapshots, after snapshots, or mutation summaries.
+- The wider economy remains intentionally shallow.
+- Worker assignment is not yet source-owned.
+- Tool effects are not yet source-owned.
+- Phase authority is still local to active-session.
+- Save/load is absent.
+- Codex progression is shallow.
+- Outcome summary is minimal.
 ```
 
-## Market adapter gaps
+## Current risk
+
+Adding more economy content before result readback will make Market bugs harder to isolate.
+
+## Recommended handling
+
+Solve one vertical result-readback path first:
 
 ```txt
-- sell-apples is not implemented.
-- buy-basic-tool is not implemented.
-- buy-row-supply is not implemented.
-- market-return-to-active-session remains the only exchange action.
-- unknown Market command rejection is not stable.
-- invalid quantity rejection is not stable.
-- insufficient funds rejection is not Market-owned.
-- insufficient apples rejection is not Market-owned.
-- inventory capacity full rejection is not implemented.
-- accepted sell/buy records do not produce TransactionRecord data.
-- rejected command before/after snapshots do not exist.
-- Market projection rows do not exist for the exchange renderer.
-- Market transaction replay has no source-owned fixture entrypoint.
-- Market renderer readback has no stable projection report.
-- Market command journal rows do not exist for fixture replay.
-- Market result journal rows do not exist for fixture replay.
-- Nested result propagation has no fixture row.
-- No explicit InterfaceNestedResultAdapter implementation exists yet.
-- No acceptance rule prevents the HTML renderer from inventing price/capacity rows.
-```
-
-## Render gaps
-
-```txt
-- world-canvas is acceptable for current scope and should not be rewritten first.
-- html-interface-renderer needs an exchange projection consumer branch.
-- html-interface-renderer needs to expose readback for consumed Market rows.
-- GameHost needs additive Market diagnostics for fixture and browser readback.
-```
-
-## Deploy/test gaps
-
-```txt
-- There is no tests/market-transaction-fixture.mjs.
-- There is no npm script for Market fixture validation.
-- Current build copies src/ wholesale, so source modules will deploy once added.
-- Current smoke test does not enter exchange or assert nested command results.
+Market action -> command envelope -> preflight -> result -> journal -> transaction -> nested result -> projection -> renderer readback -> GameHost diagnostics -> fixture
 ```
