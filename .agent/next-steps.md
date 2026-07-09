@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-09T13-18-48-04-00`
+**Timestamp:** `2026-07-09T16-34-14-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions source-owned, replayable, nested-result-safe, transaction-ba
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Result Central Ledger Sync + Exchange Fixture Gate
+ZombieOrchard Market Result Readback Ledger Refresh + Exchange Fixture Gate
 ```
 
 ## Checklist
@@ -28,10 +28,10 @@ ZombieOrchard Market Result Central Ledger Sync + Exchange Fixture Gate
 - [ ] Add an interface nested-result adapter.
 - [ ] Preserve `interface-composition.command("activate", ...)` while adding `snapshot().lastResult`.
 - [ ] Add Exchange-specific projection in `html-interface-renderer`.
-- [ ] Add Market render readback summarizing visible action count, last result, rejection reason, and transaction count.
+- [ ] Add Market render readback summarizing visible action count, last result, rejection reason, transaction count, and intake count.
 - [ ] Add additive `window.GameHost.getState().marketDiagnostics` or equivalent without removing the raw engine snapshot.
 - [ ] Add a DOM-free fixture script for accepted sell, accepted buy, rejected insufficient-resource, and rejected capacity rows.
-- [ ] Wire the fixture into `npm test` or add a dedicated script before widening the game economy.
+- [ ] Wire the fixture into `npm test` or add `npm run test:market` before widening the game economy.
 - [ ] Run `npm test`.
 - [ ] Run `npm run build`.
 - [ ] Push only to `main`.
@@ -49,6 +49,7 @@ after source snapshot
 accepted or rejected result
 no mutation for rejected rows
 resource transaction history for accepted rows
+inventory intake history for accepted buy rows
 nested result retained by interface-composition
 Exchange renderer projection/readback
 GameHost diagnostics
