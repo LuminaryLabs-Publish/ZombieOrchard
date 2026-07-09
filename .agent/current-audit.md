@@ -1,6 +1,6 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-09T16-38-14-04-00`
+**Timestamp:** `2026-07-09T18-49-13-04-00`
 
 ## Summary
 
@@ -20,34 +20,13 @@ DOM-free fixture proof
 central ledger parity
 ```
 
-This pass keeps runtime code unchanged and refreshes repo-local docs from `2026-07-09T16-34-14-04-00` to `2026-07-09T16-38-14-04-00`.
-
 ## Current interaction loop
 
 ```txt
-index.html
-  -> src/boot.js
-  -> src/start.js
-  -> createOrchardGame()
-  -> createWorldCanvas(canvas)
-  -> createHtmlInterfaceRenderer({ root, engine })
-  -> requestAnimationFrame(draw)
-  -> engine.tick(1 / 60)
-  -> pressure-field and active-session tick
-  -> engine.snapshot()
-  -> world-canvas renders orchard trees, apples, pests, and player
-  -> html-interface-renderer renders active-session HUD or generic screen panel
-  -> [data-action] routes through interface-composition.activate
-  -> scoped interface domain returns action descriptor
-  -> optional action.command dispatches through ctx.engine.command(...)
-  -> nested command result is currently discarded
-  -> next action.to or transition table moves active screen
-  -> [data-command] routes directly to active-session
-  -> Exchange/Market remains a generic screen with Back only
-  -> window.GameHost exposes engine, getState, and tick
+index.html -> src/boot.js -> src/start.js -> createOrchardGame() -> createWorldCanvas + createHtmlInterfaceRenderer -> requestAnimationFrame(draw) -> engine.tick(1 / 60) -> engine.snapshot() -> world-canvas render -> html-interface-renderer render -> data-action/data-command routing -> GameHost
 ```
 
-## Input routing
+Expanded loop:
 
 ```txt
 [data-action] click
@@ -116,48 +95,28 @@ market-fixture-replay-next
 central-ledger-readback
 ```
 
-## Kit services in the current runtime
+## Current kit services
 
 ```txt
 - createKitRuntime registers domains, routes commands, returns results, ticks domains, emits events, aggregates snapshots, and notifies subscribers.
 - scoped interface domains expose screen descriptors, actions, activation descriptors, and snapshots.
-- interface-composition routes transitions/back, activates the active screen, dispatches nested commands, auto-routes outcome, and exposes activeSnapshot.
+- interface-composition routes transitions/back, activates active screens, dispatches nested commands, auto-routes outcome, and exposes activeSnapshot.
 - resource-ledger stores resources, affordability helpers, add/pay commands, and snapshots.
-- pressure-field tracks rowPressure/curse and pressure drift.
-- orchard-world generates trees/apples, supports apple collection, and exposes world bounds/state.
+- pressure-field tracks rowPressure/curse drift.
+- orchard-world generates orchard state.
 - construction-runtime builds catalog items by paying resources.
-- roster-runtime tracks/hire actors.
-- inventory-runtime tracks equipped item and item list.
+- roster-runtime and inventory-runtime expose actors/items/equipped state.
 - active-session handles movement, collection, clearing, phase advance, pests, session end, and HUD actions.
 - world-canvas renders orchard state from snapshots.
-- html-interface-renderer renders active-session HUD and generic screen panels, and routes data-action/data-command clicks.
-- tests/smoke.mjs covers entry -> play -> active-session plus apple existence.
-```
-
-## Services needed next
-
-```txt
-- stable Market action IDs and source-owned catalog rows
-- Market command source manifest, envelope, before/after source snapshots, price and capacity policies
-- Market preflight with stable rejection reasons
-- accepted/rejected MarketCommandResult records with rejected no-mutation proof
-- resource transaction history and inventory intake rows for accepted Market commands
-- Market command/result journals
-- interface nested-result retention without breaking activate/back/transition compatibility
-- Exchange-specific projection and render readback in html-interface-renderer
-- GameHost market diagnostics compatible with current engine/getState/tick
-- DOM-free fixture for accepted sell, accepted buy, rejected insufficient resource, and rejected capacity rows
-- central ledger parity update after fixture proof
+- html-interface-renderer renders active-session HUD and generic screens, and routes data-action/data-command clicks.
 ```
 
 ## Main finding
 
-`engine.command()` already returns command results, so the runtime should not be replaced. The missing consumer boundary is inside the Market/Exchange path: `interface-composition` discards nested command results, `exchange` has no source-owned Market action catalog beyond Back, `html-interface-renderer` has no Exchange projection/readback branch, and `GameHost` has no Market diagnostics.
+`engine.command()` already returns command results, so the runtime should not be replaced. The missing consumer boundary is inside Market/Exchange: `interface-composition` discards nested command results, `exchange` has no source-owned Market action catalog beyond Back, `html-interface-renderer` has no Exchange projection/readback branch, and `GameHost` has no Market diagnostics.
 
 ## Recommended next ledge
 
 ```txt
-ZombieOrchard Market Readback Ledger Catch-Up + Exchange Fixture Gate
+ZombieOrchard Market Nested Result Readback Refresh + Exchange Fixture Gate
 ```
-
-Start with pure source/result/readback modules and fixture rows. Do not rewrite the engine, canvas renderer, HTML shell, or orchard economy before Market accepted/rejected rows are fixture-proven.
