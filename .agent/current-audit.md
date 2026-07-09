@@ -1,37 +1,44 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-09T07-41-29-04-00`
+**Timestamp:** `2026-07-09T10-40-00-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a standalone static browser orchard survival/economy shell with a compact kit runtime, generated interface domains, game-domain kits, a canvas renderer, an HTML renderer, and a minimal smoke harness.
 
-The repo is not missing a route, game factory, static build command, command router, first playable loop, or smoke script. The current blocker is narrower: Market/Exchange needs source-owned command/result records, nested command-result retention, exchange-specific projection, renderer readback, GameHost diagnostics, and a DOM-free fixture.
+The repo is not missing a route, game factory, static build command, command router, first playable loop, or smoke script. The current blocker remains narrower: the Market/Exchange path needs source-owned command/result records, nested command-result retention, exchange-specific projection, renderer readback, GameHost diagnostics, and a DOM-free fixture.
 
-This pass keeps runtime code unchanged and updates repo-local docs plus central tracking. It also catches central tracking up from `2026-07-09T05-11-22-04-00` to this run after repo-local docs had already advanced to `2026-07-09T07-30-48-04-00`.
+This pass keeps runtime code unchanged and refreshes repo-local docs plus central tracking from `2026-07-09T07-41-29-04-00` to `2026-07-09T10-40-00-04-00`.
 
 ## Current interaction loop
 
 ```txt
 index.html
--> src/boot.js
--> src/start.js
--> createOrchardGame()
--> createWorldCanvas(canvas)
--> createHtmlInterfaceRenderer({ root, engine })
--> requestAnimationFrame(draw)
--> engine.tick(1 / 60)
--> runtime ticks pressure-field and active-session
--> engine.snapshot()
--> world-canvas renders orchard snapshot
--> html-interface-renderer renders active HUD or active screen panel
--> data-action clicks route through interface-composition.activate
--> data-command clicks route directly to active-session
--> scoped interface domain activate returns an action descriptor
--> nested action.command can call ctx.engine.command(...)
--> nested result is discarded
--> exchange screen renders as a generic scoped-interface screen
--> window.GameHost exposes engine/getState/tick
+  -> src/boot.js
+  -> src/start.js
+  -> createOrchardGame()
+  -> createWorldCanvas(canvas)
+  -> createHtmlInterfaceRenderer({ root, engine })
+  -> draw()
+  -> engine.tick(1 / 60)
+  -> world.render(snapshot)
+  -> ui.render(snapshot)
+  -> requestAnimationFrame(draw)
+```
+
+Input routing:
+
+```txt
+[data-action] click
+  -> engine.command("interface-composition", "activate", { actionId })
+  -> active screen domain returns action descriptor
+  -> optional nested action.command runs through ctx.engine.command(...)
+  -> nested result is discarded
+  -> optional transition moves active screen
+
+[data-command] click
+  -> engine.command("active-session", command)
+  -> active-session command mutates session/world/resource state
 ```
 
 ## Domains in use
@@ -73,45 +80,79 @@ roster-runtime
 inventory-runtime
 world-canvas
 smoke-harness
-market-authority-next
-market-result-ledger-next
-market-render-readback-next
-market-fixture-next
-central-ledger-sync
 ```
 
-## Services in use
+## Services kits offer today
 
 ```txt
-install kits
-register domains
-route commands
-return command results from engine.command
-tick domains
-emit events
-aggregate snapshots
-render world canvas
-render active-session HUD
-render generic screen panels
-transition interface screens
-activate selected interface action
-dispatch nested interface commands
-add/pay/check resources
-adjust pressure
-create orchard trees and apples
-collect apples near player
-build catalog items
-hire roster actors
-equip inventory
-move player
-collect apples
-clear rows
-advance day/night phase
-expose GameHost engine/getState/tick
-run minimal smoke from createOrchardGame
+kit-runtime:
+  install kits
+  register domains
+  route commands
+  return command results
+  tick domains
+  emit events
+  aggregate snapshots
+  notify subscribers
+
+scoped-interface-domain-kit family:
+  expose screen title/description/actions
+  accept activate(actionId)
+  return action descriptors
+  support screen transitions
+
+interface-composition-kit:
+  track active/previous screen
+  dispatch active screen actions
+  optionally dispatch nested action.command
+  transition screens
+  expose activeSnapshot
+
+resource-ledger-kit:
+  store resource values
+  add resources
+  pay resources
+  answer affordability checks
+
+pressure-field-kit:
+  track pressure channels
+  tick pressure changes
+
+orchard-world-kit:
+  generate orchard trees/apples/pests
+  move player
+  collect apples
+  clear pests
+  expose world snapshot
+
+construction-runtime-kit:
+  expose build catalog
+  pay for builds
+  append built objects
+
+roster-runtime-kit:
+  expose actors
+  hire actors through resource payment
+
+inventory-runtime-kit:
+  expose items
+  equip/own inventory rows
+
+active-session-domain-kit:
+  process collect/clear/next-phase commands
+  mutate day/phase/player/message/score
+  project session actions
+
+world-canvas-render-kit:
+  consume orchard snapshot
+  render trees/apples/pests/buildings/player
+
+html-interface-render-kit:
+  consume interface/resource/session snapshots
+  render active-session HUD or generic screen panel
 ```
 
-## Kits in use
+## Current kits
 
 ```txt
 kit-runtime
@@ -141,32 +182,37 @@ game-host-diagnostics-kit
 smoke-fixture-kit
 ```
 
-## Current blocker
+## Next-cut kits
 
-`engine.command()` already returns command results, but `interface-composition.activate` does not preserve nested `ctx.engine.command(...)` results.
+```txt
+market-action-catalog-kit
+market-action-id-catalog-kit
+market-command-source-manifest-kit
+market-command-envelope-kit
+market-source-snapshot-kit
+market-price-source-kit
+market-capacity-policy-kit
+market-preflight-kit
+market-command-result-kit
+market-rejection-reason-catalog-kit
+market-command-journal-kit
+market-result-journal-kit
+resource-transaction-history-kit
+inventory-purchase-intake-kit
+interface-nested-result-adapter-kit
+market-result-projection-kit
+market-render-readback-kit
+market-gamehost-diagnostics-kit
+market-fixture-replay-kit
+central-ledger-readback-kit
+```
 
-That means a Market action that dispatches a nested command cannot yet be replayed, surfaced as `snapshot["interface-composition"].lastResult`, consumed by the Exchange renderer, or exposed through GameHost diagnostics.
+## Main finding
 
-The exchange screen also only contains Back in `orchard-preset.js`, so there is no stable Market action catalog or source-owned transaction path yet.
+Do not replace the runtime next. `engine.command()` already returns command results, but `interface-composition.activate` still discards nested command results and the Exchange screen still has no Market-specific projection/readback branch.
 
 ## Next safe ledge
 
 ```txt
-ZombieOrchard Market Result Ledger Central Sync + Exchange Transaction Fixture Gate
+ZombieOrchard Market Readback Central Refresh + Exchange Result Fixture Gate
 ```
-
-## Do not start with
-
-```txt
-runtime replacement
-canvas renderer rewrite
-CSS redesign
-new orchard art
-new enemy types
-new worker AI
-save/load system
-larger economy expansion
-phase authority rewrite
-```
-
-Start with source-owned Market command/result records and a DOM-free fixture that proves nested result retention without browser APIs.
