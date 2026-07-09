@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-09T13-03-43-04-00`
+**Last aligned:** `2026-07-09T13-10-19-04-00`
 
 ## Purpose
 
@@ -18,7 +18,7 @@ No checked non-Cavalry Publish repo was fully new, absent from the central ledge
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`ZombieOrchard` was selected as the oldest eligible central-ledger fallback. Its central ledger still pointed at `2026-07-09T10-40-00-04-00`, while checked non-Cavalry fallbacks had later central entries.
+`ZombieOrchard` was selected because central tracking was stale versus repo-local `.agent` state. The central ledger still pointed at `2026-07-09T10-40-00-04-00`, while repo-local docs had already advanced to `2026-07-09T13-03-43-04-00`. This pass refreshes repo-local docs again and updates the central ledger to `2026-07-09T13-10-19-04-00`.
 
 ## Publish repos checked
 
@@ -26,11 +26,11 @@ No checked non-Cavalry Publish repo was fully new, absent from the central ledge
 LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest 2026-07-09T12-08-46-04-00
 LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present / central latest 2026-07-09T12-30-09-04-00
 LuminaryLabs-Publish/AetherVale           tracked / root .agent present / central latest 2026-07-09T11-30-50-04-00
-LuminaryLabs-Publish/ZombieOrchard        selected / oldest eligible central latest 2026-07-09T10-40-00-04-00
+LuminaryLabs-Publish/ZombieOrchard        selected / central stale / repo-local latest 2026-07-09T13-03-43-04-00
 LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-09T11-00-39-04-00
 LuminaryLabs-Publish/MyCozyIsland         tracked / root .agent present / central latest 2026-07-09T11-39-50-04-00
 LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / central latest 2026-07-09T11-50-08-04-00
-LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest 2026-07-09T12-38-16-04-00
+LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest 2026-07-09T12-50-00-04-00
 LuminaryLabs-Publish/TheCavalryOfRome     excluded by rule
 LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest 2026-07-09T12-00-36-04-00
 ```
@@ -63,7 +63,7 @@ open route
   -> each animation frame calls engine.tick(1 / 60)
   -> tickable domains update pressure and active-session state
   -> engine.snapshot() aggregates every domain snapshot
-  -> world-canvas renders trees, apples, pests, built objects, and player from snapshot
+  -> world-canvas renders trees, apples, pests, and player from snapshot
   -> html-interface-renderer renders active-session HUD or active interface screen
   -> data-action clicks route through interface-composition.activate
   -> data-command clicks route directly to active-session command handlers
@@ -106,13 +106,14 @@ exchange action row
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-09T13-03-43-04-00-market-result-consumer-ledger-refresh-dsk-map.md
-.agent/render-audit/2026-07-09T13-03-43-04-00-exchange-consumer-readback-parity.md
-.agent/gameplay-audit/2026-07-09T13-03-43-04-00-market-command-result-replay-loop.md
-.agent/market-authority-audit/2026-07-09T13-03-43-04-00-nested-result-ledger-fixture-contract.md
-.agent/deploy-audit/2026-07-09T13-03-43-04-00-market-fixture-build-test-gate.md
-.agent/trackers/2026-07-09T13-03-43-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T13-03-43-04-00.md
+.agent/architecture-audit/2026-07-09T13-10-19-04-00-market-result-ledger-parity-dsk-map.md
+.agent/render-audit/2026-07-09T13-10-19-04-00-exchange-render-readback-ledger-parity.md
+.agent/gameplay-audit/2026-07-09T13-10-19-04-00-market-command-result-loop.md
+.agent/interaction-audit/2026-07-09T13-10-19-04-00-data-action-nested-result-contract.md
+.agent/market-authority-audit/2026-07-09T13-10-19-04-00-market-source-result-fixture-contract.md
+.agent/deploy-audit/2026-07-09T13-10-19-04-00-market-fixture-test-build-wire.md
+.agent/trackers/2026-07-09T13-10-19-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T13-10-19-04-00.md
 .agent/kit-registry.json
 ```
 
