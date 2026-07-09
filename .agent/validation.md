@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-09T13-18-48-04-00`
+**Timestamp:** `2026-07-09T16-34-14-04-00`
 
 ## Available commands
 
@@ -45,7 +45,7 @@ pushed to main: yes, docs only
 
 ## Validation gap
 
-There is still no dedicated Market fixture, so the current smoke surface cannot prove Exchange action IDs, accepted/rejected Market results, no-mutation rejection behavior, transaction history, nested result retention, Exchange renderer readback, GameHost market diagnostics, or central ledger parity.
+There is still no dedicated Market fixture, so the current smoke surface cannot prove Exchange action IDs, accepted/rejected Market results, no-mutation rejection behavior, transaction history, inventory intake, nested result retention, Exchange renderer readback, GameHost market diagnostics, or central ledger parity.
 
 ## Required validation after next implementation
 
