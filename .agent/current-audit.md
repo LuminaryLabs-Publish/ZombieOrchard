@@ -1,6 +1,6 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-09T07-30-48-04-00`
+**Timestamp:** `2026-07-09T07-41-29-04-00`
 
 ## Summary
 
@@ -8,7 +8,7 @@
 
 The repo is not missing a route, game factory, static build command, command router, first playable loop, or smoke script. The current blocker is narrower: Market/Exchange needs source-owned command/result records, nested command-result retention, exchange-specific projection, renderer readback, GameHost diagnostics, and a DOM-free fixture.
 
-This pass keeps runtime code unchanged and updates repo-local docs plus central tracking.
+This pass keeps runtime code unchanged and updates repo-local docs plus central tracking. It also catches central tracking up from `2026-07-09T05-11-22-04-00` to this run after repo-local docs had already advanced to `2026-07-09T07-30-48-04-00`.
 
 ## Current interaction loop
 
@@ -27,6 +27,7 @@ index.html
 -> html-interface-renderer renders active HUD or active screen panel
 -> data-action clicks route through interface-composition.activate
 -> data-command clicks route directly to active-session
+-> scoped interface domain activate returns an action descriptor
 -> nested action.command can call ctx.engine.command(...)
 -> nested result is discarded
 -> exchange screen renders as a generic scoped-interface screen
@@ -73,8 +74,10 @@ inventory-runtime
 world-canvas
 smoke-harness
 market-authority-next
+market-result-ledger-next
 market-render-readback-next
 market-fixture-next
+central-ledger-sync
 ```
 
 ## Services in use
@@ -83,7 +86,7 @@ market-fixture-next
 install kits
 register domains
 route commands
-return command results
+return command results from engine.command
 tick domains
 emit events
 aggregate snapshots
@@ -140,7 +143,7 @@ smoke-fixture-kit
 
 ## Current blocker
 
-`engine.command()` returns command results, but `interface-composition.activate` does not preserve nested `ctx.engine.command(...)` results.
+`engine.command()` already returns command results, but `interface-composition.activate` does not preserve nested `ctx.engine.command(...)` results.
 
 That means a Market action that dispatches a nested command cannot yet be replayed, surfaced as `snapshot["interface-composition"].lastResult`, consumed by the Exchange renderer, or exposed through GameHost diagnostics.
 
@@ -149,7 +152,7 @@ The exchange screen also only contains Back in `orchard-preset.js`, so there is 
 ## Next safe ledge
 
 ```txt
-ZombieOrchard Market Nested Result Readback + Exchange Transaction Fixture Gate
+ZombieOrchard Market Result Ledger Central Sync + Exchange Transaction Fixture Gate
 ```
 
 ## Do not start with
