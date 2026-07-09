@@ -1,6 +1,6 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-08T23-29-18-04-00`
+**Timestamp:** `2026-07-08T23-40-55-04-00`
 
 ## Critical gaps
 
@@ -63,61 +63,24 @@
 - Market command journal rows do not exist for fixture replay.
 - Market result journal rows do not exist for fixture replay.
 - Nested result propagation has no fixture row.
-- No explicit InterfaceNestedResultAdapter contract exists yet.
+- No explicit InterfaceNestedResultAdapter implementation exists yet.
 - No acceptance rule prevents the HTML renderer from inventing price/capacity rows.
 ```
 
 ## Render gaps
 
 ```txt
-- world-canvas is a host renderer, not a render-plan consumer.
-- buildings and roster actors are not drawn in the orchard world.
-- pressure and night-state are not visualized in the world canvas.
-- exchange cards are not rendered from economy projections.
-- transaction cards are not rendered from transaction projections.
-- HTML renderer has no stable branch for MarketResultProjection rows.
-- There is no renderer readback report proving the exchange view consumed MarketResultProjection instead of owning authority.
+- world-canvas is acceptable for current scope and should not be rewritten first.
+- html-interface-renderer needs an exchange projection consumer branch.
+- html-interface-renderer needs to expose readback for consumed Market rows.
+- GameHost needs additive Market diagnostics for fixture and browser readback.
 ```
 
-## Validation gaps
+## Deploy/test gaps
 
 ```txt
-- No fixture covers active-session to exchange.
-- No fixture covers exchange action catalog shape.
-- No fixture covers MarketCommandSourceManifest shape.
-- No fixture covers accepted Market sell.
-- No fixture covers rejected Market sell.
-- No fixture covers accepted purchase.
-- No fixture covers insufficient funds.
-- No fixture covers insufficient apples.
-- No fixture covers inventory capacity full.
-- No fixture covers unknown Market command.
-- No fixture covers invalid quantity.
-- No fixture proves deterministic price rows.
-- No fixture proves deterministic capacity rows.
-- No fixture proves nested command result propagation.
-- No fixture proves snapshot.lastResult.
-- No fixture proves direct data-command commands are not mixed into Market authority.
-- No fixture proves transaction history shape.
-- No fixture proves Market command journal shape.
-- No fixture proves Market result journal shape.
-- No fixture proves exchange projection shape.
-- No fixture proves renderer readback of MarketResultProjection.
-- No fixture proves rejected command no-mutation before/after snapshots.
-- No fixture proves GameHost baseline compatibility after Market helpers are added.
-- No fixture proves source manifest adapter output equals renderer projection input.
-```
-
-## Defer until Market fixture is implemented
-
-```txt
-- save slots
-- worker assignment
-- codex progression
-- seeded global replay
-- building effects
-- tool durability
-- expanded pest AI
-- render-plan extraction
-- settlement parity
+- There is no tests/market-transaction-fixture.mjs.
+- There is no npm script for Market fixture validation.
+- Current build copies src/ wholesale, so source modules will deploy once added.
+- Current smoke test does not enter exchange or assert nested command results.
 ```
