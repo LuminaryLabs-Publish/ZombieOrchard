@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-09T07-30-48-04-00`
+**Timestamp:** `2026-07-09T07-41-29-04-00`
 
 ## Available commands
 
@@ -35,6 +35,7 @@ tests/smoke.mjs:
 ```txt
 repo-list comparison: performed
 central-ledger comparison: performed
+repo-local .agent readback: performed
 source readback: performed
 root .agent update: performed
 architecture audit update: created
