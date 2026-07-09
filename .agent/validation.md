@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-08T23-40-55-04-00`
+**Timestamp:** `2026-07-09T02-05-52-04-00`
 
 ## Available commands
 
@@ -40,63 +40,26 @@ root .agent update: performed
 architecture audit update: created
 render audit update: created
 gameplay audit update: created
-Market consumer fixture/readback contract: created
+market-authority audit update: created
 deploy audit update: created
+turn ledger update: created
+central ledger update: performed
+central change-log update: created
 runtime source changed: no
 branch created: no
 pull request created: no
-npm test: not run
-npm run build: not run
+local npm test: not run
+local npm run build: not run
 browser smoke: not run
-Playwright smoke: not run
-GitHub Pages check: not run
+DOM-free Market fixture: not run because fixture files do not exist yet
 ```
 
-No runtime code changed.
-
-No local command execution was performed in this connector-only documentation pass.
-
-## Required next validation matrix
+## Next required validation
 
 ```txt
-Market fixture cases:
-  - entry to active-session still works
-  - active-session to exchange still works
-  - exchange exposes sell-apples, buy-basic-tool, buy-row-supply, and back
-  - MarketCommandSourceManifest has expected action ids
-  - MarketCommandSourceManifest has expected command types
-  - MarketCommandSourceManifest has expected reason catalog
-  - MarketCommandSourceManifest has price rows
-  - MarketCommandSourceManifest has capacity rows
-  - sell-apples accepted when apples > 0
-  - sell-apples rejected when apples = 0
-  - buy-basic-tool accepted when money >= price and capacity available
-  - buy-basic-tool rejected on insufficient funds
-  - buy-row-supply accepted when money >= price and capacity available
-  - buy command rejected when inventory capacity is full
-  - unknown Market command rejected with stable reason
-  - invalid quantity rejected with stable reason
-  - price rows stable across snapshots
-  - capacity rows stable across snapshots
-  - accepted command mutates only through Market-owned helpers
-  - rejected command does not mutate resources or inventory
-  - TransactionRecord is appended for accepted commands
-  - MarketCommandJournal row is appended
-  - MarketResultJournal row is appended
-  - interface-composition returns nested adapter output
-  - interface-composition snapshot exposes lastResult additively
-  - exchange renderer consumes MarketResultProjection rows only
-  - MarketRenderReadback proves renderer consumed projection rows
-  - GameHost baseline engine/getState/tick remains compatible
-  - GameHost market diagnostics are additive
-```
-
-## Required future commands
-
-```bash
+node scripts/zombie-orchard-market-result-fixture.mjs
 npm test
 npm run build
-node tests/market-transaction-fixture.mjs
 ```
 
-Add `npm run test:market` only after the fixture file exists.
+Run browser validation only after the DOM-free fixture proves accepted and rejected Market command rows.
