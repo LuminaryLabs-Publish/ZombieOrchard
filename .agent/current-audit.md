@@ -1,14 +1,16 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-09T13-03-43-04-00`
+**Timestamp:** `2026-07-09T13-10-19-04-00`
 
 ## Summary
 
-`ZombieOrchard` remains a standalone static browser orchard survival/economy shell with a compact kit runtime, scoped interface domains, game-domain kits, a canvas renderer, an HTML renderer, and a minimal smoke harness.
+`ZombieOrchard` remains a standalone static browser orchard survival/economy shell with a compact kit runtime, scoped interface domains, game-domain kits, a canvas renderer, an HTML renderer, `GameHost`, and a minimal smoke harness.
 
-The repo is not missing a route, game factory, static build command, command router, first playable loop, or smoke script. The narrow blocker remains the Exchange/Market path: source-owned Market actions, command/result ledgers, nested command-result retention, Exchange projection/readback, GameHost diagnostics, and DOM-free fixture proof.
+The repo is not missing a route, game factory, static build command, command router, first playable loop, or smoke script.
 
-This pass keeps runtime code unchanged and refreshes repo-local docs plus central tracking from `2026-07-09T10-40-00-04-00` to `2026-07-09T13-03-43-04-00`.
+The narrow blocker remains the Exchange/Market consumer seam: source-owned Market actions, command envelopes, accepted/rejected command results, nested command-result retention, Exchange projection/readback, `GameHost` diagnostics, and DOM-free fixture proof.
+
+This pass keeps runtime code unchanged and refreshes repo-local docs plus central tracking to `2026-07-09T13-10-19-04-00`.
 
 ## Current interaction loop
 
@@ -80,6 +82,10 @@ html-interface-renderer
 smoke-harness
 repo-local-agent-ledger
 central-ledger-readback
+market-action-source-next
+market-result-ledger-next
+market-render-readback-next
+market-fixture-replay-next
 ```
 
 ## Kit services in the current runtime
@@ -116,7 +122,7 @@ active-session-domain-kit:
   move, collect, clear, advance phase, spawn/chase pests, end session, expose session and available actions.
 
 world-canvas-render-kit:
-  render trees, apples, pests, built objects, and player from snapshots.
+  render trees, apples, pests, and player from snapshots.
 
 html-interface-render-kit:
   render active-session HUD or generic screen panel and route click actions/commands.
@@ -124,12 +130,14 @@ html-interface-render-kit:
 
 ## Main finding
 
-`engine.command()` already returns command results, so the runtime should not be replaced. The missing consumer boundary is inside the Market/Exchange path: `interface-composition` discards nested command results, `exchange` has no source-owned Market action catalog beyond Back, `html-interface-renderer` has no Exchange projection/readback branch, and `GameHost` has no Market diagnostics.
+`engine.command()` already returns command results, so the runtime should not be replaced.
+
+The missing consumer boundary is inside the Market/Exchange path: `interface-composition` discards nested command results, `exchange` has no source-owned Market action catalog beyond Back, `html-interface-renderer` has no Exchange projection/readback branch, and `GameHost` has no Market diagnostics.
 
 ## Recommended next ledge
 
 ```txt
-ZombieOrchard Market Result Consumer Ledger Refresh + Exchange Fixture Gate
+ZombieOrchard Market Result Ledger Parity Refresh + Exchange Fixture Gate
 ```
 
 Start with pure source/result/readback modules and fixture rows. Do not rewrite the engine, canvas renderer, HTML shell, or orchard economy before Market accepted/rejected rows are fixture-proven.
