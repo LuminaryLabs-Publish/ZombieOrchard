@@ -1,6 +1,6 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T19-21-15-04-00`
+**Timestamp:** `2026-07-08T21-18-39-04-00`
 
 ## Summary
 
@@ -8,7 +8,7 @@
 
 The repo is not missing a route, runtime, command router, renderer, or smoke harness. The blocker is narrower: the Market/exchange path has no source-owned command manifest, stable result shape, nested result propagation, transaction history, exchange projection, renderer readback, or DOM-free fixture matrix.
 
-This pass keeps runtime code unchanged and updates the `.agent` docs around the exact source-manifest and nested-result consumer gate.
+This pass keeps runtime code unchanged and updates the `.agent` docs around the exact Market transaction result and nested-result projection gate.
 
 ## Current interaction loop
 
@@ -52,11 +52,6 @@ Entry
 ## Source-backed facts
 
 ```txt
-package.json:
-  npm run dev starts a static Python server.
-  npm test runs node tests/smoke.mjs.
-  npm run build copies index.html and src/ into dist.
-
 src/start.js:
   creates createOrchardGame(), world-canvas, html-interface-renderer, animation loop, and window.GameHost.
 
@@ -228,5 +223,5 @@ exchange action ids
 ## Current priority
 
 ```txt
-ZombieOrchard Market Source Manifest + Nested Result Consumer / Exchange Readback Fixture Gate
+ZombieOrchard Market Transaction Result + Nested Result Projection Fixture Gate
 ```
