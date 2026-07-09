@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-09T13-10-19-04-00`
+**Timestamp:** `2026-07-09T13-18-48-04-00`
 
 ## Available commands
 
@@ -40,12 +40,12 @@ npm test: not run
 npm run build: not run
 browser smoke: not run
 DOM-free market fixture: not run because fixture files do not exist yet
-pushed to main: yes
+pushed to main: yes, docs only
 ```
 
 ## Validation gap
 
-There is still no dedicated Market fixture, so the current smoke surface cannot prove Exchange action IDs, accepted/rejected Market results, no-mutation rejection behavior, transaction history, nested result retention, Exchange renderer readback, or GameHost market diagnostics.
+There is still no dedicated Market fixture, so the current smoke surface cannot prove Exchange action IDs, accepted/rejected Market results, no-mutation rejection behavior, transaction history, nested result retention, Exchange renderer readback, GameHost market diagnostics, or central ledger parity.
 
 ## Required validation after next implementation
 
