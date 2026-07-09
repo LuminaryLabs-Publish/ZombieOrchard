@@ -1,18 +1,19 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-08T23-29-18-04-00",
-  "version": "0.29.0",
+  "updatedAt": "2026-07-08T23-40-55-04-00",
+  "version": "0.30.0",
   "purpose": "Track current and target kits for the standalone kit-composed orchard survival/economy shell.",
-  "status": "market-source-manifest-adapter-consumer-fixture-gate-planned",
-  "latestTracker": ".agent/trackers/2026-07-08T23-29-18-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-08T23-29-18-04-00.md",
-  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-08T23-29-18-04-00-market-adapter-consumer-dsk-map.md",
-  "latestRenderAudit": ".agent/render-audit/2026-07-08T23-29-18-04-00-exchange-projection-consumer-readback.md",
-  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-08T23-29-18-04-00-market-command-to-transaction-consumer-loop.md",
-  "latestSystemAudit": ".agent/market-authority-audit/2026-07-08T23-29-18-04-00-source-manifest-adapter-consumer-contract.md",
-  "latestDeployAudit": ".agent/deploy-audit/2026-07-08T23-29-18-04-00-market-fixture-check-integration.md",
-  "previousSystemAudit": ".agent/market-authority-audit/2026-07-08T21-18-39-04-00-nested-result-transaction-contract.md",
-  "recommendedNextSlice": "ZombieOrchard Market Source Manifest Adapter + Consumer Fixture Gate",
+  "status": "market-consumer-fixture-readback-central-ledger-sync-gate-planned",
+  "latestTracker": ".agent/trackers/2026-07-08T23-40-55-04-00/project-breakdown.md",
+  "previousTracker": ".agent/trackers/2026-07-08T23-29-18-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-08T23-40-55-04-00.md",
+  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-08T23-40-55-04-00-market-consumer-fixture-readback-dsk-map.md",
+  "latestRenderAudit": ".agent/render-audit/2026-07-08T23-40-55-04-00-exchange-projection-readback-consumer-map.md",
+  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-08T23-40-55-04-00-market-command-result-replay-loop.md",
+  "latestSystemAudit": ".agent/market-authority-audit/2026-07-08T23-40-55-04-00-consumer-fixture-readback-contract.md",
+  "latestDeployAudit": ".agent/deploy-audit/2026-07-08T23-40-55-04-00-market-fixture-validation-map.md",
+  "previousSystemAudit": ".agent/market-authority-audit/2026-07-08T23-29-18-04-00-source-manifest-adapter-consumer-contract.md",
+  "recommendedNextSlice": "ZombieOrchard Market Consumer Fixture Readback + Central Ledger Sync Gate",
   "runtimeShape": {
     "host": "index.html",
     "boot": "src/boot.js",
@@ -68,7 +69,7 @@
     "runtime": ["static-browser-host", "boot-module", "runtime-entrypoint", "game-factory", "kit-runtime", "engine-context", "domain-registry", "command-router", "event-emitter", "tick-dispatcher", "snapshot-aggregator", "subscription-bus", "browser-animation-loop", "GameHost", "smoke-harness"],
     "interface": ["entry", "session-select", "run-setup", "active-session", "interrupt", "construction", "exchange", "roster", "inventory", "knowledge", "preferences", "outcome", "interface-composition", "html-interface-renderer"],
     "game": ["resource-ledger", "pressure-field", "orchard-world", "construction-runtime", "roster-runtime", "inventory-runtime", "active-session", "world-canvas"],
-    "marketAuthorityNext": ["market-action-id-catalog", "market-command-source-manifest", "market-command-envelope", "market-source-snapshot", "market-price-source", "market-capacity-policy", "market-preflight", "market-command-result", "market-rejection-reason-catalog", "market-command-journal", "market-result-journal", "resource-transaction-history", "inventory-purchase-intake", "interface-nested-result-adapter", "market-result-projection", "market-render-readback", "market-fixture-replay"],
+    "marketAuthorityNext": ["market-action-id-catalog", "market-command-source-manifest", "market-command-envelope", "market-source-snapshot", "market-price-source", "market-capacity-policy", "market-preflight", "market-command-result", "market-rejection-reason-catalog", "market-command-journal", "market-result-journal", "resource-transaction-history", "inventory-purchase-intake", "interface-nested-result-adapter", "market-result-projection", "market-render-readback", "market-gamehost-diagnostics", "market-fixture-replay"],
     "followOn": ["seeded-random", "orchard-input", "harvest-interaction", "building-effects", "worker-assignment", "tool-effects", "phase-authority", "save-runtime", "codex-progression", "outcome-summary", "render-plan", "settlement-parity"]
   },
   "services": {
@@ -119,6 +120,7 @@
     "interface-nested-result-adapter-kit",
     "market-result-projection-kit",
     "market-render-readback-kit",
+    "market-gamehost-diagnostics-kit",
     "market-fixture-replay-kit"
   ],
   "validation": {
