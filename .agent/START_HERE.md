@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-08T19-21-15-04-00`
+**Last aligned:** `2026-07-08T21-18-39-04-00`
 
 ## Purpose
 
@@ -12,27 +12,27 @@ Read this folder before changing implementation code.
 
 ## Current selection result
 
-The full accessible `LuminaryLabs-Publish` repository list was compared against tracked repo-ledger state in `LuminaryLabs-Dev/LuminaryLabs`.
+The accessible `LuminaryLabs-Publish` organization repo list was compared against tracked repo-ledger state in `LuminaryLabs-Dev/LuminaryLabs` and sampled repo-local `.agent/START_HERE.md` state.
 
 No checked non-Cavalry Publish repo was fully new, absent from the central ledger, undocumented, recently added but undocumented, or missing sampled root `.agent/START_HERE.md` state.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`ZombieOrchard` was selected for this pass because repo-local `.agent` state had advanced to `2026-07-08T19-10-54-04-00` while the central `LuminaryLabs-Dev/LuminaryLabs` ledger still showed `2026-07-08T16-20-00-04-00`. The unresolved seam remains Market command authority, narrowed here to source-manifest, nested-result consumer, exchange projection, and renderer readback fixture proof.
+`ZombieOrchard` was selected as the oldest eligible sampled fallback after the latest `AetherVale` catch-up. Its unresolved work remains Market command authority: source manifest rows, transaction result records, nested result propagation, exchange projection, renderer readback, and DOM-free fixture proof.
 
 ## Publish repos checked
 
 ```txt
-LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present / recently refreshed
-LuminaryLabs-Publish/HorrorCorridor      tracked / root .agent present / recently refreshed
-LuminaryLabs-Publish/AetherVale          tracked / root .agent present / recently refreshed
-LuminaryLabs-Publish/ZombieOrchard       selected / central catch-up + Market nested-result fixture gate
-LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present / recently refreshed
-LuminaryLabs-Publish/MyCozyIsland        tracked / root .agent present / recently refreshed
-LuminaryLabs-Publish/TheOpenAbove        tracked / root .agent present / recently refreshed
-LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present / recently refreshed
-LuminaryLabs-Publish/TheCavalryOfRome    excluded by rule
-LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present / recently refreshed
+LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present / latest sampled alignment 2026-07-08T20-38-28-04-00
+LuminaryLabs-Publish/AetherVale           tracked / root .agent present / latest sampled alignment 2026-07-08T21-08-41-04-00
+LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / latest sampled alignment 2026-07-08T20-10-32-04-00
+LuminaryLabs-Publish/TheCavalryOfRome     excluded by rule
+LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / latest sampled alignment 2026-07-08T20-52-00-04-00
+LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / latest sampled alignment 2026-07-08T19-30-31-04-00
+LuminaryLabs-Publish/ZombieOrchard        selected / oldest sampled alignment 2026-07-08T19-21-15-04-00 / Market fixture unresolved
+LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / latest sampled alignment 2026-07-08T20-21-59-04-00
+LuminaryLabs-Publish/MyCozyIsland         tracked / root .agent present / latest sampled alignment 2026-07-08T19-50-20-04-00
+LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / latest sampled alignment 2026-07-08T21-00-12-04-00
 ```
 
 ## Current product read
@@ -101,12 +101,12 @@ exchange action row
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-08T19-21-15-04-00-market-nested-result-consumer-dsk-map.md
-.agent/render-audit/2026-07-08T19-21-15-04-00-exchange-projection-readback-fixture.md
-.agent/gameplay-audit/2026-07-08T19-21-15-04-00-market-command-result-loop.md
-.agent/market-authority-audit/2026-07-08T19-21-15-04-00-source-manifest-nested-result-contract.md
-.agent/trackers/2026-07-08T19-21-15-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-08T19-21-15-04-00.md
+.agent/architecture-audit/2026-07-08T21-18-39-04-00-market-transaction-fixture-dsk-map.md
+.agent/render-audit/2026-07-08T21-18-39-04-00-exchange-result-projection-readback.md
+.agent/gameplay-audit/2026-07-08T21-18-39-04-00-market-transaction-result-loop.md
+.agent/market-authority-audit/2026-07-08T21-18-39-04-00-nested-result-transaction-contract.md
+.agent/trackers/2026-07-08T21-18-39-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-08T21-18-39-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -154,5 +154,5 @@ Do not expand economy behavior until the Market fixture proves source manifest r
 ## Current next safe ledge
 
 ```txt
-ZombieOrchard Market Source Manifest + Nested Result Consumer / Exchange Readback Fixture Gate
+ZombieOrchard Market Transaction Result + Nested Result Projection Fixture Gate
 ```
