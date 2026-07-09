@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-09T16-34-14-04-00`
+**Last aligned:** `2026-07-09T16-38-14-04-00`
 
 ## Purpose
 
@@ -14,11 +14,11 @@ Read this folder before changing implementation code.
 
 The accessible `LuminaryLabs-Publish` repository list was checked against the central repo ledger in `LuminaryLabs-Dev/LuminaryLabs` and sampled root `.agent` state.
 
-No checked non-Cavalry Publish repo was fully new, absent from the central ledger, recently added but undocumented, missing sampled root `.agent` state, or otherwise undocumented.
+No checked non-Cavalry Publish repo was fully new, absent from central tracking, missing sampled root `.agent` state, recently added but undocumented, or otherwise undocumented.
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`ZombieOrchard` was selected as the oldest eligible documented fallback by central ledger recency. This pass refreshes repo-local docs and updates the central ledger to `2026-07-09T16-34-14-04-00`.
+`ZombieOrchard` was selected because repo-local docs had advanced to `2026-07-09T16-34-14-04-00` while the central ledger still pointed at `2026-07-09T13-18-48-04-00`. This pass refreshes repo-local docs and central tracking to `2026-07-09T16-38-14-04-00`.
 
 ## Publish repos checked
 
@@ -29,7 +29,7 @@ LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / centra
 LuminaryLabs-Publish/TheCavalryOfRome     excluded by rule
 LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest observed 2026-07-09T16-20-45-04-00
 LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest observed 2026-07-09T15-31-40-04-00
-LuminaryLabs-Publish/ZombieOrchard        selected / oldest eligible central-ledger fallback / central latest observed 2026-07-09T13-18-48-04-00
+LuminaryLabs-Publish/ZombieOrchard        selected / repo-local latest 2026-07-09T16-34-14-04-00 / central ledger still 2026-07-09T13-18-48-04-00 before this run
 LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest observed 2026-07-09T15-39-08-04-00
 LuminaryLabs-Publish/MyCozyIsland         tracked / root .agent present / central latest observed 2026-07-09T14-39-07-04-00
 LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest observed 2026-07-09T13-38-15-04-00
@@ -39,28 +39,43 @@ LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / centra
 
 `ZombieOrchard` is a standalone static browser orchard survival/economy shell.
 
-The game has a playable baseline: Entry, Active Session, apple collection, pest clearing, day/night phase advance, Build, Exchange/Market shell, Roster, Inventory, Codex, Settings, and Outcome screens.
+The route is:
+
+```txt
+index.html
+  -> src/boot.js
+  -> src/start.js
+  -> createOrchardGame()
+  -> createWorldCanvas(document.querySelector("#world"))
+  -> createHtmlInterfaceRenderer({ root: document.querySelector("#ui-root"), engine })
+  -> requestAnimationFrame(draw)
+```
+
+The playable baseline includes Entry, Active Session, apple collection, pest clearing, day/night phase advance, Build, Exchange/Market shell, Roster, Inventory, Codex, Settings, and Outcome screens.
 
 ## Current interaction loop
 
 ```txt
-open route
-  -> src/boot.js imports src/start.js
-  -> src/start.js creates engine, world-canvas renderer, HTML interface renderer, and frame loop
-  -> src/game.js installs resource, pressure, orchard-world, construction, roster, inventory, generated interface, active-session, and interface-composition kits
-  -> each animation frame calls engine.tick(1 / 60)
-  -> tickable domains update pressure and active-session state
-  -> engine.snapshot() aggregates every domain snapshot
-  -> world-canvas renders trees, apples, pests, and player from snapshot
-  -> html-interface-renderer renders active-session HUD or active interface screen
-  -> data-action clicks route through interface-composition.activate
-  -> data-command clicks route directly to active-session command handlers
-  -> scoped interface domains return action descriptors for selected screen actions
-  -> interface-composition may execute nested action.command through ctx.engine.command(...)
-  -> nested command result is still discarded
-  -> interface-composition snapshot still does not expose lastResult
-  -> exchange screen still renders as a generic interface screen and only exposes Back
-  -> window.GameHost exposes engine/getState/tick
+index.html
+  -> src/boot.js
+  -> src/start.js
+  -> createOrchardGame()
+  -> createWorldCanvas(canvas)
+  -> createHtmlInterfaceRenderer({ root, engine })
+  -> requestAnimationFrame(draw)
+  -> engine.tick(1 / 60)
+  -> pressure-field and active-session tick
+  -> engine.snapshot()
+  -> world-canvas renders orchard trees, apples, pests, and player
+  -> html-interface-renderer renders active-session HUD or generic screen panel
+  -> [data-action] routes through interface-composition.activate
+  -> scoped interface domain returns action descriptor
+  -> optional action.command dispatches through ctx.engine.command(...)
+  -> nested command result is currently discarded
+  -> next action.to or transition table moves active screen
+  -> [data-command] routes directly to active-session
+  -> Exchange/Market remains a generic screen with Back only
+  -> window.GameHost exposes engine, getState, and tick
 ```
 
 ## Target Market result/readback loop
@@ -74,17 +89,17 @@ exchange action row
   -> MarketPreflight
   -> MarketCommandResult
   -> accepted mutation or rejected no-mutation
-  -> TransactionRecord if accepted
-  -> MarketCommandJournal row
-  -> MarketResultJournal row
+  -> resource transaction / inventory intake rows
+  -> MarketCommandJournal + MarketResultJournal
   -> MarketSourceSnapshot after
   -> InterfaceNestedResultAdapter
-  -> interface-composition snapshot.lastResult
+  -> interface-composition.snapshot().lastResult
   -> MarketResultProjection
-  -> exchange renderer consumer
+  -> Exchange renderer branch
   -> MarketRenderReadback
   -> GameHost market diagnostics
   -> DOM-free fixture rows
+  -> central ledger parity row
 ```
 
 ## First files to read
@@ -94,32 +109,24 @@ exchange action row
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-09T16-34-14-04-00-market-result-readback-ledger-refresh-dsk-map.md
-.agent/render-audit/2026-07-09T16-34-14-04-00-exchange-render-result-readback-map.md
-.agent/gameplay-audit/2026-07-09T16-34-14-04-00-market-command-result-loop.md
-.agent/interaction-audit/2026-07-09T16-34-14-04-00-data-action-nested-result-contract.md
-.agent/market-authority-audit/2026-07-09T16-34-14-04-00-source-result-fixture-contract.md
-.agent/deploy-audit/2026-07-09T16-34-14-04-00-market-fixture-check-build-wire.md
-.agent/trackers/2026-07-09T16-34-14-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T16-34-14-04-00.md
+.agent/architecture-audit/2026-07-09T16-38-14-04-00-market-readback-ledger-catchup-dsk-map.md
+.agent/render-audit/2026-07-09T16-38-14-04-00-exchange-result-render-readback-catchup.md
+.agent/gameplay-audit/2026-07-09T16-38-14-04-00-market-command-result-consumer-loop.md
+.agent/interaction-audit/2026-07-09T16-38-14-04-00-data-action-nested-result-retention-map.md
+.agent/market-authority-audit/2026-07-09T16-38-14-04-00-market-readback-fixture-ledger-contract.md
+.agent/deploy-audit/2026-07-09T16-38-14-04-00-market-fixture-test-build-map.md
+.agent/trackers/2026-07-09T16-38-14-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T16-38-14-04-00.md
 .agent/kit-registry.json
 ```
 
 ## Source files to inspect next
 
 ```txt
-README.md
-package.json
-index.html
-src/boot.js
-src/start.js
-src/game.js
-src/kits/runtime.js
 src/kits/composition.js
-src/kits/scoped-interface-domains.js
-src/kits/game-domains.js
-src/renderer/html-interface-renderer.js
-src/renderer/world-canvas.js
+src/kits/runtime.js
 src/presets/orchard-preset.js
+src/renderer/html-interface-renderer.js
+src/kits/game-domains.js
 tests/smoke.mjs
 ```
