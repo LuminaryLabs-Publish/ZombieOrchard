@@ -1,14 +1,14 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-09T13-18-48-04-00`
+**Timestamp:** `2026-07-09T16-34-14-04-00`
 
 ## Summary
 
-`ZombieOrchard` remains a standalone static browser orchard survival/economy shell with a compact kit runtime, scoped interface domains, game-domain kits, a canvas renderer, an HTML renderer, `window.GameHost`, and a minimal smoke harness.
+`ZombieOrchard` remains a standalone static browser orchard survival/economy shell with a compact kit runtime, scoped interface domains, game-domain kits, a canvas renderer, an HTML renderer, `window.GameHost`, static build scripts, and a minimal smoke harness.
 
-The repo is not missing a route, game factory, static build command, command router, first playable loop, or smoke script. The durable blocker is still the Exchange/Market path: source-owned Market actions, command/result ledgers, nested command-result retention, Exchange projection/readback, GameHost diagnostics, and DOM-free fixture proof.
+The repo is not missing a route, game factory, static build command, command router, first playable loop, world renderer, UI renderer, or smoke script. The durable blocker is still the Exchange/Market path: source-owned Market actions, command/result ledgers, nested command-result retention, Exchange projection/readback, GameHost diagnostics, and DOM-free fixture proof.
 
-This pass keeps runtime code unchanged, refreshes repo-local docs, and prepares central tracking to move from stale `2026-07-09T10-40-00-04-00` state to `2026-07-09T13-18-48-04-00`.
+This pass keeps runtime code unchanged and refreshes repo-local docs from `2026-07-09T13-18-48-04-00` to `2026-07-09T16-34-14-04-00`.
 
 ## Current interaction loop
 
@@ -129,7 +129,7 @@ html-interface-render-kit:
 ## Recommended next ledge
 
 ```txt
-ZombieOrchard Market Result Central Ledger Sync + Exchange Fixture Gate
+ZombieOrchard Market Result Readback Ledger Refresh + Exchange Fixture Gate
 ```
 
 Start with pure source/result/readback modules and fixture rows. Do not rewrite the engine, canvas renderer, HTML shell, or orchard economy before Market accepted/rejected rows are fixture-proven.
