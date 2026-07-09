@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-09T07-41-29-04-00`
+**Timestamp:** `2026-07-09T10-40-00-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions source-owned, replayable, nested-result-safe, transaction-ba
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Result Ledger Central Sync + Exchange Transaction Fixture Gate
+ZombieOrchard Market Readback Central Refresh + Exchange Result Fixture Gate
 ```
 
 ## Checklist
@@ -18,26 +18,51 @@ ZombieOrchard Market Result Ledger Central Sync + Exchange Transaction Fixture G
 - [ ] Preserve `window.GameHost.engine`, `window.GameHost.getState`, and `window.GameHost.tick`.
 - [ ] Add stable Market action IDs: `sell-apples`, `buy-basic-tool`, `buy-row-supply`, `back`.
 - [ ] Add `MarketActionCatalog` and `MarketCommandSourceManifest` as the durable source of action/reason/price/capacity rows.
-- [ ] Add `MarketCommandEnvelope` normalization.
-- [ ] Add `MarketSourceSnapshot` before/after rows for resources, inventory, prices, capacity, and active interface state.
-- [ ] Add deterministic `MarketPreflight` with stable rejection reasons.
-- [ ] Add stable `MarketCommandResult` records.
-- [ ] Add no-mutation proof for rejected commands.
-- [ ] Add `MarketCommandJournal` and `MarketResultJournal`.
-- [ ] Add resource transaction history for accepted Market rows.
-- [ ] Add inventory purchase intake records where Market buys create inventory.
-- [ ] Add `InterfaceNestedResultAdapter` so `interface-composition.activate` preserves nested command results.
-- [ ] Expose `interface-composition.snapshot().lastResult` without breaking `active`, `previous`, or `activeSnapshot`.
-- [ ] Add Exchange-specific Market projection for `html-interface-renderer`.
-- [ ] Add `MarketRenderReadback` rows proving the renderer consumed Market projection.
-- [ ] Add additive `GameHost` Market diagnostics under a new stable key.
-- [ ] Add `scripts/zombie-orchard-market-result-fixture.mjs`.
-- [ ] Add a separate `npm run test:market` script before chaining it into the main smoke.
-- [ ] Run the DOM-free Market fixture.
+- [ ] Add Market command envelopes with `id`, `type`, `actionId`, `source`, `resourceDelta`, `inventoryDelta`, and `expectedMutation`.
+- [ ] Add before/after Market source snapshots covering resources, inventory, prices, capacity, and active screen.
+- [ ] Add Market preflight with stable rejection reasons.
+- [ ] Add accepted/rejected Market command result records.
+- [ ] Add resource transaction history for accepted rows.
+- [ ] Add inventory intake rows for accepted purchase rows.
+- [ ] Add Market command and result journals.
+- [ ] Add an interface nested-result adapter.
+- [ ] Preserve `interface-composition.command("activate", ...)` while adding `snapshot().lastResult`.
+- [ ] Add Exchange-specific projection in `html-interface-renderer`.
+- [ ] Add Market render readback summarizing visible action count, last result, rejection reason, and transaction count.
+- [ ] Add additive `window.GameHost.getState().marketDiagnostics` or equivalent without removing the raw engine snapshot.
+- [ ] Add a DOM-free fixture script for accepted sell, accepted buy, rejected insufficient-resource, and rejected capacity rows.
+- [ ] Wire the fixture into `npm test` or add a dedicated script before widening the game economy.
 - [ ] Run `npm test`.
 - [ ] Run `npm run build`.
-- [ ] Update central ledger after fixture proof lands.
+- [ ] Push only to `main`.
+- [ ] Update root `.agent/` docs and the central LuminaryLabs ledger after implementation.
 
 ## Stop condition
 
-Stop when the fixture proves accepted, rejected, unchanged, transaction, nested-result, projection, readback, and GameHost rows without DOM, canvas, browser state, renderer rewrite, or wider economy expansion.
+Stop this slice when accepted/rejected Market rows prove:
+
+```txt
+stable action id
+command envelope
+before source snapshot
+after source snapshot
+accepted or rejected result
+no mutation for rejected rows
+resource transaction history for accepted rows
+nested result retained by interface-composition
+Exchange renderer projection/readback
+GameHost diagnostics
+DOM-free fixture replay
+```
+
+## Defer until after proof
+
+```txt
+save/load
+new crop types
+worker automation
+deep shop economy
+visual polish
+shared-kit extraction
+Pages workflow changes
+```
