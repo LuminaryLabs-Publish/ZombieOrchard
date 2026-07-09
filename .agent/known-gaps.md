@@ -1,12 +1,12 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-09T07-41-29-04-00`
+**Timestamp:** `2026-07-09T10-40-00-04-00`
 
 ## Critical gaps
 
 ```txt
-- The exchange / Market screen exists but still falls through to generic screen rendering.
-- The exchange screen currently only exposes Back.
+- The Exchange / Market screen exists but still falls through to generic screen rendering.
+- The Exchange screen currently only exposes Back.
 - Market actions do not yet have stable source-owned action IDs.
 - There is no MarketActionCatalog.
 - There is no MarketCommandSourceManifest.
@@ -19,40 +19,33 @@
 - There is no rejected-command no-mutation proof row.
 - There is no MarketCommandJournal.
 - There is no MarketResultJournal.
-- There is no Market transaction ledger.
-- There is no inventory purchase intake record for accepted Market buys.
-- interface-composition currently drops nested command results.
+- There is no resource transaction history.
+- There is no inventory purchase intake path.
+- interface-composition dispatches nested action.command but discards the nested result.
 - interface-composition snapshot does not expose lastResult.
-- html-interface-renderer has no exchange-specific Market projection branch.
-- There is no MarketRenderReadback record.
-- GameHost does not expose fixture-readable Market diagnostics.
-- There is no DOM-free Market result fixture.
-- The central repo ledger was behind repo-local .agent state before this pass.
+- html-interface-renderer has no Exchange-specific Market projection branch.
+- html-interface-renderer has no Market render readback.
+- window.GameHost has no market diagnostics beyond raw engine snapshot.
+- tests/smoke.mjs does not exercise Market accepted/rejected command rows.
+- package.json has no dedicated Market fixture script yet.
 ```
 
-## Secondary gaps
+## Non-blocking gaps
 
 ```txt
-- The wider economy remains intentionally shallow.
-- Worker assignment is not yet source-owned.
-- Tool effects are not yet source-owned.
-- Phase authority is still local to active-session.
-- Save/load is absent.
-- Codex progression is shallow.
-- Outcome summary is minimal.
-- World-canvas is adequate for the current proof but not yet render-plan driven.
+- Save/load persistence is not implemented.
+- Session balancing is still prototype-level.
+- Codex/knowledge screen is descriptor-only.
+- Roster/inventory effects are shallow.
+- Rendering is serviceable canvas/HTML, not a high-fidelity visual target.
 ```
 
-## Current risk
-
-Adding more economy content before result readback will make Market bugs harder to isolate.
-
-The specific risk is that nested commands already execute, but their results are not retained, projected, or fixture-readable.
-
-## Recommended handling
-
-Solve one vertical result-readback path first:
+## Work not recommended next
 
 ```txt
-Market action -> command envelope -> preflight -> result -> journal -> transaction -> nested result -> projection -> renderer readback -> GameHost diagnostics -> fixture
+- Do not replace createKitRuntime.
+- Do not rebuild the orchard renderer.
+- Do not add more economy categories before Market command/result proof exists.
+- Do not promote kits to shared repos before accepted/rejected fixture rows exist.
+- Do not change Pages/static deploy before npm test and npm run build still pass.
 ```
