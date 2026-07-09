@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-09T16-38-14-04-00`
+**Timestamp:** `2026-07-09T18-49-13-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions source-owned, replayable, nested-result-safe, transaction-ba
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Readback Ledger Catch-Up + Exchange Fixture Gate
+ZombieOrchard Market Nested Result Readback Refresh + Exchange Fixture Gate
 ```
 
 ## Checklist
@@ -17,7 +17,7 @@ ZombieOrchard Market Readback Ledger Catch-Up + Exchange Fixture Gate
 - [ ] Preserve current `index.html`, `src/boot.js`, `src/start.js`, active-session HUD, world-canvas renderer, and `snapshot["resource-ledger"].values` compatibility.
 - [ ] Preserve `window.GameHost.engine`, `window.GameHost.getState`, and `window.GameHost.tick`.
 - [ ] Add stable Market action IDs: `sell-apples`, `buy-basic-tool`, `buy-row-supply`, `back`.
-- [ ] Add `MarketActionCatalog` and `MarketCommandSourceManifest` as the durable source of action/reason/price/capacity rows.
+- [ ] Add `MarketActionCatalog` and `MarketCommandSourceManifest`.
 - [ ] Add Market command envelopes with `id`, `type`, `actionId`, `source`, `resourceDelta`, `inventoryDelta`, and `expectedMutation`.
 - [ ] Add before/after Market source snapshots covering resources, inventory, prices, capacity, and active screen.
 - [ ] Add Market preflight with stable rejection reasons.
