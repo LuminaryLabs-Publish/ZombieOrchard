@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-09T02-05-52-04-00`
+**Timestamp:** `2026-07-09T05-01-51-04-00`
 
 ## Available commands
 
@@ -62,4 +62,4 @@ npm test
 npm run build
 ```
 
-Run browser validation only after the DOM-free fixture proves accepted and rejected Market command rows.
+Run browser validation only after the DOM-free fixture proves accepted, rejected, no-mutation, nested-result, projection, readback, and GameHost rows.
