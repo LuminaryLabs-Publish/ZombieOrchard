@@ -1,19 +1,20 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-09T13-03-43-04-00",
-  "version": "0.37.0",
+  "updatedAt": "2026-07-09T13-10-19-04-00",
+  "version": "0.38.0",
   "purpose": "Track current and target kits for the standalone kit-composed orchard survival/economy shell.",
-  "status": "market-result-consumer-ledger-refresh-exchange-fixture-gate-planned",
-  "latestTracker": ".agent/trackers/2026-07-09T13-03-43-04-00/project-breakdown.md",
-  "previousTracker": ".agent/trackers/2026-07-09T10-40-00-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T13-03-43-04-00.md",
-  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-09T13-03-43-04-00-market-result-consumer-ledger-refresh-dsk-map.md",
-  "latestRenderAudit": ".agent/render-audit/2026-07-09T13-03-43-04-00-exchange-consumer-readback-parity.md",
-  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-09T13-03-43-04-00-market-command-result-replay-loop.md",
-  "latestSystemAudit": ".agent/market-authority-audit/2026-07-09T13-03-43-04-00-nested-result-ledger-fixture-contract.md",
-  "latestDeployAudit": ".agent/deploy-audit/2026-07-09T13-03-43-04-00-market-fixture-build-test-gate.md",
-  "previousSystemAudit": ".agent/market-authority-audit/2026-07-09T10-40-00-04-00-market-readback-fixture-contract.md",
-  "recommendedNextSlice": "ZombieOrchard Market Result Consumer Ledger Refresh + Exchange Fixture Gate",
+  "status": "market-result-ledger-parity-refresh-exchange-fixture-gate-planned",
+  "latestTracker": ".agent/trackers/2026-07-09T13-10-19-04-00/project-breakdown.md",
+  "previousTracker": ".agent/trackers/2026-07-09T13-03-43-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-09T13-10-19-04-00.md",
+  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-09T13-10-19-04-00-market-result-ledger-parity-dsk-map.md",
+  "latestRenderAudit": ".agent/render-audit/2026-07-09T13-10-19-04-00-exchange-render-readback-ledger-parity.md",
+  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-09T13-10-19-04-00-market-command-result-loop.md",
+  "latestInteractionAudit": ".agent/interaction-audit/2026-07-09T13-10-19-04-00-data-action-nested-result-contract.md",
+  "latestSystemAudit": ".agent/market-authority-audit/2026-07-09T13-10-19-04-00-market-source-result-fixture-contract.md",
+  "latestDeployAudit": ".agent/deploy-audit/2026-07-09T13-10-19-04-00-market-fixture-test-build-wire.md",
+  "previousSystemAudit": ".agent/market-authority-audit/2026-07-09T13-03-43-04-00-nested-result-ledger-fixture-contract.md",
+  "recommendedNextSlice": "ZombieOrchard Market Result Ledger Parity Refresh + Exchange Fixture Gate",
   "runtimeShape": {
     "host": "index.html",
     "boot": "src/boot.js",
@@ -76,7 +77,7 @@
     "followOn": ["seeded-random", "orchard-input", "harvest-interaction", "building-effects", "worker-assignment", "tool-effects", "phase-authority", "save-runtime", "codex-progression", "outcome-summary", "render-plan", "settlement-parity"]
   },
   "services": {
-    "current": ["install kits", "register domains", "route commands", "return command results", "tick domains", "emit events", "aggregate snapshots", "render orchard canvas from snapshots", "render active-session HUD and generic screens from snapshots", "transition interface screens", "dispatch nested screen actions", "store resource values and affordability helpers", "add/pay resources", "track pressure channels", "generate trees and random apples", "collect nearby apple", "build catalog items with resource payment", "hire roster actors with resource payment", "equip inventory items", "move player", "collect apples", "clear rows", "advance day/night phase", "expose engine/getState/tick through GameHost", "run minimal DOM-free entry/play/apple smoke"],
+    "current": ["install kits", "register domains", "route commands", "return command results", "tick domains", "emit events", "aggregate snapshots", "render orchard canvas from snapshots", "render active-session HUD and generic screens from snapshots", "transition active screens", "return screen action descriptors", "dispatch nested screen actions", "store resource values and affordability helpers", "add/pay resources", "track pressure channels", "generate trees and random apples", "collect nearby apple", "build catalog items with resource payment", "hire roster actors with resource payment", "equip inventory items", "move player", "collect apples", "clear rows", "advance day/night phase", "expose engine/getState/tick through GameHost", "run minimal DOM-free entry/play/apple smoke"],
     "neededNext": ["define stable Market action ids", "define MarketActionCatalog", "define MarketCommandSourceManifest", "normalize Market actions into envelopes", "create source snapshots for resources/inventory/prices/capacity", "preflight accepted/rejected commands", "produce stable command results and rejection reasons", "mutate resources/inventory only for accepted results", "prove rejected commands do not mutate resources or inventory", "append command journal entries", "append result journal entries", "append transaction history", "retain nested command results through interface-composition", "normalize nested results through InterfaceNestedResultAdapter", "expose interface-composition snapshot.lastResult", "project Market state for HTML renderer", "report renderer readback", "expose fixture-readable Market diagnostics", "prove DOM-free Market fixture replay", "sync central ledger after fixture proof"]
   },
   "implementedKits": [
