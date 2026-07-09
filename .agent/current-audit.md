@@ -1,14 +1,14 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T21-18-39-04-00`
+**Timestamp:** `2026-07-08T23-29-18-04-00`
 
 ## Summary
 
-`ZombieOrchard` is a standalone static orchard survival/economy shell with a kit-composed runtime and a playable browser baseline.
+`ZombieOrchard` is a standalone static browser orchard survival/economy shell with a kit-composed runtime and a playable browser baseline.
 
-The repo is not missing a route, runtime, command router, renderer, or smoke harness. The blocker is narrower: the Market/exchange path has no source-owned command manifest, stable result shape, nested result propagation, transaction history, exchange projection, renderer readback, or DOM-free fixture matrix.
+The repo is not missing a route, runtime, command router, renderer, smoke harness, or browser deployment shape. The blocker is narrower: the Market/exchange path needs a source manifest, typed result envelope, nested-result adapter, transaction journal, renderer projection, GameHost readback, and DOM-free fixture gate.
 
-This pass keeps runtime code unchanged and updates the `.agent` docs around the exact Market transaction result and nested-result projection gate.
+This pass keeps runtime code unchanged and updates the `.agent` docs around the exact Market source-manifest adapter and consumer fixture boundary.
 
 ## Current interaction loop
 
@@ -52,6 +52,11 @@ Entry
 ## Source-backed facts
 
 ```txt
+package.json:
+  dev serves a static folder through python -m http.server 5173.
+  test runs node tests/smoke.mjs.
+  build copies index.html and src into dist.
+
 src/start.js:
   creates createOrchardGame(), world-canvas, html-interface-renderer, animation loop, and window.GameHost.
 
@@ -70,7 +75,7 @@ src/kits/composition.js:
   snapshot exposes active/previous/activeSnapshot only.
 
 src/presets/orchard-preset.js:
-  exchange currently exposes only Back.
+  exchange currently reaches Market surface but does not source-own command rows.
 
 src/kits/game-domains.js:
   resource-ledger owns values/canPay/pay/add but no transaction history.
@@ -100,7 +105,7 @@ game:
   resource-ledger, pressure-field, orchard-world, construction-runtime, roster-runtime, inventory-runtime, active-session, world-canvas
 
 market-authority-next:
-  market-action-id-catalog, market-command-source-manifest, market-command-envelope, market-source-snapshot, market-price-source, market-capacity-policy, market-preflight, market-command-result, market-rejection-reason-catalog, market-command-journal, market-result-journal, resource-transaction-history, inventory-purchase-intake, nested-command-result-propagation, market-result-projection, market-render-readback, market-fixture-replay
+  market-action-id-catalog, market-command-source-manifest, market-command-envelope, market-source-snapshot, market-price-source, market-capacity-policy, market-preflight, market-command-result, market-rejection-reason-catalog, market-command-journal, market-result-journal, resource-transaction-history, inventory-purchase-intake, interface-nested-result-adapter, market-result-projection, market-render-readback, market-fixture-replay
 ```
 
 ## Kit services
@@ -190,7 +195,7 @@ target next-cut:
   market-result-journal-kit
   resource-transaction-history-kit
   inventory-purchase-intake-kit
-  nested-command-result-propagation-kit
+  interface-nested-result-adapter-kit
   market-result-projection-kit
   market-render-readback-kit
   market-fixture-replay-kit
@@ -198,7 +203,7 @@ target next-cut:
 
 ## Main finding
 
-The runtime already has the right central seam: `engine.command()` returns command results. The next implementation should not rewrite the app. It should add source-owned Market transaction helpers and preserve/return nested Market results through `interface-composition` so renderer projections, GameHost diagnostics, and fixture replay can consume the same accepted/rejected output.
+The runtime already has the right central seam: `engine.command()` returns command results. The next implementation should not rewrite the app. It should add source-owned Market transaction helpers, return nested Market results through `interface-composition`, and force the renderer plus GameHost to consume the same source-owned result/projection records.
 
 The exact seam is:
 
@@ -211,17 +216,22 @@ exchange action ids
 -> MarketCommandResult
 -> accepted mutation only
 -> rejected no-mutation proof
--> transaction record when accepted
+-> TransactionRecord when accepted
 -> command/result journals
--> interface-composition nestedResult
--> snapshot.lastResult
--> projection rows
--> renderer readback
+-> InterfaceNestedResultAdapter
+-> interface-composition snapshot.lastResult
+-> MarketResultProjection
+-> exchange renderer consumer
+-> MarketRenderReadback
 -> fixture replay
 ```
 
-## Current priority
+## Do not do next
 
 ```txt
-ZombieOrchard Market Transaction Result + Nested Result Projection Fixture Gate
+- Do not add a larger economy before source-owned Market rows exist.
+- Do not let html-interface-renderer own price, capacity, or transaction authority.
+- Do not route exchange purchases through direct data-command shortcuts.
+- Do not alter the static route or GameHost baseline compatibility.
+- Do not refactor active-session before the Market fixture passes.
 ```
