@@ -1,15 +1,15 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-09T13-10-19-04-00`
+**Timestamp:** `2026-07-09T13-18-48-04-00`
 
 ## Goal
 
-Make Market actions source-owned, replayable, nested-result-safe, transaction-backed, renderer-readable, GameHost-readable, and fixture-verifiable before expanding the wider orchard economy.
+Make Market actions source-owned, replayable, nested-result-safe, transaction-backed, renderer-readable, GameHost-readable, fixture-verifiable, and centrally tracked before expanding the wider orchard economy.
 
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Result Ledger Parity Refresh + Exchange Fixture Gate
+ZombieOrchard Market Result Central Ledger Sync + Exchange Fixture Gate
 ```
 
 ## Checklist
@@ -53,6 +53,7 @@ nested result retained by interface-composition
 Exchange renderer projection/readback
 GameHost diagnostics
 DOM-free fixture replay
+central ledger updated to the exact repo-local tracker timestamp
 ```
 
 ## Defer until after proof
