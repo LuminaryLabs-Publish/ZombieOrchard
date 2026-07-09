@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-09T02-05-52-04-00`
+**Last aligned:** `2026-07-09T05-01-51-04-00`
 
 ## Purpose
 
@@ -18,23 +18,23 @@ No checked non-Cavalry Publish repo was fully new, absent from the central ledge
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`ZombieOrchard` was selected by fallback because it was the oldest eligible checked repo in the central ledger after the latest catch-up pass.
+`ZombieOrchard` was selected by fallback because it was the oldest eligible central-ledger alignment among the checked non-Cavalry Publish repos.
 
-This pass keeps runtime code unchanged and tightens the next implementation into a Market result readback fixture and exchange projection consumer gate.
+This pass keeps runtime code unchanged and narrows the next implementation into a nested command-result handoff plus Market exchange projection fixture gate.
 
 ## Publish repos checked
 
 ```txt
-LuminaryLabs-Publish/IntoTheMeadow       tracked / root .agent present / central latest 2026-07-09T00-50-00-04-00
-LuminaryLabs-Publish/HorrorCorridor      tracked / root .agent present / central latest 2026-07-09T01-09-24-04-00
-LuminaryLabs-Publish/AetherVale          tracked / root .agent present / central latest 2026-07-09T00-00-41-04-00
-LuminaryLabs-Publish/ZombieOrchard       selected / oldest eligible central latest 2026-07-08T23-40-55-04-00
-LuminaryLabs-Publish/TheUnmappedHouse    tracked / root .agent present / central latest 2026-07-09T01-40-49-04-00
-LuminaryLabs-Publish/MyCozyIsland        tracked / root .agent present / central latest 2026-07-09T00-20-08-04-00
-LuminaryLabs-Publish/TheOpenAbove        tracked / root .agent present / central latest 2026-07-09T00-40-20-04-00
-LuminaryLabs-Publish/PhantomCommand      tracked / root .agent present / central latest 2026-07-09T01-20-59-04-00
-LuminaryLabs-Publish/TheCavalryOfRome    excluded by rule
-LuminaryLabs-Publish/PrehistoricRush     tracked / root .agent present / central latest 2026-07-09T00-09-22-04-00
+LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present / central latest 2026-07-09T04-30-54-04-00
+LuminaryLabs-Publish/AetherVale           tracked / root .agent present / central latest 2026-07-09T02-50-39-04-00
+LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / central latest 2026-07-09T03-29-29-04-00
+LuminaryLabs-Publish/TheCavalryOfRome     excluded by rule
+LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest 2026-07-09T04-38-39-04-00
+LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest 2026-07-09T03-10-05-04-00
+LuminaryLabs-Publish/ZombieOrchard        selected / oldest eligible central latest 2026-07-09T02-05-52-04-00
+LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest 2026-07-09T03-50-12-04-00
+LuminaryLabs-Publish/MyCozyIsland         tracked / root .agent present / central latest 2026-07-09T02-31-41-04-00
+LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-09T02-11-07-04-00
 ```
 
 ## Current product read
@@ -72,6 +72,7 @@ open route
   -> nested action.command can happen inside interface-composition
   -> nested command result is currently discarded
   -> interface-composition snapshot does not yet expose lastResult
+  -> exchange screen currently renders as a generic interface screen
   -> window.GameHost exposes engine/getState/tick
 ```
 
@@ -79,6 +80,7 @@ open route
 
 ```txt
 exchange action row
+  -> MarketActionCatalog
   -> MarketCommandSourceManifest
   -> MarketCommandEnvelope
   -> MarketSourceSnapshot before
@@ -105,13 +107,13 @@ exchange action row
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-09T02-05-52-04-00-market-result-readback-dsk-map.md
-.agent/render-audit/2026-07-09T02-05-52-04-00-exchange-projection-consumer-readback.md
-.agent/gameplay-audit/2026-07-09T02-05-52-04-00-market-result-command-replay-loop.md
-.agent/market-authority-audit/2026-07-09T02-05-52-04-00-market-result-readback-fixture-contract.md
-.agent/deploy-audit/2026-07-09T02-05-52-04-00-market-result-fixture-script-map.md
-.agent/trackers/2026-07-09T02-05-52-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T02-05-52-04-00.md
+.agent/architecture-audit/2026-07-09T05-01-51-04-00-market-nested-result-dsk-map.md
+.agent/render-audit/2026-07-09T05-01-51-04-00-exchange-projection-render-readback.md
+.agent/gameplay-audit/2026-07-09T05-01-51-04-00-market-command-fixture-loop.md
+.agent/market-authority-audit/2026-07-09T05-01-51-04-00-nested-result-consumer-contract.md
+.agent/deploy-audit/2026-07-09T05-01-51-04-00-market-fixture-package-gate.md
+.agent/trackers/2026-07-09T05-01-51-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T05-01-51-04-00.md
 .agent/kit-registry.json
 ```
 
