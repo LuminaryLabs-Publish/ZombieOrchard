@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-09T13-18-48-04-00`
+**Last aligned:** `2026-07-09T16-34-14-04-00`
 
 ## Purpose
 
@@ -18,38 +18,26 @@ No checked non-Cavalry Publish repo was fully new, absent from the central ledge
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`ZombieOrchard` was selected because central tracking was stale versus repo-local `.agent` state. The central ledger still pointed at `2026-07-09T10-40-00-04-00`, while repo-local docs had already advanced through same-day Market result/readback passes. This pass refreshes repo-local docs again and updates the central ledger to `2026-07-09T13-18-48-04-00`.
+`ZombieOrchard` was selected as the oldest eligible documented fallback by central ledger recency. This pass refreshes repo-local docs and updates the central ledger to `2026-07-09T16-34-14-04-00`.
 
 ## Publish repos checked
 
 ```txt
-LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest observed 2026-07-09T12-08-46-04-00
-LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present / central latest observed 2026-07-09T12-30-09-04-00
-LuminaryLabs-Publish/AetherVale           tracked / root .agent present / central latest observed 2026-07-09T11-30-50-04-00
-LuminaryLabs-Publish/ZombieOrchard        selected / central stale / repo-local Market docs already newer
-LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest observed 2026-07-09T11-00-39-04-00
-LuminaryLabs-Publish/MyCozyIsland         tracked / root .agent present / central latest observed 2026-07-09T11-39-50-04-00
-LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / central latest observed 2026-07-09T11-50-08-04-00
-LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest observed 2026-07-09T12-55-20-04-00
+LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present / central latest observed 2026-07-09T16-00-13-04-00
+LuminaryLabs-Publish/AetherVale           tracked / root .agent present / central latest observed 2026-07-09T14-16-00-04-00
+LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / central latest observed 2026-07-09T15-09-09-04-00
 LuminaryLabs-Publish/TheCavalryOfRome     excluded by rule
-LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest observed 2026-07-09T12-00-36-04-00
+LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest observed 2026-07-09T16-20-45-04-00
+LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest observed 2026-07-09T15-31-40-04-00
+LuminaryLabs-Publish/ZombieOrchard        selected / oldest eligible central-ledger fallback / central latest observed 2026-07-09T13-18-48-04-00
+LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest observed 2026-07-09T15-39-08-04-00
+LuminaryLabs-Publish/MyCozyIsland         tracked / root .agent present / central latest observed 2026-07-09T14-39-07-04-00
+LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest observed 2026-07-09T13-38-15-04-00
 ```
 
 ## Current product read
 
 `ZombieOrchard` is a standalone static browser orchard survival/economy shell.
-
-The route is:
-
-```txt
-index.html
-  -> src/boot.js
-  -> src/start.js
-  -> createOrchardGame()
-  -> createWorldCanvas(document.querySelector("#world"))
-  -> createHtmlInterfaceRenderer({ root: document.querySelector("#ui-root"), engine })
-  -> requestAnimationFrame(draw)
-```
 
 The game has a playable baseline: Entry, Active Session, apple collection, pest clearing, day/night phase advance, Build, Exchange/Market shell, Roster, Inventory, Codex, Settings, and Outcome screens.
 
@@ -106,13 +94,14 @@ exchange action row
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-09T13-18-48-04-00-market-result-central-ledger-sync-dsk-map.md
-.agent/render-audit/2026-07-09T13-18-48-04-00-exchange-result-render-readback-map.md
-.agent/gameplay-audit/2026-07-09T13-18-48-04-00-market-command-result-loop.md
-.agent/market-authority-audit/2026-07-09T13-18-48-04-00-nested-result-fixture-ledger-contract.md
-.agent/deploy-audit/2026-07-09T13-18-48-04-00-market-fixture-check-build-map.md
-.agent/trackers/2026-07-09T13-18-48-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T13-18-48-04-00.md
+.agent/architecture-audit/2026-07-09T16-34-14-04-00-market-result-readback-ledger-refresh-dsk-map.md
+.agent/render-audit/2026-07-09T16-34-14-04-00-exchange-render-result-readback-map.md
+.agent/gameplay-audit/2026-07-09T16-34-14-04-00-market-command-result-loop.md
+.agent/interaction-audit/2026-07-09T16-34-14-04-00-data-action-nested-result-contract.md
+.agent/market-authority-audit/2026-07-09T16-34-14-04-00-source-result-fixture-contract.md
+.agent/deploy-audit/2026-07-09T16-34-14-04-00-market-fixture-check-build-wire.md
+.agent/trackers/2026-07-09T16-34-14-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T16-34-14-04-00.md
 .agent/kit-registry.json
 ```
 
