@@ -1,6 +1,6 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-08T21-18-39-04-00`
+**Timestamp:** `2026-07-08T23-29-18-04-00`
 
 ## Critical gaps
 
@@ -43,7 +43,7 @@
 - command results do not include stable command IDs, source fingerprints, before snapshots, after snapshots, or mutation summaries.
 ```
 
-## Market-specific gaps
+## Market adapter gaps
 
 ```txt
 - sell-apples is not implemented.
@@ -63,6 +63,8 @@
 - Market command journal rows do not exist for fixture replay.
 - Market result journal rows do not exist for fixture replay.
 - Nested result propagation has no fixture row.
+- No explicit InterfaceNestedResultAdapter contract exists yet.
+- No acceptance rule prevents the HTML renderer from inventing price/capacity rows.
 ```
 
 ## Render gaps
@@ -103,6 +105,7 @@
 - No fixture proves renderer readback of MarketResultProjection.
 - No fixture proves rejected command no-mutation before/after snapshots.
 - No fixture proves GameHost baseline compatibility after Market helpers are added.
+- No fixture proves source manifest adapter output equals renderer projection input.
 ```
 
 ## Defer until Market fixture is implemented
