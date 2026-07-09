@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-09T05-01-51-04-00`
+**Last aligned:** `2026-07-09T05-11-22-04-00`
 
 ## Purpose
 
@@ -18,9 +18,7 @@ No checked non-Cavalry Publish repo was fully new, absent from the central ledge
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`ZombieOrchard` was selected by fallback because it was the oldest eligible central-ledger alignment among the checked non-Cavalry Publish repos.
-
-This pass keeps runtime code unchanged and narrows the next implementation into a nested command-result handoff plus Market exchange projection fixture gate.
+`ZombieOrchard` was selected because central tracking still pointed to `2026-07-09T02-05-52-04-00` while repo-local `.agent` state had advanced to `2026-07-09T05-01-51-04-00`. This pass closes the central catch-up gap and keeps the next implementation focused on Market nested-result readback.
 
 ## Publish repos checked
 
@@ -31,8 +29,8 @@ LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / centra
 LuminaryLabs-Publish/TheCavalryOfRome     excluded by rule
 LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest 2026-07-09T04-38-39-04-00
 LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest 2026-07-09T03-10-05-04-00
-LuminaryLabs-Publish/ZombieOrchard        selected / oldest eligible central latest 2026-07-09T02-05-52-04-00
-LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest 2026-07-09T03-50-12-04-00
+LuminaryLabs-Publish/ZombieOrchard        selected / central latest 2026-07-09T02-05-52-04-00 / repo-local latest 2026-07-09T05-01-51-04-00
+LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / not selected
 LuminaryLabs-Publish/MyCozyIsland         tracked / root .agent present / central latest 2026-07-09T02-31-41-04-00
 LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-09T02-11-07-04-00
 ```
@@ -65,7 +63,7 @@ open route
   -> each animation frame calls engine.tick(1 / 60)
   -> tickable domains update pressure and active-session state
   -> engine.snapshot() aggregates every domain snapshot
-  -> world-canvas renders trees, apples, pests, and player from snapshot
+  -> world-canvas renders trees, apples, pests, built objects, and player from snapshot
   -> html-interface-renderer renders active-session HUD or active interface screen
   -> data-action clicks route through interface-composition.activate
   -> data-command clicks route directly to active-session command handlers
@@ -107,13 +105,13 @@ exchange action row
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-09T05-01-51-04-00-market-nested-result-dsk-map.md
-.agent/render-audit/2026-07-09T05-01-51-04-00-exchange-projection-render-readback.md
-.agent/gameplay-audit/2026-07-09T05-01-51-04-00-market-command-fixture-loop.md
-.agent/market-authority-audit/2026-07-09T05-01-51-04-00-nested-result-consumer-contract.md
-.agent/deploy-audit/2026-07-09T05-01-51-04-00-market-fixture-package-gate.md
-.agent/trackers/2026-07-09T05-01-51-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-09T05-01-51-04-00.md
+.agent/architecture-audit/2026-07-09T05-11-22-04-00-market-central-catchup-dsk-map.md
+.agent/render-audit/2026-07-09T05-11-22-04-00-exchange-render-consumer-readback.md
+.agent/gameplay-audit/2026-07-09T05-11-22-04-00-market-nested-result-loop.md
+.agent/market-authority-audit/2026-07-09T05-11-22-04-00-central-catchup-fixture-contract.md
+.agent/deploy-audit/2026-07-09T05-11-22-04-00-market-fixture-validation-wire-map.md
+.agent/trackers/2026-07-09T05-11-22-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-09T05-11-22-04-00.md
 .agent/kit-registry.json
 ```
 
