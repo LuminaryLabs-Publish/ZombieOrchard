@@ -1,14 +1,14 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-08T23-40-55-04-00`
+**Timestamp:** `2026-07-09T02-05-52-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a standalone static browser orchard survival/economy shell with a kit-composed runtime and a playable browser baseline.
 
-The repo is not missing a static route, kit runtime, command router, renderer, smoke harness, or deploy script. The blocker is narrower: Market/exchange still needs source-owned command/result authority plus consumer readback through `interface-composition`, `html-interface-renderer`, and `GameHost`.
+The repo is not missing a static route, kit runtime, command router, renderer, smoke harness, or deploy script. The blocker is narrower: Market/Exchange needs source-owned command/result authority, nested result retention, exchange projection/readback, and GameHost diagnostics.
 
-This pass keeps runtime code unchanged and aligns the repo-local docs and central ledger around the next implementation ledge.
+This pass keeps runtime code unchanged and aligns repo-local docs plus central tracking around the next implementation ledge.
 
 ## Current interaction loop
 
@@ -28,88 +28,128 @@ index.html
 -> data-action clicks route through interface-composition.activate
 -> data-command clicks route directly to active-session
 -> nested action.command can call ctx.engine.command(...)
--> nested result is currently not retained or returned
+-> nested result is discarded
 -> window.GameHost exposes engine/getState/tick
 ```
 
-## Current gameplay loop
+## Domains in use
 
 ```txt
-Entry
--> Play
--> Active Session
--> collect apples
--> clear pests
--> advance day/night phase
--> build storage shed
--> open Market/Roster/Inventory/Codex/Settings screens
--> Market reaches exchange shell
--> exchange currently only exposes Back
--> session ends when condition reaches zero
--> outcome screen
+static-browser-host
+boot-module
+runtime-entrypoint
+game-factory
+kit-runtime
+engine-context
+domain-registry
+command-router
+event-emitter
+tick-dispatcher
+snapshot-aggregator
+subscription-bus
+browser-animation-loop
+GameHost
+entry
+session-select
+run-setup
+active-session
+interrupt
+construction
+exchange
+roster
+inventory
+knowledge
+preferences
+outcome
+interface-composition
+html-interface-renderer
+resource-ledger
+pressure-field
+orchard-world
+construction-runtime
+roster-runtime
+inventory-runtime
+world-canvas
 ```
 
-## Source-backed facts
+## Services in use
 
 ```txt
-package.json:
-  dev serves a static folder through python -m http.server 5173.
-  test runs node tests/smoke.mjs.
-  build copies index.html and src into dist.
-
-src/start.js:
-  creates createOrchardGame(), world-canvas, html-interface-renderer, animation loop, and window.GameHost.
-
-src/game.js:
-  installs resource-ledger, pressure-field, orchard-world, construction-runtime, roster-runtime, inventory-runtime, generated interface domains, active-session, and interface-composition.
-
-src/kits/runtime.js:
-  engine.command(domainId, type, payload) already returns domain command results.
-  snapshot aggregation is centralized.
-  no command/result journal or replay helper exists.
-
-src/kits/composition.js:
-  transition/back/activate are centralized.
-  action.command dispatch happens through ctx.engine.command.
-  nested command result is currently dropped.
-  snapshot exposes active/previous/activeSnapshot only.
-
-src/presets/orchard-preset.js:
-  exchange currently reaches Market surface but does not source-own command rows.
-
-src/kits/game-domains.js:
-  resource-ledger supports canPay/pay/add but not transaction history.
-  inventory-runtime supports equip only and has no purchase intake/capacity policy.
-  construction-runtime and roster-runtime can pay costs directly through resource-ledger.
-
-src/renderer/html-interface-renderer.js:
-  data-action routes through interface-composition.
-  data-command routes directly to active-session.
-  active-session HUD is special-cased.
-  other screens, including exchange, are generic panels.
+install kits
+register domains
+route commands
+return command results
+tick domains
+emit events
+aggregate snapshots
+render world canvas
+render active-session HUD
+render generic screen panels
+transition interface screens
+activate selected interface action
+dispatch nested interface commands
+add/pay/check resources
+adjust pressure
+create orchard trees and apples
+collect apples near player
+build catalog items
+hire roster actors
+equip inventory
+move/collect/clear/phase active session
+expose GameHost engine/getState/tick
 ```
 
-## Main gap
-
-The engine can return command results, but the result is not yet durable, replayable, or visible to consumers.
-
-Market authority must own source manifests, envelopes, snapshots, preflight, results, transaction rows, journal rows, projections, and readback rows before HTML rendering or GameHost diagnostics consume them.
-
-## Current next safe ledge
+## Kits in use
 
 ```txt
-ZombieOrchard Market Consumer Fixture Readback + Central Ledger Sync Gate
+kit-runtime
+scoped-interface-domain-kit
+entry-domain-kit
+session-select-domain-kit
+run-setup-domain-kit
+active-session-domain-kit
+interrupt-domain-kit
+construction-domain-kit
+exchange-domain-kit
+roster-domain-kit
+inventory-domain-kit
+knowledge-domain-kit
+preferences-domain-kit
+outcome-domain-kit
+interface-composition-kit
+resource-ledger-kit
+pressure-field-kit
+orchard-world-kit
+construction-runtime-kit
+roster-runtime-kit
+inventory-runtime-kit
+world-canvas-render-kit
+html-interface-render-kit
+game-host-diagnostics-kit
+smoke-fixture-kit
 ```
 
-## Validation status
+## Current blocker
+
+`engine.command()` returns command results, but `interface-composition.activate` does not preserve nested `ctx.engine.command(...)` results. That means Market commands cannot yet be tested as replayable rows or consumed by the Exchange renderer.
+
+## Next safe ledge
 
 ```txt
-runtime source changed: no
-branch created: no
-pull request created: no
-npm test: not run
-npm run build: not run
-browser smoke: not run
-DOM-free market fixture: not run because source files do not exist yet
-pushed to main: yes
+ZombieOrchard Market Result Readback Fixture + Exchange Projection Consumer Gate
 ```
+
+## Do not start with
+
+```txt
+runtime replacement
+canvas renderer rewrite
+CSS redesign
+new orchard art
+new enemy types
+new worker AI
+save system
+larger economy expansion
+```
+
+Start with source-owned Market command/result records and a DOM-free fixture.
