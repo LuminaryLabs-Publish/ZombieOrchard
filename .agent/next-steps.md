@@ -1,15 +1,15 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-09T02-05-52-04-00`
+**Timestamp:** `2026-07-09T05-01-51-04-00`
 
 ## Goal
 
-Make Market actions source-owned, replayable, transaction-backed, nested-result-safe, renderer-readable, GameHost-readable, and fixture-verifiable before expanding the wider orchard economy.
+Make Market actions source-owned, replayable, nested-result-safe, transaction-backed, renderer-readable, GameHost-readable, and fixture-verifiable before expanding the wider orchard economy.
 
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Result Readback Fixture + Exchange Projection Consumer Gate
+ZombieOrchard Market Nested Result Consumer + Exchange Projection Fixture Gate
 ```
 
 ## Checklist
@@ -17,9 +17,9 @@ ZombieOrchard Market Result Readback Fixture + Exchange Projection Consumer Gate
 - [ ] Preserve current `index.html`, `src/boot.js`, `src/start.js`, active-session HUD, world-canvas renderer, and `snapshot["resource-ledger"].values` compatibility.
 - [ ] Preserve `window.GameHost.engine`, `window.GameHost.getState`, and `window.GameHost.tick`.
 - [ ] Add stable Market action IDs: `sell-apples`, `buy-basic-tool`, `buy-row-supply`, `back`.
-- [ ] Add `MarketCommandSourceManifest` as the durable source of Market command/action/reason/price/capacity rows.
+- [ ] Add `MarketActionCatalog` and `MarketCommandSourceManifest` as the durable source of action/reason/price/capacity rows.
 - [ ] Add `MarketCommandEnvelope` normalization.
-- [ ] Add `MarketSourceSnapshot` before/after rows for resources, inventory, prices, and capacity.
+- [ ] Add `MarketSourceSnapshot` before/after rows for resources, inventory, prices, capacity, and active interface state.
 - [ ] Add deterministic `MarketPreflight` with stable rejection reasons.
 - [ ] Add stable `MarketCommandResult` records.
 - [ ] Add no-mutation proof for rejected commands.
@@ -39,4 +39,4 @@ ZombieOrchard Market Result Readback Fixture + Exchange Projection Consumer Gate
 
 ## Stop condition
 
-Stop when the fixture proves accepted, rejected, unchanged, transaction, projection, readback, and GameHost rows without DOM, canvas, browser state, renderer rewrite, or wider economy expansion.
+Stop when the fixture proves accepted, rejected, unchanged, transaction, nested-result, projection, readback, and GameHost rows without DOM, canvas, browser state, renderer rewrite, or wider economy expansion.
