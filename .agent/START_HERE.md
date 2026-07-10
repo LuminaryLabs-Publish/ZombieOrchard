@@ -3,73 +3,70 @@
 ## Last aligned
 
 ```txt
-2026-07-10T14-21-28-04-00
+2026-07-10T15-48-18-04-00
 ```
 
 ## Current best next cut
 
 ```txt
-ZombieOrchard Market Nested Result Retention Readback Refresh + GameHost Fixture Gate
+ZombieOrchard Market Command Causality Ledger
++ Resource/Inventory Transaction Fixture Gate
 ```
 
 ## Read this first
 
-Start with the latest tracker:
-
 ```txt
-.agent/trackers/2026-07-10T14-21-28-04-00/project-breakdown.md
-```
-
-Then read:
-
-```txt
+.agent/trackers/2026-07-10T15-48-18-04-00/project-breakdown.md
 .agent/current-audit.md
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-10T14-21-28-04-00-market-nested-result-retention-dsk-map.md
-.agent/interaction-audit/2026-07-10T14-21-28-04-00-interface-nested-command-result-map.md
-.agent/market-authority-audit/2026-07-10T14-21-28-04-00-market-result-retention-contract.md
-.agent/render-audit/2026-07-10T14-21-28-04-00-exchange-market-readback-projection-gap.md
-.agent/gameplay-audit/2026-07-10T14-21-28-04-00-market-resource-inventory-result-loop.md
-.agent/deploy-audit/2026-07-10T14-21-28-04-00-market-result-fixture-build-gate.md
+.agent/architecture-audit/2026-07-10T15-48-18-04-00-market-command-causality-dsk-map.md
+.agent/interaction-audit/2026-07-10T15-48-18-04-00-interface-parent-child-command-causality-map.md
+.agent/market-authority-audit/2026-07-10T15-48-18-04-00-market-command-transaction-causality-contract.md
+.agent/transaction-audit/2026-07-10T15-48-18-04-00-resource-inventory-atomicity-gap.md
+.agent/render-audit/2026-07-10T15-48-18-04-00-exchange-transaction-consumption-readback-gap.md
+.agent/gameplay-audit/2026-07-10T15-48-18-04-00-market-transaction-resource-inventory-loop.md
+.agent/deploy-audit/2026-07-10T15-48-18-04-00-market-causality-fixture-build-gate.md
 ```
 
 ## Short version
 
-`ZombieOrchard` should not start next with runtime rewrite, renderer rewrite, economy expansion, new orchard content, or visual polish.
+`ZombieOrchard` does not need a runtime rewrite, renderer replacement, new Market art, economy expansion, or more orchard content next.
 
-The next safe ledge is narrow: preserve nested Market command results from `interface-composition`, project them into Exchange/Market readback, expose JSON-safe `GameHost.market` diagnostics, and prove accepted/rejected rows with a DOM-free fixture.
+The next blocker is end-to-end command causality. A Market action must retain the parent activation, child command result, resource transaction, inventory intake, Exchange projection, renderer consumption, and bounded JSON-safe GameHost readback under stable correlation IDs.
 
 ## Current interaction loop
 
 ```txt
 index.html
-  -> src/boot.js
-  -> src/start.js
+  -> boot.js
+  -> start.js
   -> createOrchardGame()
-  -> createWorldCanvas(...)
-  -> createHtmlInterfaceRenderer(...)
-  -> requestAnimationFrame(draw)
+  -> createKitRuntime(...kits)
+  -> fixed requestAnimationFrame loop
   -> engine.tick(1 / 60)
-  -> engine.snapshot()
-  -> world canvas renders orchard state
-  -> HTML renderer renders active-session HUD or generic interface screen
-  -> data-action routes through interface-composition.activate
-  -> optional nested action.command dispatches through engine.command(...)
-  -> engine.command returns command result
-  -> nested result is dropped by interface-composition
-  -> Exchange/Market remains generic Back-only screen
-  -> GameHost exposes raw engine/getState/tick only
+  -> aggregate snapshot
+  -> world canvas + HTML interface render
+
+[data-action] click
+  -> interface-composition.activate
+  -> active domain returns action descriptor
+  -> optional child command dispatch
+  -> child result is discarded
+  -> transition result or generic accepted result returned
 ```
 
 ## Main blocker
 
 ```txt
-engine.command() already returns command results
-interface-composition dispatches nested action.command but drops the result
-Exchange is still Back-only
-HTML renderer has no Market projection/readback branch
-GameHost exposes raw engine/getState/tick only
-smoke only proves entry -> play -> apple presence
+no command ids or durable request/result journal
+child command result lost by interface-composition
+resource payment is boolean-only
+inventory has no purchase intake/capacity service
+Exchange remains Back-only
+runtime events are not durable snapshot readback
+HTML renderer has no Market result consumption row
+GameHost exposes raw mutable handles only
+smoke test has no Market transaction coverage
 ```
