@@ -1,88 +1,71 @@
-# ZombieOrchard Next Steps
+# Next steps — ZombieOrchard
 
-**Timestamp:** `2026-07-10T05-28-12-04-00`
+Last aligned: `2026-07-10T07-08-10-04-00`
+
+## Next safe ledge
+
+```txt
+ZombieOrchard Market Exchange Result Ledger Refresh + GameHost Fixture Gate
+```
 
 ## Goal
 
-Make Market actions source-owned, replayable, nested-result-safe, transaction-backed, renderer-readable, GameHost-readable, fixture-verifiable, and centrally tracked before expanding the wider orchard economy.
+Make the Exchange/Market path source-owned, nested-result-safe, renderer-readable, GameHost-readable, and fixture-verifiable while preserving the current engine and browser shell.
 
-## Next safe implementation slice
-
-```txt
-ZombieOrchard Market Nested Result Readback Refresh + Exchange Fixture Gate
-```
-
-## Checklist
-
-- [ ] Preserve current `index.html`, `src/boot.js`, `src/start.js`, active-session HUD, world-canvas renderer, and `snapshot["resource-ledger"].values` compatibility.
-- [ ] Preserve `window.GameHost.engine`, `window.GameHost.getState`, and `window.GameHost.tick`.
-- [ ] Add stable Market action IDs: `sell-apples`, `buy-basic-tool`, `buy-row-supply`, `back`.
-- [ ] Add `MarketActionCatalog` and `MarketCommandSourceManifest`.
-- [ ] Add Market command envelopes with `id`, `type`, `actionId`, `source`, `resourceDelta`, `inventoryDelta`, and `expectedMutation`.
-- [ ] Add before/after Market source snapshots covering resources, inventory, prices, capacity, and active screen.
-- [ ] Add Market preflight with stable rejection reasons.
-- [ ] Add accepted/rejected Market command result records.
-- [ ] Add resource transaction history for accepted rows.
-- [ ] Add inventory intake rows for accepted purchase rows.
-- [ ] Add Market command and result journals.
-- [ ] Add an interface nested-result adapter.
-- [ ] Preserve `interface-composition.command("activate", ...)` while adding `snapshot().lastResult`.
-- [ ] Add Exchange-specific projection in `html-interface-renderer`.
-- [ ] Add Market render readback summarizing visible action count, last result, rejection reason, transaction count, and intake count.
-- [ ] Add additive `window.GameHost.getState().marketDiagnostics` or equivalent without removing the raw engine snapshot.
-- [ ] Add a DOM-free fixture script for accepted sell, accepted buy, rejected insufficient-resource, and rejected capacity rows.
-- [ ] Wire the fixture into `npm test` or add `npm run test:market` before widening the game economy.
-- [ ] Run `npm test`.
-- [ ] Run `npm run build`.
-- [ ] Push only to `main`.
-- [ ] Update root `.agent/` docs and the central LuminaryLabs ledger after implementation.
-
-## Stop condition
-
-Stop this slice when accepted/rejected Market rows prove:
+## First implementation slice
 
 ```txt
-stable action id
-command envelope
-before source snapshot
-after source snapshot
-accepted or rejected result
-no mutation for rejected rows
-resource transaction history for accepted rows
-inventory intake history for accepted buy rows
-nested result retained by interface-composition
-Exchange renderer projection/readback
-GameHost diagnostics
-DOM-free fixture replay
-central ledger updated to the exact repo-local tracker timestamp
-```
-
-## First implementation files
-
-```txt
-src/market/market-action-catalog.js
-src/market/market-command-source-manifest.js
+src/market/market-actions.js
 src/market/market-command-envelope.js
-src/market/market-source-snapshot.js
 src/market/market-preflight.js
-src/market/market-command-result.js
-src/market/market-result-journal.js
-src/market/resource-transaction-history.js
-src/market/inventory-purchase-intake.js
+src/market/market-results.js
+src/market/market-result-ledger.js
 src/market/market-projection.js
-src/market/market-render-readback.js
-src/market/market-gamehost-diagnostics.js
+src/market/market-gamehost.js
 tests/market-result-fixture.mjs
 ```
 
-## Defer until after proof
+## Required behavior
 
 ```txt
-save/load
-new crop types
-worker automation
-deep shop economy
-visual polish
-shared-kit extraction
-Pages workflow changes
+1. Define stable Market action IDs and source rows.
+2. Wrap Market actions in command envelopes.
+3. Add price, resource, and capacity preflight rows.
+4. Return typed accepted/rejected/no_mutation result rows.
+5. Preserve nested action.command results inside interface-composition.
+6. Record resource transaction history.
+7. Record inventory purchase intake rows.
+8. Add Exchange-specific render projection rows.
+9. Expose additive GameHost.market diagnostics.
+10. Prove accepted and rejected rows in a DOM-free fixture.
 ```
+
+## Compatibility rules
+
+```txt
+Keep engine.command() compatibility.
+Keep window.GameHost.engine/getState/tick compatibility.
+Keep the existing canvas renderer.
+Keep the existing HTML renderer entrypoint.
+Add Market readback as additive data only.
+```
+
+## Avoid next
+
+```txt
+Do not rewrite the runtime.
+Do not rewrite the canvas renderer.
+Do not redesign the orchard visuals.
+Do not expand economy content before Market result proof exists.
+Do not infer success from final resource totals only.
+```
+
+## Validation target
+
+```txt
+node tests/market-result-fixture.mjs
+npm test
+npm run build
+```
+
+The fixture should run without browser APIs and assert source action, preflight, result, transaction, inventory, nested-result, projection, and GameHost-compatible rows.
