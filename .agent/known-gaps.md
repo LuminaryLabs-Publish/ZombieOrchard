@@ -2,7 +2,7 @@
 
 ## Primary gap
 
-Market nested-result projection is missing.
+Market result retention and readback are missing.
 
 ```txt
 engine.command() returns command results
