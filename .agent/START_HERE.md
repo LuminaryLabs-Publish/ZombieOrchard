@@ -3,70 +3,84 @@
 ## Last aligned
 
 ```txt
-2026-07-10T15-48-18-04-00
+2026-07-10T17-18-47-04-00
 ```
 
 ## Current best next cut
 
 ```txt
-ZombieOrchard Market Command Causality Ledger
-+ Resource/Inventory Transaction Fixture Gate
+ZombieOrchard Deterministic Scenario Authority
++ Command/Frame Observation Fixture Gate
 ```
 
 ## Read this first
 
 ```txt
-.agent/trackers/2026-07-10T15-48-18-04-00/project-breakdown.md
+.agent/trackers/2026-07-10T17-18-47-04-00/project-breakdown.md
 .agent/current-audit.md
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-10T15-48-18-04-00-market-command-causality-dsk-map.md
-.agent/interaction-audit/2026-07-10T15-48-18-04-00-interface-parent-child-command-causality-map.md
-.agent/market-authority-audit/2026-07-10T15-48-18-04-00-market-command-transaction-causality-contract.md
-.agent/transaction-audit/2026-07-10T15-48-18-04-00-resource-inventory-atomicity-gap.md
-.agent/render-audit/2026-07-10T15-48-18-04-00-exchange-transaction-consumption-readback-gap.md
-.agent/gameplay-audit/2026-07-10T15-48-18-04-00-market-transaction-resource-inventory-loop.md
-.agent/deploy-audit/2026-07-10T15-48-18-04-00-market-causality-fixture-build-gate.md
+.agent/architecture-audit/2026-07-10T17-18-47-04-00-deterministic-scenario-observation-dsk-map.md
+.agent/render-audit/2026-07-10T17-18-47-04-00-frame-observation-consumption-gap.md
+.agent/gameplay-audit/2026-07-10T17-18-47-04-00-seed-command-tick-replay-loop.md
+.agent/interaction-audit/2026-07-10T17-18-47-04-00-command-result-observation-chain.md
+.agent/determinism-audit/2026-07-10T17-18-47-04-00-math-random-state-fingerprint-contract.md
+.agent/host-proof-audit/2026-07-10T17-18-47-04-00-bounded-scenario-observation-readback.md
+.agent/deploy-audit/2026-07-10T17-18-47-04-00-deterministic-scenario-fixture-build-gate.md
+.agent/turn-ledger/2026-07-10T17-18-47-04-00.md
+.agent/kit-registry.json
 ```
 
-## Short version
+## Selection result
 
-`ZombieOrchard` does not need a runtime rewrite, renderer replacement, new Market art, economy expansion, or more orchard content next.
+The full accessible `LuminaryLabs-Publish` inventory contains ten repositories. All nine eligible non-Cavalry repositories are centrally tracked and have root `.agent` state. `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded.
 
-The next blocker is end-to-end command causality. A Market action must retain the parent activation, child command result, resource transaction, inventory intake, Exchange projection, renderer consumption, and bounded JSON-safe GameHost readback under stable correlation IDs.
+Recent repo-local audits made `HorrorCorridor` and `PhantomCommand` newer than their central ledger rows. `ZombieOrchard`, previously aligned at `2026-07-10T15-48-18-04-00`, was the oldest eligible documented fallback. Only this repository was changed.
+
+## Product read
+
+`ZombieOrchard` is a static browser orchard survival/economy shell composed from scoped interface, runtime gameplay, rendering, diagnostics, fixture, and deploy kits.
 
 ## Current interaction loop
 
 ```txt
 index.html
-  -> boot.js
-  -> start.js
-  -> createOrchardGame()
+  -> src/boot.js
+  -> src/start.js
+  -> createOrchardGame(orchardPreset)
   -> createKitRuntime(...kits)
   -> fixed requestAnimationFrame loop
   -> engine.tick(1 / 60)
+  -> domain ticks
   -> aggregate snapshot
   -> world canvas + HTML interface render
 
-[data-action] click
+[data-action]
   -> interface-composition.activate
-  -> active domain returns action descriptor
-  -> optional child command dispatch
-  -> child result is discarded
-  -> transition result or generic accepted result returned
+  -> scoped interface action
+  -> optional child command
+  -> child result discarded
+  -> optional transition
+
+[data-command]
+  -> direct active-session command
+  -> synchronous gameplay mutation
 ```
 
-## Main blocker
+## Current main finding
+
+The runtime cannot reproduce or explain one scenario from inputs to visible frame.
+
+`orchard-world-kit` and `active-session-domain-kit` use global `Math.random()` for apple and pest state. Runtime commands and events are not retained as durable frame observations, nested child results are dropped, renderers record no consumed frame, and GameHost exposes raw mutable authority instead of bounded JSON-safe scenario readback.
+
+The correct next step is deterministic scenario authority: seed ownership, named random streams, command sequencing, committed-frame snapshots, render-consumption rows, replay fingerprints, and a DOM-free fixture. Market transaction causality remains a downstream scenario on that proof surface.
+
+## Next safe ledge
 
 ```txt
-no command ids or durable request/result journal
-child command result lost by interface-composition
-resource payment is boolean-only
-inventory has no purchase intake/capacity service
-Exchange remains Back-only
-runtime events are not durable snapshot readback
-HTML renderer has no Market result consumption row
-GameHost exposes raw mutable handles only
-smoke test has no Market transaction coverage
+ZombieOrchard Deterministic Scenario Authority
++ Command/Frame Observation Fixture Gate
 ```
+
+Complete that proof boundary before Market expansion, economy tuning, world-content growth, renderer replacement, new pest types, or unrelated runtime refactors.
