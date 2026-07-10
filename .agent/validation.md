@@ -2,59 +2,66 @@
 
 ## Latest pass
 
-`2026-07-10T14-21-28-04-00`
+`2026-07-10T15-48-18-04-00`
 
-## Validation performed
-
-Docs-only pass.
+## Documentation validation performed
 
 ```txt
-- Checked current public LuminaryLabs-Publish repo list.
-- Compared central repo-ledger recency across non-Cavalry Publish repos.
-- Confirmed no checked repo was new, ledger-absent, missing root agent state, recently added, or otherwise undocumented.
+- Compared all ten accessible LuminaryLabs-Publish repositories.
+- Compared central ledger recency for all nine eligible non-Cavalry repositories.
+- Confirmed all eligible repositories are tracked and have root .agent state.
 - Excluded LuminaryLabs-Publish/TheCavalryOfRome.
-- Selected ZombieOrchard as oldest eligible documented fallback.
-- Read .agent root docs and kit registry.
-- Read package.json, index.html, src/boot.js, src/start.js, src/game.js, src/kits/runtime.js, src/kits/composition.js, src/kits/scoped-interface-domains.js, src/kits/game-domains.js, src/renderer/html-interface-renderer.js, src/renderer/world-canvas.js, and tests/smoke.mjs.
-- Added timestamped tracker and audit entries.
-- Updated central ledger and internal change-log.
+- Selected only ZombieOrchard as the oldest eligible documented fallback.
+- Read package.json and index.html.
+- Read src/boot.js, src/start.js, and src/game.js.
+- Read src/kits/runtime.js, composition.js, scoped-interface-domains.js, and game-domains.js.
+- Read src/presets/orchard-preset.js.
+- Read both renderer modules and tests/smoke.mjs.
+- Reconfirmed the interaction loop, domains, services, and kits.
+- Traced parent activation, child command, resource, inventory, projection, and readback boundaries.
+- Added a timestamped tracker, turn ledger, and system-specific audits.
+- Refreshed the required root .agent files.
 ```
 
 ## Runtime validation not performed
 
 ```txt
 runtime source changed: no
+dependencies changed: no
+package scripts changed: no
+deploy configuration changed: no
 branch created: no
 pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-DOM-free Market fixture: not run because proof files do not exist yet
-pushed to main: yes
-central ledger updated: yes
+Market command causality fixture: not run because it does not exist yet
 ```
 
 ## Why runtime validation was not run
 
-This pass updated internal `.agent` documentation only. No runtime source, package, renderer, or fixture files were changed.
+This pass changed internal documentation only. No runtime, package, renderer, test, or deployment implementation changed.
 
-## Validation required for next implementation
+## Validation required for the next implementation
 
 ```txt
-DOM-free Market fixture
+DOM-free Market command causality fixture
 npm test
 npm run build
 browser smoke
-GameHost.market readback inspection
+GameHost.market JSON serialization
+bounded journal length checks
+duplicate command/idempotency check
 ```
 
-## Required fixture assertions next
+## Required fixture assertions
 
-- accepted Market action keeps nested `CommandResult`.
-- rejected Market action keeps stable reason.
-- parent interface result retains nested result.
-- resource deltas are recorded.
-- inventory deltas are recorded.
-- Exchange projection consumes retained results.
-- HTML renderer readback reports Market projection state.
-- `GameHost.market` is JSON-safe.
+- Stable source, activation, command, result, transaction, and intake IDs.
+- Parent interface result retains the exact child result.
+- Accepted purchase mutates both resources and inventory.
+- Rejected purchase mutates neither resources nor inventory.
+- Stable insufficient-funds, capacity, unknown-action, and duplicate-command reasons.
+- Resource and inventory rows reference the source command.
+- Exchange projection references retained source/result rows.
+- Renderer consumption references the projection row.
+- GameHost readback is bounded, immutable to consumers, and JSON-safe.
