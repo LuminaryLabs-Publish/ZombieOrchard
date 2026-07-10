@@ -2,7 +2,15 @@
 
 ## Status
 
-Docs refreshed for `2026-07-10T10-00-37-04-00`.
+Docs refreshed for `2026-07-10T11-20-54-04-00`.
+
+## Selection audit
+
+```txt
+No checked public non-Cavalry repo was new, central-ledger absent, missing root .agent, recently added, or otherwise undocumented.
+LuminaryLabs-Publish/TheCavalryOfRome remained excluded by rule.
+ZombieOrchard was selected as the oldest eligible documented fallback after PhantomCommand advanced to 2026-07-10T11-10-08-04-00.
+```
 
 ## Current interaction loop
 
@@ -67,13 +75,12 @@ inventory-runtime
 world-canvas-renderer
 html-interface-renderer
 exchange-market-placeholder
-market-action-catalog-next
-market-command-envelope-next
-market-preflight-next
-market-result-ledger-next
-market-projection-next
+market-result-retention-next
+market-command-journal-next
+market-exchange-projection-next
 market-gamehost-diagnostics-next
-central-ledger-readback
+market-fixture-next
+central-ledger-sync
 ```
 
 ## Implemented kits
