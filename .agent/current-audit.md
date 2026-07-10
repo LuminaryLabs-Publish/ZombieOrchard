@@ -2,14 +2,16 @@
 
 ## Status
 
-Docs refreshed for `2026-07-10T14-21-28-04-00`.
+Docs refreshed for `2026-07-10T15-48-18-04-00`.
 
 ## Selection audit
 
 ```txt
-No checked public non-Cavalry repo was new, central-ledger absent, missing root .agent, recently added, or otherwise undocumented.
+The complete accessible LuminaryLabs-Publish inventory contains ten repositories.
+All nine eligible non-Cavalry repositories are centrally tracked and have root .agent state.
 LuminaryLabs-Publish/TheCavalryOfRome remained excluded by rule.
-ZombieOrchard was selected as the oldest eligible documented fallback after PhantomCommand advanced to 2026-07-10T14-11-51-04-00.
+ZombieOrchard was selected as the oldest eligible fallback.
+Only ZombieOrchard was changed in the Publish organization during this pass.
 ```
 
 ## Current interaction loop
@@ -18,20 +20,27 @@ ZombieOrchard was selected as the oldest eligible documented fallback after Phan
 index.html
   -> src/boot.js
   -> src/start.js
-  -> createOrchardGame()
-  -> createWorldCanvas(...)
-  -> createHtmlInterfaceRenderer(...)
+  -> createOrchardGame(orchardPreset)
+  -> createKitRuntime(...kits)
+  -> world canvas + HTML interface renderer
   -> requestAnimationFrame(draw)
   -> engine.tick(1 / 60)
-  -> engine.snapshot()
-  -> world canvas renders orchard state
-  -> HTML renderer renders active-session HUD or generic interface screen
-  -> data-action routes through interface-composition.activate
-  -> optional nested action.command dispatches through engine.command(...)
-  -> engine.command returns command result
-  -> nested result is dropped by interface-composition
-  -> Exchange/Market remains generic Back-only screen
-  -> GameHost exposes raw engine/getState/tick only
+  -> domain ticks
+  -> aggregate snapshot
+  -> world and interface render
+
+DOM data-action
+  -> interface-composition.activate
+  -> active interface domain.activate
+  -> action descriptor
+  -> optional child engine.command
+  -> child result discarded
+  -> optional transition or generic accepted result
+
+DOM data-command
+  -> active-session command
+  -> direct synchronous mutation
+  -> aggregate snapshot/render
 ```
 
 ## Domains in use
@@ -48,6 +57,7 @@ command-router
 event-emitter
 tick-dispatcher
 snapshot-aggregator
+subscription-notifier
 browser-animation-loop
 gamehost-diagnostics
 interface-screen-state
@@ -74,12 +84,8 @@ roster-runtime
 inventory-runtime
 world-canvas-renderer
 html-interface-renderer
-exchange-market-placeholder
-market-result-retention-next
-market-command-journal-next
-market-exchange-readback-next
-market-gamehost-diagnostics-next
-market-fixture-next
+smoke-fixture
+static-build-copy
 central-ledger-sync
 ```
 
@@ -116,17 +122,29 @@ static-build-copy-kit
 
 ## Services offered by kits
 
-- `kit-runtime`: kit registration, command routing, tick routing, snapshot aggregation, event dispatch.
-- Domain kits: entry, session select, run setup, active session, interrupt, construction, exchange, roster, inventory, knowledge, preferences, and outcome state/command surfaces.
-- `interface-composition-kit`: screen state, transition, back navigation, activation, and nested command dispatch.
-- Runtime kits: resources, pressure, orchard world, construction, roster, and inventory state updates.
-- Render kits: world canvas and HTML interface rendering.
-- `game-host-diagnostics-kit`: raw `engine`, `getState`, and manual `tick` diagnostics.
+- `kit-runtime`: kit registration, domain creation, command routing, bounded tick routing, event emission, aggregate snapshots, and subscriptions.
+- Scoped interface kits: action catalog, selection, fields, metadata, activation, and interface snapshots.
+- `interface-composition-kit`: active/previous screen state, transition, back, parent activation, and child command dispatch.
+- Runtime game kits: resource affordability/payment/addition, pressure adjustment, orchard/apple collection, construction, roster hiring, inventory equipment, movement, collection, clearing, phase change, pest simulation, score, and failure.
+- Render kits: orchard canvas projection, active-session HUD, generic screens, and DOM bindings.
+- Diagnostics/proof kits: raw engine/snapshot/tick access, entry/play/apple smoke, and static build copy.
+
+## Verified gaps
+
+1. Runtime commands have no sequence ID or durable request/result journal.
+2. Parent interface activation does not retain child command results.
+3. Emitted events are cleared on tick and are absent from snapshots.
+4. Resource payment returns a boolean without transaction attribution.
+5. Inventory has no purchase-intake or capacity service.
+6. Exchange is Back-only and has no Market source or command surface.
+7. HTML rendering has no Exchange result or consumption readback.
+8. GameHost is raw/mutable rather than a bounded JSON-safe proof surface.
+9. Smoke coverage does not prove accepted/rejected transaction behavior.
 
 ## Current finding
 
-The runtime command boundary is ahead of the interface and Market projection boundaries. `engine.command()` returns command results, but `interface-composition` drops nested `action.command` results, `exchange` has no Market-specific projection, and `GameHost` has no JSON-safe Market readback.
+The architecture is already split into usable runtime, interface, gameplay, rendering, and proof owners. The missing boundary is a stable command-causality chain joining parent activation, child Market result, resource transaction, inventory intake, projection, render consumption, and readback.
 
 ## What not to do next
 
-Do not start with runtime rewrite, renderer rewrite, economy expansion, new Market art, generic visual polish, or new orchard content.
+Do not start with a runtime rewrite, renderer replacement, economy expansion, new Market art, broader Market content, or unrelated orchard visual work.
