@@ -1,20 +1,23 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-10T14-21-28-04-00",
-  "currentNextSafeLedge": "ZombieOrchard Market Nested Result Retention Readback Refresh + GameHost Fixture Gate",
-  "latestTracker": ".agent/trackers/2026-07-10T14-21-28-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T14-21-28-04-00.md",
-  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T14-21-28-04-00-market-nested-result-retention-dsk-map.md",
-  "latestRenderAudit": ".agent/render-audit/2026-07-10T14-21-28-04-00-exchange-market-readback-projection-gap.md",
-  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T14-21-28-04-00-market-resource-inventory-result-loop.md",
-  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T14-21-28-04-00-interface-nested-command-result-map.md",
-  "latestMarketAuthorityAudit": ".agent/market-authority-audit/2026-07-10T14-21-28-04-00-market-result-retention-contract.md",
-  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T14-21-28-04-00-market-result-fixture-build-gate.md",
-  "previousTracker": ".agent/trackers/2026-07-10T12-49-54-04-00/project-breakdown.md",
+  "updatedAt": "2026-07-10T15-48-18-04-00",
+  "currentNextSafeLedge": "ZombieOrchard Market Command Causality Ledger + Resource/Inventory Transaction Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-10T15-48-18-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T15-48-18-04-00.md",
+  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T15-48-18-04-00-market-command-causality-dsk-map.md",
+  "latestRenderAudit": ".agent/render-audit/2026-07-10T15-48-18-04-00-exchange-transaction-consumption-readback-gap.md",
+  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T15-48-18-04-00-market-transaction-resource-inventory-loop.md",
+  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T15-48-18-04-00-interface-parent-child-command-causality-map.md",
+  "latestMarketAuthorityAudit": ".agent/market-authority-audit/2026-07-10T15-48-18-04-00-market-command-transaction-causality-contract.md",
+  "latestTransactionAudit": ".agent/transaction-audit/2026-07-10T15-48-18-04-00-resource-inventory-atomicity-gap.md",
+  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T15-48-18-04-00-market-causality-fixture-build-gate.md",
+  "previousTracker": ".agent/trackers/2026-07-10T14-21-28-04-00/project-breakdown.md",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
-    "reason": "oldest eligible documented fallback after current public Publish repo-list, central-ledger, and sampled root agent comparison"
+    "eligibleRepositoryCount": 9,
+    "accessibleRepositoryCount": 10,
+    "reason": "oldest eligible documented fallback after full Publish inventory, central ledger, and root agent comparison"
   },
   "implementedKits": [
     "kit-runtime",
@@ -45,46 +48,128 @@
     "static-build-copy-kit"
   ],
   "nextCutKits": [
-    "market-action-catalog-kit",
-    "market-action-id-catalog-kit",
-    "market-command-source-manifest-kit",
-    "market-command-envelope-kit",
-    "market-source-snapshot-kit",
-    "market-price-source-kit",
-    "market-capacity-policy-kit",
-    "market-preflight-kit",
-    "market-command-result-kit",
-    "market-rejection-reason-catalog-kit",
-    "market-result-retention-kit",
-    "market-command-journal-kit",
-    "market-result-journal-kit",
-    "market-exchange-result-ledger-kit",
-    "resource-transaction-history-kit",
-    "inventory-purchase-intake-kit",
+    "market-source-catalog-kit",
+    "market-source-revision-kit",
+    "runtime-command-sequence-kit",
+    "runtime-command-journal-kit",
+    "interface-activation-id-kit",
     "interface-nested-result-adapter-kit",
+    "interface-transition-policy-kit",
+    "market-command-envelope-kit",
+    "market-preflight-kit",
+    "market-rejection-reason-catalog-kit",
+    "market-command-result-kit",
+    "resource-transaction-history-kit",
+    "inventory-capacity-policy-kit",
+    "inventory-purchase-intake-kit",
+    "market-atomic-transaction-kit",
+    "market-command-idempotency-kit",
     "market-result-projection-kit",
-    "market-render-readback-kit",
-    "market-gamehost-diagnostics-kit",
-    "market-fixture-replay-kit",
+    "market-render-consumption-kit",
+    "market-gamehost-journal-kit",
+    "market-causality-fixture-kit",
     "central-ledger-readback-kit"
   ],
   "services": {
-    "kit-runtime": ["kit registration", "command routing", "tick routing", "snapshot aggregation", "event dispatch"],
-    "interface-composition-kit": ["screen state", "transition", "back navigation", "action activation", "nested command dispatch"],
-    "html-interface-render-kit": ["active-session HUD rendering", "generic screen rendering"],
-    "world-canvas-render-kit": ["orchard world canvas rendering"],
-    "game-host-diagnostics-kit": ["raw engine handle", "raw snapshot readback", "manual tick hook"],
-    "market-next-kits": ["stable Market action ids", "source manifest rows", "command envelopes", "price/capacity preflight", "accepted/rejected/no_mutation result rows", "nested result retention", "resource transaction history", "inventory purchase intake", "Exchange projection/readback", "GameHost.market diagnostics", "DOM-free fixture replay"]
+    "kit-runtime": [
+      "kit registration",
+      "domain creation",
+      "command routing",
+      "bounded tick routing",
+      "event emission",
+      "snapshot aggregation",
+      "subscriber notification"
+    ],
+    "scoped-interface-domain-kit": [
+      "screen state",
+      "action catalog",
+      "selection",
+      "field mutation",
+      "action activation"
+    ],
+    "interface-composition-kit": [
+      "active screen ownership",
+      "previous screen history",
+      "transition",
+      "back navigation",
+      "parent activation",
+      "child command dispatch"
+    ],
+    "resource-ledger-kit": [
+      "affordability check",
+      "boolean payment",
+      "resource addition",
+      "aggregate resource snapshot"
+    ],
+    "pressure-field-kit": [
+      "bounded pressure adjustment",
+      "passive pressure tick",
+      "channel snapshot"
+    ],
+    "orchard-world-kit": [
+      "orchard generation",
+      "apple replenishment",
+      "nearby apple collection",
+      "world snapshot"
+    ],
+    "construction-runtime-kit": [
+      "build catalog",
+      "resource payment",
+      "built object creation",
+      "status message"
+    ],
+    "roster-runtime-kit": [
+      "actor state",
+      "role state",
+      "hire payment",
+      "actor creation"
+    ],
+    "inventory-runtime-kit": [
+      "inventory item state",
+      "equipment state",
+      "equip command"
+    ],
+    "active-session-domain-kit": [
+      "movement",
+      "apple collection",
+      "pest clearing",
+      "phase change",
+      "pest simulation",
+      "damage",
+      "score",
+      "failure"
+    ],
+    "render-kits": [
+      "orchard canvas projection",
+      "active-session HUD",
+      "generic screen projection",
+      "DOM action bindings"
+    ],
+    "game-host-diagnostics-kit": [
+      "raw engine handle",
+      "aggregate snapshot readback",
+      "manual tick hook"
+    ],
+    "proof-deploy-kits": [
+      "entry to play smoke",
+      "static dist copy"
+    ]
   },
   "blockers": [
-    "Nested action.command results are dispatched but not retained by interface-composition.",
-    "Exchange is still Back-only.",
-    "HTML renderer has no Market projection/readback branch.",
-    "GameHost exposes raw engine/getState/tick only.",
-    "No DOM-free Market fixture exists yet."
+    "Runtime commands have no stable command ids or durable request/result journal.",
+    "Interface composition discards child command results.",
+    "Runtime events are not durable snapshot readback.",
+    "Resource payment is boolean-only and has no transaction attribution.",
+    "Inventory has no capacity or purchase intake service.",
+    "Exchange is Back-only and has no Market source or command surface.",
+    "HTML rendering has no Market projection consumption readback.",
+    "GameHost exposes raw mutable handles instead of bounded JSON-safe journals.",
+    "No deterministic Market causality fixture exists."
   ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
+    "dependenciesChanged": false,
+    "packageScriptsChanged": false,
     "branchCreated": false,
     "pullRequestCreated": false,
     "npmTestRun": false,
