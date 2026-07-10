@@ -1,74 +1,42 @@
 # Known gaps — ZombieOrchard
 
-Last aligned: `2026-07-10T08-28-26-04-00`
+## Primary gap
 
-## Critical blocker
-
-`ZombieOrchard` needs Market projection/result-ledger proof before economy expansion, renderer work, or visual polish.
-
-## Market source gaps
+Market nested-result projection is missing.
 
 ```txt
-No Market source manifest.
-No stable Market action IDs.
-No Market action catalog.
-No Market source snapshot.
-No price source rows.
-No capacity policy rows.
-No resource/inventory preflight rows.
+engine.command() returns command results
+interface-composition dispatches nested action.command
+nested command result is not retained
+Exchange remains Back-only
+HTML renderer has no Market projection/readback
+GameHost has no Market diagnostics beyond raw engine state
 ```
 
-## Command/result gaps
+## Specific gaps
+
+1. No stable Market action/source manifest.
+2. No Market price and capacity source rows.
+3. No Market preflight rows for accepted/rejected paths.
+4. Nested `action.command` results are dropped by `interface-composition`.
+5. No Market command/result journal.
+6. No resource transaction history tied to Market actions.
+7. No inventory purchase intake rows tied to Market actions.
+8. Exchange has no Market-specific projection.
+9. HTML renderer has no Market readback branch.
+10. `GameHost` exposes raw `engine/getState/tick` only.
+11. Existing smoke coverage proves reachability, not Market accepted/rejected behavior.
+12. No DOM-free Market fixture exists yet.
+
+## Explicit non-gaps for next pass
+
+These are not the next blocker:
 
 ```txt
-engine.command() returns command results, but Market-specific result rows are not source-owned.
-interface-composition drops nested action.command results.
-No stable accepted/rejected/no_mutation Market status rows.
-No stable Market reason-code catalog.
-No before/after resource snapshots.
-No resource transaction history.
-No inventory purchase intake rows.
-No ordered Market command/result journal.
-```
-
-## Interaction gaps
-
-```txt
-interface-composition can dispatch nested action.command values.
-Nested engine.command results are dropped by the interface adapter.
-The UI cannot explain which nested action succeeded or failed.
-Rejected/no-op Market actions have no projected reason row.
-```
-
-## Render/readback gaps
-
-```txt
-Exchange remains a generic Back-only screen.
-HTML renderer has no Market-specific projection/readback branch.
-No Market rows are rendered for accepted/rejected transactions.
-GameHost exposes raw engine/getState/tick only.
-No GameHost.market diagnostics block exists.
-```
-
-## Validation gaps
-
-```txt
-Existing smoke proves entry -> play -> apples exist.
-No DOM-free Market fixture exists.
-No package script runs Market result fixtures.
-No browser smoke verifies Exchange projection.
-No build gate asserts Market fixture output.
-```
-
-## Safe next gap closure
-
-```txt
-Market source manifest
-  -> Market command envelope
-  -> Market preflight/result rows
-  -> nested-result retention adapter
-  -> resource transaction and inventory intake rows
-  -> Exchange projection/readback
-  -> GameHost.market diagnostics
-  -> DOM-free fixture
+runtime rewrite
+renderer rewrite
+visual polish
+economy expansion
+new Market art
+new orchard content
 ```
