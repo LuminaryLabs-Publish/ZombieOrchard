@@ -13,7 +13,7 @@ npm run build: not run
 browser smoke: not run
 DOM-free Market fixture: not run because proof files do not exist yet
 pushed to main: yes
-central ledger updated: pending at file update time
+central ledger updated: yes
 ```
 
 ## Current available commands
