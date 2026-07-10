@@ -2,42 +2,52 @@
 
 ## Primary gap
 
-Market nested result retention and readback are missing.
+The runtime cannot explain a Market purchase as one durable parent-to-child-to-transaction causality chain.
 
 ```txt
-engine.command() returns command results
-interface-composition dispatches nested action.command
-nested command result is not retained
-Exchange remains Back-only
-HTML renderer has no Market projection/readback
-GameHost has no Market diagnostics beyond raw engine state
+interface activation
+  -> child command
+  -> preflight
+  -> resource transaction
+  -> inventory intake
+  -> result projection
+  -> renderer consumption
+  -> GameHost readback
 ```
 
 ## Specific gaps
 
-1. No stable Market action/source manifest.
-2. No Market price and capacity source rows.
-3. No Market preflight rows for accepted/rejected paths.
-4. Nested `action.command` results are dropped by `interface-composition`.
-5. No Market command/result journal.
-6. No resource transaction history tied to Market actions.
-7. No inventory purchase intake rows tied to Market actions.
-8. Exchange has no Market-specific projection.
-9. HTML renderer has no Market readback branch.
-10. `GameHost` exposes raw `engine/getState/tick` only.
-11. Existing smoke coverage proves reachability, not Market accepted/rejected behavior.
-12. No DOM-free Market fixture exists yet.
-13. `npm run build` does not gate on a Market fixture yet.
+1. No Market source/catalog revision rows.
+2. No runtime command sequence or command IDs.
+3. No bounded command request/result journal.
+4. Scoped interface activation has no activation ID.
+5. `interface-composition` drops child command results.
+6. Parent acceptance can conceal child rejection.
+7. Transition behavior after child rejection is implicit.
+8. Runtime events are cleared at tick start and absent from snapshots.
+9. Resource payment returns a boolean without transaction attribution.
+10. Resource rows lack before/delta/after values and stable rejection reasons.
+11. Inventory has no purchase-intake or capacity service.
+12. No atomicity contract joins resource debit and inventory intake.
+13. No duplicate-command/idempotency behavior is defined.
+14. Exchange is Back-only and has no Market command surface.
+15. Exchange has no source/result projection rows.
+16. HTML renderer has no Market projection consumption readback.
+17. GameHost exposes raw mutable handles instead of bounded JSON-safe journals.
+18. Existing smoke coverage does not prove accepted/rejected/no-mutation behavior.
+19. No deterministic DOM-free Market causality fixture exists.
+20. The build is not gated on Market transaction proof.
 
-## Explicit non-gaps for next pass
+## Explicit non-gaps for the next pass
 
-These are not the next blocker:
+These are not the immediate blocker:
 
 ```txt
-runtime rewrite
-renderer rewrite
-visual polish
-economy expansion
-new Market art
-new orchard content
+world canvas fidelity
+orchard content volume
+new pest types
+economy balance
+Market artwork
+renderer replacement
+full runtime rewrite
 ```
