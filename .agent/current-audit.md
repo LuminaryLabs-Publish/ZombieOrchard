@@ -1,6 +1,6 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-10T02-10-16-04-00`
+**Timestamp:** `2026-07-10T04-11-36-04-00`
 
 ## Summary
 
@@ -8,11 +8,11 @@
 
 The repo is not missing a route, game factory, static build command, command router, first playable loop, world renderer, UI renderer, or smoke script.
 
-The durable blocker is still the Exchange/Market path:
+The durable blocker is still the Exchange/Market proof path, narrowed this pass to nested-result retention:
 
 ```txt
-source-owned Market actions
-command/result ledgers
+Market source action catalog
+Market command/result ledgers
 nested command-result retention
 Exchange projection/readback
 GameHost Market diagnostics
@@ -103,11 +103,11 @@ central-ledger-readback
 - interface-composition routes transitions/back, activates active screens, dispatches nested commands, auto-routes outcome, and exposes activeSnapshot.
 - resource-ledger stores resources, affordability helpers, add/pay commands, and snapshots.
 - pressure-field tracks rowPressure/curse drift.
-- orchard-world generates orchard state.
+- orchard-world generates trees/apples and nearest apple collection.
 - construction-runtime builds catalog items by paying resources.
 - roster-runtime and inventory-runtime expose actors/items/equipped state.
 - active-session handles movement, collection, clearing, phase advance, pests, session end, and HUD actions.
-- world-canvas renders orchard state from snapshots.
+- world-canvas renders active orchard snapshot.
 - html-interface-renderer renders active-session HUD and generic screens, and routes data-action/data-command clicks.
 ```
 
@@ -170,10 +170,12 @@ central-ledger-readback-kit
 
 ## Main finding
 
-`engine.command()` already returns command results, so the runtime should not be replaced. The missing consumer boundary is inside Market/Exchange: `interface-composition` discards nested command results, `exchange` has no source-owned Market action catalog beyond Back, `html-interface-renderer` has no Exchange projection/readback branch, and `GameHost` has no Market diagnostics.
+`engine.command()` already returns command results, so the runtime should not be replaced.
+
+The missing consumer boundary is Market/Exchange plus nested-result retention: `interface-composition` dispatches nested `action.command` calls and drops the nested result, `exchange` has no source-owned Market action catalog beyond Back, `html-interface-renderer` has no Exchange projection/readback branch, and `GameHost` has no Market diagnostics.
 
 ## Recommended next ledge
 
 ```txt
-ZombieOrchard Market Nested Result Readback Catch-up + Exchange Fixture Gate
+ZombieOrchard Market Nested Result Ledger Refresh + Exchange Fixture Gate
 ```
