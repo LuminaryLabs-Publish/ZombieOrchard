@@ -2,14 +2,14 @@
 
 ## Status
 
-Docs refreshed for `2026-07-10T11-20-54-04-00`.
+Docs refreshed for `2026-07-10T12-49-54-04-00`.
 
 ## Selection audit
 
 ```txt
 No checked public non-Cavalry repo was new, central-ledger absent, missing root .agent, recently added, or otherwise undocumented.
 LuminaryLabs-Publish/TheCavalryOfRome remained excluded by rule.
-ZombieOrchard was selected as the oldest eligible documented fallback after PhantomCommand advanced to 2026-07-10T11-10-08-04-00.
+ZombieOrchard was selected as the oldest eligible documented fallback after PhantomCommand advanced to 2026-07-10T12-40-45-04-00.
 ```
 
 ## Current interaction loop
@@ -75,9 +75,9 @@ inventory-runtime
 world-canvas-renderer
 html-interface-renderer
 exchange-market-placeholder
-market-result-retention-next
+market-result-projection-next
 market-command-journal-next
-market-exchange-projection-next
+market-exchange-readback-next
 market-gamehost-diagnostics-next
 market-fixture-next
 central-ledger-sync
@@ -117,16 +117,16 @@ static-build-copy-kit
 ## Services offered by kits
 
 - `kit-runtime`: kit registration, command routing, tick routing, snapshot aggregation, event dispatch.
-- Domain kits: entry, session select, run setup, active session, interrupt, construction, exchange, roster, inventory, knowledge, preferences, outcome state and command surfaces.
-- `interface-composition-kit`: screen state, transition/back/activate, nested command dispatch.
-- Runtime kits: resources, pressure, orchard world, construction, roster, inventory state updates.
+- Domain kits: entry, session select, run setup, active session, interrupt, construction, exchange, roster, inventory, knowledge, preferences, and outcome state/command surfaces.
+- `interface-composition-kit`: screen state, transition, back navigation, activation, and nested command dispatch.
+- Runtime kits: resources, pressure, orchard world, construction, roster, and inventory state updates.
 - Render kits: world canvas and HTML interface rendering.
-- `game-host-diagnostics-kit`: raw `engine/getState/tick` diagnostics.
+- `game-host-diagnostics-kit`: raw `engine`, `getState`, and manual `tick` diagnostics.
 
 ## Current finding
 
-The runtime command boundary is ahead of the interface boundary. `engine.command()` returns useful command results, but `interface-composition` drops nested `action.command` results. Market cannot have durable projection/readback until that seam is fixed.
+The runtime command boundary is ahead of the interface and Market projection boundaries. `engine.command()` returns useful command results, but `interface-composition` drops nested `action.command` results, `exchange` has no Market-specific projection, and `GameHost` has no JSON-safe Market readback.
 
 ## What not to do next
 
-Do not start with runtime rewrite, renderer rewrite, economy expansion, new Market art, generic visual polish, or new content.
+Do not start with runtime rewrite, renderer rewrite, economy expansion, new Market art, generic visual polish, or new orchard content.
