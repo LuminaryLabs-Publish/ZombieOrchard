@@ -3,7 +3,7 @@
 ## Next safe ledge
 
 ```txt
-ZombieOrchard Market Nested Result Projection Refresh + GameHost Fixture Gate
+ZombieOrchard Market Result Retention Readback Ledger Refresh + GameHost Fixture Gate
 ```
 
 ## Implementation order
