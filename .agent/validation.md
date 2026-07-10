@@ -17,7 +17,7 @@ npm run build: not run
 browser smoke: not run
 DOM-free Market fixture: not run because proof files do not exist yet
 pushed to main: yes
-central ledger updated: pending central commit
+central ledger updated: yes
 ```
 
 ## Why runtime validation was not run
