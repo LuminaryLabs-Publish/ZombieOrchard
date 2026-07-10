@@ -3,7 +3,7 @@
 ## Next safe ledge
 
 ```txt
-ZombieOrchard Market Result Projection Readback Refresh + GameHost Fixture Gate
+ZombieOrchard Market Nested Result Retention Readback Refresh + GameHost Fixture Gate
 ```
 
 ## Implementation order
@@ -11,7 +11,7 @@ ZombieOrchard Market Result Projection Readback Refresh + GameHost Fixture Gate
 1. Add stable Market action/source rows.
 2. Add command envelopes for Market actions.
 3. Add price/capacity preflight rows.
-4. Update `interface-composition.activate` so nested `action.command` results are retained in the action result.
+4. Update `interface-composition.activate` so nested `action.command` results are retained in the parent action result.
 5. Add Market command/result journal rows.
 6. Tie accepted Market results to resource transaction and inventory intake rows.
 7. Add Exchange Market projection rows.
@@ -29,6 +29,7 @@ ZombieOrchard Market Result Projection Readback Refresh + GameHost Fixture Gate
 [ ] Accepted preflight rows are recorded.
 [ ] Rejected preflight rows include stable reasons.
 [ ] Nested command results survive interface-composition.
+[ ] Parent interface activate result contains nested command result.
 [ ] Resource deltas are tied to retained command results.
 [ ] Inventory deltas are tied to retained command results.
 [ ] Exchange projection reads retained Market results.
