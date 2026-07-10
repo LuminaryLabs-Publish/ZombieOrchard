@@ -1,9 +1,15 @@
 # START HERE — ZombieOrchard
 
+## Last aligned
+
+```txt
+2026-07-10T11-20-54-04-00
+```
+
 ## Current best next cut
 
 ```txt
-ZombieOrchard Market Nested Result Projection Refresh + GameHost Fixture Gate
+ZombieOrchard Market Result Retention Readback Ledger Refresh + GameHost Fixture Gate
 ```
 
 ## Read this first
@@ -11,7 +17,7 @@ ZombieOrchard Market Nested Result Projection Refresh + GameHost Fixture Gate
 Start with the latest tracker:
 
 ```txt
-.agent/trackers/2026-07-10T10-00-37-04-00/project-breakdown.md
+.agent/trackers/2026-07-10T11-20-54-04-00/project-breakdown.md
 ```
 
 Then read:
@@ -21,11 +27,12 @@ Then read:
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-10T10-00-37-04-00-market-nested-result-projection-dsk-map.md
-.agent/interaction-audit/2026-07-10T10-00-37-04-00-nested-command-result-retention-map.md
-.agent/market-authority-audit/2026-07-10T10-00-37-04-00-market-source-result-contract.md
-.agent/render-audit/2026-07-10T10-00-37-04-00-exchange-market-render-readback-gap.md
-.agent/deploy-audit/2026-07-10T10-00-37-04-00-market-fixture-build-gate.md
+.agent/architecture-audit/2026-07-10T11-20-54-04-00-market-result-retention-dsk-map.md
+.agent/interaction-audit/2026-07-10T11-20-54-04-00-nested-command-result-retention-map.md
+.agent/market-authority-audit/2026-07-10T11-20-54-04-00-market-result-retention-contract.md
+.agent/render-audit/2026-07-10T11-20-54-04-00-exchange-market-render-readback-gap.md
+.agent/gameplay-audit/2026-07-10T11-20-54-04-00-market-command-resource-loop.md
+.agent/deploy-audit/2026-07-10T11-20-54-04-00-market-fixture-build-gate.md
 ```
 
 ## Short version
