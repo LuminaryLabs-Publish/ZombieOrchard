@@ -1,6 +1,6 @@
 # ZombieOrchard Validation
 
-**Timestamp:** `2026-07-10T02-10-16-04-00`
+**Timestamp:** `2026-07-10T04-11-36-04-00`
 
 ## Available commands
 
@@ -45,7 +45,20 @@ pushed to main: yes, docs only
 
 ## Validation gap
 
-There is still no dedicated Market fixture, so the current smoke surface cannot prove Exchange action IDs, accepted/rejected Market results, no-mutation rejection behavior, transaction history, inventory intake, nested result retention, Exchange renderer readback, GameHost market diagnostics, or central ledger parity.
+There is still no dedicated Market fixture, so the current smoke surface cannot prove:
+
+```txt
+Exchange action IDs
+accepted Market command results
+rejected Market command results
+no-mutation rejection behavior
+resource transaction history
+inventory intake
+nested result retention
+Exchange renderer readback
+GameHost market diagnostics
+central ledger parity
+```
 
 ## Required validation after next implementation
 
@@ -64,4 +77,15 @@ or wire the same fixture into:
 
 ```bash
 npm test
+```
+
+## Fixture rows required
+
+```txt
+accepted sell-apples
+rejected sell-apples with no apples
+accepted buy-basic-tool
+rejected buy-basic-tool with insufficient money
+accepted buy-row-supply
+rejected buy-row-supply with capacity full
 ```
