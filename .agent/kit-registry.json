@@ -1,7 +1,21 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-10T10-00-37-04-00",
-  "currentNextSafeLedge": "ZombieOrchard Market Nested Result Projection Refresh + GameHost Fixture Gate",
+  "updatedAt": "2026-07-10T11-20-54-04-00",
+  "currentNextSafeLedge": "ZombieOrchard Market Result Retention Readback Ledger Refresh + GameHost Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-10T11-20-54-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T11-20-54-04-00.md",
+  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T11-20-54-04-00-market-result-retention-dsk-map.md",
+  "latestRenderAudit": ".agent/render-audit/2026-07-10T11-20-54-04-00-exchange-market-render-readback-gap.md",
+  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T11-20-54-04-00-market-command-resource-loop.md",
+  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T11-20-54-04-00-nested-command-result-retention-map.md",
+  "latestMarketAuthorityAudit": ".agent/market-authority-audit/2026-07-10T11-20-54-04-00-market-result-retention-contract.md",
+  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T11-20-54-04-00-market-fixture-build-gate.md",
+  "previousTracker": ".agent/trackers/2026-07-10T10-00-37-04-00/project-breakdown.md",
+  "selection": {
+    "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
+    "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
+    "reason": "oldest eligible documented fallback after current public Publish repo-list, central-ledger, and sampled root agent comparison"
+  },
   "implementedKits": [
     "kit-runtime",
     "scoped-interface-domain-kit",
@@ -41,6 +55,7 @@
     "market-preflight-kit",
     "market-command-result-kit",
     "market-rejection-reason-catalog-kit",
+    "market-result-retention-kit",
     "market-command-journal-kit",
     "market-result-journal-kit",
     "market-exchange-result-ledger-kit",
@@ -54,45 +69,12 @@
     "central-ledger-readback-kit"
   ],
   "services": {
-    "kit-runtime": [
-      "kit registration",
-      "command routing",
-      "tick routing",
-      "snapshot aggregation",
-      "event dispatch"
-    ],
-    "interface-composition-kit": [
-      "screen state",
-      "transition",
-      "back navigation",
-      "action activation",
-      "nested command dispatch"
-    ],
-    "html-interface-render-kit": [
-      "active-session HUD rendering",
-      "generic screen rendering"
-    ],
-    "world-canvas-render-kit": [
-      "orchard world canvas rendering"
-    ],
-    "game-host-diagnostics-kit": [
-      "raw engine handle",
-      "raw snapshot readback",
-      "manual tick hook"
-    ],
-    "market-next-kits": [
-      "stable Market action ids",
-      "source manifest rows",
-      "command envelopes",
-      "price/capacity preflight",
-      "accepted/rejected/no_mutation result rows",
-      "nested result retention",
-      "resource transaction history",
-      "inventory purchase intake",
-      "Exchange projection/readback",
-      "GameHost.market diagnostics",
-      "DOM-free fixture replay"
-    ]
+    "kit-runtime": ["kit registration", "command routing", "tick routing", "snapshot aggregation", "event dispatch"],
+    "interface-composition-kit": ["screen state", "transition", "back navigation", "action activation", "nested command dispatch"],
+    "html-interface-render-kit": ["active-session HUD rendering", "generic screen rendering"],
+    "world-canvas-render-kit": ["orchard world canvas rendering"],
+    "game-host-diagnostics-kit": ["raw engine handle", "raw snapshot readback", "manual tick hook"],
+    "market-next-kits": ["stable Market action ids", "source manifest rows", "command envelopes", "price/capacity preflight", "accepted/rejected/no_mutation result rows", "nested result retention", "resource transaction history", "inventory purchase intake", "Exchange projection/readback", "GameHost.market diagnostics", "DOM-free fixture replay"]
   },
   "blockers": [
     "Nested action.command results are dispatched but not retained by interface-composition.",
@@ -100,5 +82,14 @@
     "HTML renderer has no Market projection/readback branch.",
     "GameHost exposes raw engine/getState/tick only.",
     "No DOM-free Market fixture exists yet."
-  ]
+  ],
+  "validation": {
+    "runtimeSourceChangedThisPass": false,
+    "branchCreated": false,
+    "pullRequestCreated": false,
+    "npmTestRun": false,
+    "npmBuildRun": false,
+    "fixtureRun": false,
+    "browserSmokeRun": false
+  }
 }
