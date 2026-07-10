@@ -1,6 +1,6 @@
 # Validation — ZombieOrchard
 
-Last aligned: `2026-07-10T07-08-10-04-00`
+Last aligned: `2026-07-10T08-28-26-04-00`
 
 ## Validation state for this pass
 
@@ -13,6 +13,7 @@ npm run build: not run
 browser smoke: not run
 DOM-free Market fixture: not run because proof files do not exist yet
 pushed to main: yes
+central ledger updated: pending at file update time
 ```
 
 ## Current available commands
@@ -26,6 +27,19 @@ npm run build
 ## Current coverage
 
 `npm test` currently runs `node tests/smoke.mjs`. The smoke path proves basic reachability into play and apple presence, not Market/Exchange transaction proof.
+
+## Source evidence checked
+
+```txt
+package.json: dev/test/build scripts only.
+index.html: #world canvas, #ui-root, #error-panel, boot module.
+src/start.js: engine, world renderer, HTML renderer, RAF loop, GameHost.
+src/kits/runtime.js: command() returns command results.
+src/kits/composition.js: nested action.command result is dispatched but not retained.
+src/presets/orchard-preset.js: exchange screen is Market + Back only.
+src/renderer/html-interface-renderer.js: generic screen rendering, no Market branch.
+tests/smoke.mjs: entry -> play -> apples exist.
+```
 
 ## Missing validation
 
