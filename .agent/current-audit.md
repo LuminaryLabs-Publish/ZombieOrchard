@@ -1,6 +1,6 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-09T23-20-43-04-00`
+**Timestamp:** `2026-07-10T00-38-44-04-00`
 
 ## Summary
 
@@ -175,5 +175,5 @@ central-ledger-readback-kit
 ## Recommended next ledge
 
 ```txt
-ZombieOrchard Market Result Readback Catch-up + Exchange Fixture Gate
+ZombieOrchard Market Nested Result Ledger Catch-up + Exchange Fixture Gate
 ```
