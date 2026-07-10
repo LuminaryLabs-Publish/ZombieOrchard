@@ -1,6 +1,6 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-10T04-11-36-04-00`
+**Timestamp:** `2026-07-10T05-28-12-04-00`
 
 ## Summary
 
@@ -8,7 +8,7 @@
 
 The repo is not missing a route, game factory, static build command, command router, first playable loop, world renderer, UI renderer, or smoke script.
 
-The durable blocker is still the Exchange/Market proof path, narrowed this pass to nested-result retention:
+The durable blocker remains the Exchange/Market proof path:
 
 ```txt
 Market source action catalog
@@ -177,5 +177,5 @@ The missing consumer boundary is Market/Exchange plus nested-result retention: `
 ## Recommended next ledge
 
 ```txt
-ZombieOrchard Market Nested Result Ledger Refresh + Exchange Fixture Gate
+ZombieOrchard Market Nested Result Readback Refresh + Exchange Fixture Gate
 ```
