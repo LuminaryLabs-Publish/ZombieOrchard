@@ -1,36 +1,8 @@
-# ZombieOrchard Validation
+# Validation — ZombieOrchard
 
-**Timestamp:** `2026-07-10T05-28-12-04-00`
+Last aligned: `2026-07-10T07-08-10-04-00`
 
-## Available commands
-
-```bash
-npm run dev
-npm test
-npm run build
-```
-
-`package.json` maps these to:
-
-```txt
-npm run dev   -> python -m http.server 5173
-npm test      -> node tests/smoke.mjs
-npm run build -> rm -rf dist && mkdir -p dist && cp index.html dist/index.html && cp -R src dist/src
-```
-
-## Current proof surface
-
-```txt
-tests/smoke.mjs:
-  - createOrchardGame()
-  - verify entry screen is active
-  - activate Play through interface-composition
-  - tick once
-  - verify active-session is active
-  - verify orchard apples exist
-```
-
-## Current pass validation
+## Validation state for this pass
 
 ```txt
 runtime source changed: no
@@ -39,53 +11,38 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-DOM-free market fixture: not run because fixture files do not exist yet
-pushed to main: yes, docs only
+DOM-free Market fixture: not run because proof files do not exist yet
+pushed to main: yes
 ```
 
-## Validation gap
-
-There is still no dedicated Market fixture, so the current smoke surface cannot prove:
+## Current available commands
 
 ```txt
-Exchange action IDs
-accepted Market command results
-rejected Market command results
-no-mutation rejection behavior
-resource transaction history
-inventory intake
-nested result retention
-Exchange renderer readback
-GameHost market diagnostics
-central ledger parity
-```
-
-## Required validation after next implementation
-
-```bash
+npm run dev
 npm test
 npm run build
 ```
 
-Add one of these before implementation is considered complete:
+## Current coverage
 
-```bash
-node tests/market-result-fixture.mjs
-```
+`npm test` currently runs `node tests/smoke.mjs`. The smoke path proves basic reachability into play and apple presence, not Market/Exchange transaction proof.
 
-or wire the same fixture into:
-
-```bash
-npm test
-```
-
-## Fixture rows required
+## Missing validation
 
 ```txt
-accepted sell-apples
-rejected sell-apples with no apples
-accepted buy-basic-tool
-rejected buy-basic-tool with insufficient money
-accepted buy-row-supply
-rejected buy-row-supply with capacity full
+No tests/market-result-fixture.mjs exists yet.
+No DOM-free Market accepted/rejected rows are asserted.
+No nested interface command result retention is asserted.
+No Exchange projection/readback is asserted.
+No GameHost.market diagnostics are asserted.
 ```
+
+## Required next validation gate
+
+```txt
+node tests/market-result-fixture.mjs
+npm test
+npm run build
+```
+
+The Market fixture should pass before expanding economy content or changing render/visual behavior.
