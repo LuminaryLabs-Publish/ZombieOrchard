@@ -3,45 +3,52 @@
 ## Next safe ledge
 
 ```txt
-ZombieOrchard Market Nested Result Retention Readback Refresh + GameHost Fixture Gate
+ZombieOrchard Market Command Causality Ledger
++ Resource/Inventory Transaction Fixture Gate
 ```
 
 ## Implementation order
 
-1. Add stable Market action/source rows.
-2. Add command envelopes for Market actions.
-3. Add price/capacity preflight rows.
-4. Update `interface-composition.activate` so nested `action.command` results are retained in the parent action result.
-5. Add Market command/result journal rows.
-6. Tie accepted Market results to resource transaction and inventory intake rows.
-7. Add Exchange Market projection rows.
-8. Add HTML renderer readback for Market projection consumption.
-9. Add JSON-safe `GameHost.market` diagnostics.
-10. Add a DOM-free Market fixture proving accepted and rejected rows.
-11. Run fixture, then available npm/build/browser checks.
+1. Add immutable Market source/catalog rows with revision, item, action, price, and capacity inputs.
+2. Add runtime command sequence IDs and a bounded request/result journal.
+3. Add activation IDs to scoped interface and composition results.
+4. Update `interface-composition.activate` to retain the exact child command result.
+5. Define explicit transition policy for accepted and rejected child commands.
+6. Add stable Market preflight and rejection reasons.
+7. Update `resource-ledger-kit` with transaction IDs, before/delta/after rows, and source command attribution.
+8. Update `inventory-runtime-kit` with capacity preflight and purchase-intake rows.
+9. Apply Market purchases atomically after both preflights pass.
+10. Add Exchange projection rows referencing source and result IDs.
+11. Add HTML renderer consumption rows referencing projection/result IDs.
+12. Add bounded JSON-safe `GameHost.market` command/transaction/readback journals.
+13. Add a deterministic DOM-free fixture for accepted, rejected, unknown, and duplicate command paths.
+14. Gate `npm test` and build-sensitive work on the fixture.
 
 ## Acceptance checklist
 
 ```txt
-[ ] Market action ids are stable.
-[ ] Market source manifest exists.
-[ ] Market command envelopes are serializable.
-[ ] Accepted preflight rows are recorded.
-[ ] Rejected preflight rows include stable reasons.
-[ ] Nested command results survive interface-composition.
-[ ] Parent interface activate result contains nested command result.
-[ ] Resource deltas are tied to retained command results.
-[ ] Inventory deltas are tied to retained command results.
-[ ] Exchange projection reads retained Market results.
-[ ] HTML renderer emits Market readback rows.
-[ ] GameHost exposes JSON-safe Market diagnostics.
-[ ] DOM-free fixture proves accepted and rejected paths.
+[ ] Market source rows have stable ids and revisions.
+[ ] Parent activations have stable activation ids.
+[ ] Child commands have stable command ids.
+[ ] Parent result retains exact child result.
+[ ] Parent acceptance does not conceal child rejection.
+[ ] Rejection reasons are stable and serializable.
+[ ] Resource transactions record before/delta/after and source command.
+[ ] Inventory intake records before/delta/after and source command.
+[ ] Accepted purchase mutates both resources and inventory.
+[ ] Rejected purchase mutates neither resources nor inventory.
+[ ] Duplicate command behavior prevents double spending.
+[ ] Exchange projection references source and result rows.
+[ ] Renderer readback references consumed projection rows.
+[ ] GameHost Market journals are bounded and JSON-safe.
+[ ] DOM-free fixture proves accepted and rejected causality chains.
 ```
 
 ## Avoid until proof exists
 
 - economy tuning
-- visual polish
+- additional Market inventory
+- Market art expansion
 - renderer replacement
-- additional Market content
-- unrelated runtime rewrites
+- world-content expansion
+- unrelated runtime refactors
