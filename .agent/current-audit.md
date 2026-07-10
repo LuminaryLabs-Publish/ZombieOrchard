@@ -2,17 +2,42 @@
 
 ## Status
 
-Docs refreshed for `2026-07-10T17-18-47-04-00`.
+Docs refreshed for `2026-07-10T18-49-54-04-00`.
+
+```txt
+status: runtime-session-clock-lifecycle-fixture-gate-planned
+runtime source changed: no
+branch: main
+root .agent state: refreshed
+central ledger sync: pending until repo-local docs commit sequence completes
+```
 
 ## Selection audit
 
 ```txt
-The complete accessible LuminaryLabs-Publish inventory contains ten repositories.
-All nine eligible non-Cavalry repositories are centrally tracked and have root .agent state.
-LuminaryLabs-Publish/TheCavalryOfRome remained excluded by rule.
-Recent repo-local HorrorCorridor and PhantomCommand audits were treated as fresh activity.
-ZombieOrchard was selected as the oldest eligible documented fallback.
-Only ZombieOrchard was changed in the Publish organization during this pass.
+Accessible LuminaryLabs-Publish repositories: 10
+Eligible non-Cavalry repositories: 9
+Central ledger entries present: 9/9
+Root .agent state present: 9/9
+Excluded: LuminaryLabs-Publish/TheCavalryOfRome
+Selected: LuminaryLabs-Publish/ZombieOrchard
+Selection rule: oldest eligible documented fallback
+Prior selected-repo timestamp: 2026-07-10T17-18-47-04-00
+```
+
+Current comparison:
+
+```txt
+ZombieOrchard        selected / 2026-07-10T17-18-47-04-00
+TheUnmappedHouse     tracked  / 2026-07-10T17-29-23-04-00
+MyCozyIsland         tracked  / 2026-07-10T17-38-35-04-00
+TheOpenAbove         tracked  / 2026-07-10T17-51-35-04-00
+PrehistoricRush      tracked  / 2026-07-10T18-01-03-04-00
+AetherVale           tracked  / 2026-07-10T18-08-37-04-00
+IntoTheMeadow        tracked  / 2026-07-10T18-22-01-04-00
+HorrorCorridor       tracked  / 2026-07-10T18-31-21-04-00
+PhantomCommand       tracked  / repo-local 2026-07-10T18-40-13-04-00
+TheCavalryOfRome     excluded by rule
 ```
 
 ## Current interaction loop
@@ -23,12 +48,18 @@ index.html
   -> src/start.js
   -> createOrchardGame(orchardPreset)
   -> createKitRuntime(...kits)
-  -> world canvas + HTML interface renderer
+  -> instantiate resource, pressure, world, construction, roster,
+     inventory, scoped interface, active-session, and composition domains
+  -> create world canvas and HTML renderer
+  -> attach one root click listener
   -> requestAnimationFrame(draw)
   -> engine.tick(1 / 60)
-  -> domain ticks
-  -> aggregate snapshot
-  -> world and interface render
+  -> tick every domain in insertion order
+  -> notify subscribers with aggregate snapshot
+  -> return another aggregate snapshot
+  -> world.render(snapshot)
+  -> ui.render(snapshot)
+  -> request next frame
 
 DOM data-action
   -> interface-composition.activate
@@ -40,8 +71,8 @@ DOM data-action
 
 DOM data-command
   -> active-session command
-  -> direct synchronous mutation
-  -> aggregate snapshot/render on the next draw
+  -> synchronous gameplay mutation
+  -> next automatic frame projects aggregate state
 ```
 
 ## Domains in use
@@ -55,12 +86,14 @@ kit-runtime
 engine-context
 domain-registry
 command-router
-event-emitter
+ephemeral-event-emitter
 tick-dispatcher
 snapshot-aggregator
 subscription-notifier
 browser-animation-loop
 gamehost-diagnostics
+session-clock-authority-missing
+session-lifecycle-authority-missing
 interface-screen-state
 interface-composition
 data-action-routing
@@ -96,66 +129,57 @@ pages-deploy
 central-ledger-sync
 ```
 
-## Implemented kits
+## Implemented kits and services
+
+- `kit-runtime`: kit registration, domain construction, command routing, delta clamping, tick routing, ephemeral event emission, aggregate snapshots, and subscriber notification.
+- `scoped-interface-domain-kit` plus 12 concrete screen kits: screen state, actions, selection, field mutation, activation, and snapshots.
+- `interface-composition-kit`: active/previous screen state, transition, back navigation, parent activation, child command dispatch, and automatic outcome routing.
+- `resource-ledger-kit`: affordability, boolean payment, resource addition, and aggregate values.
+- `pressure-field-kit`: bounded channel adjustment and unconditional per-tick pressure growth.
+- `orchard-world-kit`: deterministic tree grid plus nondeterministic apple seeding, replenishment, collection, and world snapshots.
+- `construction-runtime-kit`: catalog lookup, resource payment, built-object creation, and status messages.
+- `roster-runtime-kit`: actor/role state, hiring payment, actor creation, and status messages.
+- `inventory-runtime-kit`: inventory snapshot and unrestricted equipment assignment.
+- `active-session-domain-kit`: action descriptors, movement, collection, clearing, phase changes, pest spawning, pursuit, damage, score, and failure.
+- `world-canvas-render-kit`: canvas resize and orchard/player/pest projection.
+- `html-interface-render-kit`: root click delegation, active-session HUD, generic screen cards, and full per-frame `innerHTML` replacement.
+- `game-host-diagnostics-kit`: raw engine handle, aggregate snapshot readback, and manual tick hook.
+- `smoke-fixture-kit`: entry-to-play transition and apple-presence reachability.
+- `static-build-copy-kit`: copy `index.html` and `src` to `dist`.
+- `pages-deploy-kit`: test, build, artifact upload, and Pages deployment from `main`.
+
+## Verified session and time-authority gaps
+
+1. `createOrchardGame()` constructs `active-session` before the user starts a run.
+2. `src/start.js` begins ticking immediately on page load.
+3. The host calls `engine.tick(1 / 60)` once per RAF callback instead of deriving steps from elapsed time.
+4. A 120 Hz display advances roughly twice as many simulation seconds per wall-clock second as a 60 Hz display.
+5. A throttled or 30 Hz display advances fewer simulation seconds per wall-clock second.
+6. Every domain ticks regardless of the active interface screen.
+7. `pressure-field.tick()` continues on Entry, Settings, Pause, Build, Market, Roster, Inventory, Codex, and Outcome screens.
+8. `active-session.tick()` continues pest spawn, pursuit, and damage while the Pause/interrupt screen is active.
+9. Play and New Game only transition screens; neither creates a new session nor resets existing gameplay state.
+10. Outcome -> Title cannot persist after failure because the next composition tick sees `ended` and routes back to Outcome.
+11. `GameHost.tick(dt)` can inject extra live ticks while the automatic RAF loop is still active.
+12. The RAF request ID is not retained, so the loop cannot be cancelled.
+13. The root click listener has no removal/dispose path.
+14. Engine, renderers, and domains expose no coordinated `start`, `pause`, `resume`, `reset`, `stop`, or `dispose` contract.
+15. Existing deterministic scenario gaps remain: global `Math.random`, no durable command journal, dropped nested results, no committed frame fingerprint, and no render-consumption proof.
+16. The smoke test cannot detect pause leakage, refresh-rate drift, reset failure, outcome re-entry, duplicate loops, or listener accumulation.
+
+## Main finding
+
+The immediate blocker is not content, Market breadth, or rendering. It is the absence of one authoritative runtime-session and simulation-clock boundary.
+
+Screen state currently masquerades as lifecycle state. A session is always alive, all gameplay domains always tick, and the browser refresh cadence controls game speed. That makes pause, new game, title return, deterministic replay, GameHost automation, and future save/resume semantics unreliable.
+
+## Next safe ledge
 
 ```txt
-kit-runtime
-scoped-interface-domain-kit
-entry-domain-kit
-session-select-domain-kit
-run-setup-domain-kit
-active-session-domain-kit
-interrupt-domain-kit
-construction-domain-kit
-exchange-domain-kit
-roster-domain-kit
-inventory-domain-kit
-knowledge-domain-kit
-preferences-domain-kit
-outcome-domain-kit
-interface-composition-kit
-resource-ledger-kit
-pressure-field-kit
-orchard-world-kit
-construction-runtime-kit
-roster-runtime-kit
-inventory-runtime-kit
-world-canvas-render-kit
-html-interface-render-kit
-game-host-diagnostics-kit
-smoke-fixture-kit
-static-build-copy-kit
-pages-deploy-kit
+ZombieOrchard Runtime Session Clock and Lifecycle Authority
++ Pause/Reset/Refresh-Rate Fixture Gate
 ```
-
-## Services offered by kits
-
-- `kit-runtime`: kit registration, domain creation, command routing, delta clamping, tick routing, ephemeral event emission, aggregate snapshots, and subscriber notification.
-- Scoped interface kits: screen state, action catalogs, selection, field mutation, action activation, and screen snapshots.
-- `interface-composition-kit`: active/previous screen ownership, transition, back navigation, parent activation, child command dispatch, and outcome routing.
-- Runtime gameplay kits: resource affordability/payment/addition, pressure adjustment, orchard generation, apple replenishment and collection, construction, roster hiring, inventory equipment, movement, clearing, phase progression, pest simulation, score, and failure.
-- Render kits: orchard canvas projection, active-session HUD, generic screen projection, and DOM action/command binding.
-- Diagnostics/proof/deploy kits: raw engine/snapshot/tick access, entry/play/apple smoke, static build copy, and Pages deployment.
-
-## Verified deterministic and observation gaps
-
-1. `orchard-world-kit` uses global `Math.random()` for apple source selection, position, kind, and IDs.
-2. `active-session-domain-kit` uses global `Math.random()` for pest spawn decisions, angles, and IDs.
-3. The same command and tick script cannot guarantee the same initial, per-frame, or final snapshot.
-4. Runtime commands have no stable sequence ID or durable request/result journal.
-5. Parent interface activation does not retain child command results.
-6. Runtime events are cleared at tick start and excluded from snapshots.
-7. Aggregate snapshots have no scenario, seed, preset revision, command range, event range, or canonical fingerprint.
-8. Renderers record no consumed frame or state/projection fingerprint.
-9. `GameHost` exposes mutable engine authority and raw snapshots rather than bounded immutable scenario observations.
-10. Smoke coverage proves reachability only and cannot detect replay drift.
-11. The Pages workflow gates deploy on `npm test`, but the test suite has no deterministic scenario fixture.
-12. Market transaction causality remains missing, but stable whole-state proof depends on deterministic scenario authority first.
-
-## Current finding
-
-The architecture is already split into usable runtime, interface, gameplay, rendering, proof, and deployment owners. The missing boundary is a cross-domain deterministic scenario contract joining seed ownership, named random draws, command results, durable events, committed frames, renderer consumption, GameHost readback, and replay fingerprints.
 
 ## What not to do next
 
-Do not start with a runtime rewrite, renderer replacement, economy expansion, new Market content, new pest types, visual polish, or unrelated orchard growth. Update existing domain owners first and add only the shared deterministic/random/fixture capabilities that have no current owner.
+Do not begin with Market expansion, economy tuning, new pest types, renderer replacement, visual polish, or broad runtime rewrites. Add lifecycle and clock authority by updating existing host/runtime/domain owners first, then place deterministic scenario proof beneath the new session boundary.
