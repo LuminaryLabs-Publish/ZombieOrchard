@@ -2,7 +2,7 @@
 
 ## Status
 
-Docs refreshed for `2026-07-10T15-48-18-04-00`.
+Docs refreshed for `2026-07-10T17-18-47-04-00`.
 
 ## Selection audit
 
@@ -10,7 +10,8 @@ Docs refreshed for `2026-07-10T15-48-18-04-00`.
 The complete accessible LuminaryLabs-Publish inventory contains ten repositories.
 All nine eligible non-Cavalry repositories are centrally tracked and have root .agent state.
 LuminaryLabs-Publish/TheCavalryOfRome remained excluded by rule.
-ZombieOrchard was selected as the oldest eligible fallback.
+Recent repo-local HorrorCorridor and PhantomCommand audits were treated as fresh activity.
+ZombieOrchard was selected as the oldest eligible documented fallback.
 Only ZombieOrchard was changed in the Publish organization during this pass.
 ```
 
@@ -40,7 +41,7 @@ DOM data-action
 DOM data-command
   -> active-session command
   -> direct synchronous mutation
-  -> aggregate snapshot/render
+  -> aggregate snapshot/render on the next draw
 ```
 
 ## Domains in use
@@ -82,10 +83,16 @@ orchard-world
 construction-runtime
 roster-runtime
 inventory-runtime
+player-state
+apple-collection
+pest-simulation
+phase-progression
+score-and-failure
 world-canvas-renderer
 html-interface-renderer
 smoke-fixture
 static-build-copy
+pages-deploy
 central-ledger-sync
 ```
 
@@ -118,33 +125,37 @@ html-interface-render-kit
 game-host-diagnostics-kit
 smoke-fixture-kit
 static-build-copy-kit
+pages-deploy-kit
 ```
 
 ## Services offered by kits
 
-- `kit-runtime`: kit registration, domain creation, command routing, bounded tick routing, event emission, aggregate snapshots, and subscriptions.
-- Scoped interface kits: action catalog, selection, fields, metadata, activation, and interface snapshots.
-- `interface-composition-kit`: active/previous screen state, transition, back, parent activation, and child command dispatch.
-- Runtime game kits: resource affordability/payment/addition, pressure adjustment, orchard/apple collection, construction, roster hiring, inventory equipment, movement, collection, clearing, phase change, pest simulation, score, and failure.
-- Render kits: orchard canvas projection, active-session HUD, generic screens, and DOM bindings.
-- Diagnostics/proof kits: raw engine/snapshot/tick access, entry/play/apple smoke, and static build copy.
+- `kit-runtime`: kit registration, domain creation, command routing, delta clamping, tick routing, ephemeral event emission, aggregate snapshots, and subscriber notification.
+- Scoped interface kits: screen state, action catalogs, selection, field mutation, action activation, and screen snapshots.
+- `interface-composition-kit`: active/previous screen ownership, transition, back navigation, parent activation, child command dispatch, and outcome routing.
+- Runtime gameplay kits: resource affordability/payment/addition, pressure adjustment, orchard generation, apple replenishment and collection, construction, roster hiring, inventory equipment, movement, clearing, phase progression, pest simulation, score, and failure.
+- Render kits: orchard canvas projection, active-session HUD, generic screen projection, and DOM action/command binding.
+- Diagnostics/proof/deploy kits: raw engine/snapshot/tick access, entry/play/apple smoke, static build copy, and Pages deployment.
 
-## Verified gaps
+## Verified deterministic and observation gaps
 
-1. Runtime commands have no sequence ID or durable request/result journal.
-2. Parent interface activation does not retain child command results.
-3. Emitted events are cleared on tick and are absent from snapshots.
-4. Resource payment returns a boolean without transaction attribution.
-5. Inventory has no purchase-intake or capacity service.
-6. Exchange is Back-only and has no Market source or command surface.
-7. HTML rendering has no Exchange result or consumption readback.
-8. GameHost is raw/mutable rather than a bounded JSON-safe proof surface.
-9. Smoke coverage does not prove accepted/rejected transaction behavior.
+1. `orchard-world-kit` uses global `Math.random()` for apple source selection, position, kind, and IDs.
+2. `active-session-domain-kit` uses global `Math.random()` for pest spawn decisions, angles, and IDs.
+3. The same command and tick script cannot guarantee the same initial, per-frame, or final snapshot.
+4. Runtime commands have no stable sequence ID or durable request/result journal.
+5. Parent interface activation does not retain child command results.
+6. Runtime events are cleared at tick start and excluded from snapshots.
+7. Aggregate snapshots have no scenario, seed, preset revision, command range, event range, or canonical fingerprint.
+8. Renderers record no consumed frame or state/projection fingerprint.
+9. `GameHost` exposes mutable engine authority and raw snapshots rather than bounded immutable scenario observations.
+10. Smoke coverage proves reachability only and cannot detect replay drift.
+11. The Pages workflow gates deploy on `npm test`, but the test suite has no deterministic scenario fixture.
+12. Market transaction causality remains missing, but stable whole-state proof depends on deterministic scenario authority first.
 
 ## Current finding
 
-The architecture is already split into usable runtime, interface, gameplay, rendering, and proof owners. The missing boundary is a stable command-causality chain joining parent activation, child Market result, resource transaction, inventory intake, projection, render consumption, and readback.
+The architecture is already split into usable runtime, interface, gameplay, rendering, proof, and deployment owners. The missing boundary is a cross-domain deterministic scenario contract joining seed ownership, named random draws, command results, durable events, committed frames, renderer consumption, GameHost readback, and replay fingerprints.
 
 ## What not to do next
 
-Do not start with a runtime rewrite, renderer replacement, economy expansion, new Market art, broader Market content, or unrelated orchard visual work.
+Do not start with a runtime rewrite, renderer replacement, economy expansion, new Market content, new pest types, visual polish, or unrelated orchard growth. Update existing domain owners first and add only the shared deterministic/random/fixture capabilities that have no current owner.
