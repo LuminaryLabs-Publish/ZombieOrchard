@@ -1,11 +1,11 @@
 # START HERE — ZombieOrchard
 
-Last aligned: `2026-07-10T07-08-10-04-00`
+Last aligned: `2026-07-10T08-28-26-04-00`
 
 Current safe ledge:
 
 ```txt
-ZombieOrchard Market Exchange Result Ledger Refresh + GameHost Fixture Gate
+ZombieOrchard Market Projection Result Ledger Refresh + GameHost Fixture Gate
 ```
 
 ## Read order
@@ -15,8 +15,8 @@ ZombieOrchard Market Exchange Result Ledger Refresh + GameHost Fixture Gate
 3. `.agent/known-gaps.md`
 4. `.agent/validation.md`
 5. `.agent/kit-registry.json`
-6. `.agent/trackers/2026-07-10T07-08-10-04-00/project-breakdown.md`
-7. `.agent/architecture-audit/2026-07-10T07-08-10-04-00-market-exchange-result-ledger-dsk-map.md`
+6. `.agent/trackers/2026-07-10T08-28-26-04-00/project-breakdown.md`
+7. `.agent/architecture-audit/2026-07-10T08-28-26-04-00-market-projection-result-ledger-dsk-map.md`
 
 ## Current product read
 
@@ -56,7 +56,7 @@ index.html
 
 Do not start next with a runtime rewrite, renderer rewrite, orchard visual polish, or economy expansion.
 
-The blocker is the Market/Exchange result ledger. `engine.command()` already returns command results, but nested interface command results are not retained, Exchange does not project Market rows, and `GameHost` has no Market-specific diagnostics.
+The blocker is Market projection proof. `engine.command()` already returns command results, but nested interface command results are not retained, Exchange does not project Market rows, and `GameHost` has no Market-specific diagnostics.
 
 ## Required next proof
 
