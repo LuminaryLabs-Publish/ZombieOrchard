@@ -1,23 +1,23 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-10T15-48-18-04-00",
-  "currentNextSafeLedge": "ZombieOrchard Market Command Causality Ledger + Resource/Inventory Transaction Fixture Gate",
-  "latestTracker": ".agent/trackers/2026-07-10T15-48-18-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T15-48-18-04-00.md",
-  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T15-48-18-04-00-market-command-causality-dsk-map.md",
-  "latestRenderAudit": ".agent/render-audit/2026-07-10T15-48-18-04-00-exchange-transaction-consumption-readback-gap.md",
-  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T15-48-18-04-00-market-transaction-resource-inventory-loop.md",
-  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T15-48-18-04-00-interface-parent-child-command-causality-map.md",
-  "latestMarketAuthorityAudit": ".agent/market-authority-audit/2026-07-10T15-48-18-04-00-market-command-transaction-causality-contract.md",
-  "latestTransactionAudit": ".agent/transaction-audit/2026-07-10T15-48-18-04-00-resource-inventory-atomicity-gap.md",
-  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T15-48-18-04-00-market-causality-fixture-build-gate.md",
-  "previousTracker": ".agent/trackers/2026-07-10T14-21-28-04-00/project-breakdown.md",
+  "updatedAt": "2026-07-10T17-18-47-04-00",
+  "currentNextSafeLedge": "ZombieOrchard Deterministic Scenario Authority + Command/Frame Observation Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-10T17-18-47-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T17-18-47-04-00.md",
+  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T17-18-47-04-00-deterministic-scenario-observation-dsk-map.md",
+  "latestRenderAudit": ".agent/render-audit/2026-07-10T17-18-47-04-00-frame-observation-consumption-gap.md",
+  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T17-18-47-04-00-seed-command-tick-replay-loop.md",
+  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T17-18-47-04-00-command-result-observation-chain.md",
+  "latestDeterminismAudit": ".agent/determinism-audit/2026-07-10T17-18-47-04-00-math-random-state-fingerprint-contract.md",
+  "latestHostProofAudit": ".agent/host-proof-audit/2026-07-10T17-18-47-04-00-bounded-scenario-observation-readback.md",
+  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T17-18-47-04-00-deterministic-scenario-fixture-build-gate.md",
+  "previousTracker": ".agent/trackers/2026-07-10T15-48-18-04-00/project-breakdown.md",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
     "eligibleRepositoryCount": 9,
     "accessibleRepositoryCount": 10,
-    "reason": "oldest eligible documented fallback after full Publish inventory, central ledger, and root agent comparison"
+    "reason": "oldest eligible documented fallback after full Publish inventory, central ledger, and recent repo-local audit comparison"
   },
   "implementedKits": [
     "kit-runtime",
@@ -45,38 +45,34 @@
     "html-interface-render-kit",
     "game-host-diagnostics-kit",
     "smoke-fixture-kit",
-    "static-build-copy-kit"
+    "static-build-copy-kit",
+    "pages-deploy-kit"
   ],
-  "nextCutKits": [
+  "proposedKits": [
+    "deterministic-random-source-kit",
+    "state-fingerprint-kit",
+    "scenario-fixture-adapter-kit"
+  ],
+  "downstreamMarketKits": [
     "market-source-catalog-kit",
-    "market-source-revision-kit",
-    "runtime-command-sequence-kit",
     "runtime-command-journal-kit",
-    "interface-activation-id-kit",
     "interface-nested-result-adapter-kit",
-    "interface-transition-policy-kit",
-    "market-command-envelope-kit",
-    "market-preflight-kit",
-    "market-rejection-reason-catalog-kit",
-    "market-command-result-kit",
     "resource-transaction-history-kit",
-    "inventory-capacity-policy-kit",
     "inventory-purchase-intake-kit",
     "market-atomic-transaction-kit",
-    "market-command-idempotency-kit",
     "market-result-projection-kit",
     "market-render-consumption-kit",
     "market-gamehost-journal-kit",
-    "market-causality-fixture-kit",
-    "central-ledger-readback-kit"
+    "market-causality-fixture-kit"
   ],
   "services": {
     "kit-runtime": [
       "kit registration",
       "domain creation",
       "command routing",
+      "delta clamping",
       "bounded tick routing",
-      "event emission",
+      "ephemeral event emission",
       "snapshot aggregation",
       "subscriber notification"
     ],
@@ -85,7 +81,8 @@
       "action catalog",
       "selection",
       "field mutation",
-      "action activation"
+      "action activation",
+      "screen snapshot"
     ],
     "interface-composition-kit": [
       "active screen ownership",
@@ -93,7 +90,8 @@
       "transition",
       "back navigation",
       "parent activation",
-      "child command dispatch"
+      "child command dispatch",
+      "outcome routing"
     ],
     "resource-ledger-kit": [
       "affordability check",
@@ -107,8 +105,9 @@
       "channel snapshot"
     ],
     "orchard-world-kit": [
-      "orchard generation",
-      "apple replenishment",
+      "tree generation",
+      "random apple seeding",
+      "random apple replenishment",
       "nearby apple collection",
       "world snapshot"
     ],
@@ -122,7 +121,8 @@
       "actor state",
       "role state",
       "hire payment",
-      "actor creation"
+      "actor creation",
+      "status message"
     ],
     "inventory-runtime-kit": [
       "inventory item state",
@@ -134,7 +134,8 @@
       "apple collection",
       "pest clearing",
       "phase change",
-      "pest simulation",
+      "random pest spawning",
+      "pest pursuit",
       "damage",
       "score",
       "failure"
@@ -143,7 +144,9 @@
       "orchard canvas projection",
       "active-session HUD",
       "generic screen projection",
-      "DOM action bindings"
+      "DOM action bindings",
+      "DOM command bindings",
+      "per-frame HTML replacement"
     ],
     "game-host-diagnostics-kit": [
       "raw engine handle",
@@ -152,24 +155,31 @@
     ],
     "proof-deploy-kits": [
       "entry to play smoke",
-      "static dist copy"
+      "apple presence smoke",
+      "static dist copy",
+      "Pages test build deploy chain"
     ]
   },
   "blockers": [
-    "Runtime commands have no stable command ids or durable request/result journal.",
-    "Interface composition discards child command results.",
-    "Runtime events are not durable snapshot readback.",
-    "Resource payment is boolean-only and has no transaction attribution.",
-    "Inventory has no capacity or purchase intake service.",
-    "Exchange is Back-only and has no Market source or command surface.",
-    "HTML rendering has no Market projection consumption readback.",
-    "GameHost exposes raw mutable handles instead of bounded JSON-safe journals.",
-    "No deterministic Market causality fixture exists."
+    "No versioned scenario configuration or seed authority exists.",
+    "Orchard world directly uses Math.random for apple state and IDs.",
+    "Active session directly uses Math.random for pest decisions, angles, and IDs.",
+    "Same command and tick scripts do not guarantee identical snapshots.",
+    "Runtime commands have no stable sequence or durable request/result journal.",
+    "Interface composition discards nested child command results.",
+    "Runtime events are cleared at tick start and excluded from snapshots.",
+    "No canonical state fingerprint or committed frame observation exists.",
+    "Renderers record no consumed frame or projection fingerprint.",
+    "GameHost exposes mutable engine authority instead of bounded immutable scenario observations.",
+    "The smoke test has no deterministic replay coverage.",
+    "The Pages gate does not verify deterministic scenario proof.",
+    "Market transaction causality remains downstream of scenario authority."
   ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
     "dependenciesChanged": false,
     "packageScriptsChanged": false,
+    "deployConfigurationChanged": false,
     "branchCreated": false,
     "pullRequestCreated": false,
     "npmTestRun": false,
