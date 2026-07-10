@@ -1,71 +1,46 @@
 # Next steps — ZombieOrchard
 
-Last aligned: `2026-07-10T08-28-26-04-00`
-
 ## Next safe ledge
 
 ```txt
-ZombieOrchard Market Projection Result Ledger Refresh + GameHost Fixture Gate
+ZombieOrchard Market Nested Result Projection Refresh + GameHost Fixture Gate
 ```
 
-## Goal
+## Implementation order
 
-Make the Exchange/Market path source-owned, nested-result-safe, renderer-readable, GameHost-readable, and fixture-verifiable while preserving the current engine and browser shell.
+1. Add stable Market action/source rows.
+2. Add command envelopes for Market actions.
+3. Add price/capacity preflight rows.
+4. Update `interface-composition.activate` so nested `action.command` results are retained in the action result.
+5. Add Market command/result journal rows.
+6. Tie accepted Market results to resource transaction and inventory intake rows.
+7. Add Exchange Market projection rows.
+8. Add HTML renderer readback for Market projection consumption.
+9. Add JSON-safe `GameHost.market` diagnostics.
+10. Add a DOM-free Market fixture proving accepted and rejected rows.
+11. Run fixture, then available npm/build/browser checks.
 
-## First implementation slice
+## Acceptance checklist
 
 ```txt
-src/market/market-actions.js
-src/market/market-command-envelope.js
-src/market/market-preflight.js
-src/market/market-results.js
-src/market/market-result-ledger.js
-src/market/market-projection.js
-src/market/market-gamehost.js
-tests/market-result-fixture.mjs
+[ ] Market action ids are stable.
+[ ] Market source manifest exists.
+[ ] Market command envelopes are serializable.
+[ ] Accepted preflight rows are recorded.
+[ ] Rejected preflight rows include stable reasons.
+[ ] Nested command results survive interface-composition.
+[ ] Resource deltas are tied to retained command results.
+[ ] Inventory deltas are tied to retained command results.
+[ ] Exchange projection reads retained Market results.
+[ ] HTML renderer emits Market readback rows.
+[ ] GameHost exposes JSON-safe Market diagnostics.
+[ ] DOM-free fixture proves accepted and rejected paths.
 ```
 
-## Required behavior
+## Avoid until proof exists
 
-```txt
-1. Define stable Market action IDs and source rows.
-2. Wrap Market actions in command envelopes.
-3. Add price, resource, and capacity preflight rows.
-4. Return typed accepted/rejected/no_mutation result rows.
-5. Preserve nested action.command results inside interface-composition.
-6. Record resource transaction history.
-7. Record inventory purchase intake rows.
-8. Add Exchange-specific render projection rows.
-9. Expose additive GameHost.market diagnostics.
-10. Prove accepted and rejected rows in a DOM-free fixture.
-```
-
-## Compatibility rules
-
-```txt
-Keep engine.command() compatibility.
-Keep window.GameHost.engine/getState/tick compatibility.
-Keep the existing canvas renderer.
-Keep the existing HTML renderer entrypoint.
-Add Market readback as additive data only.
-```
-
-## Avoid next
-
-```txt
-Do not rewrite the runtime.
-Do not rewrite the canvas renderer.
-Do not redesign the orchard visuals.
-Do not expand economy content before Market result proof exists.
-Do not infer success from final resource totals only.
-```
-
-## Validation target
-
-```txt
-node tests/market-result-fixture.mjs
-npm test
-npm run build
-```
-
-The fixture should run without browser APIs and assert source action, preflight, result, transaction, inventory, nested-result, projection, and GameHost-compatible rows.
+- economy tuning
+- visual polish
+- renderer replacement
+- additional Market content
+- unrelated runtime rewrites
