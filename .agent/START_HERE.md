@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-10T02-10-16-04-00`
+**Last aligned:** `2026-07-10T04-11-36-04-00`
 
 ## Purpose
 
@@ -18,19 +18,19 @@ No checked public non-Cavalry repo was new, absent from central tracking, missin
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`ZombieOrchard` was selected as the oldest eligible public documented fallback, with central tracking at `2026-07-10T00-38-44-04-00` before this refresh.
+`ZombieOrchard` was selected as the oldest eligible public documented fallback after `PhantomCommand` advanced to `2026-07-10T03-59-57-04-00`.
 
 ## Public Publish repos checked
 
 ```txt
-LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest 2026-07-10T01-31-29-04-00
-LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / central latest 2026-07-10T01-20-47-04-00
-LuminaryLabs-Publish/MyCozyIsland         tracked / root .agent present / central latest 2026-07-10T01-11-51-04-00
-LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-10T00-51-03-04-00
-LuminaryLabs-Publish/ZombieOrchard        selected / oldest eligible fallback / central latest 2026-07-10T00-38-44-04-00
-LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest 2026-07-10T01-38-16-04-00
-LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest 2026-07-10T02-02-24-04-00
-LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present / central latest 2026-07-10T01-49-13-04-00
+LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest 2026-07-10T03-01-42-04-00
+LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest 2026-07-10T02-51-39-04-00
+LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / central latest 2026-07-10T02-38-56-04-00
+LuminaryLabs-Publish/MyCozyIsland         tracked / root .agent present / central latest 2026-07-10T02-31-58-04-00
+LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-10T02-19-14-04-00
+LuminaryLabs-Publish/ZombieOrchard        selected / oldest eligible fallback / prior central latest 2026-07-10T02-10-16-04-00
+LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present / central latest 2026-07-10T03-49-48-04-00
+LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest 2026-07-10T03-59-57-04-00
 LuminaryLabs-Publish/TheCavalryOfRome     excluded by rule
 ```
 
@@ -54,28 +54,28 @@ index.html
 
 ```txt
 index.html
-  -> src/boot.js
-  -> src/start.js
-  -> createOrchardGame()
-  -> createWorldCanvas(canvas)
-  -> createHtmlInterfaceRenderer({ root, engine })
+  -> src/boot.js imports src/start.js
+  -> src/start.js creates createOrchardGame()
+  -> createKitRuntime installs game and interface kits
+  -> createWorldCanvas(canvas) renders orchard snapshot
+  -> createHtmlInterfaceRenderer({ root, engine }) renders active-session HUD or generic screen panel
   -> requestAnimationFrame(draw)
   -> engine.tick(1 / 60)
   -> pressure-field and active-session tick
   -> engine.snapshot()
   -> world-canvas renders orchard state
-  -> html-interface-renderer renders active-session HUD or generic screen panel
+  -> html-interface-renderer renders active screen
   -> [data-action] routes through interface-composition.activate
-  -> scoped interface domain returns action descriptor
+  -> active screen domain returns action descriptor
   -> optional action.command dispatches through ctx.engine.command(...)
   -> nested command result is currently discarded
-  -> next action.to or transition table moves active screen
+  -> action.to or transition table moves active screen
   -> [data-command] routes directly to active-session
-  -> Exchange/Market remains a generic screen with Back only
+  -> Exchange/Market remains generic Back-only screen
   -> window.GameHost exposes engine, getState, and tick
 ```
 
-## Target Market result/readback loop
+## Target Market nested-result loop
 
 ```txt
 exchange action row
@@ -95,6 +95,7 @@ exchange action row
   -> Exchange renderer branch
   -> MarketRenderReadback
   -> GameHost market diagnostics
+  -> DOM-free fixture replay
 ```
 
 ## First files to read next
@@ -104,13 +105,13 @@ exchange action row
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-10T02-10-16-04-00-market-result-readback-dsk-map.md
-.agent/render-audit/2026-07-10T02-10-16-04-00-exchange-render-readback-gap.md
-.agent/gameplay-audit/2026-07-10T02-10-16-04-00-market-command-result-loop.md
-.agent/interaction-audit/2026-07-10T02-10-16-04-00-nested-result-retention-contract.md
-.agent/market-authority-audit/2026-07-10T02-10-16-04-00-market-result-readback-contract.md
-.agent/deploy-audit/2026-07-10T02-10-16-04-00-market-fixture-build-gate.md
-.agent/trackers/2026-07-10T02-10-16-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-10T02-10-16-04-00.md
+.agent/architecture-audit/2026-07-10T04-11-36-04-00-market-nested-result-ledger-dsk-map.md
+.agent/render-audit/2026-07-10T04-11-36-04-00-exchange-market-projection-readback.md
+.agent/gameplay-audit/2026-07-10T04-11-36-04-00-market-command-result-loop.md
+.agent/interaction-audit/2026-07-10T04-11-36-04-00-nested-command-result-retention.md
+.agent/market-authority-audit/2026-07-10T04-11-36-04-00-market-ledger-fixture-contract.md
+.agent/deploy-audit/2026-07-10T04-11-36-04-00-market-fixture-test-build-gate.md
+.agent/trackers/2026-07-10T04-11-36-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-10T04-11-36-04-00.md
 .agent/kit-registry.json
 ```
