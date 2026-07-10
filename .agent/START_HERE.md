@@ -2,7 +2,7 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`
 
-**Last aligned:** `2026-07-10T04-11-36-04-00`
+**Last aligned:** `2026-07-10T05-28-12-04-00`
 
 ## Purpose
 
@@ -18,19 +18,19 @@ No checked public non-Cavalry repo was new, absent from central tracking, missin
 
 `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded by standing rule.
 
-`ZombieOrchard` was selected as the oldest eligible public documented fallback after `PhantomCommand` advanced to `2026-07-10T03-59-57-04-00`.
+`ZombieOrchard` was selected as the oldest eligible public documented fallback after `PhantomCommand` advanced to `2026-07-10T05-21-20-04-00`.
 
 ## Public Publish repos checked
 
 ```txt
-LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest 2026-07-10T03-01-42-04-00
-LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest 2026-07-10T02-51-39-04-00
-LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / central latest 2026-07-10T02-38-56-04-00
-LuminaryLabs-Publish/MyCozyIsland         tracked / root .agent present / central latest 2026-07-10T02-31-58-04-00
-LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-10T02-19-14-04-00
-LuminaryLabs-Publish/ZombieOrchard        selected / oldest eligible fallback / prior central latest 2026-07-10T02-10-16-04-00
-LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present / central latest 2026-07-10T03-49-48-04-00
-LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest 2026-07-10T03-59-57-04-00
+LuminaryLabs-Publish/ZombieOrchard        selected / prior central latest 2026-07-10T04-11-36-04-00
+LuminaryLabs-Publish/TheUnmappedHouse     tracked / root .agent present / central latest 2026-07-10T04-22-00-04-00
+LuminaryLabs-Publish/MyCozyIsland         tracked / root .agent present / central latest 2026-07-10T04-29-10-04-00
+LuminaryLabs-Publish/TheOpenAbove         tracked / root .agent present / central latest 2026-07-10T04-40-52-04-00
+LuminaryLabs-Publish/PrehistoricRush      tracked / root .agent present / central latest 2026-07-10T04-50-40-04-00
+LuminaryLabs-Publish/IntoTheMeadow        tracked / root .agent present / central latest 2026-07-10T04-58-56-04-00
+LuminaryLabs-Publish/HorrorCorridor       tracked / root .agent present / central latest 2026-07-10T05-11-51-04-00
+LuminaryLabs-Publish/PhantomCommand       tracked / root .agent present / central latest 2026-07-10T05-21-20-04-00
 LuminaryLabs-Publish/TheCavalryOfRome     excluded by rule
 ```
 
@@ -105,13 +105,13 @@ exchange action row
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-10T04-11-36-04-00-market-nested-result-ledger-dsk-map.md
-.agent/render-audit/2026-07-10T04-11-36-04-00-exchange-market-projection-readback.md
-.agent/gameplay-audit/2026-07-10T04-11-36-04-00-market-command-result-loop.md
-.agent/interaction-audit/2026-07-10T04-11-36-04-00-nested-command-result-retention.md
-.agent/market-authority-audit/2026-07-10T04-11-36-04-00-market-ledger-fixture-contract.md
-.agent/deploy-audit/2026-07-10T04-11-36-04-00-market-fixture-test-build-gate.md
-.agent/trackers/2026-07-10T04-11-36-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-10T04-11-36-04-00.md
+.agent/architecture-audit/2026-07-10T05-28-12-04-00-market-nested-result-readback-dsk-map.md
+.agent/render-audit/2026-07-10T05-28-12-04-00-exchange-market-render-readback-gap.md
+.agent/gameplay-audit/2026-07-10T05-28-12-04-00-market-command-result-loop.md
+.agent/interaction-audit/2026-07-10T05-28-12-04-00-nested-result-retention-contract.md
+.agent/market-authority-audit/2026-07-10T05-28-12-04-00-market-result-ledger-contract.md
+.agent/deploy-audit/2026-07-10T05-28-12-04-00-market-fixture-test-build-gate.md
+.agent/trackers/2026-07-10T05-28-12-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-10T05-28-12-04-00.md
 .agent/kit-registry.json
 ```
