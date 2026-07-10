@@ -3,65 +3,85 @@
 ## Next safe ledge
 
 ```txt
-ZombieOrchard Deterministic Scenario Authority
-+ Command/Frame Observation Fixture Gate
+ZombieOrchard Runtime Session Clock and Lifecycle Authority
++ Pause/Reset/Refresh-Rate Fixture Gate
 ```
 
 ## Goal
 
-Make one scenario reproducible and explainable from seed, command sequence, and tick sequence through committed state, render consumption, GameHost readback, and replay fingerprint.
+Make one explicit runtime session own simulation time, lifecycle state, automatic ticking, pause/resume behavior, reset/start/stop/dispose behavior, and proof readback. The same command/tick scenario must produce equivalent gameplay state under 30, 60, and 120 Hz render schedules.
 
 ## Implementation order
 
-1. Add `ScenarioConfig` with schema version, scenario ID, seed, fixed delta, preset revision, and initial-state revision.
-2. Add a shared deterministic random-source service with named streams and stable draw indices.
-3. Replace direct `Math.random()` use in `orchard-world-kit` with named apple streams.
-4. Replace direct `Math.random()` use in `active-session-domain-kit` with named pest streams.
-5. Add runtime command sequence IDs and a bounded request/result journal.
-6. Add activation IDs to scoped interface results.
-7. Update `interface-composition.activate` to retain exact child command and transition results.
-8. Retain durable bounded event rows instead of clearing all evidence before snapshot observation.
-9. Add canonical snapshot serialization and state fingerprinting.
-10. Add immutable committed-frame rows with command/event ranges and state fingerprints.
-11. Add world-canvas consumption rows referencing committed frames.
-12. Add HTML projection/consumption rows referencing committed frames and interaction results.
-13. Add bounded JSON-safe `GameHost.scenario` observation methods.
-14. Add a DOM-free scenario script runner.
-15. Replay the same scenario twice and compare command, frame, render, and final fingerprints.
-16. Run a different seed and prove structural invariants plus a distinct world fingerprint.
-17. Add rejected and duplicate-command no-mutation assertions.
-18. Gate `npm test` on deterministic scenario replay before build and Pages deployment.
-19. Implement Market transaction causality as a scenario on the proven observation surface.
+1. Add a JSON-safe runtime-session state model: `idle`, `starting`, `running`, `paused`, `ended`, `stopping`, `stopped`, `disposed`, and `failed`.
+2. Update `createOrchardGame()` so gameplay session construction or reset is explicit rather than implied by screen creation.
+3. Add one host-owned clock with wall-time accumulation, a fixed simulation delta, a maximum catch-up step count, and a committed simulation tick index.
+4. Replace one-fixed-step-per-RAF behavior with zero or more fixed simulation steps derived from elapsed wall time.
+5. Keep render cadence separate from simulation cadence.
+6. Gate `pressure-field.tick()` and `active-session.tick()` on authoritative session state.
+7. Define exact Pause semantics: no pressure growth, pest spawn, pursuit, damage, phase mutation, or score mutation while paused.
+8. Define New Game as an atomic reset/start transaction that recreates or resets all gameplay domains from the preset.
+9. Define Play as either start/resume according to explicit session state, never as a screen-only transition.
+10. Fix Outcome -> Title by stopping or resetting the ended session before returning to Entry.
+11. Add `start`, `pause`, `resume`, `reset`, `stop`, and `dispose` commands with accepted/rejected/no-op results.
+12. Retain the RAF request ID and cancel it during stop/dispose.
+13. Return a disposer from `createHtmlInterfaceRenderer()` that removes the root click listener.
+14. Add renderer disposal/no-op-after-dispose behavior.
+15. Restrict `GameHost.tick()` to an explicit manual-clock/test mode, or make it reject while automatic clock ownership is active.
+16. Add bounded lifecycle, clock-step, and session-result journals to `GameHost`.
+17. Add a DOM-free session fixture that drives the runtime without RAF.
+18. Prove equivalent committed gameplay fingerprints for 30/60/120 Hz render schedules over equal wall time.
+19. Prove pause freezes all gameplay fingerprints while render frames may continue.
+20. Prove New Game resets resources, pressure, orchard, session, interface, and result journals according to policy.
+21. Prove Outcome -> Title remains at Entry and does not bounce back to Outcome.
+22. Prove repeated start/stop cycles create one clock loop and one click listener only.
+23. Gate `npm test` on lifecycle/clock fixtures before build and Pages deployment.
+24. Compose the existing deterministic scenario authority work beneath session IDs and simulation tick IDs.
+25. Implement Market transaction causality after lifecycle and deterministic scenario proof can observe it reliably.
 
 ## Domain-update-first map
 
 ```txt
+src/start.js host
+  -> wall-time clock, RAF ownership, lifecycle orchestration, stop/dispose
+
 kit-runtime
-  -> scenario services, command sequence, durable rows, committed frames
-
-orchard-world-kit
-  -> named deterministic random streams
-
-active-session-domain-kit
-  -> named deterministic random streams
+  -> lifecycle state, tick mode, committed simulation tick, reset/dispose routing
 
 interface-composition-kit
-  -> parent/child result retention
+  -> lifecycle-aware Play/New/Pause/Resume/Title/Outcome transitions
 
-world-canvas-render-kit
-  -> frame consumption row
+pressure-field-kit
+  -> running-state tick guard
+
+active-session-domain-kit
+  -> running-state tick guard, explicit reset/start/end semantics
+
+resource/orchard/construction/roster/inventory kits
+  -> reset-from-preset behavior
 
 html-interface-render-kit
-  -> projection and frame consumption row
+  -> removable listener and disposed-state behavior
+
+world-canvas-render-kit
+  -> disposed-state behavior and render-frame observation
 
 game-host-diagnostics-kit
-  -> bounded immutable scenario readback
+  -> bounded lifecycle/clock readback and manual-mode enforcement
 
 smoke-fixture-kit
-  -> deterministic replay and fingerprint gate
+  -> session clock, pause, reset, re-entry, and refresh-rate parity gates
 ```
 
-Only add new kits where no current owner exists:
+Only add new kits where no existing owner can reasonably hold the capability:
+
+```txt
+runtime-session-authority-kit
+fixed-step-clock-kit
+runtime-lifecycle-fixture-adapter-kit
+```
+
+The existing proposed deterministic kits remain companion capabilities:
 
 ```txt
 deterministic-random-source-kit
@@ -72,33 +92,34 @@ scenario-fixture-adapter-kit
 ## Acceptance checklist
 
 ```txt
-[ ] Scenario config is versioned and JSON-safe.
-[ ] Same seed creates the same initial orchard fingerprint.
-[ ] Random draws use named streams and stable draw indices.
-[ ] Gameplay code no longer calls global Math.random().
-[ ] Commands have stable ordered IDs.
-[ ] Parent activations retain exact child results.
-[ ] Durable events survive into committed frame observations.
-[ ] Committed frames include command/event ranges and state fingerprints.
-[ ] Same seed + same commands + same ticks produces identical fingerprints.
-[ ] Different seeds preserve invariants and produce distinct world fingerprints.
-[ ] Rejected commands produce no gameplay fingerprint change.
-[ ] Duplicate idempotent commands do not double-apply mutations.
-[ ] World renderer records the committed frame it consumed.
-[ ] HTML renderer records the committed frame and projection it consumed.
-[ ] GameHost scenario readback is bounded, immutable, and JSON-safe.
-[ ] DOM-free replay fixture passes twice from fresh engine creation.
-[ ] npm test gates build and deployment on scenario proof.
-[ ] Market transaction causality is tested after scenario authority exists.
+[ ] Session states and transition reasons are versioned and JSON-safe.
+[ ] Gameplay domains do not tick before a session starts.
+[ ] Pause freezes pressure, pest, player-condition, score, resource, and phase state.
+[ ] Equal wall time at 30/60/120 Hz yields equivalent simulation tick counts and gameplay fingerprints.
+[ ] Render frames may vary without changing committed gameplay results.
+[ ] Catch-up steps are bounded and report dropped/limited time explicitly.
+[ ] New Game atomically resets all declared session-owned domains.
+[ ] Play never silently reuses an ended session.
+[ ] Outcome -> Title remains on Entry until an explicit start action.
+[ ] Only one RAF loop exists after repeated start/stop/restart cycles.
+[ ] Only one root click listener exists after repeated renderer creation/disposal.
+[ ] Stop cancels RAF and prevents future automatic ticks.
+[ ] Dispose removes listeners and rejects future mutation commands.
+[ ] Manual GameHost ticking cannot race with the automatic clock.
+[ ] Lifecycle and clock journals are bounded, immutable to consumers, and JSON-safe.
+[ ] DOM-free session fixture passes.
+[ ] npm test gates build and deployment on lifecycle/clock proof.
+[ ] Deterministic scenario IDs are scoped beneath session IDs.
 ```
 
 ## Avoid until proof exists
 
-- economy tuning
-- additional Market inventory
+- Market catalog expansion
+- economy balancing
 - new orchard content
 - new pest types
-- Market art expansion
 - renderer replacement
-- broad runtime refactors
-- readiness claims based only on visual inspection
+- visual polish
+- save/resume claims
+- automation claims based on raw `GameHost.tick()`
+- broad runtime refactors without lifecycle fixtures
