@@ -1,11 +1,11 @@
 # Next steps — ZombieOrchard
 
-Last aligned: `2026-07-10T07-08-10-04-00`
+Last aligned: `2026-07-10T08-28-26-04-00`
 
 ## Next safe ledge
 
 ```txt
-ZombieOrchard Market Exchange Result Ledger Refresh + GameHost Fixture Gate
+ZombieOrchard Market Projection Result Ledger Refresh + GameHost Fixture Gate
 ```
 
 ## Goal
