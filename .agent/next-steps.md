@@ -1,6 +1,6 @@
 # ZombieOrchard Next Steps
 
-**Timestamp:** `2026-07-10T02-10-16-04-00`
+**Timestamp:** `2026-07-10T04-11-36-04-00`
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make Market actions source-owned, replayable, nested-result-safe, transaction-ba
 ## Next safe implementation slice
 
 ```txt
-ZombieOrchard Market Nested Result Readback Catch-up + Exchange Fixture Gate
+ZombieOrchard Market Nested Result Ledger Refresh + Exchange Fixture Gate
 ```
 
 ## Checklist
@@ -55,6 +55,24 @@ Exchange renderer projection/readback
 GameHost diagnostics
 DOM-free fixture replay
 central ledger updated to the exact repo-local tracker timestamp
+```
+
+## First implementation files
+
+```txt
+src/market/market-action-catalog.js
+src/market/market-command-source-manifest.js
+src/market/market-command-envelope.js
+src/market/market-source-snapshot.js
+src/market/market-preflight.js
+src/market/market-command-result.js
+src/market/market-result-journal.js
+src/market/resource-transaction-history.js
+src/market/inventory-purchase-intake.js
+src/market/market-projection.js
+src/market/market-render-readback.js
+src/market/market-gamehost-diagnostics.js
+tests/market-result-fixture.mjs
 ```
 
 ## Defer until after proof
