@@ -2,7 +2,7 @@
 
 ## Latest pass
 
-`2026-07-10T11-20-54-04-00`
+`2026-07-10T12-49-54-04-00`
 
 ## Validation performed
 
@@ -15,7 +15,7 @@ Docs-only pass.
 - Excluded LuminaryLabs-Publish/TheCavalryOfRome.
 - Selected ZombieOrchard as oldest eligible documented fallback.
 - Read .agent root docs and kit registry.
-- Read package.json, src/start.js, src/game.js, src/kits/runtime.js, src/kits/composition.js, src/kits/scoped-interface-domains.js, src/kits/game-domains.js, src/renderer/html-interface-renderer.js, src/renderer/world-canvas.js, and tests/smoke.mjs.
+- Read package.json, index.html, src/boot.js, src/start.js, src/game.js, src/kits/runtime.js, src/kits/composition.js, src/kits/scoped-interface-domains.js, src/kits/game-domains.js, src/renderer/html-interface-renderer.js, src/renderer/world-canvas.js, src/presets/orchard-preset.js, and tests/smoke.mjs.
 - Added timestamped tracker and audit entries.
 - Updated central ledger and internal change-log.
 ```
