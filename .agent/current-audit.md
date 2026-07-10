@@ -1,6 +1,6 @@
 # ZombieOrchard Current Audit
 
-**Timestamp:** `2026-07-09T18-49-13-04-00`
+**Timestamp:** `2026-07-09T23-20-43-04-00`
 
 ## Summary
 
@@ -111,6 +111,63 @@ central-ledger-readback
 - html-interface-renderer renders active-session HUD and generic screens, and routes data-action/data-command clicks.
 ```
 
+## Kits
+
+Implemented:
+
+```txt
+kit-runtime
+scoped-interface-domain-kit
+entry-domain-kit
+session-select-domain-kit
+run-setup-domain-kit
+active-session-domain-kit
+interrupt-domain-kit
+construction-domain-kit
+exchange-domain-kit
+roster-domain-kit
+inventory-domain-kit
+knowledge-domain-kit
+preferences-domain-kit
+outcome-domain-kit
+interface-composition-kit
+resource-ledger-kit
+pressure-field-kit
+orchard-world-kit
+construction-runtime-kit
+roster-runtime-kit
+inventory-runtime-kit
+world-canvas-render-kit
+html-interface-render-kit
+game-host-diagnostics-kit
+smoke-fixture-kit
+```
+
+Next-cut:
+
+```txt
+market-action-catalog-kit
+market-action-id-catalog-kit
+market-command-source-manifest-kit
+market-command-envelope-kit
+market-source-snapshot-kit
+market-price-source-kit
+market-capacity-policy-kit
+market-preflight-kit
+market-command-result-kit
+market-rejection-reason-catalog-kit
+market-command-journal-kit
+market-result-journal-kit
+resource-transaction-history-kit
+inventory-purchase-intake-kit
+interface-nested-result-adapter-kit
+market-result-projection-kit
+market-render-readback-kit
+market-gamehost-diagnostics-kit
+market-fixture-replay-kit
+central-ledger-readback-kit
+```
+
 ## Main finding
 
 `engine.command()` already returns command results, so the runtime should not be replaced. The missing consumer boundary is inside Market/Exchange: `interface-composition` discards nested command results, `exchange` has no source-owned Market action catalog beyond Back, `html-interface-renderer` has no Exchange projection/readback branch, and `GameHost` has no Market diagnostics.
@@ -118,5 +175,5 @@ central-ledger-readback
 ## Recommended next ledge
 
 ```txt
-ZombieOrchard Market Nested Result Readback Refresh + Exchange Fixture Gate
+ZombieOrchard Market Result Readback Catch-up + Exchange Fixture Gate
 ```
