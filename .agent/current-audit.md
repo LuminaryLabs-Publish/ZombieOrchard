@@ -2,14 +2,14 @@
 
 ## Status
 
-Docs refreshed for `2026-07-10T12-49-54-04-00`.
+Docs refreshed for `2026-07-10T14-21-28-04-00`.
 
 ## Selection audit
 
 ```txt
 No checked public non-Cavalry repo was new, central-ledger absent, missing root .agent, recently added, or otherwise undocumented.
 LuminaryLabs-Publish/TheCavalryOfRome remained excluded by rule.
-ZombieOrchard was selected as the oldest eligible documented fallback after PhantomCommand advanced to 2026-07-10T12-40-45-04-00.
+ZombieOrchard was selected as the oldest eligible documented fallback after PhantomCommand advanced to 2026-07-10T14-11-51-04-00.
 ```
 
 ## Current interaction loop
@@ -75,7 +75,7 @@ inventory-runtime
 world-canvas-renderer
 html-interface-renderer
 exchange-market-placeholder
-market-result-projection-next
+market-result-retention-next
 market-command-journal-next
 market-exchange-readback-next
 market-gamehost-diagnostics-next
@@ -125,7 +125,7 @@ static-build-copy-kit
 
 ## Current finding
 
-The runtime command boundary is ahead of the interface and Market projection boundaries. `engine.command()` returns useful command results, but `interface-composition` drops nested `action.command` results, `exchange` has no Market-specific projection, and `GameHost` has no JSON-safe Market readback.
+The runtime command boundary is ahead of the interface and Market projection boundaries. `engine.command()` returns command results, but `interface-composition` drops nested `action.command` results, `exchange` has no Market-specific projection, and `GameHost` has no JSON-safe Market readback.
 
 ## What not to do next
 
