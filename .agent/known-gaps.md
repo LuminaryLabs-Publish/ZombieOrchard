@@ -2,7 +2,7 @@
 
 ## Primary gap
 
-Market result projection and readback are missing.
+Market nested result retention and readback are missing.
 
 ```txt
 engine.command() returns command results
@@ -27,6 +27,7 @@ GameHost has no Market diagnostics beyond raw engine state
 10. `GameHost` exposes raw `engine/getState/tick` only.
 11. Existing smoke coverage proves reachability, not Market accepted/rejected behavior.
 12. No DOM-free Market fixture exists yet.
+13. `npm run build` does not gate on a Market fixture yet.
 
 ## Explicit non-gaps for next pass
 
