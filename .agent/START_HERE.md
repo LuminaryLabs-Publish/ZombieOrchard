@@ -1,26 +1,40 @@
 # START HERE — ZombieOrchard
 
-Last aligned: `2026-07-10T08-28-26-04-00`
-
-Current safe ledge:
+## Current best next cut
 
 ```txt
-ZombieOrchard Market Projection Result Ledger Refresh + GameHost Fixture Gate
+ZombieOrchard Market Nested Result Projection Refresh + GameHost Fixture Gate
 ```
 
-## Read order
+## Read this first
 
-1. `.agent/current-audit.md`
-2. `.agent/next-steps.md`
-3. `.agent/known-gaps.md`
-4. `.agent/validation.md`
-5. `.agent/kit-registry.json`
-6. `.agent/trackers/2026-07-10T08-28-26-04-00/project-breakdown.md`
-7. `.agent/architecture-audit/2026-07-10T08-28-26-04-00-market-projection-result-ledger-dsk-map.md`
+Start with the latest tracker:
 
-## Current product read
+```txt
+.agent/trackers/2026-07-10T10-00-37-04-00/project-breakdown.md
+```
 
-`ZombieOrchard` is a static browser orchard survival/economy shell. The live entrypoint is:
+Then read:
+
+```txt
+.agent/current-audit.md
+.agent/next-steps.md
+.agent/known-gaps.md
+.agent/validation.md
+.agent/architecture-audit/2026-07-10T10-00-37-04-00-market-nested-result-projection-dsk-map.md
+.agent/interaction-audit/2026-07-10T10-00-37-04-00-nested-command-result-retention-map.md
+.agent/market-authority-audit/2026-07-10T10-00-37-04-00-market-source-result-contract.md
+.agent/render-audit/2026-07-10T10-00-37-04-00-exchange-market-render-readback-gap.md
+.agent/deploy-audit/2026-07-10T10-00-37-04-00-market-fixture-build-gate.md
+```
+
+## Short version
+
+`ZombieOrchard` should not start next with runtime rewrite, renderer rewrite, economy expansion, or visual polish.
+
+The useful next ledge is narrow: preserve nested Market command results from `interface-composition`, project them into Exchange/Market readback, expose JSON-safe `GameHost.market` diagnostics, and prove accepted/rejected rows with a DOM-free fixture.
+
+## Current interaction loop
 
 ```txt
 index.html
@@ -30,49 +44,25 @@ index.html
   -> createWorldCanvas(...)
   -> createHtmlInterfaceRenderer(...)
   -> requestAnimationFrame(draw)
-```
-
-The runtime ticks the engine at `1 / 60`, snapshots state, renders the orchard canvas, renders HTML interface screens, and exposes `window.GameHost = { engine, getState, tick }`.
-
-## Current interaction loop
-
-```txt
-index.html
-  -> boot/start modules
-  -> engine + canvas renderer + HTML renderer
-  -> RAF draw loop
   -> engine.tick(1 / 60)
   -> engine.snapshot()
-  -> world canvas render
-  -> HTML interface render
-  -> data-action activation through interface-composition
-  -> optional nested action.command dispatch through engine.command(...)
-  -> nested command result is dropped by the interface adapter
+  -> world canvas renders orchard state
+  -> HTML renderer renders active-session HUD or generic interface screen
+  -> data-action routes through interface-composition.activate
+  -> optional nested action.command dispatches through engine.command(...)
+  -> engine.command returns command result
+  -> nested result is dropped by interface-composition
   -> Exchange/Market remains generic Back-only screen
   -> GameHost exposes raw engine/getState/tick only
 ```
 
-## Main finding
-
-Do not start next with a runtime rewrite, renderer rewrite, orchard visual polish, or economy expansion.
-
-The blocker is Market projection proof. `engine.command()` already returns command results, but nested interface command results are not retained, Exchange does not project Market rows, and `GameHost` has no Market-specific diagnostics.
-
-## Required next proof
+## Main blocker
 
 ```txt
-Market source rows
-  -> command envelopes
-  -> preflight accepted/rejected rows
-  -> command result journal
-  -> resource transaction history
-  -> inventory intake rows
-  -> nested-result adapter retention
-  -> Exchange render projection
-  -> GameHost.market diagnostics
-  -> DOM-free fixture rows
+engine.command() already returns command results
+interface-composition dispatches nested action.command but drops the result
+Exchange is still Back-only
+HTML renderer has no Market projection/readback branch
+GameHost exposes raw engine/getState/tick only
+smoke only proves entry -> play -> apple presence
 ```
-
-## Validation state
-
-Docs-only pass. Runtime source was not changed. No npm, build, browser, or DOM-free fixture validation was run.
