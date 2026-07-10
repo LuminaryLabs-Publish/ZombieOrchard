@@ -1,18 +1,10 @@
 # Current audit — ZombieOrchard
 
-Last aligned: `2026-07-10T08-28-26-04-00`
+## Status
 
-## Current safe ledge
+Docs refreshed for `2026-07-10T10-00-37-04-00`.
 
-```txt
-ZombieOrchard Market Projection Result Ledger Refresh + GameHost Fixture Gate
-```
-
-## Product shape
-
-`ZombieOrchard` is a static browser orchard survival/economy shell assembled from runtime kits. The active shell wires a game engine, world canvas renderer, HTML interface renderer, fixed-dt frame loop, and a legacy `GameHost` object.
-
-## Interaction loop
+## Current interaction loop
 
 ```txt
 index.html
@@ -28,10 +20,10 @@ index.html
   -> HTML renderer renders active-session HUD or generic interface screen
   -> data-action routes through interface-composition.activate
   -> optional nested action.command dispatches through engine.command(...)
-  -> command result returns from engine.command
-  -> nested command result is dropped by the interface adapter
+  -> engine.command returns command result
+  -> nested result is dropped by interface-composition
   -> Exchange/Market remains generic Back-only screen
-  -> window.GameHost exposes engine/getState/tick and raw snapshot only
+  -> GameHost exposes raw engine/getState/tick only
 ```
 
 ## Domains in use
@@ -75,25 +67,13 @@ inventory-runtime
 world-canvas-renderer
 html-interface-renderer
 exchange-market-placeholder
-market-source-ledger-next
-market-result-projection-next
+market-action-catalog-next
+market-command-envelope-next
+market-preflight-next
+market-result-ledger-next
+market-projection-next
 market-gamehost-diagnostics-next
 central-ledger-readback
-```
-
-## Services offered by the kits
-
-```txt
-kit-runtime: kit registration, command routing, tick routing, snapshot aggregation, event dispatch.
-entry/session/run kits: menu/session/run setup and active-play transition services.
-interface kits: screen state, action activation, nested command dispatch, and HTML projection.
-resource/inventory/roster/construction kits: domain state and command affordances.
-active-session kit: move, collect, clear, next-phase, player/pest/session state.
-pressure/orchard kits: simulation pressure and world state snapshots.
-render kits: canvas world rendering and HTML screen rendering.
-game-host diagnostics kit: raw engine/getState/tick compatibility readback.
-smoke fixture kit: entry -> play -> apple-presence proof.
-central ledger kit: repo/central docs tracking.
 ```
 
 ## Implemented kits
@@ -127,53 +107,19 @@ smoke-fixture-kit
 static-build-copy-kit
 ```
 
-## Target next-cut kits
+## Services offered by kits
 
-```txt
-market-action-catalog-kit
-market-action-id-catalog-kit
-market-command-source-manifest-kit
-market-command-envelope-kit
-market-source-snapshot-kit
-market-price-source-kit
-market-capacity-policy-kit
-market-preflight-kit
-market-command-result-kit
-market-rejection-reason-catalog-kit
-market-command-journal-kit
-market-result-journal-kit
-market-exchange-result-ledger-kit
-resource-transaction-history-kit
-inventory-purchase-intake-kit
-interface-nested-result-adapter-kit
-market-result-projection-kit
-market-render-readback-kit
-market-gamehost-diagnostics-kit
-market-fixture-replay-kit
-central-ledger-readback-kit
-```
+- `kit-runtime`: kit registration, command routing, tick routing, snapshot aggregation, event dispatch.
+- Domain kits: entry, session select, run setup, active session, interrupt, construction, exchange, roster, inventory, knowledge, preferences, outcome state and command surfaces.
+- `interface-composition-kit`: screen state, transition/back/activate, nested command dispatch.
+- Runtime kits: resources, pressure, orchard world, construction, roster, inventory state updates.
+- Render kits: world canvas and HTML interface rendering.
+- `game-host-diagnostics-kit`: raw `engine/getState/tick` diagnostics.
 
-## Main finding
+## Current finding
 
-The next durable seam is Market projection/result authority, not a runtime rewrite.
+The runtime command boundary is ahead of the interface boundary. `engine.command()` returns useful command results, but `interface-composition` drops nested `action.command` results. Market cannot have durable projection/readback until that seam is fixed.
 
-The existing engine command path already returns command results. The missing layer is that Market actions are not source-owned, nested interface command results are not retained, Exchange has no Market projection, and `GameHost` cannot report Market command/result facts.
+## What not to do next
 
-## Known blockers
-
-```txt
-No Market source manifest.
-No stable Market action IDs.
-No Market preflight reason catalog.
-No ordered Market command/result journal.
-No resource transaction history.
-No inventory purchase intake rows.
-No nested-result retention adapter.
-No Exchange Market projection/readback.
-No GameHost.market diagnostics.
-No DOM-free Market fixture.
-```
-
-## Validation state
-
-Docs-only. Runtime source unchanged. No npm, build, browser, or DOM-free fixture validation was run.
+Do not start with runtime rewrite, renderer rewrite, economy expansion, new Market art, generic visual polish, or new content.
