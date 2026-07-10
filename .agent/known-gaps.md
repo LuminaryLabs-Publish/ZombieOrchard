@@ -1,6 +1,6 @@
 # ZombieOrchard Known Gaps
 
-**Timestamp:** `2026-07-10T02-10-16-04-00`
+**Timestamp:** `2026-07-10T04-11-36-04-00`
 
 ## Critical gaps
 
@@ -39,6 +39,7 @@
 - Roster/inventory effects are shallow.
 - Rendering is serviceable canvas/HTML, not a high-fidelity visual target.
 - Apple seeding uses Math.random and is not deterministic for deep replay yet.
+- Active-session data-command results are not projected in the HUD.
 ```
 
 ## Work not recommended next
@@ -50,4 +51,5 @@
 - Do not promote kits to shared repos before accepted/rejected fixture rows exist.
 - Do not change Pages/static deploy before npm test and npm run build still pass.
 - Do not expand save/load before command/result source rows are stable.
+- Do not tune orchard visuals before Exchange result rows are renderer-readable.
 ```
