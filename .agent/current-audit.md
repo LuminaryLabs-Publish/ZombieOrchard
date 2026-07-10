@@ -1,11 +1,11 @@
 # Current audit — ZombieOrchard
 
-Last aligned: `2026-07-10T07-08-10-04-00`
+Last aligned: `2026-07-10T08-28-26-04-00`
 
 ## Current safe ledge
 
 ```txt
-ZombieOrchard Market Exchange Result Ledger Refresh + GameHost Fixture Gate
+ZombieOrchard Market Projection Result Ledger Refresh + GameHost Fixture Gate
 ```
 
 ## Product shape
@@ -54,6 +54,18 @@ interface-screen-state
 interface-composition
 data-action-routing
 data-command-routing
+entry-domain
+session-select-domain
+run-setup-domain
+active-session-domain
+interrupt-domain
+construction-domain
+exchange-domain
+roster-domain
+inventory-domain
+knowledge-domain
+preferences-domain
+outcome-domain
 resource-ledger
 pressure-field
 orchard-world
@@ -63,6 +75,9 @@ inventory-runtime
 world-canvas-renderer
 html-interface-renderer
 exchange-market-placeholder
+market-source-ledger-next
+market-result-projection-next
+market-gamehost-diagnostics-next
 central-ledger-readback
 ```
 
@@ -73,6 +88,7 @@ kit-runtime: kit registration, command routing, tick routing, snapshot aggregati
 entry/session/run kits: menu/session/run setup and active-play transition services.
 interface kits: screen state, action activation, nested command dispatch, and HTML projection.
 resource/inventory/roster/construction kits: domain state and command affordances.
+active-session kit: move, collect, clear, next-phase, player/pest/session state.
 pressure/orchard kits: simulation pressure and world state snapshots.
 render kits: canvas world rendering and HTML screen rendering.
 game-host diagnostics kit: raw engine/getState/tick compatibility readback.
@@ -108,6 +124,7 @@ world-canvas-render-kit
 html-interface-render-kit
 game-host-diagnostics-kit
 smoke-fixture-kit
+static-build-copy-kit
 ```
 
 ## Target next-cut kits
@@ -138,7 +155,7 @@ central-ledger-readback-kit
 
 ## Main finding
 
-The next durable seam is Market/Exchange result authority, not a runtime rewrite.
+The next durable seam is Market projection/result authority, not a runtime rewrite.
 
 The existing engine command path already returns command results. The missing layer is that Market actions are not source-owned, nested interface command results are not retained, Exchange has no Market projection, and `GameHost` cannot report Market command/result facts.
 
