@@ -9,7 +9,7 @@ status: runtime-session-clock-lifecycle-fixture-gate-planned
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: pending until repo-local docs commit sequence completes
+central ledger sync: complete
 ```
 
 ## Selection audit
