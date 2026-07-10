@@ -1,10 +1,10 @@
 # Known gaps — ZombieOrchard
 
-Last aligned: `2026-07-10T07-08-10-04-00`
+Last aligned: `2026-07-10T08-28-26-04-00`
 
 ## Critical blocker
 
-`ZombieOrchard` needs Market/Exchange result-ledger proof before economy expansion, renderer work, or visual polish.
+`ZombieOrchard` needs Market projection/result-ledger proof before economy expansion, renderer work, or visual polish.
 
 ## Market source gaps
 
@@ -22,6 +22,7 @@ No resource/inventory preflight rows.
 
 ```txt
 engine.command() returns command results, but Market-specific result rows are not source-owned.
+interface-composition drops nested action.command results.
 No stable accepted/rejected/no_mutation Market status rows.
 No stable Market reason-code catalog.
 No before/after resource snapshots.
