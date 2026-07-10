@@ -1,17 +1,17 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-10T17-18-47-04-00",
-  "currentNextSafeLedge": "ZombieOrchard Deterministic Scenario Authority + Command/Frame Observation Fixture Gate",
-  "latestTracker": ".agent/trackers/2026-07-10T17-18-47-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T17-18-47-04-00.md",
-  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T17-18-47-04-00-deterministic-scenario-observation-dsk-map.md",
-  "latestRenderAudit": ".agent/render-audit/2026-07-10T17-18-47-04-00-frame-observation-consumption-gap.md",
-  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T17-18-47-04-00-seed-command-tick-replay-loop.md",
-  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T17-18-47-04-00-command-result-observation-chain.md",
-  "latestDeterminismAudit": ".agent/determinism-audit/2026-07-10T17-18-47-04-00-math-random-state-fingerprint-contract.md",
-  "latestHostProofAudit": ".agent/host-proof-audit/2026-07-10T17-18-47-04-00-bounded-scenario-observation-readback.md",
-  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T17-18-47-04-00-deterministic-scenario-fixture-build-gate.md",
-  "previousTracker": ".agent/trackers/2026-07-10T15-48-18-04-00/project-breakdown.md",
+  "updatedAt": "2026-07-10T18-49-54-04-00",
+  "currentNextSafeLedge": "ZombieOrchard Runtime Session Clock and Lifecycle Authority + Pause/Reset/Refresh-Rate Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-10T18-49-54-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T18-49-54-04-00.md",
+  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T18-49-54-04-00-runtime-session-clock-authority-dsk-map.md",
+  "latestRenderAudit": ".agent/render-audit/2026-07-10T18-49-54-04-00-raf-refresh-rate-frame-consumption-gap.md",
+  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T18-49-54-04-00-pause-reset-outcome-reentry-loop.md",
+  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T18-49-54-04-00-screen-transition-session-command-map.md",
+  "latestLifecycleAudit": ".agent/lifecycle-audit/2026-07-10T18-49-54-04-00-session-start-stop-reset-dispose-contract.md",
+  "latestTimeAuthorityAudit": ".agent/time-authority-audit/2026-07-10T18-49-54-04-00-fixed-delta-per-raf-clock-contract.md",
+  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T18-49-54-04-00-refresh-rate-pause-reset-fixture-gate.md",
+  "previousTracker": ".agent/trackers/2026-07-10T17-18-47-04-00/project-breakdown.md",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
@@ -48,7 +48,12 @@
     "static-build-copy-kit",
     "pages-deploy-kit"
   ],
-  "proposedKits": [
+  "proposedLifecycleKits": [
+    "runtime-session-authority-kit",
+    "fixed-step-clock-kit",
+    "runtime-lifecycle-fixture-adapter-kit"
+  ],
+  "companionDeterminismKits": [
     "deterministic-random-source-kit",
     "state-fingerprint-kit",
     "scenario-fixture-adapter-kit"
@@ -71,7 +76,7 @@
       "domain creation",
       "command routing",
       "delta clamping",
-      "bounded tick routing",
+      "tick routing",
       "ephemeral event emission",
       "snapshot aggregation",
       "subscriber notification"
@@ -91,7 +96,7 @@
       "back navigation",
       "parent activation",
       "child command dispatch",
-      "outcome routing"
+      "automatic outcome routing"
     ],
     "resource-ledger-kit": [
       "affordability check",
@@ -101,7 +106,7 @@
     ],
     "pressure-field-kit": [
       "bounded pressure adjustment",
-      "passive pressure tick",
+      "unconditional passive pressure tick",
       "channel snapshot"
     ],
     "orchard-world-kit": [
@@ -144,14 +149,14 @@
       "orchard canvas projection",
       "active-session HUD",
       "generic screen projection",
-      "DOM action bindings",
-      "DOM command bindings",
+      "DOM action binding",
+      "DOM command binding",
       "per-frame HTML replacement"
     ],
     "game-host-diagnostics-kit": [
       "raw engine handle",
       "aggregate snapshot readback",
-      "manual tick hook"
+      "unrestricted manual tick hook"
     ],
     "proof-deploy-kits": [
       "entry to play smoke",
@@ -161,19 +166,16 @@
     ]
   },
   "blockers": [
-    "No versioned scenario configuration or seed authority exists.",
-    "Orchard world directly uses Math.random for apple state and IDs.",
-    "Active session directly uses Math.random for pest decisions, angles, and IDs.",
-    "Same command and tick scripts do not guarantee identical snapshots.",
-    "Runtime commands have no stable sequence or durable request/result journal.",
-    "Interface composition discards nested child command results.",
-    "Runtime events are cleared at tick start and excluded from snapshots.",
-    "No canonical state fingerprint or committed frame observation exists.",
-    "Renderers record no consumed frame or projection fingerprint.",
-    "GameHost exposes mutable engine authority instead of bounded immutable scenario observations.",
-    "The smoke test has no deterministic replay coverage.",
-    "The Pages gate does not verify deterministic scenario proof.",
-    "Market transaction causality remains downstream of scenario authority."
+    "Gameplay session state is constructed and ticked before Play or New Game.",
+    "Simulation advances one fixed step per requestAnimationFrame, making game speed refresh-rate dependent.",
+    "All domains tick regardless of active screen or pause intent.",
+    "Play and New Game are screen transitions rather than lifecycle transactions.",
+    "Outcome to Title bounces back to Outcome because the ended session remains authoritative.",
+    "No start, pause, resume, reset, stop, or dispose contract exists.",
+    "RAF and root click-listener ownership cannot be released.",
+    "GameHost manual ticking can race with automatic ticking.",
+    "No lifecycle or clock fixture exists.",
+    "Deterministic scenario and Market transaction proof remain downstream companion gaps."
   ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
