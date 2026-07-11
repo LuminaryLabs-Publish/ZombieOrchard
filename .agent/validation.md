@@ -2,43 +2,55 @@
 
 ## Scope
 
-Documentation-only seeded-random and replay authority audit. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
+Documentation-only runtime-session instance and fresh-run authority audit. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record source-backed randomness findings and the exact proof required before deterministic-seed, replay or resumable-random-state claims are made.
+**Goal:** record the exact source-backed restart defect and proof required before fresh New Game, restart, pause, lifecycle or disposal claims are made.
 
-- [x] Read the current architecture chain and runtime sources.
-- [x] Confirm all apple and pest randomness uses global `Math.random()`.
-- [x] Confirm apple refill and pest spawning share one implicit source.
-- [x] Confirm random IDs, stream cursors and replay receipts are absent.
-- [x] Confirm snapshots do not contain random causality or durable fingerprints.
+- [x] Read module boot and graph construction.
+- [x] Confirm one mutable graph is created before Play.
+- [x] Confirm route transitions do not instantiate or reset domains.
+- [x] Confirm terminal `ended` survives Outcome -> Title.
+- [x] Confirm Play/Start reuse the ended active-session.
+- [x] Confirm composition routes the reused session back to Outcome.
+- [x] Confirm all state-owning domains survive route changes.
+- [x] Confirm canvas continues rendering the same graph on every route.
+- [x] Confirm runtime/run/session identity, reset, rollback, first-frame and disposal contracts are absent.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
-- [x] Synchronize the central ledger and internal change log.
-- [ ] Implement prerequisite session, clock and transaction authorities.
-- [ ] Implement and run random/replay fixtures.
+- [ ] Implement and run runtime-session fixtures.
+- [ ] Synchronize the central ledger and internal change log.
 
 ## Source-backed findings
 
 ```txt
+src/start.js
+  -> createOrchardGame() once at module boot
+  -> recursive RAF always ticks the engine
+  -> raw GameHost exposes engine, snapshot and manual tick
+
+src/game.js
+  -> constructs all mutable domains once
+
+src/kits/composition.js
+  -> route move mutates only active and previous
+  -> ended active-session auto-routes to Outcome every tick
+
 src/kits/game-domains.js
-  orchard-world-kit
-    -> random tree selection
-    -> random apple id
-    -> random x/y offsets
-    -> random rarity
-    -> refill after successful collection
+  -> active-session sets ended at zero condition
+  -> no reset/new-run service
+  -> resource, pressure, orchard, construction,
+     roster and inventory state live in retained closures
 
-  active-session-domain-kit
-    -> random night spawn trial
-    -> random pest angle
-    -> random pest id
+src/presets/orchard-preset.js
+  -> Entry Play, Run Setup Start and Outcome Title are route actions
 
-src/kits/runtime.js
-  -> no run/session/tick/transaction identity
-  -> no random receipt or replay journal
-  -> snapshot contains outcomes only
+src/renderer/world-canvas.js
+  -> world renders orchard/session regardless active route
+
+src/renderer/html-interface-renderer.js
+  -> action results are not surfaced
 ```
 
 ## Current proof surface
@@ -46,47 +58,53 @@ src/kits/runtime.js
 ```txt
 npm test
   -> tests/smoke.mjs
-  -> verifies Entry to Play and apple presence
+  -> verifies initial Entry to Play
+  -> verifies apples exist
 
 npm run build
   -> copies static application into dist
 ```
 
-This does not prove seed control, stream isolation, deterministic IDs, cursor rules, replay parity, first-divergence localization or random-state continuation.
+This does not prove failure, Outcome, Title, fresh New Game, reset, stale work rejection, first-frame parity, listener/RAF retirement or disposal.
 
 ## Required DOM-free fixtures
 
 ```txt
-same-seed startup
-  -> identical apples and stream cursors
+initial Play
+  -> canonical fresh state and run A identity
 
-different-seed startup
-  -> deterministic intentional difference
+Outcome -> Title -> Play
+  -> run B identity
+  -> canonical fresh state across every domain
 
-apple/pest stream isolation
-  -> apple generation does not alter pest receipts
+Outcome -> Title -> New Game -> Start
+  -> distinct run and epoch
+  -> no predecessor state
 
-rejected, duplicate and rolled-back commands
-  -> no extra authoritative cursor advancement
+candidate validation failure
+  -> no partial graph or route commit
+  -> prior committed run preserved
 
-fixed-tick replay
-  -> identical random receipts and state fingerprints
+stale predecessor command/tick
+  -> typed rejection
+  -> no run-B mutation
 
-first divergence
-  -> identifies event, stream, cursor and fingerprint
-
-save/restore continuation
-  -> exact future random sequence after restore
+repeated restart and dispose
+  -> deterministic identity progression
+  -> idempotent retirement
 ```
 
 ## Required browser fixtures
 
 ```txt
-explicit-seed run startup
-visible seed fingerprint and policy version
-command/tick random receipt acknowledgement
-canvas/HTML/GameHost final fingerprint parity
-stale manifest or policy rejection
+canvas, HTML and GameHost first-run identity parity
+Outcome frame identity
+Entry-after-exit identity
+first fresh restart frame acknowledgement
+no run-A frame after run-B epoch commit
+one RAF chain after repeated restarts
+one delegated listener after repeated restarts
+page disposal blocks late callbacks
 ```
 
 ## Validation result
@@ -103,15 +121,17 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-same-seed fixture: unavailable / not run
-stream-isolation fixture: unavailable / not run
-cursor commit/rollback fixture: unavailable / not run
-replay parity fixture: unavailable / not run
-save/restore continuation fixture: unavailable / not run
+runtime-session fixture: unavailable / not run
+fresh-run full-state fixture: unavailable / not run
+candidate rollback fixture: unavailable / not run
+stale work fixture: unavailable / not run
+first-frame fixture: unavailable / not run
+RAF/listener leak fixture: unavailable / not run
+disposal fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: complete
-central internal change log: complete
+central ledger update: pending
+central internal change log: pending
 ```
 
-No deterministic random or replay claim is made.
+No fresh New Game, restart, pause, lifecycle safety, first-frame coherence or resource-retirement claim is made.
