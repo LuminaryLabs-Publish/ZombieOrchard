@@ -6,49 +6,59 @@ This was a documentation-only audit. Runtime source, dependencies, package scrip
 
 ## Plan ledger
 
-**Goal:** record inspected surfaces, source-backed capability findings, documentation changes and missing proof without overstating validation.
+**Goal:** record inspected surfaces, source-backed gateway findings, documentation changes and missing proof without overstating validation.
 
-- [x] Re-read runtime, scoped-interface, composition, gameplay, preset and HTML-renderer source.
+- [x] Re-read runtime, scoped-interface, composition, gameplay, preset and HTML-renderer findings.
 - [x] Re-read package scripts and current root `.agent` state.
 - [x] Compare all current Publish repositories against the central ledger.
-- [x] Trace movement, collect, clear, phase, build, market, hire, equip and Session Select reachability.
-- [x] Confirm missing registry, bindings, disabled-state truth, result projection and fixture proof.
-- [x] Update required root `.agent` files and add timestamped audits.
+- [x] Trace browser direct-command, nested composition and `GameHost` bypass paths.
+- [x] Reconfirm movement, collect, build, market, hire, equip and Session Select reachability.
+- [x] Confirm missing gateway, diagnostics quarantine, result retention and first-frame acknowledgement.
+- [x] Update root `.agent` state and add timestamped audits.
 - [x] Push only to `main`.
 - [x] Create no branch or pull request.
-- [x] Synchronize the central ledger and internal change log on `main`.
-- [ ] Runtime capability implementation remains future work.
+- [ ] Runtime gateway implementation remains future work.
 
 ## Source-backed findings
 
 ```txt
 src/kits/runtime.js
-  -> commands route by domain ID and type without capability admission
+  -> commands route by domain ID/type without product capability admission
   -> every public command publishes
-  -> exposed raw engine can invoke domain commands directly
+  -> raw domain commands remain callable through exposed engine
+  -> manual tick can advance the graph outside the browser RAF path
 
 src/kits/scoped-interface-domains.js
-  -> actions contain static disabled flags
-  -> select and set-field services exist without shipped bindings
-  -> activation state is not derived from runtime capability state
+  -> actions use static disabled flags
+  -> activate resolves by action ID or selected index
+  -> select/set-field services exist without shipped bindings
+
+src/kits/composition.js
+  -> parent actions can dispatch nested child commands
+  -> child dispatch uses the same public engine path
 
 src/kits/game-domains.js
-  -> move, collect, clear and next-phase exist
-  -> roster hire exists
-  -> inventory equip exists and accepts unknown IDs
-  -> unknown construction IDs fall back to the first catalog item
+  -> move, collect, clear, next-phase, hire and equip services exist
+  -> equip accepts unknown item IDs
+  -> construction unknown IDs fall back to the first item
 
 src/presets/orchard-preset.js
+  -> active-session exposes route actions
   -> Construction exposes Storage Shed
-  -> Market, Roster and Inventory expose route/back shells
+  -> Market, Roster and Inventory expose route/read-only shells
   -> Session Select has no incoming route
 
 src/renderer/html-interface-renderer.js
-  -> binds only data-action and active-session data-command
+  -> binds data-action and selected active-session data-command controls
   -> hard-codes Collect, Clear and Next Phase
-  -> has no movement, hire or equip binding
-  -> button markup does not project disabled state or reason
+  -> has no movement binding
+  -> Roster and Inventory cards are read-only
+  -> button helper does not project disabled state or reason
   -> DOM command results are discarded
+
+src/start.js / GameHost projection
+  -> exposes raw engine and unrestricted manual tick
+  -> exposes mutation authority rather than detached observations
 ```
 
 ## Current proof surface
@@ -63,26 +73,33 @@ npm test
   -> verify at least one apple
 ```
 
-The current smoke does not prove that a user can move, deliberately reach an apple, hire, equip, receive rejected-command feedback, see truthful unsupported state or correlate capability projection with a rendered frame.
+The current smoke does not prove that a public action entered through an admitted gateway, that internal/debug access was quarantined, that a result was retained, or that a rendered frame acknowledged it.
 
-## Required capability fixture matrix
+## Required DOM-free gateway fixture matrix
 
 ```txt
-registry completeness
-  -> each public capability resolves to one owner command
+registry and ownership
+  -> every public capability resolves to one owner command
   -> no duplicate capability IDs
-  -> unsupported, dormant and internal states are explicit
+  -> unsupported/dormant/internal/debug states are explicit
 
-binding completeness
-  -> each supported public capability has a shipped binding
-  -> move has keyboard and accessible fallback
-  -> diagnostics do not count as product binding
+public gateway
+  -> browser callers cannot invoke public engine.command directly
+  -> lifecycle, route, binding and target admission are evaluated
+  -> accepted and rejected results carry session/tick identity
+  -> result remains pending until a frame acknowledgement
+
+internal/debug quarantine
+  -> default GameHost exposes detached observations only
+  -> debug command requires an explicit lease
+  -> manual tick requires debug mode and clock exclusion
+  -> stale lease rejects after reset or disposal
 
 movement and collection
-  -> admitted movement changes position
+  -> admitted move changes position
   -> deliberate movement reaches a known apple
   -> collect commits target/resource/score effects
-  -> out-of-range collect returns a typed visible rejection
+  -> out-of-range collect returns typed rejection
 
 roster and inventory
   -> valid hire commits debit and actor
@@ -91,19 +108,27 @@ roster and inventory
   -> unknown equip rejects without mutation
 
 presentation truth
-  -> Market is unsupported and disabled
+  -> Market is unsupported/disabled
   -> Session Select is dormant
-  -> rendered disabled state and reason match registry state
+  -> rendered disabled state and reason match gateway state
+```
 
-result and render proof
-  -> DOM adapter retains accepted and rejected results
-  -> capability, binding, command, session and tick identities correlate
-  -> first frame acknowledges the consumed registry revision and result
+## Required browser fixture
+
+```txt
+fresh run
+  -> inspect GameHost and confirm no raw mutation surface
+  -> move through orchard through the public gateway
+  -> collect a known apple
+  -> observe typed accepted result and resource update
+  -> observe truthful Roster/Inventory/Market/Session Select states
+  -> verify one rendered frame acknowledges registry revision and result
+  -> reset and confirm prior debug lease/result cannot affect the new session
 ```
 
 ## Attempted validation
 
-A local clone/test attempt could not run because the execution container could not resolve `github.com`. This was an environment/network failure, not a repository test failure.
+No executable validation was run because this pass changed documentation only and the required gateway fixtures do not exist yet.
 
 ## Validation result
 
@@ -118,13 +143,13 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-capability registry fixture: unavailable / not run
+capability gateway fixture: unavailable / not run
+diagnostics quarantine fixture: unavailable / not run
 movement/reachability fixture: unavailable / not run
-hire/equip fixture: unavailable / not run
 affordance truth fixture: unavailable / not run
-render-correlation fixture: unavailable / not run
+render acknowledgement fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger updated on main: yes
-central internal change log added on main: yes
+central ledger update: pending until central write completes
+central internal change log: pending until central write completes
 ```
