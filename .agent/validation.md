@@ -16,6 +16,7 @@ This was a documentation-only runtime-session instance audit. Runtime source, de
 - [x] Confirm no startup rollback, authority transfer or ordered disposal exists.
 - [x] Update root `.agent` state and add timestamped audits.
 - [x] Push directly to `main` without a branch or pull request.
+- [x] Synchronize the central ledger and internal change log.
 - [ ] Implement and run runtime-session fixtures.
 
 ## Source-backed findings
@@ -152,6 +153,6 @@ ordered disposal fixture: unavailable / not run
 session/frame correlation fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: pending until central commit
-central internal change log: pending until central commit
+central ledger update: complete
+central internal change log: complete
 ```
