@@ -2,15 +2,16 @@
 
 ## Primary architecture gap
 
-There is no authoritative runtime session boundary joining lifecycle, graph ownership, tick admission, rendering, input, diagnostics, terminal outcome, reset, disposal and later persistence.
+There is no authoritative runtime session boundary joining lifecycle, graph ownership, tick admission, capabilities, transactions, rendering, input, diagnostics, terminal outcome, reset, disposal and persistence.
 
 ```txt
 lifecycle intent
   -> admitted session command
   -> session identity and epoch
   -> candidate/fresh graph
-  -> tick admission
-  -> committed state
+  -> committed tick
+  -> capability admission
+  -> transactional mutation
   -> render observation
   -> terminal result or rollback
   -> resource retirement
@@ -19,121 +20,111 @@ lifecycle intent
 ## Session and lifecycle gaps
 
 1. The full mutable graph is constructed before Play.
-2. No `runtimeId`, `runtimeGeneration`, `sessionId` or `sessionEpoch` exists.
-3. Play does not declare whether it resumes or starts fresh.
-4. New Game and Start do not create a new graph.
-5. No preset/content revision is attached to a run.
-6. No initial-state fingerprint exists.
-7. No typed construction failure or rollback result exists.
-8. Play, New Game, Start, Pause, Resume, Title and Outcome are route changes only.
-9. No lifecycle state machine exists.
-10. Interface routes can change without a committed lifecycle result.
-11. Active-session commands are accepted regardless of the active route.
-12. Automatic Outcome routing infers lifecycle from mutable `ended` state.
-13. Outcome does not capture an immutable terminal snapshot.
-14. Title after Outcome is pulled back to Outcome on the next tick.
-15. Play after Outcome reuses ended state.
-16. Every domain ticks on every screen.
-17. Pressure, pest admission, pursuit and damage can continue while paused.
-18. No stale tick or callback generation is rejected.
-19. Resources, world, construction, roster, inventory and session state survive Title/New Game.
-20. No atomic fresh-graph ownership transfer exists.
-21. RAF IDs are not retained.
-22. The delegated click listener and renderers have no disposal handles.
-23. GameHost has no lease/release semantics.
-24. Render snapshots carry no session provenance.
-25. GameHost exposes the raw mutable engine and unrestricted manual tick.
+2. No runtime, session or epoch identity exists.
+3. Play, New Game and Start route into the same graph.
+4. Pause, Title and Outcome do not gate all-domain ticking.
+5. Outcome does not finalize an immutable terminal result.
+6. Title after Outcome is routed back to Outcome on the next tick.
+7. Mutable gameplay state survives Title/New Game.
+8. No fresh-graph transaction, stale-work rejection or idempotent disposal exists.
+9. RAF IDs and listener leases are not retained.
+10. GameHost exposes the raw engine and unrestricted manual tick.
+11. Render snapshots carry no session provenance.
 
 ## Fixed-step clock gaps
 
-26. Simulation speed depends on RAF cadence.
-27. No wall-time accumulator, catch-up limit or dropped-time policy exists.
-28. Render frames and committed simulation ticks are not separate identities.
-29. Manual and automatic ticking have no mutual-exclusion policy.
+12. Simulation speed depends on RAF cadence.
+13. No wall-time accumulator, catch-up limit or dropped-time policy exists.
+14. Render frames and committed simulation ticks are not separate identities.
+15. Manual and automatic ticking have no mutual-exclusion policy.
 
 ## Capability reachability gaps
 
-30. Movement and several implemented services remain unreachable from the shipped interface.
-31. Session Select remains dormant.
-32. Market is visible without a real service.
-33. Hiring and equipment mutation are implemented but not bound to usable actions.
-34. Disabled-action projection is not authoritative.
-35. There is no canonical capability registry.
+### Registry and classification
+
+16. No canonical capability descriptor or registry exists.
+17. No registry revision or fingerprint exists.
+18. Domain command existence is not validated against public capability declarations.
+19. No support-state taxonomy exists for supported, unreachable, dormant, unsupported and internal services.
+20. Raw GameHost access bypasses any product capability boundary.
+
+### Lifecycle and route admission
+
+21. Capabilities carry no allowed lifecycle states.
+22. Capabilities carry no allowed routes.
+23. Active-session commands can be called regardless of active screen.
+24. Next Phase has no explicit admission policy.
+25. Static action disabled flags are not derived from lifecycle, route, target, resources or service readiness.
+
+### Input and reachability
+
+26. `active-session.move` has no shipped keyboard, pointer or accessible button binding.
+27. Collect is bound, but the player cannot deliberately move to a collectible.
+28. No fixture proves a fresh run has a reachable apple.
+29. Roster Hire exists but has no browser binding.
+30. Inventory Equip exists but has no browser binding.
+31. Scoped select and set-field commands have no browser binding.
+32. No binding IDs, device descriptors or accessibility alternatives exist.
+
+### Target integrity
+
+33. Inventory Equip accepts unknown item IDs.
+34. Construction falls back to the first catalog item for unknown IDs.
+35. Collect and Clear do not expose target identity in a typed result.
+36. No target-revision or stale-target admission exists.
+
+### Presentation truth
+
+37. Market is presented as an available route despite no exchange runtime service.
+38. Session Select is rendered but has no incoming route or slot owner.
+39. Roster and Inventory cards are read-only despite implemented services.
+40. The HTML button renderer does not project disabled state or reason.
+41. Unsupported and dormant reasons are not visible.
+42. DOM command results are discarded.
+43. No capability result, projection revision or first-frame acknowledgement is exposed.
 
 ## Composite command transaction gaps
 
-### Identity and admission
-
-36. Public commands have no `commandId`.
-37. Composite actions have no `transactionId` or parent/child correlation.
-38. Commands carry no expected session, epoch or committed tick.
-39. Duplicate and stale commands cannot be identified.
-40. No complete action plan is preflighted before mutation.
-
-### Parent/child result integrity
-
-41. `interface-composition` dispatches child work through public `engine.command()`.
-42. The nested child command publishes before parent completion.
-43. The nested child result is discarded.
-44. The parent can return `accepted: true` while the required child rejects.
-45. Parent results contain no child-results array.
-46. A missing child domain can be concealed by parent success.
-47. A future command-plus-route action can transition despite child rejection.
-
-### Target and resource integrity
-
-48. An unknown construction ID falls back to the first catalog item.
-49. Resource payment returns only a Boolean.
-50. Payment has no debit ID, before/after values, shortfall or reason.
-51. Construction has no typed target-admission result.
-52. Inventory equip accepts unknown item IDs.
-53. Resource debit and built-object creation are not staged together.
-54. No rollback restores resources after a later child failure.
-55. No idempotency key prevents repeated side effects.
-
-### Publication and proof
-
-56. Accepted composite commands can publish more than once.
-57. Rejected/rolled-back command publication policy is undefined.
-58. Subscribers can observe intermediate partial state.
-59. Events are cleared on the next tick and do not form a durable command journal.
-60. Aggregate snapshots carry no command or transaction provenance.
-61. Renderers cannot acknowledge the first frame consuming a committed command.
-62. No before/after state fingerprints exist.
-63. No command-result journal exists.
-64. No fixture counts publications or proves rollback.
+44. Public commands have no command or transaction identity.
+45. Interface composition dispatches child work through public `engine.command()`.
+46. Nested child commands publish before parent completion.
+47. Child results are discarded and rejection can be concealed by parent success.
+48. No complete action plan is preflighted.
+49. Payment returns only a Boolean.
+50. Resource and gameplay mutations are not staged or rolled back together.
+51. No single-publication barrier, command journal, fingerprints or frame correlation exists.
 
 ## Randomness and replay gaps
 
-65. Apple and pest generation use global `Math.random()`.
-66. Random IDs are unstable.
-67. No seed, stream partition, draw cursor, decision ledger or replay receipt exists.
-68. No deterministic state fingerprint exists.
+52. Apple and pest generation use global `Math.random()`.
+53. Random IDs are unstable.
+54. No seed, stream partition, draw cursor, decision ledger or replay receipt exists.
+55. No deterministic state fingerprint exists.
 
 ## Persistence gaps
 
-69. Session Select has no incoming route or slot owner.
-70. No save/load commands, adapter, schema, migration, atomic load or load epoch exists.
-71. `engine.snapshot()` is presentation state, not a restorable save.
-72. No domain exposes export, validation, staged restore, commit or rollback.
+56. Session Select has no stable slot authority.
+57. No save/load commands, adapter, schema, migration, atomic load or load epoch exists.
+58. `engine.snapshot()` is presentation state, not a restorable save.
+59. No domain exposes export, validation, staged restore, commit or rollback.
 
 ## Proof and deployment gaps
 
-73. The smoke test proves only Entry -> Play and apple presence.
-74. No lifecycle, clock, capability, transaction, replay or persistence fixture exists.
-75. No browser smoke proves one RAF/listener owner.
-76. No fixture proves one publication per composite command.
-77. No fixture proves child rejection propagates to the parent.
-78. No fixture proves invalid target rejection instead of first-item fallback.
-79. No fixture proves resource rollback.
-80. Pages deployment is not gated on these authority contracts.
+60. The smoke test proves only Entry to Play and apple presence.
+61. No lifecycle, clock, capability, transaction, replay or persistence fixture exists.
+62. No browser smoke proves one RAF/listener owner.
+63. No fixture proves movement, deliberate collection, hiring or equipment reachability.
+64. No fixture proves Market is truthfully unsupported.
+65. No fixture proves disabled-state projection matches capability admission.
+66. No fixture proves command-result and first-frame correlation.
+67. Pages deployment is not gated on these authority contracts.
 
 ## Explicit non-gaps for this pass
 
 ```txt
 world canvas fidelity
 orchard content volume
-new Market items
+new Market offers
 new pest types
 economy balance
 renderer replacement
@@ -145,7 +136,7 @@ cloud save
 ```txt
 runtime session instance authority
   -> fixed-step clock authority
-  -> capability reachability
+  -> capability registry and reachability
   -> composite command transaction authority
   -> seeded random and replay authority
   -> committed durable-state fingerprint
