@@ -3,35 +3,34 @@
 ## Status
 
 ```txt
-last aligned: 2026-07-11T15-20-27-04-00
-status: fixed-step-clock-authority-audited
+last aligned: 2026-07-11T17-01-11-04-00
+status: seeded-random-replay-authority-audited
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: complete
-central internal change log: complete
+central ledger sync: pending until central commit
+central internal change log: pending until central commit
 ```
 
 ## Summary
 
-ZombieOrchard advances one hard-coded `1 / 60` simulation step per browser animation callback. Display cadence therefore controls simulated elapsed time, pressure growth, pest-spawn trials, pursuit, damage and terminal timing. The runtime has no wall-time accumulator, catch-up budget, overrun result, pause/visibility clock barrier, independent simulation-tick/render-frame identity or automatic/manual tick exclusion.
+`ZombieOrchard` uses process-global `Math.random()` for apple population and pest generation. Startup apple seeding, collection-triggered refills and night tick spawning all advance the same invisible random sequence. Player command timing and browser callback cadence can therefore alter later random outcomes. No seed, named stream, cursor, random receipt, deterministic entity sequence, replay journal or state fingerprint exists.
 
 ## Plan ledger
 
-**Goal:** define a session-owned fixed-step clock that converts monotonic wall time into bounded deterministic ticks and correlates the latest committed tick with canvas, HTML and public readback.
+**Goal:** define a session-owned seeded-random and replay boundary that isolates apple and pest decisions, advances cursors only for committed mutations and proves replay through deterministic state fingerprints.
 
-- [x] Compare all ten accessible Publish repositories and central ledgers.
+- [x] Compare all ten accessible Publish repositories with central ledgers.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Select only `ZombieOrchard` as the oldest eligible central entry.
-- [x] Trace RAF, delta admission, elapsed/frame mutation and all-domain ticking.
-- [x] Trace pressure, pest spawn, pursuit, damage, failure and Outcome routing.
-- [x] Identify all domains, kits and services.
-- [x] Define wall-time, accumulator, catch-up, pause, visibility, manual-step and render-correlation contracts.
-- [x] Add architecture, render, gameplay, interaction, clock and deploy audits.
-- [x] Push documentation only to `main` with no branch or pull request.
-- [x] Synchronize the central ledger and internal change log.
-- [ ] Implement Gate 1 runtime-session authority.
-- [ ] Implement Gate 2 clock authority and run fixtures.
+- [x] Read `src/start.js`, `src/game.js`, `src/kits/runtime.js` and `src/kits/game-domains.js`.
+- [x] Trace all source-backed `Math.random()` calls.
+- [x] Identify the interaction loop, domains, kits and services.
+- [x] Define independent streams, cursors, deterministic entity identity and replay receipts.
+- [x] Add architecture, render, gameplay, interaction, random/replay and deploy audits.
+- [x] Push documentation only to `main` without a branch or pull request.
+- [ ] Implement prerequisite runtime-session, fixed-step clock and transaction authorities.
+- [ ] Implement and run random/replay fixtures.
 
 ## Selection audit
 
@@ -50,46 +49,54 @@ Only `LuminaryLabs-Publish/ZombieOrchard` was changed in the Publish organizatio
 ## Interaction loop
 
 ```txt
-src/start.js
-  -> create graph, renderers and GameHost
-  -> draw()
+createOrchardGame()
+  -> create orchard-world
+  -> seedApples to 26
+     -> Math.random tree index
+     -> Math.random id
+     -> Math.random x offset
+     -> Math.random y offset
+     -> Math.random rarity
 
-draw callback
-  -> engine.tick(1 / 60)
-  -> elapsed += delta
-  -> ctx.frame += 1
-  -> every domain tick(dt)
+Collect command
+  -> remove nearest apple
+  -> seedApples refill one
+  -> consume five more global draws
+  -> resource, pressure and score mutation
+
+Night tick
+  -> Math.random spawn admission
+  -> on success: Math.random angle and id
+  -> pest pursuit and damage
   -> snapshot
-  -> canvas render
-  -> HTML render
-  -> next RAF
-
-GameHost.tick(dt)
-  -> same mutation path outside RAF ownership
+  -> canvas, HTML and GameHost observation
 ```
 
 ## Main findings
 
-1. `src/start.js` ignores the RAF timestamp and submits one `1 / 60` step per callback.
-2. `src/kits/runtime.js` clamps and commits exactly one supplied delta, with no accumulator or catch-up loop.
-3. `pressure-field-kit` and `active-session-domain-kit` consume delta for pressure, pest spawn, pursuit and damage.
-4. Pause, Resume and Title are interface routes, not clock barriers.
-5. `GameHost.tick(dt)` provides a second unleased mutation path.
-6. `ctx.frame` counts tick calls and does not identify rendered frames.
-7. Snapshots contain no runtime/session/tick/render provenance.
+1. Startup apple population consumes at least 130 global random draws for 26 apples.
+2. Every collected apple advances the same global source by five further draws during refill.
+3. Every eligible night tick consumes a pest-admission draw.
+4. Every successful pest admission consumes additional angle and random-id draws.
+5. Apple activity can change future pest outcomes because the systems share one random source.
+6. Current one-tick-per-RAF timing changes pest trial count and random cursor advancement by display cadence.
+7. Random string entity IDs are non-canonical and order-dependent.
+8. Rejected, rolled-back and duplicate command cursor behavior is undefined.
+9. Snapshots contain outcomes but no seed, stream, cursor, decision, committed tick, transaction or fingerprint provenance.
+10. `engine.snapshot()` is not a replay artifact or restorable random authority snapshot.
 
 ## Domains in use
 
 ```txt
 browser boot and runtime host
 kit/domain graph construction
-direct command and tick routing
-events, snapshots, subscriptions and publication
+direct commands, ticks, events, snapshots, subscriptions and publication
 runtime-session lifecycle authority: missing
-wall-time and fixed-step clock authority: missing
-pause/visibility and catch-up policy: missing
-automatic/manual mutation ownership: missing
-simulation-tick/render-frame correlation: missing
+fixed-step committed tick authority: missing
+public capability and composite transaction authority: missing
+seeded random stream authority: missing
+replay journal and verifier: missing
+versioned persistence authority: missing
 12 interface-screen domains and composition
 resource, pressure, orchard, construction, roster and inventory
 movement, collection, phases, pests, damage, score and failure
@@ -98,57 +105,78 @@ GameHost diagnostics
 smoke, build and Pages deployment
 ```
 
-## Implemented kit services
+## Implemented kits and services
 
 | Kit group | Services |
 |---|---|
-| `kit-runtime` | registration, domain creation, commands, delta clamp, elapsed/frame mutation, all-domain tick, events, snapshots, subscriptions, publication |
-| interface kits | screen state, actions, selection, fields, activation, routing, nested dispatch, automatic Outcome route |
-| game kits | resources, pressure, orchard/apples, collection, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
-| render kits | orchard canvas, HUD, generic screens, delegated actions, per-frame HTML replacement |
+| `kit-runtime` | registration, domain creation, commands, delta admission, elapsed/frame mutation, all-domain tick, events, snapshots, subscriptions, publication |
+| interface kits | screen state, actions, selection, fields, activation, routing, nested dispatch, automatic Outcome routing |
+| `resource-ledger-kit` | affordability, payment, gain and resource snapshot |
+| `pressure-field-kit` | clamped pressure channels and per-tick growth |
+| `orchard-world-kit` | tree grid, random apple population, nearest collection and random refill |
+| `construction-runtime-kit` | catalog selection, resource debit and built-object mutation |
+| `roster-runtime-kit` | resource debit and actor hiring |
+| `inventory-runtime-kit` | item state and equipment selection |
+| `active-session-domain-kit` | movement, collection, phases, random pest admission/placement, pursuit, damage, score and terminal failure |
+| render kits | orchard canvas, HUD, generic screens, delegated actions and per-frame HTML replacement |
 | diagnostics/proof/deploy | raw engine, snapshot, manual tick, smoke, static copy and Pages chain |
 
 ## Required composed domain
 
 ```txt
-zombie-orchard-fixed-step-clock-authority-domain
-  -> clock-descriptor-kit
-  -> monotonic-wall-time-sample-kit
-  -> wall-time-baseline-kit
-  -> fixed-step-accumulator-kit
-  -> lifecycle-tick-admission-kit
-  -> simulation-tick-id-kit
-  -> simulation-tick-result-kit
-  -> clock-catchup-budget-kit
-  -> clock-overrun-policy-kit
-  -> dropped-time-result-kit
-  -> pause-clock-barrier-kit
-  -> visibility-resume-policy-kit
-  -> automatic-tick-lease-kit
-  -> manual-step-command-kit
-  -> manual-automatic-exclusion-kit
-  -> render-frame-id-kit
-  -> committed-tick-receipt-kit
-  -> render-frame-clock-ack-kit
-  -> clock-observation-kit
-  -> clock-journal-kit
-  -> cadence-parity-fixture-kit
-  -> pause-stall-manual-step-fixture-kit
+zombie-orchard-seeded-random-replay-authority-domain
+  -> run-seed-descriptor-kit
+  -> deterministic-prng-kit
+  -> random-stream-registry-kit
+  -> random-stream-id-kit
+  -> random-cursor-kit
+  -> random-draw-result-kit
+  -> apple-generation-policy-kit
+  -> pest-spawn-policy-kit
+  -> deterministic-entity-id-kit
+  -> committed-tick-random-receipt-kit
+  -> replay-command-envelope-kit
+  -> replay-journal-kit
+  -> replay-state-fingerprint-kit
+  -> replay-verifier-kit
+  -> random-stream-snapshot-kit
+  -> stale-replay-rejection-kit
+  -> apple-pest-determinism-fixture-kit
+  -> replay-parity-fixture-kit
 ```
+
+## Required streams
+
+```txt
+orchard.apple-tree
+orchard.apple-offset-x
+orchard.apple-offset-y
+orchard.apple-kind
+session.pest-admission
+session.pest-angle
+```
+
+Entity identity should use committed sequences rather than random values.
 
 ## Required proof
 
 ```txt
-30/60/120 Hz equal-wall-time state parity
-zero-tick and multi-tick render callbacks
-bounded stall catch-up with explicit overflow result
-pause freeze and clean resume baseline
-visibility baseline reset
-automatic/manual exclusion
-exclusive manual stepping
-independent monotonic simulationTickId/renderFrameId
-canvas/HTML/GameHost committed-tick parity
-stale-session callback rejection
+same seed + same admitted commands + same committed tick schedule
+  -> identical random receipts
+  -> identical apple and pest identities/positions/kinds
+  -> identical durable-state fingerprints
+
+stream isolation
+  -> apple generation does not change pest stream results
+
+rejected/duplicate/rolled-back command
+  -> no extra authoritative cursor advancement
+
+replay
+  -> first divergence identifies event, stream, cursor and fingerprint
+
+save/restore continuation
+  -> seed, policy, stream states, cursors and entity sequences resume exactly
 ```
 
 ## Ordered safe ledges
@@ -162,4 +190,4 @@ stale-session callback rejection
 6. Versioned Save / Load Authority
 ```
 
-Gate 2 must consume Gate 1 runtime/session identity, lifecycle state and callback generation. It must not introduce parallel ownership.
+Gate 5 must consume Gate 1 session identity, Gate 2 committed tick identity and Gate 4 transaction commit/rollback semantics.
