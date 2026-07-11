@@ -3,12 +3,12 @@
 ## Status
 
 ```txt
-last aligned: 2026-07-11T03-48-31-04-00
-status: session-clock-capability-command-replay-then-versioned-save
+last aligned: 2026-07-11T06-02-00-04-00
+status: runtime-session-instance-authority-first
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: complete
+central ledger sync: pending until central write completes
 ```
 
 ## Selection audit
@@ -16,150 +16,163 @@ central ledger sync: complete
 All ten accessible `LuminaryLabs-Publish` repositories were compared. All nine eligible non-Cavalry repositories had central ledger and root `.agent` state, so the oldest documented-selection rule applied.
 
 ```txt
-ZombieOrchard        selected / 2026-07-11T01-31-15-04-00
-TheUnmappedHouse     tracked  / 2026-07-11T01-38-28-04-00
-MyCozyIsland         tracked  / 2026-07-11T02-02-59-04-00
-AetherVale           tracked  / 2026-07-11T02-10-13-04-00
-IntoTheMeadow        tracked  / 2026-07-11T02-28-12-04-00
-PrehistoricRush      tracked  / 2026-07-11T02-48-17-04-00
-TheOpenAbove         tracked  / 2026-07-11T03-01-38-04-00
-HorrorCorridor       tracked  / 2026-07-11T03-18-44-04-00
-PhantomCommand       tracked  / 2026-07-11T03-31-26-04-00
+ZombieOrchard        selected / 2026-07-11T03-48-31-04-00
+TheUnmappedHouse     tracked  / 2026-07-11T04-00-07-04-00
+AetherVale           tracked  / 2026-07-11T04-28-33-04-00
+IntoTheMeadow        tracked  / 2026-07-11T04-49-30-04-00
+MyCozyIsland         tracked  / 2026-07-11T05-10-36-04-00
+TheOpenAbove         tracked  / 2026-07-11T05-25-29-04-00
+HorrorCorridor       tracked  / 2026-07-11T05-28-29-04-00
+PrehistoricRush      tracked  / 2026-07-11T05-39-11-04-00
+PhantomCommand       tracked  / 2026-07-11T05-50-43-04-00
 TheCavalryOfRome     excluded by rule
 ```
 
-`ZombieOrchard` was the only product repository changed.
+Only `LuminaryLabs-Publish/ZombieOrchard` was changed in the Publish organization.
 
 ## Interaction loop
 
 ```txt
-route boot
-  -> construct one mutable engine graph from orchardPreset
-  -> construct 12 interface domains and 7 gameplay/runtime domains
-  -> attach one delegated click listener
-  -> run one fixed simulation tick per RAF callback
-  -> aggregate every domain snapshot
+module boot
+  -> construct one engine and all domain closures
+  -> construct canvas and HTML renderers
+  -> install delegated click listener
+  -> expose raw engine and unrestricted manual tick
+  -> start recursive RAF
+
+RAF callback
+  -> engine.tick(1 / 60)
+  -> advance frame and elapsed counters
+  -> tick every domain
+  -> auto-route ended sessions to Outcome
+  -> aggregate all snapshots
   -> render canvas and HTML
-  -> expose raw engine, aggregate state, and unrestricted manual tick on GameHost
 
-action path
-  -> data-action or data-command
-  -> engine.command
-  -> synchronous mutation
-  -> subscriber publication
-  -> next rendered aggregate snapshot
+interface action
+  -> interface-composition.activate
+  -> active screen activate
+  -> optional nested child command
+  -> optional route move
 
-save/select path
-  -> session-select exists in INTERFACE_DOMAIN_IDS
-  -> orchardPreset defines title and Back only
-  -> no incoming route reaches it
-  -> renderer reads current.meta.slots
-  -> no domain populates slots
-  -> no save, load, overwrite, delete, rename, import, export, or migration command exists
+lifecycle-looking action
+  -> Play / New Game / Start / Pause / Resume / Title / Outcome
+  -> route mutation only
+  -> no session construction, freeze, finalization, reset, retirement, or disposal
 ```
 
 ## Domains in use
 
 ```txt
-static browser route and module entry
-browser runtime host and uncancelled RAF ownership
-game factory and unvalidated preset composition
-kit registration, domain creation, command routing, ticking, snapshots, subscriptions
+static browser route and ESM boot
+browser runtime host
+runtime graph construction
+runtime frame, elapsed, delta, event, command, tick, snapshot, and subscription state
 12 scoped interface screen domains
-interface composition and route projection
-resource ledger and pressure field
+interface route composition and automatic Outcome routing
+resource ledger
+pressure field
 orchard world and apple lifecycle
-construction, roster, and inventory runtimes
-active-session movement, collection, pests, phases, score, and failure
-ambient global randomness
+construction runtime
+roster runtime
+inventory runtime
+active-session movement, collection, phase, pests, damage, score, and failure
 world canvas rendering
 HTML interface rendering and delegated input
 GameHost diagnostics
 Node smoke fixture
 static build copy
 Pages deployment
-dormant session-select and slot projection surface
-missing persistence, save schema, restore, migration, and atomic load authority
+missing session identity, lifecycle, tick admission, teardown, and re-entry authority
 ```
 
 ## Implemented kits and services
 
-- `kit-runtime`: kit registration, domain creation, command lookup/invocation, delta clamping, ticking, events, aggregate snapshots, subscriptions, and notification.
+- `kit-runtime`: kit registration, domain creation, command lookup/invocation, delta clamping, all-domain ticking, events, aggregate snapshots, subscriptions, and notification.
 - `scoped-interface-domain-kit` plus 12 screen kits: screen state, action catalogs, selection, field mutation, disabled-action rejection, activation, metadata, and snapshots.
 - `interface-composition-kit`: active/previous route state, transition, back navigation, nested child dispatch, and automatic Outcome routing.
-- `resource-ledger-kit`: affordability, boolean payment, addition, and aggregate resource snapshots.
-- `pressure-field-kit`: bounded channel adjustment and passive growth.
-- `orchard-world-kit`: fixed trees, random apple seeding/replenishment, nearby collection, and world snapshots.
-- `construction-runtime-kit`: catalog lookup, payment, built-object creation, and status message.
-- `roster-runtime-kit`: actor/role state, payment, actor creation, and status message.
-- `inventory-runtime-kit`: item state and equipment assignment.
-- `active-session-domain-kit`: movement, collection, clearing, phase changes, pest spawning/pursuit, damage, score, and failure.
-- `world-canvas-render-kit`: world projection.
-- `html-interface-render-kit`: HUD/screen projection, slot-card projection, delegated DOM action routing, and per-frame HTML replacement.
+- `resource-ledger-kit`: affordability, boolean payment, addition, and resource snapshots.
+- `pressure-field-kit`: bounded adjustment, passive growth, and channel snapshots.
+- `orchard-world-kit`: fixed tree generation, global-random apple generation/replenishment, nearby collection, and world snapshots.
+- `construction-runtime-kit`: catalog lookup, payment, built-object creation, and status messages.
+- `roster-runtime-kit`: actor and role state, hiring payment, actor creation, and messages.
+- `inventory-runtime-kit`: item state and equipment mutation.
+- `active-session-domain-kit`: movement, collection, pest clearing, phase changes, random pest generation, pursuit, damage, score, failure, and actions.
+- `world-canvas-render-kit`: canvas sizing and orchard/player/pest projection.
+- `html-interface-render-kit`: HUD/screen/slot projection, delegated DOM input, and per-frame HTML replacement.
 - `game-host-diagnostics-kit`: raw engine access, aggregate snapshot readback, and unrestricted manual ticking.
-- `smoke-fixture-kit`, `static-build-copy-kit`, and `pages-deploy-kit`: minimal proof, artifact copy, and deployment.
+- `smoke-fixture-kit`, `static-build-copy-kit`, and `pages-deploy-kit`: minimal proof, static artifact assembly, and deployment.
 
-## Persistence finding
+## Main session finding
 
-The current aggregate snapshot cannot serve as an authoritative save.
+The product has interface screens but no runtime session instance.
 
 ```txt
-missing schema version
-missing product/content identity
-missing session epoch
-missing committed simulation tick
-missing declared seed and random stream cursors
-missing command journal and terminal result range
-missing state fingerprint
-missing slot identity and metadata owner
-missing export admission result
-missing restore/import methods on domains
-missing migration registry
-missing atomic load transaction
-missing load epoch and stale-work rejection
-missing detached save/load result journal
+engine graph lifetime: module lifetime
+session identity: absent
+session epoch: absent
+start transaction: absent
+pause admission: absent
+terminal result: absent
+reset transaction: absent
+run retirement: absent
+RAF ownership: absent
+listener lease: absent
+renderer disposal: absent
+stale command/callback rejection: absent
 ```
 
-The Session Select UI is specifically misleading:
+### New Game does not create a new run
 
-1. `session-select-domain-kit` is created, but Entry and Run Setup do not route to it.
-2. The preset supplies no `meta.slots`.
-3. The HTML renderer has a slot-card branch that therefore always renders empty.
-4. No action can save, load, overwrite, delete, or select a slot.
-5. No persistence adapter exists in browser or Node.
-6. `GameHost` exposes no save or load result surface.
+`createOrchardGame()` is called once during module startup. Entry Play, Entry New Game, Run Setup Start, and future re-entry all reference the same mutable closures.
 
-## Why `engine.snapshot()` is not a save
+### Pause does not pause simulation
+
+`kit-runtime.tick()` ticks every domain on every frame. `pressure-field` always advances. `active-session` continues pest admission, pursuit, and damage when at night even while the interface route is Interrupt, Entry, or another screen.
+
+### Outcome cannot return stably to title
+
+`interface-composition.tick()` routes any ended active session to Outcome. The Outcome Title action changes the route to Entry, but the next tick sees the same ended closure and moves back to Outcome.
+
+### Post-outcome Play cannot recover
+
+Play routes to the same ended active session. The next tick routes back to Outcome. There is no fresh graph or `ended = false` reset.
+
+## Required session authority DSK map
 
 ```txt
-resource, pressure, construction, roster, inventory, world, session, and route
-state live in independent closures
-
-snapshots are export-only presentation objects
-no domain exposes restore/import/reset
-action catalogs and transient messages are mixed with durable state
-random generator state does not exist
-IDs are generated from Math.random
-simulation time and command identity are not authoritative
-a partial restore could mutate some domains before another rejects
+runtime-session-authority-domain
+  -> runtime-session-id-kit
+  -> session-instance-factory-kit
+  -> session-lifecycle-state-kit
+  -> session-command-kit
+  -> session-command-result-kit
+  -> session-epoch-kit
+  -> session-tick-admission-kit
+  -> session-reset-plan-kit
+  -> raf-ownership-kit
+  -> input-listener-lease-kit
+  -> renderer-session-projection-kit
+  -> outcome-finalization-kit
+  -> session-graph-disposal-kit
+  -> GameHost-session-observation-kit
+  -> session-lifecycle-journal-kit
+  -> session-lifecycle-fixture-kit
 ```
 
-## Candidate persistence DSK map
+## Required lifecycle states
 
 ```txt
-save-envelope-kit
-save-schema-version-kit
-content-identity-kit
-save-slot-index-kit
-committed-snapshot-export-kit
-state-restore-kit
-save-admission-validation-kit
-save-migration-registry-kit
-atomic-load-transaction-kit
-browser-persistence-adapter-kit
-load-epoch-authority-kit
-save-load-result-journal-kit
-save-roundtrip-fixture-kit
+idle
+starting
+running
+paused
+ending
+ended
+returning_to_title
+resetting
+disposing
+disposed
+failed
 ```
 
 ## Ordered safe ledges
@@ -170,9 +183,9 @@ save-roundtrip-fixture-kit
 3. Interaction Capability Reachability
 4. Composite Command Transaction Authority
 5. Seeded Random and Replay Authority
-6. Versioned Save/Load Authority
+6. Versioned Save / Load Authority
 ```
 
 ## What not to do next
 
-Do not add a localStorage blob around `engine.snapshot()`, expose Save Select as operational, or claim resume support. Establish the five prerequisite authority gates first, then add a versioned envelope and atomic restore transaction.
+Do not add localStorage, expose Save Select as operational, expand gameplay, or tune rendering. First prove that one fresh run can start, pause, resume, end, return to title, reset, reject stale work, and dispose without retaining process-lifetime state.
