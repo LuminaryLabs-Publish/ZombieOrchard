@@ -1,31 +1,31 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-11T09-49-27-04-00",
-  "status": "capability-registry-binding-affordance-fixture-gate-audited",
+  "updatedAt": "2026-07-11T10-00-12-04-00",
+  "status": "public-capability-gateway-diagnostics-quarantine-fixture-gate-audited",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
     "accessibleRepositoryCount": 10,
     "eligibleRepositoryCount": 9,
-    "reason": "oldest eligible central-ledger timestamp"
+    "reason": "repo-local capability audit was newer than the central ledger"
   },
   "safeLedges": [
     "ZombieOrchard Runtime Session Instance Authority + Start / Reset / Title / Outcome Fidelity Fixture Gate",
     "ZombieOrchard Fixed-Step Clock Authority + Pause / 30-60-120 Hz Parity Fixture Gate",
-    "ZombieOrchard Interaction Capability Reachability + Registry / Movement / Service-Binding Fixture Gate",
+    "ZombieOrchard Public Capability Gateway and Reachability + Registry / Binding / Diagnostics-Quarantine Fixture Gate",
     "ZombieOrchard Composite Command Transaction Authority + Parent / Child Result and Single-Publication Fixture Gate",
     "ZombieOrchard Seeded Random and Replay Authority + Apple / Pest Determinism Fixture Gate",
     "ZombieOrchard Versioned Save / Load Authority + Slot Roundtrip and Atomic Load Fixture Gate"
   ],
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-11T09-49-27-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-11T09-49-27-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-11T09-49-27-04-00-capability-reachability-authority-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-11T09-49-27-04-00-capability-affordance-truth-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T09-49-27-04-00-movement-collect-hire-equip-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-11T09-49-27-04-00-capability-binding-result-map.md",
-    "capabilityReachabilityAudit": ".agent/capability-reachability-audit/2026-07-11T09-49-27-04-00-registry-binding-projection-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-11T09-49-27-04-00-capability-reachability-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-11T10-00-12-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-11T10-00-12-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-11T10-00-12-04-00-public-capability-gateway-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-11T10-00-12-04-00-command-result-frame-ack-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T10-00-12-04-00-player-action-debug-bypass-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-11T10-00-12-04-00-dom-gateway-gamehost-command-map.md",
+    "capabilityGatewayAudit": ".agent/capability-gateway-audit/2026-07-11T10-00-12-04-00-public-internal-debug-boundary-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-11T10-00-12-04-00-capability-gateway-fixture-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -60,13 +60,13 @@
     "kit-runtime": [
       "kit registration",
       "domain creation",
-      "unrestricted public command routing",
+      "unrestricted command routing",
       "delta clamping",
       "all-domain tick routing",
-      "ephemeral event emission",
+      "ephemeral events",
       "snapshot aggregation",
-      "subscriber registration",
-      "subscriber notification"
+      "subscriptions",
+      "publication"
     ],
     "scoped-interface-domain-kit": [
       "screen state",
@@ -80,15 +80,15 @@
     ],
     "interface-composition-kit": [
       "active screen ownership",
-      "previous screen history",
+      "history",
       "transition",
       "back navigation",
       "parent activation",
-      "nested public child dispatch",
+      "nested child dispatch",
       "automatic outcome routing"
     ],
     "resource-ledger-kit": [
-      "affordability check",
+      "affordability",
       "Boolean payment",
       "resource addition",
       "resource snapshot"
@@ -100,8 +100,8 @@
     ],
     "orchard-world-kit": [
       "tree generation",
-      "global-random apple seeding",
-      "global-random apple replenishment",
+      "random apple seeding",
+      "random apple replenishment",
       "nearby apple collection",
       "world snapshot"
     ],
@@ -129,8 +129,8 @@
       "apple collection",
       "pest clearing",
       "phase change",
-      "global-random pest admission",
-      "global-random pest placement",
+      "random pest admission",
+      "random pest placement",
       "pest pursuit",
       "damage",
       "score",
@@ -140,7 +140,7 @@
       "orchard canvas projection",
       "active-session HUD",
       "generic screen projection",
-      "Session Select slot-card projection",
+      "Session Select slot cards",
       "DOM action binding",
       "hard-coded collect clear and next-phase binding",
       "read-only roster and inventory cards",
@@ -149,7 +149,7 @@
     "game-host-diagnostics-kit": [
       "raw engine handle",
       "aggregate snapshot readback",
-      "unrestricted manual tick hook"
+      "unrestricted manual tick"
     ],
     "proof-deploy-kits": [
       "entry-to-play smoke",
@@ -157,6 +157,23 @@
       "static dist copy",
       "Pages test-build-deploy chain"
     ]
+  },
+  "gatewaySurface": {
+    "publicGateway": "missing",
+    "publicCommandEnvelope": "missing",
+    "registryRevision": "missing",
+    "lifecycleAdmission": "missing",
+    "routeAdmission": "missing",
+    "targetAdmission": "missing",
+    "bindingIdentity": "missing",
+    "domResultRetention": "missing",
+    "renderAcknowledgement": "missing",
+    "internalCommandPolicy": "missing",
+    "debugLease": "missing",
+    "rawEngineQuarantine": "missing",
+    "manualTickExclusion": "missing",
+    "gatewayJournal": "missing",
+    "fixtureGate": "missing"
   },
   "capabilitySurface": {
     "supportedPublic": [
@@ -179,48 +196,32 @@
       "screen-select",
       "screen-set-field"
     ],
-    "internalBypassable": [
+    "internalDebugBypassable": [
       "resource-ledger-api",
       "pressure-field-api",
       "raw-engine-command",
       "manual-tick"
-    ],
-    "registry": "missing",
-    "registryRevision": "missing",
-    "ownerBindingValidation": "missing",
-    "lifecycleAdmission": "missing",
-    "routeAdmission": "missing",
-    "movementBinding": "missing",
-    "accessibleMovementFallback": "missing",
-    "collectibleReachabilityProof": "missing",
-    "hireBinding": "missing",
-    "equipBinding": "missing",
-    "equipTargetAdmission": "accepts unknown item ids",
-    "unsupportedMarketPolicy": "missing",
-    "disabledReasonProjection": "missing",
-    "domResultRetention": "missing",
-    "renderAcknowledgement": "missing",
-    "fixtureGate": "missing"
+    ]
   },
-  "proposedCapabilityKits": [
-    "zombie-orchard-capability-reachability-authority-domain",
+  "proposedGatewayKits": [
+    "zombie-orchard-public-capability-gateway-domain",
     "capability-descriptor-kit",
     "capability-registry-kit",
-    "capability-owner-binding-kit",
+    "public-command-envelope-kit",
+    "capability-gateway-kit",
     "capability-lifecycle-admission-kit",
     "capability-route-admission-kit",
-    "capability-input-binding-kit",
-    "movement-input-adapter-kit",
-    "collectible-reachability-kit",
-    "roster-hire-binding-kit",
-    "inventory-equip-binding-kit",
-    "target-admission-kit",
-    "unsupported-capability-policy-kit",
+    "capability-target-admission-kit",
+    "input-binding-registry-kit",
+    "command-result-retention-kit",
     "disabled-affordance-projection-kit",
-    "capability-command-result-kit",
-    "capability-observation-kit",
-    "capability-render-ack-kit",
-    "capability-reachability-fixture-kit"
+    "render-result-acknowledgement-kit",
+    "internal-command-policy-kit",
+    "debug-control-lease-kit",
+    "diagnostics-observation-kit",
+    "raw-engine-quarantine-kit",
+    "capability-gateway-journal-kit",
+    "capability-gateway-fixture-kit"
   ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
@@ -233,8 +234,7 @@
     "npmBuildRun": false,
     "fixtureRun": false,
     "browserSmokeRun": false,
-    "localCloneAttempt": "failed because container could not resolve github.com",
-    "centralLedgerSynchronized": true,
-    "centralChangeLogAdded": true
+    "centralLedgerSynchronized": false,
+    "centralChangeLogAdded": false
   }
 }
