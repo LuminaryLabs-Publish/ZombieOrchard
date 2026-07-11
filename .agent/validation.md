@@ -6,135 +6,125 @@ This was a documentation-only audit. Runtime source, dependencies, package scrip
 
 ## Plan ledger
 
-**Goal:** record the inspected surfaces, source-backed transaction findings, documentation changes and missing proof without overstating validation.
+**Goal:** record the inspected surfaces, source-backed capability findings, documentation changes and missing proof without overstating validation.
 
-- [x] Re-read `src/boot.js`.
-- [x] Re-read `src/start.js`.
-- [x] Re-read `src/game.js`.
 - [x] Re-read `src/kits/runtime.js`.
 - [x] Re-read `src/kits/scoped-interface-domains.js`.
 - [x] Re-read `src/kits/composition.js`.
 - [x] Re-read `src/kits/game-domains.js`.
 - [x] Re-read `src/presets/orchard-preset.js`.
 - [x] Re-read `src/renderer/html-interface-renderer.js`.
-- [x] Re-read `src/renderer/world-canvas.js`.
-- [x] Re-read `tests/smoke.mjs`.
-- [x] Re-read `package.json` and `index.html`.
-- [x] Trace Construction -> Storage Shed from DOM click through parent and child dispatch.
-- [x] Confirm nested publication, child-result loss, false parent success, target fallback and missing rollback/correlation.
+- [x] Re-read `package.json`.
+- [x] Re-read current root `.agent` state.
+- [x] Compare all current Publish repositories against the central ledger.
+- [x] Trace movement, collect, clear, phase, build, market, hire, equip and Session Select reachability.
+- [x] Confirm missing registry, bindings, disabled-state truth, result projection and fixture proof.
 - [x] Update root `.agent` state and add timestamped audits.
 - [x] Push only to `main`.
 - [x] Create no branch or pull request.
-- [x] Complete central ledger and internal change-log synchronization.
-- [ ] Runtime transaction implementation remains future work.
+- [ ] Runtime capability implementation remains future work.
 
 ## Source-backed findings
 
 ```txt
-src/renderer/html-interface-renderer.js
-  -> delegated click calls engine.command(interface-composition, activate)
-  -> command result is not projected to the caller or UI
+src/kits/runtime.js
+  -> commands are routed by domain ID and type without capability admission
+  -> every public command publishes
+  -> raw domain commands remain callable through exposed engine
 
 src/kits/scoped-interface-domains.js
-  -> activate returns an action descriptor
-  -> action request event has no command or transaction identity
-
-src/kits/composition.js
-  -> dispatches child command through ctx.engine.command
-  -> does not retain the child result
-  -> evaluates route movement independently
-  -> returns parent success without child evidence
-
-src/kits/runtime.js
-  -> every public command notifies subscribers
-  -> nested public dispatch therefore publishes before parent completion
-  -> outer command publishes again
-  -> no internal non-publishing dispatch path exists
-  -> no command IDs, journal, transaction context or state fingerprints exist
+  -> actions contain static disabled flags
+  -> activate resolves by action ID or selected index
+  -> select and set-field services exist without shipped bindings
+  -> snapshots expose static action descriptors
 
 src/kits/game-domains.js
-  -> construction unknown ID falls back to first catalog item
-  -> resource payment returns Boolean only
-  -> resource debit and object creation are not staged/rolled back as one transaction
+  -> active-session move exists
+  -> collect/clear/next-phase exist
+  -> roster hire exists
+  -> inventory equip exists and accepts unknown IDs
+  -> construction unknown IDs fall back to first catalog entry
 
 src/presets/orchard-preset.js
-  -> Storage Shed is the current action that exercises nested child dispatch
+  -> active-session exposes route actions
+  -> Construction exposes Storage Shed
+  -> Market, Roster and Inventory expose only route/back shells
+  -> Session Select has no incoming route
 
-tests/smoke.mjs
-  -> does not exercise construction, child rejection, publication count or rollback
+src/renderer/html-interface-renderer.js
+  -> binds only data-action and active-session data-command
+  -> hard-codes Collect, Clear and Next Phase
+  -> has no movement binding
+  -> Roster and Inventory cards are read-only
+  -> button helper does not project disabled state or reason
+  -> DOM command results are discarded
 ```
 
 ## Current proof surface
 
 ```txt
 npm test
-  -> creates one engine
-  -> verifies Entry
-  -> activates Play
-  -> ticks once
-  -> verifies Active Session
-  -> verifies at least one apple
+  -> create one engine
+  -> verify Entry
+  -> activate Play
+  -> tick once
+  -> verify Active Session
+  -> verify at least one apple
 ```
 
-The smoke test does not prove session lifecycle, pause fidelity, clock parity, capability reachability, command atomicity, child-result propagation, single publication, rollback, replay or persistence.
+The current smoke does not prove that a user can move, deliberately reach an apple, hire, equip, receive a rejected result, see a truthful unsupported state or correlate a capability projection with a rendered frame.
 
-## Required DOM-free transaction fixture matrix
+## Required DOM-free capability fixture matrix
 
 ```txt
-valid shed build
-  -> accepted parent
-  -> accepted child
-  -> one resource debit
-  -> one built object
-  -> one publication
+registry completeness
+  -> every public capability resolves to one owner command
+  -> no duplicate capability IDs
+  -> unsupported/dormant/internal states are explicit
 
-insufficient resources
-  -> rejected child reason retained
-  -> rejected parent
-  -> no resource mutation
-  -> no built object
-  -> one publication
+binding completeness
+  -> every supported public capability has a shipped input binding
+  -> move has keyboard and accessible fallback
+  -> raw diagnostics do not count as public binding
 
-unknown build id
-  -> typed target rejection
-  -> no first-item fallback
+movement and collection
+  -> admitted move changes position
+  -> deliberate movement reaches a known apple
+  -> collect commits target/resource/score effects
+  -> out-of-range collect returns typed rejection
 
-missing child domain
-  -> parent rejected
-  -> route unchanged
-  -> state fingerprint unchanged
+roster and inventory
+  -> valid hire commits debit and actor
+  -> insufficient funds rejects without mutation
+  -> known equip succeeds
+  -> unknown equip rejects without mutation
 
-child throws after staged debit
-  -> rollback restores resource and construction fingerprints
+presentation truth
+  -> Market is unsupported/disabled
+  -> Session Select is dormant
+  -> rendered disabled state and reason match registry state
 
-command plus route / child accepted
-  -> child and route commit atomically
-
-command plus route / child rejected
-  -> route unchanged
-
-duplicate commandId
-  -> one committed effect
-  -> stable replayed result
-
-stale session or epoch
-  -> typed rejection
-  -> no mutation
-
-accepted/rejected/rolled-back cases
-  -> exactly one subscriber notification each
-  -> no intermediate partial snapshot
+result proof
+  -> DOM adapter retains accepted and rejected results
+  -> capability, binding, command, session and tick identities correlate
 ```
 
 ## Required browser fixture
 
 ```txt
-click Storage Shed
-  -> one visible debit/build transition
-  -> one command result observation
-  -> one committed fingerprint
-  -> first rendered frame acknowledges the same transaction
+fresh run
+  -> move through orchard
+  -> collect known apple
+  -> observe accepted result and resource update
+  -> observe truthful Roster/Inventory controls
+  -> observe Market unsupported state
+  -> observe Session Select dormant state
+  -> first rendered frame acknowledges registry revision and command result
 ```
+
+## Attempted validation
+
+A local clone/test attempt could not run because the execution container could not resolve `github.com`. This was an environment/network failure, not a repository test failure.
 
 ## Validation result
 
@@ -149,12 +139,13 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-transaction fixture: unavailable / not run
-publication-count fixture: unavailable / not run
-rollback fixture: unavailable / not run
+capability registry fixture: unavailable / not run
+movement/reachability fixture: unavailable / not run
+hire/equip fixture: unavailable / not run
+affordance truth fixture: unavailable / not run
 render-correlation fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger updated on main: yes
-central internal change log added: yes
+central ledger update: pending until central write completes
+central internal change log: pending until central write completes
 ```
