@@ -1,19 +1,20 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-10T23-50-53-04-00",
+  "updatedAt": "2026-07-11T01-31-15-04-00",
   "currentNextSafeLedge": "ZombieOrchard Runtime Session Instance Authority + Start/Reset/Title/Outcome Fidelity Fixture Gate",
   "secondaryNextSafeLedge": "ZombieOrchard Fixed-Step Clock Authority + Pause/30-60-120 Hz Parity Fixture Gate",
   "tertiaryNextSafeLedge": "ZombieOrchard Interaction Capability Reachability + Movement/Service-Binding Fixture Gate",
-  "quaternaryNextSafeLedge": "ZombieOrchard Seeded Random and Replay Authority + Apple/Pest Determinism Fixture Gate",
-  "latestTracker": ".agent/trackers/2026-07-10T23-50-53-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T23-50-53-04-00.md",
-  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T23-50-53-04-00-random-source-replay-authority-dsk-map.md",
-  "latestRenderAudit": ".agent/render-audit/2026-07-10T23-50-53-04-00-random-state-frame-provenance-gap.md",
-  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T23-50-53-04-00-apple-pest-seed-replay-loop.md",
-  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T23-50-53-04-00-command-random-outcome-correlation-map.md",
-  "latestRandomnessAudit": ".agent/randomness-audit/2026-07-10T23-50-53-04-00-seeded-rng-deterministic-replay-contract.md",
-  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T23-50-53-04-00-seed-replay-parity-fixture-gate.md",
-  "previousTracker": ".agent/trackers/2026-07-10T22-11-24-04-00/project-breakdown.md",
+  "quaternaryNextSafeLedge": "ZombieOrchard Composite Command Transaction Authority + Parent/Child Result and Single-Publication Fixture Gate",
+  "quinaryNextSafeLedge": "ZombieOrchard Seeded Random and Replay Authority + Apple/Pest Determinism Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-11T01-31-15-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-11T01-31-15-04-00.md",
+  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-11T01-31-15-04-00-command-transaction-authority-dsk-map.md",
+  "latestRenderAudit": ".agent/render-audit/2026-07-11T01-31-15-04-00-command-commit-render-correlation-gap.md",
+  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-11T01-31-15-04-00-build-hire-equip-transaction-loop.md",
+  "latestInteractionAudit": ".agent/interaction-audit/2026-07-11T01-31-15-04-00-parent-child-command-result-map.md",
+  "latestCommandTransactionAudit": ".agent/command-transaction-audit/2026-07-11T01-31-15-04-00-nested-command-atomicity-contract.md",
+  "latestDeployAudit": ".agent/deploy-audit/2026-07-11T01-31-15-04-00-command-transaction-fixture-gate.md",
+  "previousTracker": ".agent/trackers/2026-07-10T23-50-53-04-00/project-breakdown.md",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
@@ -67,6 +68,19 @@
     "capability-result-projection-kit",
     "capability-reachability-fixture-kit"
   ],
+  "proposedCommandTransactionKits": [
+    "command-envelope-kit",
+    "command-sequence-kit",
+    "composite-command-transaction-kit",
+    "child-command-result-kit",
+    "command-result-envelope-kit",
+    "command-publication-barrier-kit",
+    "command-rollback-kit",
+    "resource-transaction-result-kit",
+    "command-journal-kit",
+    "render-command-correlation-kit",
+    "command-transaction-fixture-kit"
+  ],
   "proposedRandomnessKits": [
     "seeded-random-source-kit",
     "random-stream-partition-kit",
@@ -84,6 +98,7 @@
       "tick routing",
       "ephemeral event emission",
       "snapshot aggregation",
+      "subscriber registration",
       "subscriber notification"
     ],
     "scoped-interface-domain-kit": [
@@ -92,6 +107,7 @@
       "selection",
       "field mutation",
       "action activation",
+      "disabled action rejection",
       "screen snapshot"
     ],
     "interface-composition-kit": [
@@ -123,6 +139,7 @@
     ],
     "construction-runtime-kit": [
       "build catalog",
+      "catalog lookup with first-item fallback",
       "resource payment",
       "built object creation",
       "status message"
@@ -137,7 +154,7 @@
     "inventory-runtime-kit": [
       "inventory item state",
       "equipment state",
-      "equip command"
+      "unvalidated equip command"
     ],
     "active-session-domain-kit": [
       "movement",
@@ -171,6 +188,27 @@
       "Pages test-build-deploy chain"
     ]
   },
+  "commandTransaction": {
+    "parentOwner": "interface-composition-kit",
+    "childDispatchPath": "ctx.engine.command",
+    "childResultPropagation": "missing",
+    "commandId": "missing",
+    "transactionId": "missing",
+    "preflight": "missing",
+    "singlePublicationBarrier": "missing",
+    "rollback": "missing",
+    "journal": "missing",
+    "renderCorrelation": "missing",
+    "knownRisks": [
+      "child notification before parent completion",
+      "outer notification after parent completion",
+      "parent accepted result can hide child rejection",
+      "child mutation can precede route failure",
+      "boolean resource payment lacks attribution",
+      "unknown construction target falls back to first catalog item",
+      "unknown equipment id is accepted"
+    ]
+  },
   "randomConsumption": {
     "orchard-world": [
       "apple tree index",
@@ -198,9 +236,11 @@
     "Simulation advances one fixed step per requestAnimationFrame.",
     "No stop or disposal contract exists.",
     "Movement and several implemented services remain unbound.",
+    "Nested child commands can publish before parent completion.",
+    "Interface composition discards child command results.",
+    "No command sequence, transaction, commit barrier, rollback or command journal exists.",
     "Apple and pest generation consume global Math.random directly.",
-    "No seed, stream state, draw index, random decision row, replay ledger, or state fingerprint exists.",
-    "No session, clock, capability, seed, or replay proof fixtures exist."
+    "No session, clock, capability, command transaction, seed or replay proof fixtures exist."
   ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
