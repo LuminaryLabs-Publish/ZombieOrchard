@@ -16,7 +16,7 @@
 
 ```txt
 1. Runtime Session Instance Authority
-   + Start / Reset / Title / Outcome Fidelity Fixture Gate
+   + Start / New Run / Title / Outcome / Dispose Fixture Gate
 
 2. Fixed-Step Clock Authority
    + Pause / 30-60-120 Hz / Stall / Manual-Step Fixture Gate
@@ -36,94 +36,161 @@
 
 ## Gate 1 — Runtime session instance authority
 
-1. Add one runtime owner for lifecycle, current session, RAF, listeners, renderers, `GameHost` and bounded journals.
-2. Add runtime/session IDs, epochs, preset revision and lifecycle state.
-3. Construct fresh graphs off-line and atomically transfer authority.
-4. Convert Play, New Game, Start, Pause, Resume, Title and Outcome into admitted lifecycle commands.
-5. Retain/cancel RAF and dispose listeners, renderers and globals idempotently.
-6. Publish session identity to the clock.
+### 1. Add the parent owner
+
+Create:
+
+```txt
+zombie-orchard-runtime-session-instance-authority-domain
+```
+
+It must own:
+
+```txt
+runtimeId
+sessionId
+sessionEpoch
+lifecycleState
+lifecycleRevision
+graphRevision
+current graph authority
+RAF lease
+listener leases
+renderer owners
+public-host lease
+cleanup stack
+bounded lifecycle journal
+```
+
+### 2. Replace module-level implicit startup
+
+Move browser setup behind a typed `RuntimeStartCommand`.
+
+```txt
+UNINITIALIZED
+  -> BOOTING
+  -> validate roots and preset
+  -> construct graph off-line
+  -> construct renderer owners
+  -> register cleanup leases
+  -> publish revocable host
+  -> retain one RAF request
+  -> TITLE or RUNNING
+```
+
+Every acquisition must add a reverse cleanup entry before the next stage.
+
+### 3. Add fresh-run construction
+
+`NewGameCommand` and restart must construct a new graph rather than route the current graph.
+
+A fresh graph must reset:
+
+```txt
+resources
+pressure
+orchard apples and future random stream
+construction
+roster
+inventory
+active-session player/day/phase/pests/score/message/ended
+screen fields and selected indices
+composition active/previous state
+```
+
+### 4. Define lifecycle commands
+
+```txt
+RuntimeStartCommand
+NewGameCommand
+PauseCommand
+ResumeCommand
+ReturnToTitleCommand
+OutcomeCommand
+RestartCommand
+RuntimeDisposeCommand
+```
+
+Each command must include runtime/session/epoch and observed lifecycle revision. Results must classify committed, rejected, no-op, failed or rolled back.
+
+### 5. Define Title retention policy
+
+Returning to Title must explicitly choose one policy:
+
+```txt
+retain resumable session
+retire current session
+replace current session
+```
+
+The policy must not be inferred from the interface route.
+
+### 6. Add authority transfer
+
+```txt
+prepare new graph and resources
+  -> validate required domains
+  -> fence old callbacks
+  -> stop old mutation authority
+  -> transfer input/clock/render/public-host authority atomically
+  -> publish new session descriptor
+  -> dispose old session idempotently
+```
+
+### 7. Retain and dispose page resources
+
+Retain the RAF request ID and generation token. Return removable delegated-listener leases. Add renderer `dispose()` methods. Replace the permanent raw `window.GameHost` object with a revocable lease exposing clone-safe observation and admitted commands.
+
+### 8. Add startup rollback and disposal
+
+Required order:
+
+```txt
+reject new commands
+cancel RAF
+retire listeners
+revoke GameHost
+unsubscribe runtime listeners
+dispose render owners
+retire clock/session journals
+fence graph generation
+release graph/snapshot references
+publish stable DISPOSED result
+```
+
+Disposal must be idempotent and return cleanup rows.
+
+### 9. Add Gate 1 fixtures
+
+```txt
+fresh startup
+double-start rejection
+New Game fresh-state parity
+pause/resume session preservation
+Title retain-or-retire policy
+terminal retirement
+old-session command rejection
+stale RAF callback rejection
+listener removal
+GameHost revocation
+startup failure rollback
+double-dispose idempotence
+zero post-disposal mutation
+session/frame correlation
+```
 
 ## Gate 2 — Fixed-step clock authority
 
-1. Replace one fixed step per RAF with a wall-time accumulator.
-2. Define `fixedStep`, `maxFrameDelta`, `maxCatchupSteps` and dropped/deferred-time policy.
-3. Add monotonic `simulationTickId`, independent `renderFrameId` and `clockRevision`.
-4. Tick only lifecycle-admitted domains.
-5. Render once from the latest committed tick after zero or more updates.
-6. Reject manual stepping while the automatic clock owns mutation authority.
-7. Allow deterministic manual stepping only through an explicit debug lease.
-8. Reset accumulator and wall-time baseline on pause, visibility resume and session handoff.
-9. Publish typed overrun, pause, resume and manual-step results.
+1. Consume `sessionId`, `sessionEpoch` and lifecycle state from Gate 1.
+2. Replace one fixed step per RAF with a wall-time accumulator.
+3. Define `fixedStep`, `maxFrameDelta`, `maxCatchupSteps` and dropped/deferred-time policy.
+4. Add monotonic `simulationTickId`, independent `renderFrameId` and `clockRevision`.
+5. Tick only lifecycle-admitted domains.
+6. Render once from the latest committed tick after zero or more updates.
+7. Reject manual stepping while the automatic clock owns mutation authority.
+8. Allow deterministic manual stepping only through an explicit debug lease.
+9. Reset accumulator and wall-time baseline on pause, visibility resume and session handoff.
 10. Correlate each rendered frame with session, tick, clock revision and state fingerprint.
-
-### Required clock descriptor
-
-```txt
-clockId
-sessionId
-sessionEpoch
-clockRevision
-fixedStepSeconds
-maxFrameDeltaSeconds
-maxCatchupSteps
-pausePolicy
-visibilityResumePolicy
-droppedTimePolicy
-mode: automatic | manual | stopped
-```
-
-### Required committed-tick receipt
-
-```txt
-sessionId
-sessionEpoch
-clockRevision
-simulationTickId
-fixedStepSeconds
-commandSequenceRange
-events[]
-stateFingerprint
-```
-
-### Required render-frame receipt
-
-```txt
-renderFrameId
-sessionId
-sessionEpoch
-clockRevision
-latestSimulationTickId
-stateFingerprint
-worldRendered
-interfaceRendered
-```
-
-### Clock fixture matrix
-
-```txt
-30 Hz, 60 Hz and 120 Hz for 10 wall seconds
-  -> identical committed tick count
-  -> identical pressure changes
-  -> identical deterministic gameplay once seeded randomness exists
-
-pause for 5 wall seconds
-  -> zero gameplay ticks
-  -> no catch-up burst on resume
-
-2 second stall
-  -> bounded catch-up steps
-  -> explicit deferred/dropped-time result
-
-manual step during automatic mode
-  -> rejected without mutation
-
-manual mode step
-  -> exactly one committed tick and one receipt
-
-terminal state
-  -> exactly-once finalization
-  -> no post-terminal gameplay ticks
-```
 
 ## Gate 3 — Public capability gateway
 
@@ -145,12 +212,11 @@ terminal state
 
 1. Inject session-owned random streams and record decisions for replay.
 2. Define a versioned save envelope with staged restore, migration, commit and rollback.
-3. Consume committed tick and state fingerprint identities from the clock.
+3. Consume session, committed tick and state fingerprint identities from earlier gates.
 
 ## Next safe ledge
 
 ```txt
 ZombieOrchard Runtime Session Instance Authority
-+ Fixed-Step Clock Authority
-+ Start / Pause / 30-60-120 Hz Fidelity Fixture Gate
++ Start / New Run / Title / Outcome / Dispose Fixture Gate
 ```
