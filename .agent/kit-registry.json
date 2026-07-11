@@ -1,7 +1,7 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-11T15-20-27-04-00",
-  "status": "fixed-step-clock-authority-audited",
+  "updatedAt": "2026-07-11T17-01-11-04-00",
+  "status": "seeded-random-replay-authority-audited",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
@@ -18,14 +18,14 @@
     "Versioned Save / Load Authority"
   ],
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-11T15-20-27-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-11T15-20-27-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-11T15-20-27-04-00-fixed-step-clock-authority-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-11T15-20-27-04-00-simulation-tick-render-frame-correlation-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T15-20-27-04-00-raf-cadence-pressure-pest-speed-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-11T15-20-27-04-00-pause-manual-step-clock-admission-map.md",
-    "clockAudit": ".agent/clock-authority-audit/2026-07-11T15-20-27-04-00-wall-time-accumulator-catchup-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-11T15-20-27-04-00-cadence-parity-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-11T17-01-11-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-11T17-01-11-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-11T17-01-11-04-00-seeded-random-replay-authority-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-11T17-01-11-04-00-random-decision-frame-correlation-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T17-01-11-04-00-apple-collection-pest-spawn-rng-coupling-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-11T17-01-11-04-00-command-tick-random-receipt-map.md",
+    "randomReplayAudit": ".agent/random-replay-audit/2026-07-11T17-01-11-04-00-seed-stream-cursor-replay-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-11T17-01-11-04-00-random-replay-determinism-fixture-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -57,55 +57,45 @@
     "pages-deploy-kit"
   ],
   "services": {
-    "kit-runtime": ["registration", "domain creation", "commands", "delta clamp", "elapsed/frame mutation", "all-domain ticks", "events", "snapshots", "subscriptions", "publication"],
+    "kit-runtime": ["registration", "domain creation", "commands", "ticks", "events", "snapshots", "subscriptions", "publication"],
     "interface-kits": ["screen state", "actions", "selection", "fields", "activation", "routing", "nested dispatch", "automatic Outcome routing"],
-    "game-kits": ["resources", "pressure", "trees and apples", "collection", "construction", "hiring", "equipment", "movement", "phases", "pests", "damage", "score", "failure"],
+    "game-kits": ["resources", "pressure", "trees and apples", "random apple population", "collection refill", "construction", "hiring", "equipment", "movement", "phases", "random pest admission and placement", "damage", "score", "failure"],
     "render-kits": ["orchard canvas", "HUD", "generic screen HTML", "delegated bindings", "per-frame DOM replacement"],
     "diagnostics-proof-deploy": ["raw engine", "snapshot readback", "manual tick", "Entry-to-Play smoke", "apple proof", "static copy", "Pages chain"]
   },
-  "clockSurface": {
-    "rafDeltaSource": "constant 1/60 per callback",
-    "rafTimestampConsumed": false,
-    "wallTimeBaseline": "missing",
-    "wallTimeAccumulator": "missing",
-    "fixedStepDescriptor": "missing",
-    "simulationTickId": "missing",
-    "renderFrameId": "missing",
-    "clockRevision": "missing",
-    "catchupStepLimit": "missing",
-    "overrunPolicy": "missing",
-    "droppedOrDeferredTimeResult": "missing",
-    "lifecycleTickAdmission": "missing",
-    "pauseBarrier": "missing",
-    "visibilityResumePolicy": "missing",
-    "manualAutomaticExclusion": "missing",
-    "committedTickReceipt": "missing",
-    "renderFrameClockAcknowledgement": "missing"
+  "randomSurface": {
+    "source": "process-global Math.random",
+    "runSeed": "missing",
+    "randomPolicyVersion": "missing",
+    "namedStreams": "missing",
+    "streamCursors": "missing",
+    "deterministicEntityIds": "missing",
+    "randomDecisionReceipts": "missing",
+    "replayJournal": "missing",
+    "durableStateFingerprint": "missing",
+    "applePestStreamIsolation": false,
+    "saveRestoreRandomContinuation": "missing"
   },
-  "proposedClockKits": [
-    "zombie-orchard-fixed-step-clock-authority-domain",
-    "clock-descriptor-kit",
-    "monotonic-wall-time-sample-kit",
-    "wall-time-baseline-kit",
-    "fixed-step-accumulator-kit",
-    "lifecycle-tick-admission-kit",
-    "simulation-tick-id-kit",
-    "simulation-tick-result-kit",
-    "clock-catchup-budget-kit",
-    "clock-overrun-policy-kit",
-    "dropped-time-result-kit",
-    "pause-clock-barrier-kit",
-    "visibility-resume-policy-kit",
-    "automatic-tick-lease-kit",
-    "manual-step-command-kit",
-    "manual-automatic-exclusion-kit",
-    "render-frame-id-kit",
-    "committed-tick-receipt-kit",
-    "render-frame-clock-ack-kit",
-    "clock-observation-kit",
-    "clock-journal-kit",
-    "cadence-parity-fixture-kit",
-    "pause-stall-manual-step-fixture-kit"
+  "proposedRandomReplayKits": [
+    "zombie-orchard-seeded-random-replay-authority-domain",
+    "run-seed-descriptor-kit",
+    "deterministic-prng-kit",
+    "random-stream-registry-kit",
+    "random-stream-id-kit",
+    "random-cursor-kit",
+    "random-draw-result-kit",
+    "apple-generation-policy-kit",
+    "pest-spawn-policy-kit",
+    "deterministic-entity-id-kit",
+    "committed-tick-random-receipt-kit",
+    "replay-command-envelope-kit",
+    "replay-journal-kit",
+    "replay-state-fingerprint-kit",
+    "replay-verifier-kit",
+    "random-stream-snapshot-kit",
+    "stale-replay-rejection-kit",
+    "apple-pest-determinism-fixture-kit",
+    "replay-parity-fixture-kit"
   ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
@@ -118,7 +108,7 @@
     "npmBuildRun": false,
     "fixtureRun": false,
     "browserSmokeRun": false,
-    "centralLedgerSynchronized": true,
-    "centralChangeLogAdded": true
+    "centralLedgerSynchronized": false,
+    "centralChangeLogAdded": false
   }
 }
