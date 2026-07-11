@@ -8,8 +8,8 @@ status: seeded-random-replay-authority-audited
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: pending until central commit
-central internal change log: pending until central commit
+central ledger sync: complete
+central internal change log: complete
 ```
 
 ## Summary
@@ -29,6 +29,7 @@ central internal change log: pending until central commit
 - [x] Define independent streams, cursors, deterministic entity identity and replay receipts.
 - [x] Add architecture, render, gameplay, interaction, random/replay and deploy audits.
 - [x] Push documentation only to `main` without a branch or pull request.
+- [x] Synchronize the central ledger and internal change log.
 - [ ] Implement prerequisite runtime-session, fixed-step clock and transaction authorities.
 - [ ] Implement and run random/replay fixtures.
 
