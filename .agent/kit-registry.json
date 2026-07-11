@@ -1,16 +1,16 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-11T12-01-38-04-00",
-  "status": "fixed-step-clock-cadence-pause-manual-tick-authority-audited",
+  "updatedAt": "2026-07-11T13-41-23-04-00",
+  "status": "runtime-session-instance-authority-audited",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
     "accessibleRepositoryCount": 10,
     "eligibleRepositoryCount": 9,
-    "reason": "oldest eligible central review timestamp after concurrent PhantomCommand documentation refresh"
+    "reason": "oldest eligible central review timestamp after the PhantomCommand refresh"
   },
   "safeLedges": [
-    "ZombieOrchard Runtime Session Instance Authority + Start / Reset / Title / Outcome Fidelity Fixture Gate",
+    "ZombieOrchard Runtime Session Instance Authority + Start / New Run / Title / Outcome / Dispose Fixture Gate",
     "ZombieOrchard Fixed-Step Clock Authority + Pause / 30-60-120 Hz / Stall / Manual-Step Fixture Gate",
     "ZombieOrchard Public Capability Gateway and Reachability + Registry / Binding / Diagnostics-Quarantine Fixture Gate",
     "ZombieOrchard Composite Command Transaction Authority + Parent / Child Result and Single-Publication Fixture Gate",
@@ -18,14 +18,14 @@
     "ZombieOrchard Versioned Save / Load Authority + Slot Roundtrip and Atomic Load Fixture Gate"
   ],
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-11T12-01-38-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-11T12-01-38-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-11T12-01-38-04-00-fixed-step-clock-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-11T12-01-38-04-00-render-frame-simulation-tick-identity-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T12-01-38-04-00-raf-cadence-orchard-speed-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-11T12-01-38-04-00-automatic-manual-tick-admission-map.md",
-    "clockAudit": ".agent/clock-audit/2026-07-11T12-01-38-04-00-accumulator-catchup-pause-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-11T12-01-38-04-00-clock-cadence-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-11T13-41-23-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-11T13-41-23-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-11T13-41-23-04-00-runtime-session-instance-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-11T13-41-23-04-00-session-frame-resource-correlation-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T13-41-23-04-00-start-reset-title-outcome-reuse-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-11T13-41-23-04-00-lifecycle-command-session-admission-map.md",
+    "lifecycleAudit": ".agent/lifecycle-audit/2026-07-11T13-41-23-04-00-runtime-graph-raf-listener-dispose-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-11T13-41-23-04-00-runtime-session-lifecycle-fixture-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -111,6 +111,60 @@
       "Pages test-build-deploy chain"
     ]
   },
+  "runtimeSessionSurface": {
+    "runtimeId": "missing",
+    "sessionId": "missing",
+    "sessionEpoch": "missing",
+    "lifecycleState": "missing",
+    "lifecycleRevision": "missing",
+    "graphRevision": "missing",
+    "freshRunConstruction": "missing",
+    "startupTransaction": "missing",
+    "startupRollback": "missing",
+    "authorityTransfer": "missing",
+    "rafLease": "missing",
+    "listenerLease": "missing",
+    "rendererDispose": "missing",
+    "publicHostLease": "missing",
+    "orderedDispose": "missing",
+    "sessionFrameReceipt": "missing"
+  },
+  "proposedRuntimeSessionKits": [
+    "zombie-orchard-runtime-session-instance-authority-domain",
+    "runtime-id-kit",
+    "session-id-kit",
+    "session-epoch-kit",
+    "preset-revision-kit",
+    "runtime-revision-kit",
+    "lifecycle-state-kit",
+    "runtime-start-command-kit",
+    "new-run-command-kit",
+    "pause-command-kit",
+    "resume-command-kit",
+    "title-command-kit",
+    "outcome-command-kit",
+    "runtime-dispose-command-kit",
+    "lifecycle-admission-kit",
+    "graph-construction-plan-kit",
+    "runtime-startup-transaction-kit",
+    "session-checkpoint-kit",
+    "authority-transfer-kit",
+    "startup-rollback-kit",
+    "old-session-retirement-kit",
+    "animation-frame-lease-kit",
+    "delegated-listener-lease-kit",
+    "subscription-lease-kit",
+    "renderer-resource-owner-kit",
+    "public-host-lease-kit",
+    "runtime-cleanup-stack-kit",
+    "ordered-runtime-dispose-kit",
+    "lifecycle-result-kit",
+    "lifecycle-journal-kit",
+    "lifecycle-observation-kit",
+    "session-descriptor-kit",
+    "session-frame-correlation-kit",
+    "runtime-session-fixture-kit"
+  ],
   "clockSurface": {
     "rafDeltaSource": "constant 1/60 per callback",
     "wallTimeAccumulator": "missing",
@@ -159,7 +213,7 @@
     "npmBuildRun": false,
     "fixtureRun": false,
     "browserSmokeRun": false,
-    "centralLedgerSynchronized": true,
-    "centralChangeLogAdded": true
+    "centralLedgerSynchronized": false,
+    "centralChangeLogAdded": false
   }
 }
