@@ -25,8 +25,8 @@ This was a documentation-only audit. Runtime source, dependencies, package scrip
 - [x] Update root `.agent` state and add timestamped audits.
 - [x] Push only to `main`.
 - [x] Create no branch or pull request.
+- [x] Complete central ledger and internal change-log synchronization.
 - [ ] Runtime session implementation remains future work.
-- [ ] Central ledger synchronization remains pending until the central write completes.
 
 ## Source-backed findings
 
@@ -124,5 +124,6 @@ reset fixture: unavailable / not run
 disposal fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger updated on main: pending
+central ledger updated on main: yes
+central internal change log added: yes
 ```
