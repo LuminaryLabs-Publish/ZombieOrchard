@@ -6,19 +6,20 @@ This was a documentation-only fixed-step clock authority audit. Runtime source, 
 
 ## Plan ledger
 
-**Goal:** record source-backed timing findings and the exact proof required before cadence-independent simulation, authoritative pause, bounded stall recovery, manual stepping or tick/render-correlation claims are made.
+**Goal:** record source-backed timing findings and the proof required before cadence-independent simulation, authoritative pause, bounded stall recovery, manual stepping or tick/render-correlation claims are made.
 
 - [x] Read the current runtime-session audit and dependency order.
 - [x] Read `src/start.js`, `src/game.js`, `src/kits/runtime.js` and `src/kits/game-domains.js`.
 - [x] Confirm one hard-coded `1 / 60` tick is executed per RAF callback.
 - [x] Confirm the RAF timestamp is ignored.
-- [x] Confirm runtime delta is clamped and applied once per tick call without an accumulator.
+- [x] Confirm runtime delta is applied once per tick call without an accumulator.
 - [x] Confirm pressure, pest spawn, pursuit and damage consume caller delta.
 - [x] Confirm Pause and Title do not stop runtime ticking.
 - [x] Confirm `GameHost.tick(dt)` provides unrestricted competing mutation authority.
 - [x] Confirm snapshots lack runtime/session/tick/render provenance.
 - [x] Update root `.agent` state and add timestamped audits.
 - [x] Push directly to `main` without a branch or pull request.
+- [x] Synchronize the central ledger and internal change log.
 - [ ] Implement the runtime-session prerequisite.
 - [ ] Implement and run fixed-step clock fixtures.
 
@@ -60,7 +61,7 @@ npm test
 
 This does not prove wall-time sampling, cadence parity, pause freeze, visibility resume, catch-up budgets, overrun reporting, automatic/manual exclusion or tick/render correlation.
 
-## Required DOM-free clock fixtures
+## Required DOM-free fixtures
 
 ```txt
 30/60/120 Hz equal-wall-time schedule
@@ -70,7 +71,7 @@ This does not prove wall-time sampling, cadence parity, pause freeze, visibility
 
 zero-tick callback
   -> no simulation mutation
-  -> render may acknowledge prior committed tick
+  -> render acknowledges prior committed tick
 
 multi-tick callback
   -> ordered catch-up ticks
@@ -85,7 +86,7 @@ pause and resume
   -> resumed baseline contributes no hidden elapsed time
 
 manual step
-  -> rejected while automatic owner active
+  -> rejected while automatic owner is active
   -> exact step count under exclusive debug lease
 ```
 
@@ -122,8 +123,8 @@ automatic/manual exclusion fixture: unavailable / not run
 tick/render correlation fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: pending during repo-local commit
-central internal change log: pending during repo-local commit
+central ledger update: complete
+central internal change log: complete
 ```
 
 No cadence-independent simulation or authoritative clock claim is made.
