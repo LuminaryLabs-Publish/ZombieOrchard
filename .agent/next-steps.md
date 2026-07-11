@@ -1,115 +1,116 @@
 # Next steps — ZombieOrchard
 
-## Next safe ledge
+## Ordered implementation queue
 
 ```txt
-ZombieOrchard Runtime Session Clock and Lifecycle Authority
-+ Pause/Reset/Refresh-Rate Fixture Gate
+1. ZombieOrchard Runtime Session Clock and Lifecycle Authority
+   + Pause/Reset/Refresh-Rate Fixture Gate
+
+2. ZombieOrchard Interaction Capability Reachability
+   + Movement/Service-Binding Fixture Gate
 ```
 
 ## Goal
 
-Make one explicit runtime session own simulation time, lifecycle state, automatic ticking, pause/resume behavior, reset/start/stop/dispose behavior, and proof readback. The same command/tick scenario must produce equivalent gameplay state under 30, 60, and 120 Hz render schedules.
+Create one explicit runtime session and clock owner first. Then make the intended browser interaction surface match the services actually implemented by the kits. Every public capability must have a declared owner, route, affordance, command binding, typed result, observable state effect, and fixture row.
 
-## Implementation order
+## Gate 1 — lifecycle and clock authority
 
-1. Add a JSON-safe runtime-session state model: `idle`, `starting`, `running`, `paused`, `ended`, `stopping`, `stopped`, `disposed`, and `failed`.
-2. Update `createOrchardGame()` so gameplay session construction or reset is explicit rather than implied by screen creation.
-3. Add one host-owned clock with wall-time accumulation, a fixed simulation delta, a maximum catch-up step count, and a committed simulation tick index.
-4. Replace one-fixed-step-per-RAF behavior with zero or more fixed simulation steps derived from elapsed wall time.
-5. Keep render cadence separate from simulation cadence.
-6. Gate `pressure-field.tick()` and `active-session.tick()` on authoritative session state.
-7. Define exact Pause semantics: no pressure growth, pest spawn, pursuit, damage, phase mutation, or score mutation while paused.
-8. Define New Game as an atomic reset/start transaction that recreates or resets all gameplay domains from the preset.
-9. Define Play as either start/resume according to explicit session state, never as a screen-only transition.
-10. Fix Outcome -> Title by stopping or resetting the ended session before returning to Entry.
-11. Add `start`, `pause`, `resume`, `reset`, `stop`, and `dispose` commands with accepted/rejected/no-op results.
-12. Retain the RAF request ID and cancel it during stop/dispose.
-13. Return a disposer from `createHtmlInterfaceRenderer()` that removes the root click listener.
-14. Add renderer disposal/no-op-after-dispose behavior.
-15. Restrict `GameHost.tick()` to an explicit manual-clock/test mode, or make it reject while automatic clock ownership is active.
-16. Add bounded lifecycle, clock-step, and session-result journals to `GameHost`.
-17. Add a DOM-free session fixture that drives the runtime without RAF.
-18. Prove equivalent committed gameplay fingerprints for 30/60/120 Hz render schedules over equal wall time.
-19. Prove pause freezes all gameplay fingerprints while render frames may continue.
-20. Prove New Game resets resources, pressure, orchard, session, interface, and result journals according to policy.
-21. Prove Outcome -> Title remains at Entry and does not bounce back to Outcome.
-22. Prove repeated start/stop cycles create one clock loop and one click listener only.
-23. Gate `npm test` on lifecycle/clock fixtures before build and Pages deployment.
-24. Compose the existing deterministic scenario authority work beneath session IDs and simulation tick IDs.
-25. Implement Market transaction causality after lifecycle and deterministic scenario proof can observe it reliably.
+1. Add JSON-safe runtime-session states: `idle`, `starting`, `running`, `paused`, `ended`, `stopping`, `stopped`, `disposed`, and `failed`.
+2. Replace one-fixed-step-per-RAF behavior with a host-owned fixed-step accumulator driven by elapsed wall time.
+3. Gate pressure and active-session ticking on authoritative session state.
+4. Define Play, New Game, Pause, Resume, Title, Outcome, Stop, Reset, and Dispose as lifecycle transactions rather than screen-only transitions.
+5. Retain and cancel the RAF request ID.
+6. Return renderer disposers and remove the delegated click listener.
+7. Prevent unrestricted `GameHost.tick()` from racing with automatic clock ownership.
+8. Add DOM-free 30/60/120 Hz, pause, reset, re-entry, start/stop, and disposal fixtures.
+
+## Gate 2 — capability reachability
+
+1. Add a canonical capability registry row for every domain command and service.
+2. Classify each capability as `public-direct`, `public-indirect`, `internal`, `dormant`, or `unsupported`.
+3. Update the existing active-session interaction owner with a browser input adapter for movement.
+4. Support keyboard movement at minimum and expose an accessible on-screen fallback.
+5. Gate movement by authoritative session state so Pause and non-gameplay screens reject it.
+6. Add movement results with accepted/rejected/no-op reasons and resulting player coordinates.
+7. Prove the starting scenario always has a recoverable path to successful collection, independent of random initial proximity.
+8. Decide whether `session-select` is a public route. Link it from Entry or classify it as intentionally dormant.
+9. Render and bind Run Setup and Preferences fields only when they have actual source descriptors.
+10. Wire roster hiring through preset action descriptors and typed results, or classify the service as internal.
+11. Wire inventory equipment through item affordances and typed results, or classify it as internal.
+12. Preserve construction build access but retain and project the nested command result.
+13. Mark Market as unsupported until a real market source/transaction service exists; do not imply operational trading through a Back-only shell.
+14. Propagate action `disabled` metadata to actual disabled controls.
+15. Add a bounded capability/result journal to `GameHost` readback.
+16. Add a DOM-free reachability fixture that fails when a declared public capability lacks a route, affordance, binding, result, or observable effect.
+17. Add browser smoke coverage for movement, successful collection, build, pause rejection, and at least one secondary service.
+18. Gate `npm test` on lifecycle and capability-reachability fixtures before Pages deployment.
 
 ## Domain-update-first map
 
 ```txt
 src/start.js host
-  -> wall-time clock, RAF ownership, lifecycle orchestration, stop/dispose
+  -> lifecycle/clock ownership and browser input adapter lifetime
 
 kit-runtime
-  -> lifecycle state, tick mode, committed simulation tick, reset/dispose routing
-
-interface-composition-kit
-  -> lifecycle-aware Play/New/Pause/Resume/Title/Outcome transitions
-
-pressure-field-kit
-  -> running-state tick guard
+  -> lifecycle state, command metadata, capability registry access, result journal
 
 active-session-domain-kit
-  -> running-state tick guard, explicit reset/start/end semantics
+  -> movement admission, typed movement result, session-state guard
 
-resource/orchard/construction/roster/inventory kits
-  -> reset-from-preset behavior
+scoped-interface-domain-kit
+  -> capability descriptors for select/set-field/activate
+
+interface-composition-kit
+  -> route capability descriptors and nested-result retention
+
+orchard-preset
+  -> explicit public route and affordance declarations
 
 html-interface-render-kit
-  -> removable listener and disposed-state behavior
+  -> keyboard/on-screen movement, disabled controls, field controls,
+     interactive roster/inventory affordances, result projection
 
 world-canvas-render-kit
-  -> disposed-state behavior and render-frame observation
+  -> consumed player-position and committed-state observation
 
 game-host-diagnostics-kit
-  -> bounded lifecycle/clock readback and manual-mode enforcement
+  -> capability catalog, binding status, bounded result rows
 
 smoke-fixture-kit
-  -> session clock, pause, reset, re-entry, and refresh-rate parity gates
+  -> lifecycle parity plus public capability reachability gate
 ```
 
-Only add new kits where no existing owner can reasonably hold the capability:
+Only add new kits where existing owners cannot hold the capability cleanly:
 
 ```txt
 runtime-session-authority-kit
 fixed-step-clock-kit
-runtime-lifecycle-fixture-adapter-kit
-```
-
-The existing proposed deterministic kits remain companion capabilities:
-
-```txt
-deterministic-random-source-kit
-state-fingerprint-kit
-scenario-fixture-adapter-kit
+browser-input-adapter-kit
+capability-registry-kit
+capability-reachability-fixture-kit
 ```
 
 ## Acceptance checklist
 
 ```txt
-[ ] Session states and transition reasons are versioned and JSON-safe.
-[ ] Gameplay domains do not tick before a session starts.
-[ ] Pause freezes pressure, pest, player-condition, score, resource, and phase state.
-[ ] Equal wall time at 30/60/120 Hz yields equivalent simulation tick counts and gameplay fingerprints.
-[ ] Render frames may vary without changing committed gameplay results.
-[ ] Catch-up steps are bounded and report dropped/limited time explicitly.
-[ ] New Game atomically resets all declared session-owned domains.
-[ ] Play never silently reuses an ended session.
-[ ] Outcome -> Title remains on Entry until an explicit start action.
-[ ] Only one RAF loop exists after repeated start/stop/restart cycles.
-[ ] Only one root click listener exists after repeated renderer creation/disposal.
-[ ] Stop cancels RAF and prevents future automatic ticks.
-[ ] Dispose removes listeners and rejects future mutation commands.
-[ ] Manual GameHost ticking cannot race with the automatic clock.
-[ ] Lifecycle and clock journals are bounded, immutable to consumers, and JSON-safe.
-[ ] DOM-free session fixture passes.
-[ ] npm test gates build and deployment on lifecycle/clock proof.
-[ ] Deterministic scenario IDs are scoped beneath session IDs.
+[ ] Gameplay does not tick before a session starts.
+[ ] Pause freezes all gameplay-owned state.
+[ ] Equal wall time at 30/60/120 Hz yields equivalent gameplay fingerprints.
+[ ] New Game atomically resets session-owned domains.
+[ ] Stop and Dispose release RAF and listener ownership.
+[ ] Every public capability has one owner and stable capability ID.
+[ ] Every public capability has a reachable route and rendered affordance.
+[ ] Every rendered affordance has a command binding and typed result.
+[ ] Movement is reachable through keyboard and accessible fallback controls.
+[ ] Movement rejects outside running gameplay state.
+[ ] A deterministic fixture can move to and collect an apple.
+[ ] Roster hire and inventory equip are either reachable or explicitly non-public.
+[ ] Session Select is either linked or explicitly dormant.
+[ ] Market is not presented as operational before a market service exists.
+[ ] Disabled action metadata produces disabled controls.
+[ ] GameHost capability and result readback is bounded and JSON-safe.
+[ ] npm test gates deployment on lifecycle and reachability proof.
 ```
 
 ## Avoid until proof exists
@@ -121,5 +122,4 @@ scenario-fixture-adapter-kit
 - renderer replacement
 - visual polish
 - save/resume claims
-- automation claims based on raw `GameHost.tick()`
-- broad runtime refactors without lifecycle fixtures
+- broad runtime refactors without lifecycle and reachability fixtures
