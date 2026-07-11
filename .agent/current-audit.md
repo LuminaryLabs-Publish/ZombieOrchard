@@ -2,14 +2,14 @@
 
 ## Status
 
-Docs refreshed for `2026-07-10T22-11-24-04-00`.
+Docs refreshed for `2026-07-10T23-50-53-04-00`.
 
 ```txt
-status: session-instance-authority-first-clock-second-capability-third
+status: session-first-clock-second-capability-third-seeded-replay-fourth
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: complete
+central ledger sync: pending until repo-local audit set is complete
 ```
 
 ## Selection audit
@@ -22,21 +22,21 @@ Root .agent state present: 9/9
 Excluded: LuminaryLabs-Publish/TheCavalryOfRome
 Selected: LuminaryLabs-Publish/ZombieOrchard
 Selection rule: oldest eligible documented fallback
-Prior selected-repo alignment: 2026-07-10T20-30-23-04-00
+Prior selected-repo alignment: 2026-07-10T22-11-24-04-00
 ```
 
 Current comparison:
 
 ```txt
-ZombieOrchard        selected / 2026-07-10T20-30-23-04-00
-TheUnmappedHouse     tracked  / 2026-07-10T20-38-24-04-00
-MyCozyIsland         tracked  / 2026-07-10T20-48-55-04-00
-PrehistoricRush      tracked  / 2026-07-10T21-00-16-04-00
-AetherVale           tracked  / 2026-07-10T21-08-52-04-00
-IntoTheMeadow        tracked  / 2026-07-10T21-19-36-04-00
-TheOpenAbove         tracked  / 2026-07-10T21-31-01-04-00
-HorrorCorridor       tracked  / 2026-07-10T21-39-22-04-00
-PhantomCommand       tracked  / 2026-07-10T21-49-26-04-00
+ZombieOrchard        selected / 2026-07-10T22-11-24-04-00
+TheUnmappedHouse     tracked  / 2026-07-10T22-21-17-04-00
+MyCozyIsland         tracked  / 2026-07-10T22-29-21-04-00
+AetherVale           tracked  / 2026-07-10T22-50-02-04-00
+IntoTheMeadow        tracked  / 2026-07-10T22-58-36-04-00
+PrehistoricRush      tracked  / 2026-07-10T23-08-11-04-00
+TheOpenAbove         tracked  / 2026-07-10T23-20-41-04-00
+HorrorCorridor       tracked  / 2026-07-10T23-30-13-04-00
+PhantomCommand       tracked  / 2026-07-10T23-40-35-04-00
 TheCavalryOfRome     excluded by rule
 ```
 
@@ -48,13 +48,17 @@ index.html
   -> src/start.js
   -> createOrchardGame()
   -> createKitRuntime(...kits)
-  -> construct resource, pressure, world, construction, roster,
-     inventory, interface, active-session, and composition domains
+  -> orchard-world creates fixed trees and 26 random apples
   -> create canvas renderer and HTML renderer
   -> attach one delegated click listener
   -> requestAnimationFrame(draw)
   -> engine.tick(1 / 60)
-  -> all domain ticks in insertion order
+  -> clear ephemeral events
+  -> tick all domains in insertion order
+  -> pressure growth
+  -> optional night pest random draw
+  -> pest movement, damage and ended-state mutation
+  -> interface-composition Outcome projection
   -> aggregate snapshot
   -> world.render(snapshot)
   -> ui.render(snapshot)
@@ -63,13 +67,13 @@ index.html
 DOM data-action
   -> interface-composition.activate
   -> active interface domain.activate
-  -> optional nested child command
+  -> optional child command
   -> optional screen transition
 
 DOM data-command
   -> active-session collect | clear | next-phase
   -> synchronous mutation
-  -> next frame projects aggregate state
+  -> no stable command sequence or replay receipt
 ```
 
 ## Domains in use
@@ -117,6 +121,9 @@ apple-collection
 pest-simulation
 phase-progression
 score-and-failure
+global-random-source
+apple-generation-randomness
+pest-spawn-randomness
 world-canvas-renderer
 html-interface-renderer
 smoke-fixture
@@ -136,6 +143,12 @@ fixed-step-clock
 resource-disposal
 capability-registry
 interaction-binding-authority
+seeded-random-source
+session-random-streams
+random-decision-ledger
+command-replay-ledger
+state-fingerprint
+render-provenance
 ```
 
 ## Implemented kits and services
@@ -143,39 +156,34 @@ interaction-binding-authority
 - `kit-runtime`: kit registration, domain construction, command routing, delta clamping, tick routing, ephemeral event emission, aggregate snapshots, and subscriber notification.
 - `scoped-interface-domain-kit` plus 12 screen kits: screen state, action catalogs, selection, field mutation, action activation, and snapshots.
 - `interface-composition-kit`: active/previous screen state, transitions, back navigation, parent activation, child command dispatch, and automatic Outcome routing.
-- `resource-ledger-kit`: affordability checks, atomic boolean payment, resource addition, and resource snapshots.
+- `resource-ledger-kit`: affordability checks, boolean payment, resource addition, and resource snapshots.
 - `pressure-field-kit`: bounded channel adjustment and passive pressure growth on every tick.
-- `orchard-world-kit`: fixed tree grid, random apple seeding and replenishment, nearby collection, and world snapshots.
+- `orchard-world-kit`: fixed tree grid, global-random apple seeding and replenishment, nearby collection, and world snapshots.
 - `construction-runtime-kit`: catalog lookup, payment, built-object creation, and status messages.
 - `roster-runtime-kit`: actor/role state, hiring payment, actor creation, and status messages.
 - `inventory-runtime-kit`: inventory state and unrestricted equipment assignment.
-- `active-session-domain-kit`: movement, collection, clearing, phase changes, pest spawning, pursuit, damage, score, failure, and action descriptors.
+- `active-session-domain-kit`: movement, collection, clearing, phase changes, global-random pest spawning, pursuit, damage, score, failure, and action descriptors.
 - `world-canvas-render-kit`: canvas resizing and world/player/pest projection.
 - `html-interface-render-kit`: delegated click routing, HUD projection, quick gameplay commands, generic screen cards, and full per-frame HTML replacement.
 - `game-host-diagnostics-kit`: raw engine access, aggregate state readback, and unrestricted manual ticking.
-- `smoke-fixture-kit`: Entry to Play transition and apple-presence checks.
+- `smoke-fixture-kit`: Entry-to-Play transition and apple-presence checks.
 - `static-build-copy-kit`: static artifact copying.
 - `pages-deploy-kit`: test, build, artifact upload, and Pages deployment from `main`.
 
-## Session-control fidelity matrix
+## Random-consumption map
 
-| Control | Current behavior | Session effect | Defect |
+| Consumer | Random draws | Snapshot evidence | Replay consequence |
 | --- | --- | --- | --- |
-| Play | Entry -> Gameplay screen | none | prebuilt state was already ticking |
-| New Game | Entry -> Run Setup -> Gameplay | none | no reset or new instance |
-| Pause | Gameplay -> Interrupt screen | none | pressure and gameplay keep ticking |
-| Resume | Interrupt -> Gameplay screen | none | not a lifecycle transition |
-| Title | Interrupt/Outcome -> Entry | none | run remains live and mutable |
-| Outcome routing | ended session -> Outcome | none | ended flag remains permanently true |
-| Outcome -> Title | Outcome -> Entry | none | next composition tick can force Outcome again |
-| Stop | absent | none | RAF continues |
-| Dispose | absent | none | listener, RAF, renderers, and domains remain owned forever |
+| `orchard-world.seedApples()` | tree selection, apple ID, X offset, Y offset, kind | resulting apples only | initial world and replenishment cannot be reproduced |
+| `active-session.addPest()` | spawn angle and pest ID | resulting pest only | spawn identity and direction cannot be reproduced |
+| `active-session.tick()` | night spawn admission per tick | no decision row | call count and cadence change encounter sequence |
+| smoke test | accepts any nonempty apple set | no seed assertion | nondeterministic regressions remain invisible |
 
 ## Main finding
 
-`createOrchardGame()` creates one mutable domain graph, and `src/start.js` starts ticking it before any user admission. Interface actions labeled Play, New Game, Pause, Resume, Title, and Run Summary only move the active screen. They do not create a session, assign an epoch, reset from the preset, stop ticking, retire a run, or dispose resources.
+The runtime has hidden random state outside the kit graph. `createOrchardGame()` accepts a preset but no random provider, and the preset carries no seed. `orchard-world-kit` and `active-session-domain-kit` call global `Math.random()` directly. Random IDs, spawn decisions, and source state are absent from snapshots, events, command results, render observations, and `GameHost`.
 
-This is more than a pause bug. It means the product has no durable definition of which state belongs to which run. Resource balances, pressure, apples, built objects, roster entries, equipment, player damage, score, phase, pests, and the ended flag can survive route changes that imply a fresh or retired session.
+This blocks exact reset proof and replay proof. A nominal New Game cannot declare whether it should reuse the same seed, derive a new seed, or restore a recorded stream. Equal commands and equal elapsed time cannot be expected to produce equal apples, pests, score, or outcome.
 
 ## Ordered safe ledges
 
@@ -188,8 +196,11 @@ This is more than a pause bug. It means the product has no durable definition of
 
 3. ZombieOrchard Interaction Capability Reachability
    + Movement/Service-Binding Fixture Gate
+
+4. ZombieOrchard Seeded Random and Replay Authority
+   + Apple/Pest Determinism Fixture Gate
 ```
 
 ## What not to do next
 
-Do not start with Market implementation, economy balancing, new orchard content, renderer replacement, visual polish, or broad domain rewrites. Define session ownership, reset semantics, lifecycle results, and proof fixtures first.
+Do not start with Market implementation, economy balancing, new orchard content, renderer replacement, visual polish, save/resume claims, or broad random rewrites. First establish session ownership and fixed-step time, then inject seeded stream ownership through the existing world and active-session kits.
