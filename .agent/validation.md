@@ -23,8 +23,8 @@ This was a documentation-only audit. Runtime source, dependencies, package scrip
 - [x] Update root `.agent` state and add timestamped audits.
 - [x] Push only to `main`.
 - [x] Create no branch or pull request.
+- [x] Complete central ledger and internal change-log synchronization.
 - [ ] Runtime persistence implementation remains future work.
-- [ ] Central ledger sync is pending until the central write completes.
 
 ## Current proof surface
 
@@ -74,6 +74,6 @@ migration fixture: unavailable / not run
 atomic-load fixture: unavailable / not run
 browser reload fixture: unavailable / not run
 
-repo-local docs pushed to main: pending
-central ledger updated on main: pending
+repo-local docs pushed to main: yes
+central ledger updated on main: yes
 ```
