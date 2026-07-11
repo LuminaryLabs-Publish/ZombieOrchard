@@ -8,8 +8,8 @@ status: fixed-step-clock-cadence-pause-manual-tick-authority-audited
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: pending
-central internal change log: pending
+central ledger sync: complete
+central internal change log: complete
 ```
 
 ## Summary
@@ -29,6 +29,7 @@ central internal change log: pending
 - [x] Define accumulator, catch-up, dropped-time and pause contracts.
 - [x] Add architecture, render, gameplay, interaction, clock and deploy audits.
 - [x] Push documentation only to `main`.
+- [x] Synchronize the central ledger and internal change log.
 - [x] Create no branch or pull request.
 - [ ] Runtime implementation and executable fixtures remain future work.
 
