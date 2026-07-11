@@ -1,23 +1,23 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-10T18-49-54-04-00",
+  "updatedAt": "2026-07-10T20-30-23-04-00",
   "currentNextSafeLedge": "ZombieOrchard Runtime Session Clock and Lifecycle Authority + Pause/Reset/Refresh-Rate Fixture Gate",
-  "latestTracker": ".agent/trackers/2026-07-10T18-49-54-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T18-49-54-04-00.md",
-  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T18-49-54-04-00-runtime-session-clock-authority-dsk-map.md",
-  "latestRenderAudit": ".agent/render-audit/2026-07-10T18-49-54-04-00-raf-refresh-rate-frame-consumption-gap.md",
-  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T18-49-54-04-00-pause-reset-outcome-reentry-loop.md",
-  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T18-49-54-04-00-screen-transition-session-command-map.md",
-  "latestLifecycleAudit": ".agent/lifecycle-audit/2026-07-10T18-49-54-04-00-session-start-stop-reset-dispose-contract.md",
-  "latestTimeAuthorityAudit": ".agent/time-authority-audit/2026-07-10T18-49-54-04-00-fixed-delta-per-raf-clock-contract.md",
-  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T18-49-54-04-00-refresh-rate-pause-reset-fixture-gate.md",
-  "previousTracker": ".agent/trackers/2026-07-10T17-18-47-04-00/project-breakdown.md",
+  "secondaryNextSafeLedge": "ZombieOrchard Interaction Capability Reachability + Movement/Service-Binding Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-10T20-30-23-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T20-30-23-04-00.md",
+  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T20-30-23-04-00-interaction-capability-reachability-dsk-map.md",
+  "latestRenderAudit": ".agent/render-audit/2026-07-10T20-30-23-04-00-render-affordance-command-binding-gap.md",
+  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T20-30-23-04-00-core-loop-movement-admission-gap.md",
+  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T20-30-23-04-00-capability-route-binding-result-map.md",
+  "latestCapabilityReachabilityAudit": ".agent/capability-reachability-audit/2026-07-10T20-30-23-04-00-command-service-exposure-contract.md",
+  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T20-30-23-04-00-interaction-capability-fixture-gate.md",
+  "previousTracker": ".agent/trackers/2026-07-10T18-49-54-04-00/project-breakdown.md",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
     "eligibleRepositoryCount": 9,
     "accessibleRepositoryCount": 10,
-    "reason": "oldest eligible documented fallback after full Publish inventory, central ledger, and recent repo-local audit comparison"
+    "reason": "oldest eligible documented fallback after full Publish inventory, central ledger, and root agent timestamp comparison"
   },
   "implementedKits": [
     "kit-runtime",
@@ -52,6 +52,12 @@
     "runtime-session-authority-kit",
     "fixed-step-clock-kit",
     "runtime-lifecycle-fixture-adapter-kit"
+  ],
+  "proposedCapabilityKits": [
+    "browser-input-adapter-kit",
+    "capability-registry-kit",
+    "capability-result-projection-kit",
+    "capability-reachability-fixture-kit"
   ],
   "companionDeterminismKits": [
     "deterministic-random-source-kit",
@@ -150,7 +156,7 @@
       "active-session HUD",
       "generic screen projection",
       "DOM action binding",
-      "DOM command binding",
+      "hard-coded gameplay command binding",
       "per-frame HTML replacement"
     ],
     "game-host-diagnostics-kit": [
@@ -165,17 +171,61 @@
       "Pages test build deploy chain"
     ]
   },
+  "capabilityReachability": {
+    "publicDirectReachable": [
+      "entry.play",
+      "entry.new",
+      "entry.settings",
+      "active-session.collect",
+      "active-session.clear",
+      "active-session.next-phase",
+      "active-session.pause",
+      "active-session.build",
+      "active-session.market",
+      "active-session.roster",
+      "active-session.inventory",
+      "active-session.codex",
+      "interrupt.resume",
+      "interrupt.title",
+      "construction.build-storage-shed",
+      "screen.back-actions"
+    ],
+    "publicIndirectReachable": [
+      "resource-ledger.add",
+      "resource-ledger.pay",
+      "pressure-field.adjust",
+      "orchard-world.collectNear"
+    ],
+    "implementedButUnbound": [
+      "active-session.move",
+      "roster-runtime.hire",
+      "inventory-runtime.equip",
+      "scoped-interface.select",
+      "scoped-interface.set-field",
+      "interface-composition.transition",
+      "interface-composition.back"
+    ],
+    "dormantOrShellOnly": [
+      "session-select",
+      "run-setup.fields",
+      "preferences.fields",
+      "knowledge.content"
+    ],
+    "unsupported": [
+      "exchange.market-transaction"
+    ]
+  },
   "blockers": [
     "Gameplay session state is constructed and ticked before Play or New Game.",
     "Simulation advances one fixed step per requestAnimationFrame, making game speed refresh-rate dependent.",
     "All domains tick regardless of active screen or pause intent.",
-    "Play and New Game are screen transitions rather than lifecycle transactions.",
-    "Outcome to Title bounces back to Outcome because the ended session remains authoritative.",
     "No start, pause, resume, reset, stop, or dispose contract exists.",
-    "RAF and root click-listener ownership cannot be released.",
-    "GameHost manual ticking can race with automatic ticking.",
-    "No lifecycle or clock fixture exists.",
-    "Deterministic scenario and Market transaction proof remain downstream companion gaps."
+    "The active-session movement command has no browser input binding.",
+    "Random apple placement does not guarantee a collectible apple near the immobile starting player.",
+    "Roster hiring and inventory equipment are implemented but unreachable.",
+    "Session Select has no incoming route and Market has no operational service.",
+    "No canonical capability registry or reachability fixture exists.",
+    "Deterministic scenario and Market transaction proof remain downstream gaps."
   ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
