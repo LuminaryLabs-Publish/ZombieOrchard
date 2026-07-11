@@ -16,6 +16,7 @@ This was a documentation-only audit. Runtime source, dependencies, package scrip
 - [x] Confirm missing gateway, diagnostics quarantine, result retention and first-frame acknowledgement.
 - [x] Update root `.agent` state and add timestamped audits.
 - [x] Push only to `main`.
+- [x] Synchronize the central ledger and internal change log.
 - [x] Create no branch or pull request.
 - [ ] Runtime gateway implementation remains future work.
 
@@ -150,6 +151,6 @@ affordance truth fixture: unavailable / not run
 render acknowledgement fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: pending until central write completes
-central internal change log: pending until central write completes
+central ledger update: complete
+central internal change log: complete
 ```
