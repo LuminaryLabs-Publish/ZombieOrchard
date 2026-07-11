@@ -1,18 +1,19 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-10T22-11-24-04-00",
+  "updatedAt": "2026-07-10T23-50-53-04-00",
   "currentNextSafeLedge": "ZombieOrchard Runtime Session Instance Authority + Start/Reset/Title/Outcome Fidelity Fixture Gate",
   "secondaryNextSafeLedge": "ZombieOrchard Fixed-Step Clock Authority + Pause/30-60-120 Hz Parity Fixture Gate",
   "tertiaryNextSafeLedge": "ZombieOrchard Interaction Capability Reachability + Movement/Service-Binding Fixture Gate",
-  "latestTracker": ".agent/trackers/2026-07-10T22-11-24-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T22-11-24-04-00.md",
-  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T22-11-24-04-00-runtime-session-instance-reset-dsk-map.md",
-  "latestRenderAudit": ".agent/render-audit/2026-07-10T22-11-24-04-00-screen-session-state-divergence-gap.md",
-  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T22-11-24-04-00-play-new-title-outcome-reset-loop.md",
-  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T22-11-24-04-00-lifecycle-control-admission-result-map.md",
-  "latestSessionAuthorityAudit": ".agent/session-authority-audit/2026-07-10T22-11-24-04-00-session-epoch-reset-dispose-contract.md",
-  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T22-11-24-04-00-session-reset-fidelity-fixture-gate.md",
-  "previousTracker": ".agent/trackers/2026-07-10T20-30-23-04-00/project-breakdown.md",
+  "quaternaryNextSafeLedge": "ZombieOrchard Seeded Random and Replay Authority + Apple/Pest Determinism Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-10T23-50-53-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T23-50-53-04-00.md",
+  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T23-50-53-04-00-random-source-replay-authority-dsk-map.md",
+  "latestRenderAudit": ".agent/render-audit/2026-07-10T23-50-53-04-00-random-state-frame-provenance-gap.md",
+  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T23-50-53-04-00-apple-pest-seed-replay-loop.md",
+  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T23-50-53-04-00-command-random-outcome-correlation-map.md",
+  "latestRandomnessAudit": ".agent/randomness-audit/2026-07-10T23-50-53-04-00-seeded-rng-deterministic-replay-contract.md",
+  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T23-50-53-04-00-seed-replay-parity-fixture-gate.md",
+  "previousTracker": ".agent/trackers/2026-07-10T22-11-24-04-00/project-breakdown.md",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
@@ -66,6 +67,14 @@
     "capability-result-projection-kit",
     "capability-reachability-fixture-kit"
   ],
+  "proposedRandomnessKits": [
+    "seeded-random-source-kit",
+    "random-stream-partition-kit",
+    "random-decision-ledger-kit",
+    "command-replay-ledger-kit",
+    "state-fingerprint-kit",
+    "seed-replay-fixture-kit"
+  ],
   "services": {
     "kit-runtime": [
       "kit registration",
@@ -107,8 +116,8 @@
     ],
     "orchard-world-kit": [
       "tree generation",
-      "random apple seeding",
-      "random apple replenishment",
+      "global-random apple seeding",
+      "global-random apple replenishment",
       "nearby apple collection",
       "world snapshot"
     ],
@@ -135,7 +144,8 @@
       "apple collection",
       "pest clearing",
       "phase change",
-      "random pest spawning",
+      "global-random pest admission",
+      "global-random pest placement",
       "pest pursuit",
       "damage",
       "score",
@@ -155,35 +165,42 @@
       "unrestricted manual tick hook"
     ],
     "proof-deploy-kits": [
-      "entry to play smoke",
-      "apple presence smoke",
+      "entry-to-play smoke",
+      "apple-presence smoke",
       "static dist copy",
-      "Pages test build deploy chain"
+      "Pages test-build-deploy chain"
     ]
   },
-  "sessionControlCurrentState": {
-    "play": "screen transition only",
-    "newGame": "screen transitions only, no reset",
-    "pause": "screen transition only, gameplay continues",
-    "resume": "screen transition only",
-    "title": "screen transition only, session remains live",
-    "outcome": "derived repeatedly from persistent ended state",
-    "stop": "missing",
-    "dispose": "missing",
-    "sessionEpoch": "missing",
-    "resetFactory": "missing"
+  "randomConsumption": {
+    "orchard-world": [
+      "apple tree index",
+      "apple id",
+      "apple x offset",
+      "apple y offset",
+      "apple kind"
+    ],
+    "active-session": [
+      "night pest admission",
+      "pest angle",
+      "pest id"
+    ],
+    "currentSource": "global Math.random",
+    "seed": "missing",
+    "streamPartitioning": "missing",
+    "decisionJournal": "missing",
+    "replayReceipt": "missing"
   },
   "blockers": [
     "The entire mutable game graph is constructed before Play.",
     "Play and New Game do not start or reset a session instance.",
     "No session epoch distinguishes runs.",
-    "Title does not retire or reset the current run.",
-    "Outcome to Title can bounce back because ended state persists.",
     "All domains tick regardless of screen or lifecycle intent.",
     "Simulation advances one fixed step per requestAnimationFrame.",
     "No stop or disposal contract exists.",
     "Movement and several implemented services remain unbound.",
-    "No session, clock, or capability proof fixtures exist."
+    "Apple and pest generation consume global Math.random directly.",
+    "No seed, stream state, draw index, random decision row, replay ledger, or state fingerprint exists.",
+    "No session, clock, capability, seed, or replay proof fixtures exist."
   ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
