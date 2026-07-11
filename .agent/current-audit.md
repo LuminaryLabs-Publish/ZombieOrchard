@@ -8,7 +8,7 @@ status: runtime-session-instance-authority-first
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: pending until central write completes
+central ledger sync: complete
 ```
 
 ## Selection audit
