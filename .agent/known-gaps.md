@@ -2,7 +2,7 @@
 
 ## Primary architecture gap
 
-There is no authoritative run boundary joining lifecycle, time, capability admission, composite command transactions, seeded randomness, replay, rendering, and proof readback.
+There is no authoritative run boundary joining lifecycle, time, capability admission, composite commands, deterministic randomness, replay, persistence, rendering, and proof readback.
 
 ```txt
 lifecycle intent
@@ -10,110 +10,102 @@ lifecycle intent
   -> fixed simulation ticks
   -> admitted capability
   -> one command transaction
-  -> child and resource results
-  -> partitioned random decisions
+  -> random decisions
   -> committed state fingerprint
-  -> one state publication
-  -> render observation
-  -> bounded result and replay journals
+  -> versioned save envelope
+  -> atomic restore/load epoch
+  -> one publication and render observation
+  -> bounded result journals
 ```
 
-## Specific gaps
+## Existing prerequisite gaps
 
-### Session identity and reset fidelity
+### Session, clock, capability, command, and replay
 
-1. `createOrchardGame()` constructs the full mutable graph once.
-2. The browser starts ticking before Play or New Game.
-3. No session identifier or epoch distinguishes runs.
-4. Play and New Game are screen transitions only.
-5. No preset-backed reset factory exists.
-6. Mutable gameplay state can survive route changes.
-7. Title does not retire the current run.
-8. Outcome -> Title can bounce back because ended state remains authoritative.
-9. No stop or dispose contract exists.
-10. RAF and delegated listener ownership cannot be released.
+1. The mutable graph is constructed before Play.
+2. Play and New Game are route changes, not session transactions.
+3. No session epoch, stop, dispose, or reset factory exists.
+4. One fixed tick runs per RAF callback.
+5. All domains tick on every screen.
+6. Movement and several services are unreachable.
+7. Nested commands discard child results and can publish twice.
+8. Resource and target validation is weak.
+9. Apple and pest generation use global `Math.random()`.
+10. No command, random-decision, replay, or committed-state journal exists.
 
-### Timing and lifecycle eligibility
+## New persistence-specific gaps
 
-11. `engine.tick(1 / 60)` runs once per RAF callback.
-12. Simulation speed changes with refresh rate and throttling.
-13. No accumulator, catch-up limit, dropped-time policy, or committed simulation tick exists.
-14. Every domain ticks regardless of session or screen state.
-15. Pressure and pest simulation continue while Pause or non-gameplay screens are displayed.
-16. `GameHost.tick()` can inject manual ticks beside automatic mode.
+### Dormant Save Select surface
 
-### Interaction capability reachability
+11. `session-select-domain-kit` exists but has no incoming route.
+12. The preset defines only a Back action.
+13. The preset supplies no `meta.slots`.
+14. The renderer has a slot-card branch that always receives an empty list.
+15. No Save, Load, Overwrite, Delete, Rename, Import, or Export action exists.
+16. No slot selection result or disabled/corrupt/incompatible state is projected.
 
-17. `active-session.move` has no browser binding.
-18. No keyboard, pointer, gamepad, or accessible movement control exists.
-19. Random apple placement does not guarantee a reachable starting collectible.
-20. `roster-runtime.hire` and `inventory-runtime.equip` are unbound.
-21. Scoped `select` and `set-field` commands are unbound.
-22. Session Select has no incoming route.
-23. Market, Codex, Roster, Inventory, and Session Select overstate the operational surface.
-24. Disabled action metadata is not rendered as disabled controls.
+### Save envelope and identity
 
-### Composite command transaction authority
+17. No save schema version exists.
+18. No product, campaign, or content revision identity exists.
+19. No session epoch, load epoch, committed tick, or command range exists.
+20. No declared seed, random stream cursor, or replay receipt exists.
+21. No canonical durable-state fingerprint exists.
+22. No save timestamp, progress summary, or slot fingerprint exists.
 
-25. Commands have no stable `commandId` or `transactionId`.
-26. `interface-composition.activate` invokes nested children through public `engine.command()`.
-27. Nested children can notify subscribers before parent completion.
-28. The outer parent command notifies again after returning.
-29. Child results are discarded by interface composition.
-30. A required child rejection does not automatically reject the parent result.
-31. A child mutation can occur before a later route failure.
-32. There is no transaction preflight, staging, commit barrier, rollback or no-commit result.
-33. Resource payment returns a boolean without attribution or before/after values.
-34. Unknown construction IDs fall back to the first catalog item.
-35. Inventory equipment accepts arbitrary IDs.
-36. Roster hiring accepts payload-derived cost without a canonical offer row.
-37. Ephemeral events are not a durable command journal.
-38. `GameHost` exposes no bounded command/result journal.
-39. Renderers expose no committed command identity or publication count.
-40. No fixture proves one admitted user intent produces one committed publication.
+### Export and restore ownership
 
-### Seeded randomness and replay
+23. `engine.snapshot()` aggregates presentation snapshots only.
+24. Domains expose no `exportState` or durable/transient classification.
+25. Domains expose no validation, staged restore, commit, or rollback service.
+26. Randomly generated IDs make snapshot equality unstable.
+27. Action catalogs, selected indexes, messages, and route projection are mixed with gameplay data.
+28. No dependency order exists for restoring resources, world, construction, roster, inventory, session, and route.
+29. No partial-load rollback exists.
+30. No load epoch rejects stale input, ticks, commands, or render observations.
 
-41. `orchard-world.seedApples()` uses global `Math.random()` for tree selection, IDs, offsets, and kind.
-42. `active-session.addPest()` uses global `Math.random()` for angle and ID.
-43. Night spawn admission calls global `Math.random()` once per simulation tick.
-44. The preset has no seed or random policy.
-45. `createOrchardGame()` accepts no random provider.
-46. The kit context exposes no random service.
-47. World and encounter randomness share the same implicit global source.
-48. Random IDs are not stable or monotonic.
-49. Snapshots expose outcomes but not seed, stream state, draw index, or decision reason.
-50. Commands have no durable sequence/result journal suitable for replay.
-51. No replay command format or replay receipt exists.
-52. No canonical committed state fingerprint exists.
-53. Renderers record no session epoch, simulation tick, command ID, seed, or decision range.
-54. The smoke test asserts only Entry -> Play and nonempty apples.
-55. The Pages gate cannot detect transaction, cadence, reachability, or determinism regressions.
+### Persistence adapter and migration
 
-## Explicit non-gaps for the next pass
+31. No in-memory persistence adapter exists for deterministic tests.
+32. No browser storage adapter exists.
+33. No storage quota, unavailable-storage, or serialization error result exists.
+34. No migration registry or incompatible-version rejection exists.
+35. No corrupted-slot quarantine exists.
+36. No atomic slot overwrite or delete result exists.
+
+### Proof and deployment
+
+37. `GameHost` exposes no save/load commands or detached journals.
+38. No fixture proves save -> reset -> load returns the same durable state.
+39. No fixture proves invalid load leaves all live domains unchanged.
+40. No fixture proves migration determinism.
+41. No browser smoke proves slot persistence survives reload.
+42. The Pages workflow gates only Entry -> Play and apple presence.
+
+## Explicit non-gaps for this pass
 
 ```txt
 world canvas fidelity
 orchard content volume
-additional Market items
+new Market items
 new pest types
 economy balance
-Market artwork
 renderer replacement
-full architectural rewrite
+cloud save
 ```
 
 ## Dependency order
 
 ```txt
 session instance authority
-  -> reset, title, outcome, stop and dispose proof
   -> fixed-step clock and pause eligibility
-  -> 30/60/120 Hz parity proof
-  -> capability registry and movement admission
-  -> composite command transaction and single publication
-  -> seeded random source and stream partitioning
-  -> command/random decision replay
-  -> committed state and render provenance
-  -> broader gameplay and content work
+  -> capability reachability
+  -> composite command transaction
+  -> seeded random and replay
+  -> committed durable-state fingerprint
+  -> versioned save envelope
+  -> slot index and persistence adapter
+  -> migration and atomic load transaction
+  -> load epoch and render provenance
+  -> save/load deployment fixtures
 ```
