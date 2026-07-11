@@ -8,7 +8,8 @@ status: public-capability-gateway-diagnostics-quarantine-fixture-gate-audited
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: pending until central write completes
+central ledger sync: complete
+central internal change log: complete
 ```
 
 ## Summary
@@ -23,7 +24,6 @@ central ledger sync: pending until central write completes
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledgers and root `.agent` state.
 - [x] Select only `ZombieOrchard` because repo-local capability documentation was newer than the central ledger.
-- [x] Re-read the current runtime, interface, composition, game-domain, preset, renderer, proof and `.agent` surfaces.
 - [x] Identify the interaction loop.
 - [x] Identify all domains in use.
 - [x] Identify all implemented kits and services.
@@ -31,6 +31,7 @@ central ledger sync: pending until central write completes
 - [x] Define public, internal, debug-only, dormant and unsupported capability boundaries.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main`.
+- [x] Synchronize the central ledger and internal change log.
 - [x] Create no branch or pull request.
 - [ ] Runtime implementation and executable fixtures remain future work.
 
@@ -52,9 +53,7 @@ Only `LuminaryLabs-Publish/ZombieOrchard` was changed in the Publish organizatio
 
 ```txt
 browser boot
-  -> src/boot.js imports src/start.js
-  -> createOrchardGame() constructs one kit runtime
-  -> create gameplay and interface domain closures
+  -> create one kit runtime and all gameplay/interface domain closures
   -> create canvas and HTML renderers
   -> install delegated click listener
   -> expose raw engine and manual tick on GameHost
@@ -67,8 +66,7 @@ RAF callback
   -> tick every domain
   -> notify subscribers
   -> aggregate snapshots
-  -> render world canvas
-  -> replace interface HTML
+  -> render world canvas and replace interface HTML
 
 player intent
   -> data-action or hard-coded data-command
@@ -108,7 +106,7 @@ static build copy
 Pages deployment
 missing runtime-session authority
 missing fixed-step clock authority
-missing capability gateway and reachability authority
+missing public capability gateway and reachability authority
 missing composite-command transaction authority
 missing seeded replay authority
 missing versioned persistence authority
@@ -189,7 +187,7 @@ DOM action
 
 GameHost action
   -> raw engine.command or tick
-  -> no public/internal distinction
+  -> no public/internal/debug distinction
   -> no lifecycle, route, binding or target policy
 ```
 
@@ -229,6 +227,13 @@ zombie-orchard-public-capability-gateway-domain
 .agent/interaction-audit/2026-07-11T10-00-12-04-00-dom-gateway-gamehost-command-map.md
 .agent/capability-gateway-audit/2026-07-11T10-00-12-04-00-public-internal-debug-boundary-contract.md
 .agent/deploy-audit/2026-07-11T10-00-12-04-00-capability-gateway-fixture-gate.md
+```
+
+## Central tracking
+
+```txt
+repo-ledger/LuminaryLabs-Publish/ZombieOrchard.md
+internal-change-log/2026-07-11T10-00-12-04-00-zombie-orchard-public-capability-gateway.md
 ```
 
 ## Ordered safe ledges
