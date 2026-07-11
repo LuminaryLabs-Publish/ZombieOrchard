@@ -3,41 +3,38 @@
 ## Status
 
 ```txt
-last aligned: 2026-07-11T09-49-27-04-00
-status: capability-registry-binding-affordance-fixture-gate-audited
+last aligned: 2026-07-11T10-00-12-04-00
+status: public-capability-gateway-diagnostics-quarantine-fixture-gate-audited
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: complete
-central internal change log: complete
+central ledger sync: pending until central write completes
 ```
 
 ## Summary
 
-`ZombieOrchard` is a dependency-free static browser game built from a small kit runtime, 12 interface domains, orchard/economy/survival services, canvas and HTML renderers, diagnostics, a Node smoke test, a static build and Pages deployment. This audit details Gate 3: interaction capability reachability.
+`ZombieOrchard` is a dependency-free static browser game built from a small kit runtime, 12 scoped interface domains, orchard/economy/survival services, canvas and HTML renderers, diagnostics, a Node smoke test, a static build and Pages deployment. The current audit narrows Gate 3 to the missing public capability gateway between browser intent, command admission, result retention, render acknowledgement and internal/debug access.
 
 ## Plan ledger
 
-**Goal:** define one truthful capability boundary from implemented service through session and route admission, shipped input binding, target reachability, typed result, visible affordance and first rendered frame.
+**Goal:** preserve the full repository breakdown while defining one gateway that makes public actions truthful and keeps internal/debug commands from bypassing lifecycle, route, target and capability policy.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories have central ledger and root `.agent` state.
-- [x] Select only `ZombieOrchard` as the oldest eligible central-ledger entry.
+- [x] Confirm all nine eligible repositories have central ledgers and root `.agent` state.
+- [x] Select only `ZombieOrchard` because repo-local capability documentation was newer than the central ledger.
+- [x] Re-read the current runtime, interface, composition, game-domain, preset, renderer, proof and `.agent` surfaces.
 - [x] Identify the interaction loop.
 - [x] Identify all domains in use.
 - [x] Identify all implemented kits and services.
-- [x] Classify supported, unreachable, dormant, unsupported and internal capabilities.
-- [x] Trace movement, collection, clearing, phase, construction, market, roster, inventory and Session Select paths.
-- [x] Define registry, binding, projection, result and fixture requirements.
+- [x] Trace direct DOM commands, nested composition commands and `GameHost` bypass paths.
+- [x] Define public, internal, debug-only, dormant and unsupported capability boundaries.
 - [x] Add timestamped architecture and system audits.
-- [x] Refresh all required root `.agent` files.
 - [x] Push documentation only to `main`.
-- [x] Synchronize the central repository ledger and internal change log on `main`.
 - [x] Create no branch or pull request.
 - [ ] Runtime implementation and executable fixtures remain future work.
 
-## Selection
+## Selection audit
 
 ```txt
 accessible Publish repositories: 10
@@ -45,7 +42,7 @@ eligible non-Cavalry repositories: 9
 new or central-ledger-missing repositories: 0
 root-.agent-missing repositories: 0
 selected: ZombieOrchard
-reason: oldest eligible central-ledger timestamp
+reason: repo-local capability audit newer than central ledger
 excluded: TheCavalryOfRome
 ```
 
@@ -55,10 +52,12 @@ Only `LuminaryLabs-Publish/ZombieOrchard` was changed in the Publish organizatio
 
 ```txt
 browser boot
-  -> construct one kit runtime and all domain closures
-  -> construct canvas and HTML renderers
-  -> install delegated click input
-  -> expose raw engine and manual tick through GameHost
+  -> src/boot.js imports src/start.js
+  -> createOrchardGame() constructs one kit runtime
+  -> create gameplay and interface domain closures
+  -> create canvas and HTML renderers
+  -> install delegated click listener
+  -> expose raw engine and manual tick on GameHost
   -> begin recursive RAF
 
 RAF callback
@@ -71,13 +70,18 @@ RAF callback
   -> render world canvas
   -> replace interface HTML
 
-browser intent
-  -> hard-coded data-command or descriptor-derived data-action
-  -> unrestricted public engine.command
+player intent
+  -> data-action or hard-coded data-command
+  -> direct engine.command
   -> domain mutation or rejection
-  -> subscriber publication
-  -> DOM caller discards command result
-  -> renderer consumes the next aggregate snapshot
+  -> publication
+  -> DOM adapter discards returned result
+  -> later frame projects aggregate state
+
+internal/debug intent
+  -> GameHost.engine.command or GameHost.tick
+  -> bypass product capability classification and binding policy
+  -> mutate or advance the same live graph
 ```
 
 ## Domains in use
@@ -95,22 +99,22 @@ orchard world and apple lifecycle
 construction runtime
 roster runtime
 inventory runtime
-active-session movement, collection, phase, pests, damage, score and failure
+active-session movement, collection, phases, pests, damage, score and failure
 world canvas projection
 HTML interface projection and delegated input
-GameHost diagnostics
+GameHost diagnostics and debug control
 Node smoke fixture
 static build copy
 Pages deployment
 missing runtime-session authority
 missing fixed-step clock authority
-missing capability registry/reachability authority
+missing capability gateway and reachability authority
 missing composite-command transaction authority
 missing seeded replay authority
 missing versioned persistence authority
 ```
 
-## Implemented kits
+## Implemented kit inventory
 
 ```txt
 kit-runtime
@@ -144,101 +148,87 @@ pages-deploy-kit
 
 ## Kit services
 
-- `kit-runtime`: registration, domain creation, unrestricted public command routing, delta clamping, all-domain ticking, ephemeral events, aggregate snapshots, subscriptions and publication.
+- `kit-runtime`: kit registration, domain creation, unrestricted command routing, delta clamping, all-domain ticking, events, aggregate snapshots, subscriptions and publication.
 - Screen kits: screen state, action catalogs, selection, field mutation, metadata, activation, static disabled-action rejection and snapshots.
 - `interface-composition-kit`: route ownership, transition, back navigation, parent activation, nested child dispatch and automatic Outcome routing.
-- `resource-ledger-kit`: affordability checks, Boolean payment, resource addition and snapshots.
-- `pressure-field-kit`: bounded adjustment, passive pressure growth and snapshots.
+- `resource-ledger-kit`: affordability, Boolean payment, resource addition and snapshots.
+- `pressure-field-kit`: bounded adjustment, passive growth and snapshots.
 - `orchard-world-kit`: tree generation, random apple seeding/replenishment, nearby collection and snapshots.
-- `construction-runtime-kit`: catalog lookup with first-item fallback, resource payment, built-object creation and messages.
-- `roster-runtime-kit`: actors, roles, hiring payment, actor creation and messages.
-- `inventory-runtime-kit`: items, equipment state and unvalidated equip mutation.
-- `active-session-domain-kit`: movement, apple collection, pest clearing, phase changes, random pest admission/placement, pursuit, damage, score and failure.
-- Render kits: world projection, HUD, generic screens, cards, delegated actions, hard-coded gameplay bindings and per-frame HTML replacement.
-- Diagnostics/proof/deploy kits: raw engine exposure, snapshot readback, manual tick, entry-to-play smoke, apple-presence smoke, static build and Pages deployment.
+- `construction-runtime-kit`: catalog lookup with first-item fallback, resource payment, built-object creation and status messages.
+- `roster-runtime-kit`: actor/role state, hire payment, actor creation and status messages.
+- `inventory-runtime-kit`: item state, equipment state and unvalidated equip mutation.
+- `active-session-domain-kit`: movement, collection, pest clearing, phase change, pest admission/placement, pursuit, damage, score and failure.
+- Render kits: canvas world projection, HUD, generic screens, slot cards, delegated action binding, hard-coded gameplay buttons and full HTML replacement.
+- Diagnostics/proof/deploy kits: raw engine exposure, snapshot readback, unrestricted manual tick, entry-to-play smoke, apple-presence smoke, static build and Pages deployment.
 
 ## Capability census
 
 | Capability | Owner | Shipped binding | Classification |
 |---|---|---|---|
-| route navigation | scoped screens/composition | generic action buttons | supported public |
+| route navigation | screen/composition domains | generic action buttons | supported public |
 | move | active-session | none | implemented unreachable |
-| collect | active-session | quick button | public, target reachability unproven |
+| collect | active-session | quick button | public, deliberate reachability unproven |
 | clear | active-session | quick button | supported public |
-| next-phase | active-session | quick button | supported public, admission unscoped |
-| build storage shed | construction-runtime | Construction action | public, transaction caveat |
+| next-phase | active-session | quick button | public, admission unscoped |
+| build storage shed | construction-runtime | Construction action | public, transaction-dependent |
 | hire | roster-runtime | none | implemented unreachable |
-| equip | inventory-runtime | none | implemented unreachable and target-unvalidated |
-| Market transaction | none | visible Market route | unsupported but presented available |
+| equip | inventory-runtime | none | unreachable and target-unvalidated |
+| Market transaction | no runtime owner | visible route | unsupported but presented |
 | Session Select | screen only | no incoming route | dormant |
-| select/set-field | scoped screens | none | internal/dormant |
 | direct resource/pressure commands | game domains | raw GameHost only | internal but bypassable |
+| manual tick | runtime | raw GameHost only | debug control, unrestricted |
 
 ## Main finding
 
-No canonical authority joins:
+There is no single public capability gateway.
 
 ```txt
-implemented service
-  -> declared public capability
-  -> current session/lifecycle/route admission
-  -> shipped input binding
-  -> reachable and valid target
-  -> truthful enabled/disabled affordance
-  -> retained typed result
-  -> committed state fingerprint
-  -> first rendered frame
+DOM action
+  -> direct engine.command
+  -> result discarded
+
+GameHost action
+  -> raw engine.command or tick
+  -> no public/internal distinction
+  -> no lifecycle, route, binding or target policy
 ```
 
-Concrete defects:
+A registry alone will not make the product truthful if callers can continue to bypass it or discard its results. Public interaction must use one admitted gateway; internal/debug controls must require explicit leases and expose detached observations rather than the raw engine.
 
-1. `active-session.move` exists but has no shipped input binding.
-2. Collect is visible, but the player cannot deliberately move to an apple.
-3. Roster and Inventory are read-only although Hire and Equip services exist.
-4. Equip accepts unknown item IDs.
-5. Market is visible despite no exchange runtime service.
-6. Session Select has no incoming route or slot owner.
-7. Static disabled flags are not derived from runtime capability state.
-8. The button renderer does not project disabled state or reason.
-9. DOM callers discard command results.
-10. Raw GameHost engine access bypasses capability policy.
-11. No registry revision, fingerprint, observation, journal or first-frame acknowledgement exists.
-12. The smoke test does not prove capability reachability.
-
-## Required capability authority
+## Required composed domain
 
 ```txt
-zombie-orchard-capability-reachability-authority-domain
+zombie-orchard-public-capability-gateway-domain
   -> capability-descriptor-kit
   -> capability-registry-kit
-  -> capability-owner-binding-kit
+  -> public-command-envelope-kit
+  -> capability-gateway-kit
   -> capability-lifecycle-admission-kit
   -> capability-route-admission-kit
-  -> capability-input-binding-kit
-  -> movement-input-adapter-kit
-  -> collectible-reachability-kit
-  -> roster-hire-binding-kit
-  -> inventory-equip-binding-kit
-  -> target-admission-kit
-  -> unsupported-capability-policy-kit
+  -> capability-target-admission-kit
+  -> input-binding-registry-kit
+  -> command-result-retention-kit
   -> disabled-affordance-projection-kit
-  -> capability-command-result-kit
-  -> capability-observation-kit
-  -> capability-render-ack-kit
-  -> capability-reachability-fixture-kit
+  -> render-result-acknowledgement-kit
+  -> internal-command-policy-kit
+  -> debug-control-lease-kit
+  -> diagnostics-observation-kit
+  -> raw-engine-quarantine-kit
+  -> capability-gateway-journal-kit
+  -> capability-gateway-fixture-kit
 ```
 
 ## Latest audit set
 
 ```txt
-.agent/trackers/2026-07-11T09-49-27-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-11T09-49-27-04-00.md
-.agent/architecture-audit/2026-07-11T09-49-27-04-00-capability-reachability-authority-dsk-map.md
-.agent/render-audit/2026-07-11T09-49-27-04-00-capability-affordance-truth-gap.md
-.agent/gameplay-audit/2026-07-11T09-49-27-04-00-movement-collect-hire-equip-loop.md
-.agent/interaction-audit/2026-07-11T09-49-27-04-00-capability-binding-result-map.md
-.agent/capability-reachability-audit/2026-07-11T09-49-27-04-00-registry-binding-projection-contract.md
-.agent/deploy-audit/2026-07-11T09-49-27-04-00-capability-reachability-fixture-gate.md
+.agent/trackers/2026-07-11T10-00-12-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-11T10-00-12-04-00.md
+.agent/architecture-audit/2026-07-11T10-00-12-04-00-public-capability-gateway-dsk-map.md
+.agent/render-audit/2026-07-11T10-00-12-04-00-command-result-frame-ack-gap.md
+.agent/gameplay-audit/2026-07-11T10-00-12-04-00-player-action-debug-bypass-loop.md
+.agent/interaction-audit/2026-07-11T10-00-12-04-00-dom-gateway-gamehost-command-map.md
+.agent/capability-gateway-audit/2026-07-11T10-00-12-04-00-public-internal-debug-boundary-contract.md
+.agent/deploy-audit/2026-07-11T10-00-12-04-00-capability-gateway-fixture-gate.md
 ```
 
 ## Ordered safe ledges
@@ -246,10 +236,10 @@ zombie-orchard-capability-reachability-authority-domain
 ```txt
 1. Runtime Session Instance Authority
 2. Fixed-Step Clock Authority
-3. Interaction Capability Reachability
+3. Public Capability Gateway and Reachability
 4. Composite Command Transaction Authority
 5. Seeded Random and Replay Authority
 6. Versioned Save / Load Authority
 ```
 
-Gate 3 must consume session and committed-tick identity from Gates 1 and 2. Gate 4 must consume the capability registry rather than define a second command-support model.
+Gate 3 must consume session and committed-tick identity from Gates 1 and 2. Gate 4 must consume the same gateway and registry rather than creating a second command-admission model.
