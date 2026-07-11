@@ -6,57 +6,48 @@ This was a documentation-only audit. Runtime source, dependencies, package scrip
 
 ## Plan ledger
 
-**Goal:** record the inspected surfaces, source-backed capability findings, documentation changes and missing proof without overstating validation.
+**Goal:** record inspected surfaces, source-backed capability findings, documentation changes and missing proof without overstating validation.
 
-- [x] Re-read `src/kits/runtime.js`.
-- [x] Re-read `src/kits/scoped-interface-domains.js`.
-- [x] Re-read `src/kits/composition.js`.
-- [x] Re-read `src/kits/game-domains.js`.
-- [x] Re-read `src/presets/orchard-preset.js`.
-- [x] Re-read `src/renderer/html-interface-renderer.js`.
-- [x] Re-read `package.json`.
-- [x] Re-read current root `.agent` state.
+- [x] Re-read runtime, scoped-interface, composition, gameplay, preset and HTML-renderer source.
+- [x] Re-read package scripts and current root `.agent` state.
 - [x] Compare all current Publish repositories against the central ledger.
 - [x] Trace movement, collect, clear, phase, build, market, hire, equip and Session Select reachability.
 - [x] Confirm missing registry, bindings, disabled-state truth, result projection and fixture proof.
-- [x] Update root `.agent` state and add timestamped audits.
+- [x] Update required root `.agent` files and add timestamped audits.
 - [x] Push only to `main`.
 - [x] Create no branch or pull request.
+- [x] Synchronize the central ledger and internal change log on `main`.
 - [ ] Runtime capability implementation remains future work.
 
 ## Source-backed findings
 
 ```txt
 src/kits/runtime.js
-  -> commands are routed by domain ID and type without capability admission
+  -> commands route by domain ID and type without capability admission
   -> every public command publishes
-  -> raw domain commands remain callable through exposed engine
+  -> exposed raw engine can invoke domain commands directly
 
 src/kits/scoped-interface-domains.js
   -> actions contain static disabled flags
-  -> activate resolves by action ID or selected index
   -> select and set-field services exist without shipped bindings
-  -> snapshots expose static action descriptors
+  -> activation state is not derived from runtime capability state
 
 src/kits/game-domains.js
-  -> active-session move exists
-  -> collect/clear/next-phase exist
+  -> move, collect, clear and next-phase exist
   -> roster hire exists
   -> inventory equip exists and accepts unknown IDs
-  -> construction unknown IDs fall back to first catalog entry
+  -> unknown construction IDs fall back to the first catalog item
 
 src/presets/orchard-preset.js
-  -> active-session exposes route actions
   -> Construction exposes Storage Shed
-  -> Market, Roster and Inventory expose only route/back shells
+  -> Market, Roster and Inventory expose route/back shells
   -> Session Select has no incoming route
 
 src/renderer/html-interface-renderer.js
   -> binds only data-action and active-session data-command
   -> hard-codes Collect, Clear and Next Phase
-  -> has no movement binding
-  -> Roster and Inventory cards are read-only
-  -> button helper does not project disabled state or reason
+  -> has no movement, hire or equip binding
+  -> button markup does not project disabled state or reason
   -> DOM command results are discarded
 ```
 
@@ -72,26 +63,26 @@ npm test
   -> verify at least one apple
 ```
 
-The current smoke does not prove that a user can move, deliberately reach an apple, hire, equip, receive a rejected result, see a truthful unsupported state or correlate a capability projection with a rendered frame.
+The current smoke does not prove that a user can move, deliberately reach an apple, hire, equip, receive rejected-command feedback, see truthful unsupported state or correlate capability projection with a rendered frame.
 
-## Required DOM-free capability fixture matrix
+## Required capability fixture matrix
 
 ```txt
 registry completeness
-  -> every public capability resolves to one owner command
+  -> each public capability resolves to one owner command
   -> no duplicate capability IDs
-  -> unsupported/dormant/internal states are explicit
+  -> unsupported, dormant and internal states are explicit
 
 binding completeness
-  -> every supported public capability has a shipped input binding
+  -> each supported public capability has a shipped binding
   -> move has keyboard and accessible fallback
-  -> raw diagnostics do not count as public binding
+  -> diagnostics do not count as product binding
 
 movement and collection
-  -> admitted move changes position
+  -> admitted movement changes position
   -> deliberate movement reaches a known apple
   -> collect commits target/resource/score effects
-  -> out-of-range collect returns typed rejection
+  -> out-of-range collect returns a typed visible rejection
 
 roster and inventory
   -> valid hire commits debit and actor
@@ -100,26 +91,14 @@ roster and inventory
   -> unknown equip rejects without mutation
 
 presentation truth
-  -> Market is unsupported/disabled
+  -> Market is unsupported and disabled
   -> Session Select is dormant
   -> rendered disabled state and reason match registry state
 
-result proof
+result and render proof
   -> DOM adapter retains accepted and rejected results
   -> capability, binding, command, session and tick identities correlate
-```
-
-## Required browser fixture
-
-```txt
-fresh run
-  -> move through orchard
-  -> collect known apple
-  -> observe accepted result and resource update
-  -> observe truthful Roster/Inventory controls
-  -> observe Market unsupported state
-  -> observe Session Select dormant state
-  -> first rendered frame acknowledges registry revision and command result
+  -> first frame acknowledges the consumed registry revision and result
 ```
 
 ## Attempted validation
@@ -146,6 +125,6 @@ affordance truth fixture: unavailable / not run
 render-correlation fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: pending until central write completes
-central internal change log: pending until central write completes
+central ledger updated on main: yes
+central internal change log added on main: yes
 ```
