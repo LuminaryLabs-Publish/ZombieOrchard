@@ -1,31 +1,31 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-11T10-00-12-04-00",
-  "status": "public-capability-gateway-diagnostics-quarantine-fixture-gate-audited",
+  "updatedAt": "2026-07-11T12-01-38-04-00",
+  "status": "fixed-step-clock-cadence-pause-manual-tick-authority-audited",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
     "accessibleRepositoryCount": 10,
     "eligibleRepositoryCount": 9,
-    "reason": "repo-local capability audit was newer than the central ledger"
+    "reason": "oldest eligible central review timestamp after concurrent PhantomCommand documentation refresh"
   },
   "safeLedges": [
     "ZombieOrchard Runtime Session Instance Authority + Start / Reset / Title / Outcome Fidelity Fixture Gate",
-    "ZombieOrchard Fixed-Step Clock Authority + Pause / 30-60-120 Hz Parity Fixture Gate",
+    "ZombieOrchard Fixed-Step Clock Authority + Pause / 30-60-120 Hz / Stall / Manual-Step Fixture Gate",
     "ZombieOrchard Public Capability Gateway and Reachability + Registry / Binding / Diagnostics-Quarantine Fixture Gate",
     "ZombieOrchard Composite Command Transaction Authority + Parent / Child Result and Single-Publication Fixture Gate",
     "ZombieOrchard Seeded Random and Replay Authority + Apple / Pest Determinism Fixture Gate",
     "ZombieOrchard Versioned Save / Load Authority + Slot Roundtrip and Atomic Load Fixture Gate"
   ],
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-11T10-00-12-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-11T10-00-12-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-11T10-00-12-04-00-public-capability-gateway-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-11T10-00-12-04-00-command-result-frame-ack-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T10-00-12-04-00-player-action-debug-bypass-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-11T10-00-12-04-00-dom-gateway-gamehost-command-map.md",
-    "capabilityGatewayAudit": ".agent/capability-gateway-audit/2026-07-11T10-00-12-04-00-public-internal-debug-boundary-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-11T10-00-12-04-00-capability-gateway-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-11T12-01-38-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-11T12-01-38-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-11T12-01-38-04-00-fixed-step-clock-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-11T12-01-38-04-00-render-frame-simulation-tick-identity-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T12-01-38-04-00-raf-cadence-orchard-speed-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-11T12-01-38-04-00-automatic-manual-tick-admission-map.md",
+    "clockAudit": ".agent/clock-audit/2026-07-11T12-01-38-04-00-accumulator-catchup-pause-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-11T12-01-38-04-00-clock-cadence-fixture-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -60,78 +60,36 @@
     "kit-runtime": [
       "kit registration",
       "domain creation",
-      "unrestricted command routing",
-      "delta clamping",
+      "direct command routing",
+      "single-call delta clamping",
       "all-domain tick routing",
-      "ephemeral events",
+      "event recording",
       "snapshot aggregation",
       "subscriptions",
       "publication"
     ],
-    "scoped-interface-domain-kit": [
+    "interface-kits": [
       "screen state",
-      "action catalog",
+      "action catalogs",
       "selection",
       "field mutation",
-      "metadata",
-      "action activation",
-      "static disabled-action rejection",
-      "screen snapshot"
-    ],
-    "interface-composition-kit": [
-      "active screen ownership",
-      "history",
-      "transition",
-      "back navigation",
-      "parent activation",
+      "activation",
+      "static disabled state",
+      "route transitions",
       "nested child dispatch",
-      "automatic outcome routing"
+      "automatic Outcome routing"
     ],
-    "resource-ledger-kit": [
-      "affordability",
-      "Boolean payment",
-      "resource addition",
-      "resource snapshot"
-    ],
-    "pressure-field-kit": [
-      "bounded pressure adjustment",
-      "passive pressure tick",
-      "channel snapshot"
-    ],
-    "orchard-world-kit": [
-      "tree generation",
-      "random apple seeding",
-      "random apple replenishment",
+    "game-kits": [
+      "resource affordability and payment",
+      "pressure adjustment and passive growth",
+      "tree and apple generation",
       "nearby apple collection",
-      "world snapshot"
-    ],
-    "construction-runtime-kit": [
-      "build catalog",
-      "catalog lookup with first-item fallback",
-      "Boolean resource payment",
-      "built-object creation",
-      "status message"
-    ],
-    "roster-runtime-kit": [
-      "actor state",
-      "role state",
-      "hire payment",
-      "actor creation",
-      "status message"
-    ],
-    "inventory-runtime-kit": [
-      "inventory item state",
-      "equipment state",
-      "unvalidated equip command"
-    ],
-    "active-session-domain-kit": [
+      "construction",
+      "hiring",
+      "equipment",
       "movement",
-      "apple collection",
-      "pest clearing",
-      "phase change",
-      "random pest admission",
-      "random pest placement",
-      "pest pursuit",
+      "phase changes",
+      "pest spawning and pursuit",
       "damage",
       "score",
       "failure"
@@ -139,89 +97,56 @@
     "render-kits": [
       "orchard canvas projection",
       "active-session HUD",
-      "generic screen projection",
-      "Session Select slot cards",
-      "DOM action binding",
-      "hard-coded collect clear and next-phase binding",
-      "read-only roster and inventory cards",
+      "generic screen HTML",
+      "delegated action binding",
       "per-frame HTML replacement"
     ],
-    "game-host-diagnostics-kit": [
+    "diagnostics-proof-deploy": [
       "raw engine handle",
       "aggregate snapshot readback",
-      "unrestricted manual tick"
-    ],
-    "proof-deploy-kits": [
+      "unrestricted manual tick",
       "entry-to-play smoke",
       "apple-presence smoke",
       "static dist copy",
       "Pages test-build-deploy chain"
     ]
   },
-  "gatewaySurface": {
-    "publicGateway": "missing",
-    "publicCommandEnvelope": "missing",
-    "registryRevision": "missing",
-    "lifecycleAdmission": "missing",
-    "routeAdmission": "missing",
-    "targetAdmission": "missing",
-    "bindingIdentity": "missing",
-    "domResultRetention": "missing",
-    "renderAcknowledgement": "missing",
-    "internalCommandPolicy": "missing",
-    "debugLease": "missing",
-    "rawEngineQuarantine": "missing",
-    "manualTickExclusion": "missing",
-    "gatewayJournal": "missing",
-    "fixtureGate": "missing"
+  "clockSurface": {
+    "rafDeltaSource": "constant 1/60 per callback",
+    "wallTimeAccumulator": "missing",
+    "fixedStepDescriptor": "missing",
+    "simulationTickId": "missing",
+    "renderFrameId": "missing",
+    "clockRevision": "missing",
+    "catchupStepLimit": "missing",
+    "droppedTimeResult": "missing",
+    "lifecycleTickAdmission": "missing",
+    "visibilityResumePolicy": "missing",
+    "manualAutomaticExclusion": "missing",
+    "committedTickReceipt": "missing",
+    "renderFrameClockAcknowledgement": "missing"
   },
-  "capabilitySurface": {
-    "supportedPublic": [
-      "route-navigation",
-      "collect",
-      "clear",
-      "next-phase",
-      "build-storage-shed"
-    ],
-    "implementedUnreachable": [
-      "move",
-      "hire",
-      "equip"
-    ],
-    "unsupportedVisible": [
-      "market-transaction"
-    ],
-    "dormant": [
-      "session-select",
-      "screen-select",
-      "screen-set-field"
-    ],
-    "internalDebugBypassable": [
-      "resource-ledger-api",
-      "pressure-field-api",
-      "raw-engine-command",
-      "manual-tick"
-    ]
-  },
-  "proposedGatewayKits": [
-    "zombie-orchard-public-capability-gateway-domain",
-    "capability-descriptor-kit",
-    "capability-registry-kit",
-    "public-command-envelope-kit",
-    "capability-gateway-kit",
-    "capability-lifecycle-admission-kit",
-    "capability-route-admission-kit",
-    "capability-target-admission-kit",
-    "input-binding-registry-kit",
-    "command-result-retention-kit",
-    "disabled-affordance-projection-kit",
-    "render-result-acknowledgement-kit",
-    "internal-command-policy-kit",
-    "debug-control-lease-kit",
-    "diagnostics-observation-kit",
-    "raw-engine-quarantine-kit",
-    "capability-gateway-journal-kit",
-    "capability-gateway-fixture-kit"
+  "proposedClockKits": [
+    "zombie-orchard-fixed-step-clock-authority-domain",
+    "clock-descriptor-kit",
+    "wall-time-sample-kit",
+    "fixed-step-accumulator-kit",
+    "simulation-tick-id-kit",
+    "render-frame-id-kit",
+    "lifecycle-tick-admission-kit",
+    "clock-catchup-budget-kit",
+    "dropped-time-result-kit",
+    "clock-overrun-policy-kit",
+    "automatic-tick-lease-kit",
+    "manual-step-command-kit",
+    "manual-automatic-exclusion-kit",
+    "visibility-resume-policy-kit",
+    "committed-tick-receipt-kit",
+    "render-frame-clock-ack-kit",
+    "clock-observation-kit",
+    "clock-journal-kit",
+    "cadence-parity-fixture-kit",
+    "pause-freeze-fixture-kit"
   ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
@@ -234,7 +159,7 @@
     "npmBuildRun": false,
     "fixtureRun": false,
     "browserSmokeRun": false,
-    "centralLedgerSynchronized": true,
-    "centralChangeLogAdded": true
+    "centralLedgerSynchronized": false,
+    "centralChangeLogAdded": false
   }
 }
