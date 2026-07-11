@@ -1,153 +1,89 @@
-# START HERE — ZombieOrchard
+# START HERE: ZombieOrchard
 
 ## Last aligned
 
 ```txt
-2026-07-11T07-51-07-04-00
+2026-07-11T07-59-08-04-00
 ```
 
 ## Summary
 
-`ZombieOrchard` is a dependency-free browser orchard survival/economy shell built from a small kit runtime, 12 interface domains, gameplay domains, canvas/HTML renderers, a Node smoke test and a static Pages build.
-
-This audit documents the fourth architecture gate: composite commands are not transactions. The interface composition domain dispatches child commands through the public engine path, ignores the child result, and allows the child publication to occur before the parent command finishes.
+`ZombieOrchard` is a dependency-free static orchard survival and economy shell with a small domain-kit runtime, 12 interface screens, gameplay services, canvas and HTML rendering, diagnostics, smoke proof, static build, and Pages deployment. The current focused finding is that composite UI actions do not form one transaction: child results are discarded, nested commands publish intermediate state, and the parent can report success without proof that required gameplay work committed.
 
 ## Plan ledger
 
-**Goal:** preserve the complete repository breakdown while defining one atomic command boundary from interface action through child mutation, route mutation, publication, render correlation and proof.
+**Goal:** keep one clear entry point to the active architecture findings, complete kit inventory, implementation order, and proof gaps.
 
-- [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
+- [x] Compare the complete accessible Publish inventory with the central ledger.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories are centrally tracked and have root `.agent` state.
-- [x] Select only `ZombieOrchard` as the oldest eligible central-ledger entry.
-- [x] Re-read boot, runtime, composition, interface, gameplay, renderer, preset, test, build and deploy surfaces.
-- [x] Reconfirm the interaction loop, domains, kits and services.
-- [x] Trace the Construction -> Storage Shed parent/child command path.
-- [x] Identify discarded child results, nested publication and missing rollback/correlation.
-- [x] Add timestamped architecture and system audits.
-- [x] Refresh the required root `.agent` documents and kit registry.
-- [x] Push documentation only to `main`.
+- [x] Select only `ZombieOrchard` because the repo-local audit was newer than central tracking.
+- [x] Identify the interaction loop.
+- [x] Identify all active domains.
+- [x] Identify all implemented kits and services.
+- [x] Trace the Storage Shed parent and child command path.
+- [x] Document preflight, commit, rollback, publication, and frame-proof requirements.
+- [x] Add a new timestamped tracker and audit set.
+- [x] Change no runtime source.
+- [x] Push only to `main`.
 - [x] Create no branch or pull request.
-- [ ] Runtime implementation and executable transaction fixtures remain future work.
-
-## Selection result
-
-```txt
-ZombieOrchard        selected / 2026-07-11T06-02-00-04-00
-TheUnmappedHouse     tracked  / 2026-07-11T06-21-57-04-00
-AetherVale           tracked  / 2026-07-11T06-29-11-04-00
-IntoTheMeadow        tracked  / 2026-07-11T06-38-59-04-00
-MyCozyIsland         tracked  / 2026-07-11T07-01-49-04-00
-PrehistoricRush      tracked  / 2026-07-11T07-08-45-04-00
-TheOpenAbove         tracked  / 2026-07-11T07-18-44-04-00
-HorrorCorridor       tracked  / 2026-07-11T07-30-40-04-00
-PhantomCommand       tracked  / 2026-07-11T07-38-25-04-00
-TheCavalryOfRome     excluded by rule
-```
-
-Only `LuminaryLabs-Publish/ZombieOrchard` is changed by this Publish pass.
+- [ ] Implement runtime session authority and dependent gates.
 
 ## Read this first
 
 ```txt
-.agent/trackers/2026-07-11T07-51-07-04-00/project-breakdown.md
+.agent/trackers/2026-07-11T07-59-08-04-00/project-breakdown.md
 .agent/current-audit.md
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-11T07-51-07-04-00-composite-command-transaction-dsk-map.md
-.agent/render-audit/2026-07-11T07-51-07-04-00-command-publication-frame-correlation-gap.md
-.agent/gameplay-audit/2026-07-11T07-51-07-04-00-build-resource-command-state-loop.md
-.agent/interaction-audit/2026-07-11T07-51-07-04-00-parent-child-command-result-map.md
-.agent/command-transaction-audit/2026-07-11T07-51-07-04-00-single-publication-rollback-contract.md
-.agent/deploy-audit/2026-07-11T07-51-07-04-00-command-transaction-fixture-gate.md
-.agent/turn-ledger/2026-07-11T07-51-07-04-00.md
+.agent/architecture-audit/2026-07-11T07-59-08-04-00-composite-command-central-reconciliation-dsk-map.md
+.agent/render-audit/2026-07-11T07-59-08-04-00-single-publication-frame-proof-gap.md
+.agent/gameplay-audit/2026-07-11T07-59-08-04-00-storage-shed-parent-child-result-loop.md
+.agent/interaction-audit/2026-07-11T07-59-08-04-00-dom-click-child-dispatch-result-map.md
+.agent/command-transaction-audit/2026-07-11T07-59-08-04-00-preflight-commit-rollback-publication-contract.md
+.agent/deploy-audit/2026-07-11T07-59-08-04-00-composite-command-fixture-gate.md
+.agent/turn-ledger/2026-07-11T07-59-08-04-00.md
 .agent/kit-registry.json
 ```
 
-## Actual interaction loop
+## Product interaction loop
 
 ```txt
-module boot
-  -> create one engine and all domain closures
-  -> create world and HTML renderers
-  -> install delegated click listener
-  -> expose raw engine and manual tick through GameHost
-  -> start recursive RAF
+browser boot
+  -> construct one engine and all domain closures
+  -> create canvas and HTML renderers
+  -> install delegated click input
+  -> expose raw engine and manual tick on GameHost
+  -> begin recursive RAF
 
 RAF
   -> engine.tick(1 / 60)
   -> tick every domain
   -> aggregate snapshots
-  -> render canvas and HTML
+  -> render world canvas and interface HTML
 
-screen action click
-  -> engine.command(interface-composition, activate)
-  -> active screen returns an action descriptor
-  -> optional child command is dispatched through engine.command
-  -> child command publishes immediately
+composite UI action
+  -> parent screen activation
+  -> nested public child command
+  -> child mutation and publication
+  -> discarded child result
+  -> optional independent route mutation
+  -> parent publication
+```
+
+## Main finding
+
+```txt
+Storage Shed parent action accepted
+  -> child build may reject
   -> child result is discarded
-  -> optional route transition is evaluated independently
-  -> parent command publishes again
+  -> parent may still report accepted
+  -> child and parent each publish
 ```
 
-## Main transaction finding
+The runtime also falls back to the first construction item for an unknown target, returns only a Boolean payment result, stages no resource or gameplay effects, provides no rollback, and attaches no command, transaction, session, tick, fingerprint, journal, or first-frame identity.
 
-The current composition path is not atomic:
-
-```txt
-parent command identity: absent
-transaction identity: absent
-child result retention: absent
-child rejection propagation: absent
-preflight: absent
-rollback: absent
-single-publication barrier: absent
-before/after fingerprints: absent
-render acknowledgement: absent
-bounded command journal: absent
-```
-
-The concrete path is Construction -> Storage Shed:
-
-1. The Construction screen returns an action containing a `construction-runtime.build` child command.
-2. `interface-composition` dispatches it with `ctx.engine.command(...)`.
-3. The nested engine command notifies subscribers before the parent activation returns.
-4. The child result is ignored.
-5. The outer command then notifies subscribers again and returns a parent success result that does not describe the build result.
-
-Additional contract weaknesses:
-
-- An unknown build ID falls back to the first catalog item.
-- Resource payment returns only a Boolean and has no debit receipt.
-- No staged mutation or rollback protects resource debit plus built-object creation.
-- A future action containing both `command` and `to` can transition even when its required child command rejects.
-- Render snapshots carry no command or transaction provenance.
-
-## Domains in use
-
-```txt
-browser route and ESM boot
-runtime registration, command, tick, event, snapshot and subscription state
-12 scoped interface screen domains
-interface composition and automatic Outcome routing
-resource ledger
-pressure field
-orchard world and apple lifecycle
-construction runtime
-roster runtime
-inventory runtime
-active-session movement, collection, phase, pests, damage, score and failure
-world canvas rendering
-HTML interface rendering and delegated input
-GameHost diagnostics
-Node smoke
-static build
-Pages deployment
-missing session, clock, capability, transaction, replay and persistence authority
-```
-
-## Current implementation order
+## Ordered implementation queue
 
 ```txt
 1. Runtime Session Instance Authority
@@ -165,4 +101,4 @@ ZombieOrchard Runtime Session Instance Authority
 + Start / Reset / Title / Outcome Fidelity Fixture Gate
 ```
 
-The transaction gate is now fully mapped, but it remains fourth because command identities and stale-command admission must be scoped to an authoritative session and committed simulation clock first.
+Do not add persistence, extra content, or new interface routes before the runtime session owner can prove fresh start, pause freeze, terminal finalization, stable return to title, reset, stale-work rejection, and idempotent disposal.
