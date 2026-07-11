@@ -1,31 +1,31 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-11T07-59-08-04-00",
-  "status": "composite-command-transaction-child-result-single-publication-gate-audited",
+  "updatedAt": "2026-07-11T09-49-27-04-00",
+  "status": "capability-registry-binding-affordance-fixture-gate-audited",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
     "accessibleRepositoryCount": 10,
     "eligibleRepositoryCount": 9,
-    "reason": "repo-local composite-command audit was newer than the prior central ledger"
+    "reason": "oldest eligible central-ledger timestamp"
   },
   "safeLedges": [
     "ZombieOrchard Runtime Session Instance Authority + Start / Reset / Title / Outcome Fidelity Fixture Gate",
     "ZombieOrchard Fixed-Step Clock Authority + Pause / 30-60-120 Hz Parity Fixture Gate",
-    "ZombieOrchard Interaction Capability Reachability + Movement / Service-Binding Fixture Gate",
+    "ZombieOrchard Interaction Capability Reachability + Registry / Movement / Service-Binding Fixture Gate",
     "ZombieOrchard Composite Command Transaction Authority + Parent / Child Result and Single-Publication Fixture Gate",
     "ZombieOrchard Seeded Random and Replay Authority + Apple / Pest Determinism Fixture Gate",
     "ZombieOrchard Versioned Save / Load Authority + Slot Roundtrip and Atomic Load Fixture Gate"
   ],
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-11T07-59-08-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-11T07-59-08-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-11T07-59-08-04-00-composite-command-central-reconciliation-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-11T07-59-08-04-00-single-publication-frame-proof-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T07-59-08-04-00-storage-shed-parent-child-result-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-11T07-59-08-04-00-dom-click-child-dispatch-result-map.md",
-    "commandTransactionAudit": ".agent/command-transaction-audit/2026-07-11T07-59-08-04-00-preflight-commit-rollback-publication-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-11T07-59-08-04-00-composite-command-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-11T09-49-27-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-11T09-49-27-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-11T09-49-27-04-00-capability-reachability-authority-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-11T09-49-27-04-00-capability-affordance-truth-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T09-49-27-04-00-movement-collect-hire-equip-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-11T09-49-27-04-00-capability-binding-result-map.md",
+    "capabilityReachabilityAudit": ".agent/capability-reachability-audit/2026-07-11T09-49-27-04-00-registry-binding-projection-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-11T09-49-27-04-00-capability-reachability-fixture-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -60,7 +60,7 @@
     "kit-runtime": [
       "kit registration",
       "domain creation",
-      "public command routing",
+      "unrestricted public command routing",
       "delta clamping",
       "all-domain tick routing",
       "ephemeral event emission",
@@ -75,7 +75,7 @@
       "field mutation",
       "metadata",
       "action activation",
-      "disabled action rejection",
+      "static disabled-action rejection",
       "screen snapshot"
     ],
     "interface-composition-kit": [
@@ -84,7 +84,7 @@
       "transition",
       "back navigation",
       "parent activation",
-      "nested public child command dispatch",
+      "nested public child dispatch",
       "automatic outcome routing"
     ],
     "resource-ledger-kit": [
@@ -142,7 +142,8 @@
       "generic screen projection",
       "Session Select slot-card projection",
       "DOM action binding",
-      "hard-coded gameplay command binding",
+      "hard-coded collect clear and next-phase binding",
+      "read-only roster and inventory cards",
       "per-frame HTML replacement"
     ],
     "game-host-diagnostics-kit": [
@@ -157,44 +158,70 @@
       "Pages test-build-deploy chain"
     ]
   },
-  "proposedCommandTransactionKits": [
-    "composite-command-transaction-domain",
-    "command-envelope-kit",
-    "transaction-id-kit",
-    "command-sequence-kit",
-    "command-preflight-kit",
-    "child-command-plan-kit",
-    "internal-dispatch-kit",
-    "child-command-result-kit",
-    "required-child-policy-kit",
-    "target-admission-kit",
-    "resource-debit-receipt-kit",
-    "mutation-stage-kit",
-    "command-rollback-kit",
-    "route-commit-kit",
-    "command-result-envelope-kit",
-    "command-publication-barrier-kit",
-    "command-journal-kit",
-    "render-command-correlation-kit",
-    "command-transaction-fixture-kit"
-  ],
-  "commandTransactionSurface": {
-    "commandId": "missing",
-    "transactionId": "missing",
-    "parentChildCorrelation": "missing",
-    "internalNonPublishingDispatch": "missing",
-    "childResultRetention": "missing",
-    "childRejectionPropagation": "missing",
-    "targetAdmission": "unknown construction id falls back to first item",
-    "resourceReceipt": "Boolean only",
-    "stagedMutation": "missing",
-    "rollback": "missing",
-    "singlePublicationBarrier": "missing",
-    "beforeAfterFingerprint": "missing",
-    "commandJournal": "missing",
-    "renderCorrelation": "missing",
+  "capabilitySurface": {
+    "supportedPublic": [
+      "route-navigation",
+      "collect",
+      "clear",
+      "next-phase",
+      "build-storage-shed"
+    ],
+    "implementedUnreachable": [
+      "move",
+      "hire",
+      "equip"
+    ],
+    "unsupportedVisible": [
+      "market-transaction"
+    ],
+    "dormant": [
+      "session-select",
+      "screen-select",
+      "screen-set-field"
+    ],
+    "internalBypassable": [
+      "resource-ledger-api",
+      "pressure-field-api",
+      "raw-engine-command",
+      "manual-tick"
+    ],
+    "registry": "missing",
+    "registryRevision": "missing",
+    "ownerBindingValidation": "missing",
+    "lifecycleAdmission": "missing",
+    "routeAdmission": "missing",
+    "movementBinding": "missing",
+    "accessibleMovementFallback": "missing",
+    "collectibleReachabilityProof": "missing",
+    "hireBinding": "missing",
+    "equipBinding": "missing",
+    "equipTargetAdmission": "accepts unknown item ids",
+    "unsupportedMarketPolicy": "missing",
+    "disabledReasonProjection": "missing",
+    "domResultRetention": "missing",
+    "renderAcknowledgement": "missing",
     "fixtureGate": "missing"
   },
+  "proposedCapabilityKits": [
+    "zombie-orchard-capability-reachability-authority-domain",
+    "capability-descriptor-kit",
+    "capability-registry-kit",
+    "capability-owner-binding-kit",
+    "capability-lifecycle-admission-kit",
+    "capability-route-admission-kit",
+    "capability-input-binding-kit",
+    "movement-input-adapter-kit",
+    "collectible-reachability-kit",
+    "roster-hire-binding-kit",
+    "inventory-equip-binding-kit",
+    "target-admission-kit",
+    "unsupported-capability-policy-kit",
+    "disabled-affordance-projection-kit",
+    "capability-command-result-kit",
+    "capability-observation-kit",
+    "capability-render-ack-kit",
+    "capability-reachability-fixture-kit"
+  ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
     "dependenciesChanged": false,
@@ -206,6 +233,7 @@
     "npmBuildRun": false,
     "fixtureRun": false,
     "browserSmokeRun": false,
+    "localCloneAttempt": "failed because container could not resolve github.com",
     "centralLedgerSynchronized": true,
     "centralChangeLogAdded": true
   }
