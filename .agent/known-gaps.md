@@ -2,16 +2,19 @@
 
 ## Primary architecture gap
 
-There is no authoritative run boundary joining session identity, fixed-step time, capability admission, seeded randomness, replay, rendering, and proof readback.
+There is no authoritative run boundary joining lifecycle, time, capability admission, composite command transactions, seeded randomness, replay, rendering, and proof readback.
 
 ```txt
 lifecycle intent
   -> session epoch and seed
   -> fixed simulation ticks
-  -> admitted commands
+  -> admitted capability
+  -> one command transaction
+  -> child and resource results
   -> partitioned random decisions
   -> committed state fingerprint
-  -> render projection
+  -> one state publication
+  -> render observation
   -> bounded result and replay journals
 ```
 
@@ -24,7 +27,7 @@ lifecycle intent
 3. No session identifier or epoch distinguishes runs.
 4. Play and New Game are screen transitions only.
 5. No preset-backed reset factory exists.
-6. Resources, pressure, apples, construction, roster, equipment, player state, pests, score, phase, and ended state can survive route changes.
+6. Mutable gameplay state can survive route changes.
 7. Title does not retire the current run.
 8. Outcome -> Title can bounce back because ended state remains authoritative.
 9. No stop or dispose contract exists.
@@ -50,33 +53,42 @@ lifecycle intent
 23. Market, Codex, Roster, Inventory, and Session Select overstate the operational surface.
 24. Disabled action metadata is not rendered as disabled controls.
 
+### Composite command transaction authority
+
+25. Commands have no stable `commandId` or `transactionId`.
+26. `interface-composition.activate` invokes nested children through public `engine.command()`.
+27. Nested children can notify subscribers before parent completion.
+28. The outer parent command notifies again after returning.
+29. Child results are discarded by interface composition.
+30. A required child rejection does not automatically reject the parent result.
+31. A child mutation can occur before a later route failure.
+32. There is no transaction preflight, staging, commit barrier, rollback or no-commit result.
+33. Resource payment returns a boolean without attribution or before/after values.
+34. Unknown construction IDs fall back to the first catalog item.
+35. Inventory equipment accepts arbitrary IDs.
+36. Roster hiring accepts payload-derived cost without a canonical offer row.
+37. Ephemeral events are not a durable command journal.
+38. `GameHost` exposes no bounded command/result journal.
+39. Renderers expose no committed command identity or publication count.
+40. No fixture proves one admitted user intent produces one committed publication.
+
 ### Seeded randomness and replay
 
-25. `orchard-world.seedApples()` uses global `Math.random()` for tree selection, IDs, offsets, and kind.
-26. `active-session.addPest()` uses global `Math.random()` for angle and ID.
-27. Night spawn admission calls global `Math.random()` once per simulation tick.
-28. The preset has no seed or random policy.
-29. `createOrchardGame()` accepts no random provider.
-30. The kit context exposes no random service.
-31. World and encounter randomness share the same implicit global source.
-32. A change in apple generation can perturb later pest randomness.
-33. Random IDs are not stable or monotonic.
-34. Snapshots expose outcomes but not seed, stream state, draw index, or decision reason.
-35. Runtime events are cleared each tick and cannot carry durable random proof.
-36. Commands have no stable sequence or durable result journal.
-37. No replay command format or replay receipt exists.
-38. No canonical committed state fingerprint exists.
-39. Renderers record no session epoch, simulation tick, seed, or consumed random-decision range.
-40. The smoke test asserts only that apples are nonempty.
-41. The Pages gate cannot detect same-seed divergence, stream-coupling regressions, or nondeterministic outcome timing.
-
-### Command and service correctness
-
-42. Interface composition discards nested child command results.
-43. Nested commands can notify subscribers before the parent transaction completes.
-44. Resource payment is boolean-only and lacks attribution.
-45. Inventory accepts arbitrary equipment IDs.
-46. Construction falls back to the first catalog item for an unknown ID.
+41. `orchard-world.seedApples()` uses global `Math.random()` for tree selection, IDs, offsets, and kind.
+42. `active-session.addPest()` uses global `Math.random()` for angle and ID.
+43. Night spawn admission calls global `Math.random()` once per simulation tick.
+44. The preset has no seed or random policy.
+45. `createOrchardGame()` accepts no random provider.
+46. The kit context exposes no random service.
+47. World and encounter randomness share the same implicit global source.
+48. Random IDs are not stable or monotonic.
+49. Snapshots expose outcomes but not seed, stream state, draw index, or decision reason.
+50. Commands have no durable sequence/result journal suitable for replay.
+51. No replay command format or replay receipt exists.
+52. No canonical committed state fingerprint exists.
+53. Renderers record no session epoch, simulation tick, command ID, seed, or decision range.
+54. The smoke test asserts only Entry -> Play and nonempty apples.
+55. The Pages gate cannot detect transaction, cadence, reachability, or determinism regressions.
 
 ## Explicit non-gaps for the next pass
 
@@ -99,9 +111,9 @@ session instance authority
   -> fixed-step clock and pause eligibility
   -> 30/60/120 Hz parity proof
   -> capability registry and movement admission
+  -> composite command transaction and single publication
   -> seeded random source and stream partitioning
   -> command/random decision replay
   -> committed state and render provenance
-  -> Market transaction causality
   -> broader gameplay and content work
 ```
