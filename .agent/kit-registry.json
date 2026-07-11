@@ -213,7 +213,7 @@
     "npmBuildRun": false,
     "fixtureRun": false,
     "browserSmokeRun": false,
-    "centralLedgerSynchronized": false,
-    "centralChangeLogAdded": false
+    "centralLedgerSynchronized": true,
+    "centralChangeLogAdded": true
   }
 }
