@@ -1,5 +1,16 @@
 # Next steps — ZombieOrchard
 
+## Plan ledger
+
+**Goal:** Turn every orchard run into an identified, clocked, reachable, atomic, and reproducible transaction with truthful command results and proof-grade readback.
+
+- [ ] Establish runtime session instance authority.
+- [ ] Establish fixed-step clock authority.
+- [ ] Make public capabilities reachable and classified.
+- [ ] Establish composite command transaction authority.
+- [ ] Establish seeded random and replay authority.
+- [ ] Gate deployment on the corresponding DOM-free fixtures.
+
 ## Ordered implementation queue
 
 ```txt
@@ -12,100 +23,113 @@
 3. ZombieOrchard Interaction Capability Reachability
    + Movement/Service-Binding Fixture Gate
 
-4. ZombieOrchard Seeded Random and Replay Authority
+4. ZombieOrchard Composite Command Transaction Authority
+   + Parent/Child Result and Single-Publication Fixture Gate
+
+5. ZombieOrchard Seeded Random and Replay Authority
    + Apple/Pest Determinism Fixture Gate
 ```
 
-## Goal
+## Gate 1 — Session instance authority
 
-Make every orchard run an identified, clocked, reachable, and reproducible transaction. Screen navigation must project lifecycle state, simulation time must be independent of render cadence, public capabilities must be reachable, and all random outcomes must be derived from session-scoped seeded streams.
+1. Add JSON-safe lifecycle states and a monotonic `sessionEpoch`.
+2. Create a preset-backed factory for fresh resource, pressure, world, construction, roster, inventory, and active-session state.
+3. Treat Play as start/admit, New Game as reset/start, Pause/Resume as lifecycle commands, and Title as stop/retire.
+4. Project Outcome from one ended-session result.
+5. Retain and cancel RAF ownership.
+6. Return and invoke renderer/listener disposal handles.
+7. Reject commands after disposal.
+8. Add bounded lifecycle journals and DOM-free lifecycle fixtures.
 
-## Gate 1 — session instance authority and reset fidelity
-
-1. Add JSON-safe session states: `idle`, `starting`, `running`, `paused`, `ended`, `stopping`, `stopped`, `disposed`, and `failed`.
-2. Add a monotonic `sessionEpoch`.
-3. Add a preset-backed session factory that creates fresh resource, pressure, world, construction, roster, inventory, and active-session state.
-4. Treat Play as start/admit, New Game as atomic reset/start, Pause/Resume as lifecycle commands, and Title as stop/retire.
-5. Project Outcome from one ended-session result instead of a permanent composition redirect.
-6. Return typed lifecycle results and before/after fingerprints.
-7. Retain and cancel RAF ownership.
-8. Return and invoke renderer/listener disposal handles.
-9. Reject commands after disposal.
-10. Add bounded lifecycle/session journals to `GameHost`.
-11. Add DOM-free start, reset, title, outcome, stop, and disposal fixtures.
-
-## Gate 2 — fixed-step clock authority
+## Gate 2 — Fixed-step clock authority
 
 1. Replace one-fixed-step-per-RAF with a host-owned wall-time accumulator.
-2. Define fixed step, maximum frame delta, maximum catch-up steps, and dropped-time policy.
+2. Define fixed step, maximum frame delta, catch-up limit, and dropped-time policy.
 3. Separate render frame IDs from committed simulation tick IDs.
 4. Tick only domains admitted by session state.
-5. Prevent unrestricted manual ticks from racing automatic mode.
-6. Add 30/60/120 Hz parity fixtures.
-7. Prove Pause freezes every gameplay-owned fingerprint.
+5. Prevent manual ticking from racing automatic mode.
+6. Add 30/60/120 Hz parity and pause-freeze fixtures.
 
-## Gate 3 — capability reachability
+## Gate 3 — Capability reachability
 
-1. Add a canonical capability registry for every command and public service.
-2. Classify capabilities as `public-direct`, `public-indirect`, `internal`, `dormant`, or `unsupported`.
+1. Add a canonical capability registry.
+2. Classify each command/service as public-direct, public-indirect, internal, dormant, or unsupported.
 3. Add keyboard movement and an accessible on-screen fallback.
-4. Gate movement by authoritative session state.
-5. Return typed movement results with resulting coordinates.
-6. Guarantee a recoverable route to a collectible apple.
-7. Link or classify Session Select.
-8. Wire or classify roster hiring and inventory equipment.
-9. Preserve construction access while retaining child command results.
-10. Mark Market unsupported until a real transaction service exists.
-11. Add a capability/result journal and reachability fixture.
+4. Gate movement by session state and return typed results.
+5. Guarantee a recoverable route to a collectible apple.
+6. Link or classify Session Select, hiring, equipment, select, and set-field.
+7. Mark Market unsupported until a real service exists.
+8. Render disabled actions as disabled.
+9. Add reachability fixtures.
 
-## Gate 4 — seeded random and replay authority
+## Gate 4 — Composite command transaction authority
 
-1. Inject one random-source contract through `createOrchardGame()` and the kit context.
+1. Add a monotonic `commandId` and `transactionId` in `kit-runtime`.
+2. Add a transaction context for parent and nested child commands.
+3. Prevent nested dispatch from using the public notify-on-return path.
+4. Preflight action, child domain, child command, route target, resource effects, and target IDs before mutation.
+5. Preserve every child result inside one parent result.
+6. Reject the composite transaction when a required child rejects.
+7. Publish subscribers once after successful commit.
+8. Preserve the before fingerprint on rejection.
+9. Replace boolean resource payment with typed debit/add results carrying attribution and before/after values.
+10. Reject unknown construction targets instead of falling back to the first catalog item.
+11. Reject unknown equipment IDs.
+12. Record bounded detached command journal rows.
+13. Correlate the next rendered snapshot with the committed command ID.
+14. Add accepted, rejected, nested, route, rollback and publication-count fixtures.
+
+## Gate 5 — Seeded random and replay authority
+
+1. Inject a random-source contract through the game factory and kit context.
 2. Put the run seed and random policy under the session owner.
-3. Partition streams at minimum into `world` and `encounter` so a world-generation change does not perturb pest timing.
-4. Replace random string IDs with monotonic or stream-derived stable IDs.
-5. Record each random decision with `sessionEpoch`, `simulationTick`, `streamId`, `drawIndex`, `purpose`, normalized sample, and resolved outcome.
-6. Persist the generator state or a sufficient replay cursor in detached snapshots.
-7. Define New Game seed policy: explicit seed, generated seed retained in the start result, or deterministic derivation from an admitted configuration.
-8. Ensure apple replenishment uses the world stream and pest admission/spawn uses the encounter stream.
-9. Correlate command rows and committed state fingerprints with the random decision range they consumed.
-10. Publish seed, stream cursors, recent decisions, and state fingerprint through JSON-safe `GameHost` readback.
-11. Add exact-seed replay fixtures and different-seed divergence fixtures.
-12. Gate deployment on deterministic initial orchard, collection/replenishment, night pest spawning, damage, score, and outcome proof.
+3. Partition world and encounter streams.
+4. Replace random string IDs with stable IDs.
+5. Record random decisions with epoch, tick, stream, draw index, purpose, sample, and outcome.
+6. Persist sufficient generator cursor state for replay.
+7. Correlate random decision ranges with committed command IDs and state fingerprints.
+8. Publish seed, cursors, decisions, command journal, and replay receipt through detached `GameHost` readback.
+9. Add same-seed equality and different-seed divergence fixtures.
 
 ## Domain-update-first map
 
 ```txt
-src/start.js host
-  -> session owner, RAF owner, wall clock, renderer lifetime, disposal
+src/start.js
+  -> session owner, wall clock, RAF owner, renderer lifetime, disposal
 
-src/game.js factory
-  -> fresh graph creation, preset reset factory, injected random provider
+src/game.js
+  -> fresh graph creation, reset factory, injected random provider
 
 kit-runtime
-  -> session metadata, epoch, committed ticks, command sequence,
-     random provider in context, result journal, disposal guard
-
-orchard-world-kit
-  -> world-stream apple generation, stable IDs, seed/cursor readback
-
-active-session-domain-kit
-  -> encounter-stream spawn admission and placement, stable pest IDs
+  -> session metadata, committed ticks, command sequence,
+     transaction context, publication barrier, journals, disposal guard
 
 interface-composition-kit
-  -> lifecycle projection and complete child results
+  -> parent/child/route composite result and required-child failure handling
+
+resource-ledger-kit
+  -> typed attributed debit and addition results
+
+construction-runtime-kit
+roster-runtime-kit
+inventory-runtime-kit
+  -> strict target validation and typed mutation results
+
+orchard-world-kit
+active-session-domain-kit
+  -> seeded streams, stable IDs and replay facts
 
 render kits
-  -> source session/tick/fingerprint/random-decision range observation
+  -> source session, tick, command, state fingerprint and random range
 
 GameHost
-  -> detached session, clock, capability, seed, cursor, decision and replay readback
+  -> detached lifecycle, clock, capability, command, random and render readback
 
 tests/smoke.mjs
-  -> session/reset, clock, reachability and seed/replay fixture gates
+  -> lifecycle, clock, reachability, command transaction and replay fixture gates
 ```
 
-Prefer updating existing owners. Add only the missing cross-domain contracts:
+## Candidate missing kits
 
 ```txt
 runtime-session-authority-kit
@@ -113,11 +137,20 @@ session-instance-factory-kit
 fixed-step-clock-kit
 browser-input-adapter-kit
 capability-registry-kit
+command-envelope-kit
+command-sequence-kit
+composite-command-transaction-kit
+command-result-envelope-kit
+command-publication-barrier-kit
+resource-transaction-result-kit
+command-journal-kit
+render-command-correlation-kit
 seeded-random-source-kit
 random-stream-partition-kit
 random-decision-ledger-kit
 command-replay-ledger-kit
 state-fingerprint-kit
+command-transaction-fixture-kit
 seed-replay-fixture-kit
 ```
 
@@ -126,24 +159,28 @@ seed-replay-fixture-kit
 ```txt
 [ ] No gameplay tick occurs before a running session is committed.
 [ ] Every run has a stable session epoch and declared seed.
-[ ] New Game resets every owned domain under an explicit seed policy.
-[ ] Pause freezes gameplay state and random-stream cursors.
+[ ] New Game resets every owned domain.
 [ ] Equal wall time at 30/60/120 Hz yields equivalent committed state.
 [ ] Every public capability has an owner, route, affordance, result, and fixture.
-[ ] Same seed plus same committed command/tick schedule yields identical apples.
-[ ] Same seed plus same schedule yields identical pest decisions and IDs.
-[ ] Random draw order is independent between world and encounter streams.
-[ ] Every committed state fingerprint names the random decision range consumed.
-[ ] Different seeds produce declared divergence without invalid state.
-[ ] npm test gates deployment on session, clock, capability, and deterministic replay proof.
+[ ] Every browser intent has one commandId and one terminal composite result.
+[ ] Required child rejection prevents dependent route mutation.
+[ ] Rejected transactions preserve the before fingerprint.
+[ ] Committed transactions publish subscribers exactly once.
+[ ] Build, hire and equip reject invalid target IDs without mutation.
+[ ] Render observations name the committed command ID.
+[ ] Same seed and same committed schedule yield identical apples and pests.
+[ ] npm test gates deployment on all five authority fixtures.
 ```
 
 ## Avoid until proof exists
 
-- Market catalog or transaction expansion
-- economy balancing
-- new orchard content or pest types
-- renderer replacement
-- visual polish
-- save/resume claims
-- broad runtime refactors that bypass existing kit owners
+```txt
+Market expansion
+economy balancing
+new orchard content
+new pest types
+renderer replacement
+visual polish
+save/resume claims
+broad runtime rewrites that bypass current kit owners
+```
