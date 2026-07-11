@@ -3,35 +3,32 @@
 ## Status
 
 ```txt
-last aligned: 2026-07-11T10-00-12-04-00
-status: public-capability-gateway-diagnostics-quarantine-fixture-gate-audited
+last aligned: 2026-07-11T12-01-38-04-00
+status: fixed-step-clock-cadence-pause-manual-tick-authority-audited
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: complete
-central internal change log: complete
+central ledger sync: pending
+central internal change log: pending
 ```
 
 ## Summary
 
-`ZombieOrchard` is a dependency-free static browser game built from a small kit runtime, 12 scoped interface domains, orchard/economy/survival services, canvas and HTML renderers, diagnostics, a Node smoke test, a static build and Pages deployment. The current audit narrows Gate 3 to the missing public capability gateway between browser intent, command admission, result retention, render acknowledgement and internal/debug access.
+`ZombieOrchard` advances one hard-coded `1/60` simulation step for every browser animation frame. The runtime also exposes unrestricted manual ticking. Simulation rate therefore depends on RAF cadence and debug calls rather than elapsed wall time, lifecycle state or one authoritative committed-tick schedule.
 
 ## Plan ledger
 
-**Goal:** preserve the full repository breakdown while defining one gateway that makes public actions truthful and keeps internal/debug commands from bypassing lifecycle, route, target and capability policy.
+**Goal:** preserve the complete repository breakdown while defining a session-owned fixed-step clock with deterministic tick identity, bounded catch-up, pause barriers and render correlation.
 
-- [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
+- [x] Compare all ten accessible Publish repositories and central ledgers.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories have central ledgers and root `.agent` state.
-- [x] Select only `ZombieOrchard` because repo-local capability documentation was newer than the central ledger.
-- [x] Identify the interaction loop.
-- [x] Identify all domains in use.
-- [x] Identify all implemented kits and services.
-- [x] Trace direct DOM commands, nested composition commands and `GameHost` bypass paths.
-- [x] Define public, internal, debug-only, dormant and unsupported capability boundaries.
-- [x] Add timestamped architecture and system audits.
+- [x] Select only `ZombieOrchard` as the oldest eligible documented repository.
+- [x] Read browser host, runtime, composition and gameplay timing paths.
+- [x] Identify all domains, implemented kits and provided services.
+- [x] Trace automatic RAF and manual `GameHost.tick()` mutation paths.
+- [x] Define accumulator, catch-up, dropped-time and pause contracts.
+- [x] Add architecture, render, gameplay, interaction, clock and deploy audits.
 - [x] Push documentation only to `main`.
-- [x] Synchronize the central ledger and internal change log.
 - [x] Create no branch or pull request.
 - [ ] Runtime implementation and executable fixtures remain future work.
 
@@ -43,197 +40,172 @@ eligible non-Cavalry repositories: 9
 new or central-ledger-missing repositories: 0
 root-.agent-missing repositories: 0
 selected: ZombieOrchard
-reason: repo-local capability audit newer than central ledger
+reason: oldest eligible central review timestamp after concurrent PhantomCommand refresh
 excluded: TheCavalryOfRome
 ```
 
 Only `LuminaryLabs-Publish/ZombieOrchard` was changed in the Publish organization.
 
-## Product interaction loop
+## Interaction loop
 
 ```txt
-browser boot
-  -> create one kit runtime and all gameplay/interface domain closures
+src/boot.js
+  -> src/start.js
+  -> createOrchardGame()
   -> create canvas and HTML renderers
-  -> install delegated click listener
-  -> expose raw engine and manual tick on GameHost
-  -> begin recursive RAF
+  -> expose GameHost
+  -> draw()
 
-RAF callback
+one draw callback
   -> engine.tick(1 / 60)
-  -> clamp delta and advance frame/elapsed
-  -> clear ephemeral events
-  -> tick every domain
+  -> ctx.delta = clamp(delta, 0, 0.1)
+  -> ctx.elapsed += delta
+  -> ctx.frame += 1
+  -> clear events
+  -> tick every domain once
   -> notify subscribers
-  -> aggregate snapshots
-  -> render world canvas and replace interface HTML
+  -> aggregate snapshot
+  -> render world and UI
+  -> requestAnimationFrame(draw)
+```
 
-player intent
-  -> data-action or hard-coded data-command
-  -> direct engine.command
-  -> domain mutation or rejection
-  -> publication
-  -> DOM adapter discards returned result
-  -> later frame projects aggregate state
+## Clock findings
 
-internal/debug intent
-  -> GameHost.engine.command or GameHost.tick
-  -> bypass product capability classification and binding policy
-  -> mutate or advance the same live graph
+### Display cadence controls gameplay speed
+
+`draw()` passes a constant `1 / 60`; it never reads the RAF timestamp. At 30 Hz, only 30 simulation steps occur per second. At 120 Hz, 120 steps occur per second.
+
+```txt
+pressure growth per real second
+  30 Hz  -> 0.4 rowPressure, 0.1 curse
+  60 Hz  -> 0.8 rowPressure, 0.2 curse
+  120 Hz -> 1.6 rowPressure, 0.4 curse
+```
+
+Night pest admission, pursuit and damage scale the same way because they consume the same fixed delta once per RAF.
+
+### The runtime is not an accumulator
+
+`engine.tick(delta)` clamps one supplied delta and ticks each domain once. It does not:
+
+```txt
+measure wall time
+accumulate residual time
+run zero or multiple fixed updates
+limit catch-up work
+record dropped time
+publish overrun results
+```
+
+### Automatic and manual ticks race
+
+`window.GameHost.tick(dt)` calls the same `engine.tick()` directly. A debug caller can advance elapsed time, frame count, pressure, pests, damage and automatic Outcome routing between browser RAF callbacks.
+
+### Lifecycle does not gate the clock
+
+Every domain ticks regardless of the active route. Pause, Entry, Title and Outcome are interface states, not simulation-clock barriers. The composition domain also checks terminal state on every tick and can route back to Outcome after Title.
+
+### Tick and render identities are conflated
+
+`ctx.frame` increments once per `engine.tick()`. The renderers consume a later aggregate snapshot, but there is no distinct:
+
+```txt
+simulationTickId
+renderFrameId
+clockRevision
+sessionEpoch
+stateFingerprint
+firstFrameAcknowledgement
 ```
 
 ## Domains in use
 
 ```txt
-static browser route and ESM boot
-browser runtime host
-kit registration and domain graph construction
-runtime command, tick, event, snapshot, subscription and publication routing
-12 scoped interface screens
-interface route composition and automatic Outcome routing
-resource ledger
-pressure field
+browser route and runtime host
+runtime graph construction
+command, tick, event, snapshot, subscription and publication routing
+12 interface-screen domains
+route composition and automatic Outcome routing
+resource ledger and pressure field
 orchard world and apple lifecycle
-construction runtime
-roster runtime
-inventory runtime
+construction, roster and inventory
 active-session movement, collection, phases, pests, damage, score and failure
 world canvas projection
-HTML interface projection and delegated input
-GameHost diagnostics and debug control
-Node smoke fixture
-static build copy
-Pages deployment
+HTML projection and delegated input
+GameHost diagnostics/manual control
+smoke, build and Pages deployment
 missing runtime-session authority
 missing fixed-step clock authority
-missing public capability gateway and reachability authority
-missing composite-command transaction authority
-missing seeded replay authority
-missing versioned persistence authority
+missing capability, transaction, replay and persistence authority
 ```
 
-## Implemented kit inventory
+## Implemented kits and services
 
-```txt
-kit-runtime
-scoped-interface-domain-kit
-entry-domain-kit
-session-select-domain-kit
-run-setup-domain-kit
-active-session-domain-kit
-interrupt-domain-kit
-construction-domain-kit
-exchange-domain-kit
-roster-domain-kit
-inventory-domain-kit
-knowledge-domain-kit
-preferences-domain-kit
-outcome-domain-kit
-interface-composition-kit
-resource-ledger-kit
-pressure-field-kit
-orchard-world-kit
-construction-runtime-kit
-roster-runtime-kit
-inventory-runtime-kit
-world-canvas-render-kit
-html-interface-render-kit
-game-host-diagnostics-kit
-smoke-fixture-kit
-static-build-copy-kit
-pages-deploy-kit
-```
-
-## Kit services
-
-- `kit-runtime`: kit registration, domain creation, unrestricted command routing, delta clamping, all-domain ticking, events, aggregate snapshots, subscriptions and publication.
-- Screen kits: screen state, action catalogs, selection, field mutation, metadata, activation, static disabled-action rejection and snapshots.
-- `interface-composition-kit`: route ownership, transition, back navigation, parent activation, nested child dispatch and automatic Outcome routing.
-- `resource-ledger-kit`: affordability, Boolean payment, resource addition and snapshots.
-- `pressure-field-kit`: bounded adjustment, passive growth and snapshots.
-- `orchard-world-kit`: tree generation, random apple seeding/replenishment, nearby collection and snapshots.
-- `construction-runtime-kit`: catalog lookup with first-item fallback, resource payment, built-object creation and status messages.
-- `roster-runtime-kit`: actor/role state, hire payment, actor creation and status messages.
-- `inventory-runtime-kit`: item state, equipment state and unvalidated equip mutation.
-- `active-session-domain-kit`: movement, collection, pest clearing, phase change, pest admission/placement, pursuit, damage, score and failure.
-- Render kits: canvas world projection, HUD, generic screens, slot cards, delegated action binding, hard-coded gameplay buttons and full HTML replacement.
-- Diagnostics/proof/deploy kits: raw engine exposure, snapshot readback, unrestricted manual tick, entry-to-play smoke, apple-presence smoke, static build and Pages deployment.
-
-## Capability census
-
-| Capability | Owner | Shipped binding | Classification |
-|---|---|---|---|
-| route navigation | screen/composition domains | generic action buttons | supported public |
-| move | active-session | none | implemented unreachable |
-| collect | active-session | quick button | public, deliberate reachability unproven |
-| clear | active-session | quick button | supported public |
-| next-phase | active-session | quick button | public, admission unscoped |
-| build storage shed | construction-runtime | Construction action | public, transaction-dependent |
-| hire | roster-runtime | none | implemented unreachable |
-| equip | inventory-runtime | none | unreachable and target-unvalidated |
-| Market transaction | no runtime owner | visible route | unsupported but presented |
-| Session Select | screen only | no incoming route | dormant |
-| direct resource/pressure commands | game domains | raw GameHost only | internal but bypassable |
-| manual tick | runtime | raw GameHost only | debug control, unrestricted |
-
-## Main finding
-
-There is no single public capability gateway.
-
-```txt
-DOM action
-  -> direct engine.command
-  -> result discarded
-
-GameHost action
-  -> raw engine.command or tick
-  -> no public/internal/debug distinction
-  -> no lifecycle, route, binding or target policy
-```
-
-A registry alone will not make the product truthful if callers can continue to bypass it or discard its results. Public interaction must use one admitted gateway; internal/debug controls must require explicit leases and expose detached observations rather than the raw engine.
+| Kit | Services |
+|---|---|
+| `kit-runtime` | kit registration, domain creation, direct command routing, delta clamp, all-domain tick, events, snapshots, subscriptions, publication |
+| screen domain kits | screen state, action catalogs, selection, fields, activation, static disabled state, snapshots |
+| `interface-composition-kit` | route ownership, transitions, back, nested dispatch, automatic Outcome routing |
+| `resource-ledger-kit` | affordability, Boolean payment, addition, snapshot |
+| `pressure-field-kit` | bounded adjustment, passive per-tick growth, snapshot |
+| `orchard-world-kit` | tree generation, random apple seeding/replenishment, nearby collection, snapshot |
+| `construction-runtime-kit` | catalog lookup, payment, construction creation, status |
+| `roster-runtime-kit` | hiring payment, actor creation, status |
+| `inventory-runtime-kit` | item/equipment state, equip mutation |
+| `active-session-domain-kit` | movement, collection, pest clearing, phase change, pest spawn/pursuit, damage, score, failure |
+| render kits | canvas world/HUD, interface HTML, delegated bindings, full projection replacement |
+| diagnostics/proof/deploy kits | raw engine, snapshot, manual tick, smoke, static copy, Pages deployment |
 
 ## Required composed domain
 
 ```txt
-zombie-orchard-public-capability-gateway-domain
-  -> capability-descriptor-kit
-  -> capability-registry-kit
-  -> public-command-envelope-kit
-  -> capability-gateway-kit
-  -> capability-lifecycle-admission-kit
-  -> capability-route-admission-kit
-  -> capability-target-admission-kit
-  -> input-binding-registry-kit
-  -> command-result-retention-kit
-  -> disabled-affordance-projection-kit
-  -> render-result-acknowledgement-kit
-  -> internal-command-policy-kit
-  -> debug-control-lease-kit
-  -> diagnostics-observation-kit
-  -> raw-engine-quarantine-kit
-  -> capability-gateway-journal-kit
-  -> capability-gateway-fixture-kit
+zombie-orchard-fixed-step-clock-authority-domain
+  -> clock-descriptor-kit
+  -> wall-time-sample-kit
+  -> fixed-step-accumulator-kit
+  -> simulation-tick-id-kit
+  -> render-frame-id-kit
+  -> lifecycle-tick-admission-kit
+  -> clock-catchup-budget-kit
+  -> dropped-time-result-kit
+  -> clock-overrun-policy-kit
+  -> automatic-tick-lease-kit
+  -> manual-step-command-kit
+  -> manual-automatic-exclusion-kit
+  -> visibility-resume-policy-kit
+  -> committed-tick-receipt-kit
+  -> render-frame-clock-ack-kit
+  -> clock-observation-kit
+  -> clock-journal-kit
+  -> cadence-parity-fixture-kit
+  -> pause-freeze-fixture-kit
 ```
 
-## Latest audit set
+## Required clock contract
 
 ```txt
-.agent/trackers/2026-07-11T10-00-12-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-11T10-00-12-04-00.md
-.agent/architecture-audit/2026-07-11T10-00-12-04-00-public-capability-gateway-dsk-map.md
-.agent/render-audit/2026-07-11T10-00-12-04-00-command-result-frame-ack-gap.md
-.agent/gameplay-audit/2026-07-11T10-00-12-04-00-player-action-debug-bypass-loop.md
-.agent/interaction-audit/2026-07-11T10-00-12-04-00-dom-gateway-gamehost-command-map.md
-.agent/capability-gateway-audit/2026-07-11T10-00-12-04-00-public-internal-debug-boundary-contract.md
-.agent/deploy-audit/2026-07-11T10-00-12-04-00-capability-gateway-fixture-gate.md
+wall-time sample
+  -> clamp frame delta
+  -> accumulate admitted time
+  -> run 0..N fixed simulation steps
+  -> advance one monotonic tick ID per step
+  -> stop at catch-up budget
+  -> emit dropped/deferred-time result
+  -> render latest committed tick once
+  -> acknowledge tick ID in render frame receipt
 ```
 
-## Central tracking
+## Fixture matrix
 
 ```txt
-repo-ledger/LuminaryLabs-Publish/ZombieOrchard.md
-internal-change-log/2026-07-11T10-00-12-04-00-zombie-orchard-public-capability-gateway.md
+30 / 60 / 120 Hz for equal wall duration -> equal committed tick count and state
+pause for wall duration -> zero gameplay ticks
+resume -> no unbounded catch-up burst
+large stall -> bounded steps plus explicit dropped/deferred time
+manual step while automatic clock active -> typed rejection
+manual step under debug lease -> exactly one committed tick
+terminal state -> exactly-once final tick and stable Outcome
+render frame -> cites latest committed tick and clock revision
 ```
 
 ## Ordered safe ledges
@@ -247,4 +219,4 @@ internal-change-log/2026-07-11T10-00-12-04-00-zombie-orchard-public-capability-g
 6. Versioned Save / Load Authority
 ```
 
-Gate 3 must consume session and committed-tick identity from Gates 1 and 2. Gate 4 must consume the same gateway and registry rather than creating a second command-admission model.
+Clock authority must consume session identity from Gate 1. Capability, transaction, replay and persistence layers must consume committed tick identity from this gate.
