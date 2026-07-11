@@ -8,8 +8,8 @@ status: runtime-session-instance-authority-audited
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: pending until central commit
-central internal change log: pending until central commit
+central ledger sync: complete
+central internal change log: complete
 ```
 
 ## Summary
@@ -30,6 +30,7 @@ central internal change log: pending until central commit
 - [x] Define runtime/session identity, lifecycle commands, handoff, rollback and disposal contracts.
 - [x] Add architecture, render, gameplay, interaction, lifecycle and deploy audits.
 - [x] Push documentation only to `main`.
+- [x] Synchronize the central ledger and internal change log.
 - [x] Create no branch or pull request.
 - [ ] Implement and execute runtime-session fixtures.
 
