@@ -3,99 +3,105 @@
 ## Last aligned
 
 ```txt
-2026-07-11T13-41-23-04-00
+2026-07-11T15-20-27-04-00
 ```
 
 ## Summary
 
-`ZombieOrchard` is a dependency-free static orchard survival and economy shell built from a small kit runtime, 12 interface domains, gameplay services, canvas and HTML projection, diagnostics, smoke proof, a static build and Pages deployment.
+`ZombieOrchard` is a dependency-free static orchard survival and economy shell built from a small kit runtime, 12 interface domains, gameplay services, canvas and HTML projection, diagnostics, smoke proof, static build and Pages deployment.
 
-The current audit establishes the missing runtime-session instance authority. The browser constructs one mutable graph before Play, then Play, New Game, Start, Pause, Title and Outcome only change interface routes. No runtime/session identity, fresh-run transaction, RAF lease, listener lease, renderer disposal, public-host revocation or ordered graph disposal exists.
+The current audit establishes the missing fixed-step clock authority. The browser advances exactly one hard-coded `1 / 60` simulation step per animation callback, so display cadence controls pressure growth, pest spawning, pursuit, damage and time to Outcome. There is no wall-time accumulator, bounded catch-up policy, pause/visibility clock barrier, independent simulation-tick/render-frame identity or automatic/manual tick exclusion.
 
 ## Plan ledger
 
-**Goal:** make every orchard run an identified, independently constructible and disposable session before adding authoritative timing, public capabilities, transactions, replay or persistence.
+**Goal:** preserve the current orchard behavior while making simulation time session-owned, cadence-independent, bounded under stalls, frozen during pause and provably correlated with rendered output.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
 - [x] Exclude `LuminaryLabs-Publish/TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` state.
 - [x] Select only `ZombieOrchard` as the oldest eligible central entry.
 - [x] Identify the interaction loop, domains, kits and services.
-- [x] Trace graph construction, route reuse, RAF, listeners, renderers and `GameHost` ownership.
-- [x] Add a timestamped tracker and architecture/system audits.
+- [x] Trace RAF timing, delta admission, pressure, pests, damage, Outcome routing and rendering.
+- [x] Define the fixed-step clock DSK boundary and its dependency on runtime-session authority.
+- [x] Add timestamped architecture and system audits.
 - [x] Change no runtime source.
 - [x] Push directly to `main` without a branch or pull request.
-- [ ] Implement runtime-session authority and executable lifecycle fixtures.
+- [ ] Implement Gate 1 runtime-session authority.
+- [ ] Implement Gate 2 fixed-step clock authority and executable fixtures.
 
 ## Read this first
 
 ```txt
-.agent/trackers/2026-07-11T13-41-23-04-00/project-breakdown.md
+.agent/trackers/2026-07-11T15-20-27-04-00/project-breakdown.md
 .agent/current-audit.md
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-11T13-41-23-04-00-runtime-session-instance-dsk-map.md
-.agent/render-audit/2026-07-11T13-41-23-04-00-session-frame-resource-correlation-gap.md
-.agent/gameplay-audit/2026-07-11T13-41-23-04-00-start-reset-title-outcome-reuse-loop.md
-.agent/interaction-audit/2026-07-11T13-41-23-04-00-lifecycle-command-session-admission-map.md
-.agent/lifecycle-audit/2026-07-11T13-41-23-04-00-runtime-graph-raf-listener-dispose-contract.md
-.agent/deploy-audit/2026-07-11T13-41-23-04-00-runtime-session-lifecycle-fixture-gate.md
-.agent/turn-ledger/2026-07-11T13-41-23-04-00.md
+.agent/architecture-audit/2026-07-11T15-20-27-04-00-fixed-step-clock-authority-dsk-map.md
+.agent/render-audit/2026-07-11T15-20-27-04-00-simulation-tick-render-frame-correlation-gap.md
+.agent/gameplay-audit/2026-07-11T15-20-27-04-00-raf-cadence-pressure-pest-speed-loop.md
+.agent/interaction-audit/2026-07-11T15-20-27-04-00-pause-manual-step-clock-admission-map.md
+.agent/clock-authority-audit/2026-07-11T15-20-27-04-00-wall-time-accumulator-catchup-contract.md
+.agent/deploy-audit/2026-07-11T15-20-27-04-00-cadence-parity-fixture-gate.md
+.agent/turn-ledger/2026-07-11T15-20-27-04-00.md
 .agent/kit-registry.json
 ```
 
 ## Product interaction loop
 
 ```txt
-module import
+module boot
   -> create one engine graph immediately
   -> create canvas and HTML renderers
   -> attach delegated click listener
   -> expose raw GameHost
-  -> start unretained recursive RAF
+  -> start recursive RAF
 
-Play / New Game / Start
-  -> route the same graph to active-session
+one RAF callback
+  -> engine.tick(1 / 60)
+  -> tick every domain once
+  -> grow pressure and curse
+  -> run night pest-spawn trial
+  -> move pests and apply damage
+  -> route to Outcome when ended
+  -> aggregate snapshot
+  -> render canvas and HTML
+  -> schedule next callback
 
-Pause / Resume / Title
-  -> route changes only
-  -> graph remains live and ticks
-
-Failure / Outcome / Title
-  -> ended graph remains live
-  -> later composition tick can reopen Outcome
-
-page unload
-  -> implicit browser cleanup only
-  -> no explicit dispose result
+manual diagnostics
+  -> GameHost.tick(dt)
+  -> mutate the same graph outside RAF ownership
 ```
 
 ## Main finding
 
 ```txt
-one page lifetime
-  -> one mutable graph
-  -> unidentified run state
-  -> unretained RAF
-  -> anonymous delegated listener
-  -> renderer owners without dispose
-  -> raw global engine/tick capability
-  -> no fresh-run authority transfer
-  -> no ordered disposal
+browser callback cadence
+  -> simulation tick count
+  -> simulated elapsed time
+  -> pressure growth
+  -> pest-spawn trial count
+  -> pursuit and damage
+  -> terminal timing
 ```
 
-`New Game` does not create new resources, pressure, orchard state, construction state, roster, inventory, player, pests, score or terminal latch. It only changes the active interface route.
+At 30 Hz the product advances roughly half as much simulation time per wall second as at 60 Hz. At 120 Hz it advances roughly twice as much. Background throttling has no explicit catch-up, defer or drop result. Pause and Title are routes, not clock barriers, and unrestricted `GameHost.tick(dt)` can compete with automatic RAF stepping.
 
 ## Domains in use
 
 ```txt
 static browser route and ESM boot
 browser runtime/session host
-kit registration and domain graph construction
+kit registration and mutable graph construction
 command, tick, event, snapshot, subscription and publication routing
+runtime/session lifecycle authority: missing
+wall-time sampling and fixed-step accumulation: missing
+catch-up budget and overrun policy: missing
+pause/resume and visibility clock policy: missing
+automatic/manual tick ownership: missing
+simulation-tick and render-frame identity: missing
 12 scoped interface-screen domains
-interface route composition and automatic Outcome routing
+interface composition and automatic Outcome routing
 resource ledger and pressure field
 orchard world and apple lifecycle
 construction, roster and inventory runtimes
@@ -104,7 +110,6 @@ world canvas projection
 HTML projection and delegated interaction
 GameHost diagnostics and direct mutation
 Node smoke, static build and Pages deployment
-missing session, clock, capability, transaction, replay and persistence authority
 ```
 
 ## Implemented kits
@@ -139,6 +144,59 @@ static-build-copy-kit
 pages-deploy-kit
 ```
 
+## Kit services
+
+```txt
+kit runtime
+  registration, domain creation, direct commands, delta clamp,
+  elapsed/frame mutation, all-domain ticks, events, snapshots,
+  subscriptions and publication
+
+interface kits
+  screen state, actions, selection, fields, activation,
+  disabled-state projection, routing and nested dispatch
+
+game kits
+  resources, pressure, orchard/apples, construction, hiring,
+  equipment, movement, phase changes, pests, damage, score and failure
+
+render kits
+  orchard canvas, HUD, generic screen HTML, delegated bindings
+  and per-frame DOM replacement
+
+diagnostics/proof/deploy
+  raw engine, snapshots, unrestricted manual tick,
+  Entry-to-Play smoke, apple proof, static copy and Pages chain
+```
+
+## Required clock domain
+
+```txt
+zombie-orchard-fixed-step-clock-authority-domain
+  -> clock-descriptor-kit
+  -> monotonic-wall-time-sample-kit
+  -> wall-time-baseline-kit
+  -> fixed-step-accumulator-kit
+  -> lifecycle-tick-admission-kit
+  -> simulation-tick-id-kit
+  -> simulation-tick-result-kit
+  -> clock-catchup-budget-kit
+  -> clock-overrun-policy-kit
+  -> dropped-time-result-kit
+  -> pause-clock-barrier-kit
+  -> visibility-resume-policy-kit
+  -> automatic-tick-lease-kit
+  -> manual-step-command-kit
+  -> manual-automatic-exclusion-kit
+  -> render-frame-id-kit
+  -> committed-tick-receipt-kit
+  -> render-frame-clock-ack-kit
+  -> clock-observation-kit
+  -> clock-journal-kit
+  -> cadence-parity-fixture-kit
+  -> pause-stall-manual-step-fixture-kit
+```
+
 ## Ordered implementation queue
 
 ```txt
@@ -154,7 +212,8 @@ pages-deploy-kit
 
 ```txt
 ZombieOrchard Runtime Session Instance Authority
-+ Start / New Run / Title / Outcome / Dispose Fixture Gate
++ ZombieOrchard Fixed-Step Clock Authority
++ Start / Pause / 30-60-120 Hz / Stall / Manual-Step Fixture Gate
 ```
 
-The fixed-step clock must consume the session identity and lifecycle admission established here. Do not add a second session model inside the clock.
+Gate 2 must consume Gate 1 runtime/session identity, lifecycle state and stale-callback fencing. It must not create a second session model.
