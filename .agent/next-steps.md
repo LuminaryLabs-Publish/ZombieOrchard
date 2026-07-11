@@ -8,8 +8,8 @@
 - [ ] Implement fixed-step clock authority using the session owner.
 - [ ] Add a public capability gateway and quarantine raw diagnostics.
 - [ ] Add composite command transaction authority.
-- [ ] Inject seeded random streams and replay receipts.
-- [ ] Add versioned save/load authority.
+- [ ] Inject isolated seeded random streams and replay receipts.
+- [ ] Add versioned save/load authority that restores random authority state.
 - [ ] Gate deployment on lifecycle, cadence, transaction, replay and persistence fixtures.
 
 ## Ordered implementation queue
@@ -22,235 +22,209 @@
    + Pause / 30-60-120 Hz / Stall / Visibility / Manual-Step Fixture Gate
 
 3. Public Capability Gateway and Reachability
-   + Registry / Binding / Diagnostics-Quarantine Fixture Gate
+   + Registry / Binding / Result / Diagnostics-Quarantine Fixture Gate
 
 4. Composite Command Transaction Authority
-   + Parent / Child Result and Single-Publication Fixture Gate
+   + Parent / Child / Resource / Rollback / Single-Publication Fixture Gate
 
 5. Seeded Random and Replay Authority
-   + Apple / Pest Determinism Fixture Gate
+   + Apple / Pest / Stream Isolation / Replay Parity Fixture Gate
 
 6. Versioned Save / Load Authority
-   + Slot Roundtrip and Atomic Load Fixture Gate
+   + Slot Roundtrip / Random Continuation / Atomic Load Fixture Gate
 ```
 
-## Gate 1 prerequisite — Runtime session instance authority
+## Gates 1–4 prerequisites
 
-The clock must consume, not duplicate:
+Gate 5 must consume, not duplicate:
 
 ```txt
 runtimeId
 sessionId
+runId
 sessionEpoch
-lifecycleState
-lifecycleRevision
-callback generation
-current graph authority
-RAF lease
+lifecycle state and revision
+committed simulationTickId
+commandId
+transactionId
+commit or rollback result
+canonical durable-state fingerprint hook
 ```
 
-Before Gate 2, Gate 1 must provide:
+Random draws cannot be authoritative until the command or tick that requested them has an authoritative commit boundary.
 
-```txt
-one retained RAF owner
-stale-callback rejection
-pause/resume lifecycle admission
-fresh-run authority transfer
-ordered disposal
-revocable public host
-```
-
-## Gate 2 — Fixed-step clock authority
+## Gate 5 — Seeded Random and Replay Authority
 
 ### 1. Add the parent owner
 
 Create:
 
 ```txt
-zombie-orchard-fixed-step-clock-authority-domain
+zombie-orchard-seeded-random-replay-authority-domain
 ```
 
 It owns:
 
 ```txt
-clock descriptor
-monotonic wall-time baseline
-accumulator remainder
-clock revision
-simulation tick sequence
-render frame sequence
-catch-up budget
-overrun policy
-automatic tick lease
-manual debug lease
-bounded clock journal
+runSeed
+randomPolicyId
+randomPolicyVersion
+seedFingerprint
+named stream registry
+per-stream PRNG state and cursor
+committed entity sequences
+committed random receipts
+bounded replay journal
+replay journal revision
 ```
 
-### 2. Replace one-step-per-RAF timing
+### 2. Replace global randomness
 
-Current:
+Current random consumers:
 
 ```txt
-RAF callback
-  -> engine.tick(1 / 60)
+orchard-world-kit
+  -> apple tree choice
+  -> apple id
+  -> apple x/y offsets
+  -> apple rarity
+
+active-session-domain-kit
+  -> pest admission
+  -> pest angle
+  -> pest id
 ```
 
-Required:
+Required named streams:
 
 ```txt
-RAF callback(timestamp)
-  -> sample monotonic wall time
-  -> validate session/lifecycle/generation
-  -> derive accepted wall delta
-  -> add to accumulator
-  -> execute zero or more fixed ticks up to budget
-  -> render once from latest committed tick
+orchard.apple-tree
+orchard.apple-offset-x
+orchard.apple-offset-y
+orchard.apple-kind
+session.pest-admission
+session.pest-angle
 ```
 
-### 3. Version the clock descriptor
+### 3. Use deterministic entity identity
+
+Replace random strings with committed sequence-derived IDs:
 
 ```txt
-fixedStep
-maxFrameDelta
-maxCatchupSteps
-overflowPolicy
-pauseAccumulatorPolicy
-renderPolicy
+apple-{runId}-{appleSequence}
+pest-{runId}-{pestSequence}
 ```
 
-Do not leave timing policy as hidden literals.
+Sequence increments occur only when entity creation commits.
 
-### 4. Separate identities
+### 4. Stage random draws inside transactions
 
 ```txt
+admitted command or fixed tick
+  -> stage named-stream draws
+  -> stage gameplay mutation
+  -> commit transaction
+  -> advance stream cursor
+  -> append random receipts
+  -> fingerprint durable state
+```
+
+Rejected, duplicate, stale or rolled-back work must not advance authoritative cursors.
+
+### 5. Isolate gameplay systems
+
+Apple generation must not perturb pest outcomes. Pest admission must consume exactly one draw per committed eligible night tick. Pest placement draws occur only after an admitted spawn commits.
+
+### 6. Add replay envelopes
+
+Record:
+
+```txt
+replay event sequence
+runtime/session/run/epoch
+committed simulation tick
+public or system command
+transaction result
+random receipt range
+state fingerprint
+terminal result when present
+```
+
+Do not record canvas pixels or HTML as replay inputs.
+
+### 7. Add replay verification
+
+```txt
+load manifest, preset and random policy revisions
+  -> restore initial authority state
+  -> replay admitted commands at recorded committed ticks
+  -> reproduce stream receipts and cursors
+  -> compare durable-state fingerprints
+  -> stop at first typed divergence
+```
+
+### 8. Add observability
+
+Canvas, HTML and GameHost observations should cite:
+
+```txt
+seedFingerprint
+randomPolicyVersion
+latestRandomReceiptId
+randomReceiptRange for acknowledged result/tick
+stateFingerprint
 simulationTickId
-  increments once per committed simulation tick
-
 renderFrameId
-  increments once per attempted/committed browser presentation
-
-clockRevision
-  increments for committed clock-state transitions
 ```
 
-`ctx.frame` must not represent both mutation and presentation.
-
-### 5. Add lifecycle admission
+### 9. Add DOM-free fixtures
 
 ```txt
-RUNNING
-  automatic fixed ticks admitted
-
-PAUSED / TITLE / OUTCOME by declared policy
-  simulation mutation rejected or frozen
-
-DISPOSING / DISPOSED
-  all clock mutation rejected
-
-stale session/epoch/generation
-  reject
+same-seed startup parity
+different-seed intentional divergence
+apple stream determinism
+pest stream determinism
+apple/pest stream isolation
+rejected command cursor freeze
+duplicate command idempotency
+rollback cursor restoration
+fixed-tick replay parity
+first-divergence localization
 ```
 
-Route names must not implicitly define clock behavior.
-
-### 6. Define catch-up and overflow behavior
-
-For a delayed callback:
+### 10. Add browser fixtures
 
 ```txt
-accepted frame delta
-  -> clamp by maxFrameDelta
-  -> execute at most maxCatchupSteps
-  -> retain, defer or drop excess by explicit policy
-  -> return a typed overrun result
+explicit-seed run startup
+visible seed/policy observation
+collection and night random receipt acknowledgement
+replay final-frame parity
+stale policy/manifest rejection
 ```
 
-Never silently discard or simulate unbounded time.
+## Gate 6 — Versioned Save / Load Authority
 
-### 7. Define pause and visibility barriers
+A durable save must include:
 
 ```txt
-pause
-  -> stop mutation
-  -> retire wall-time baseline
-
-resume
-  -> establish new baseline
-  -> first resumed callback adds no hidden elapsed time
-
-visibility restore
-  -> same baseline-reset rule
+manifest and preset fingerprints
+runtime/session/run identity policy
+committed durable gameplay state
+random policy and seed fingerprint
+all stream algorithm states and cursors
+entity sequences
+latest committed tick
+replay journal revision or continuation marker
 ```
 
-### 8. Quarantine manual stepping
-
-Replace unrestricted `GameHost.tick(dt)` with:
-
-```txt
-AcquireManualStepLeaseCommand
-ManualStepCommand { stepCount }
-ReleaseManualStepLeaseCommand
-```
-
-Manual stepping rejects while automatic clock ownership is active. Automatic mutation rejects while a manual lease is active.
-
-### 9. Correlate presentation
-
-Every canvas, HTML and public observation receipt must include:
-
-```txt
-runtimeId
-sessionId
-sessionEpoch
-simulationTickId
-clockRevision
-renderFrameId
-stateFingerprint hook
-```
-
-### 10. Add Gate 2 fixtures
-
-```txt
-30/60/120 Hz equal-wall-time parity
-zero-tick render callback
-multi-tick catch-up callback
-bounded stall overflow
-pause freeze
-resume baseline reset
-visibility baseline reset
-automatic/manual exclusion
-exclusive manual stepping
-stale-session callback rejection
-canvas/HTML/GameHost tick parity
-```
-
-## Gate 3 — Public capability gateway
-
-1. Route browser actions through one admitted gateway.
-2. Attach session, epoch, lifecycle and committed tick identity.
-3. Validate route, binding, target and service readiness.
-4. Retain results until a render frame acknowledges them.
-5. Remove raw engine and unrestricted tick from the default host.
-
-## Gate 4 — Composite command transactions
-
-1. Add command and transaction identity.
-2. Preflight parent and child plans.
-3. Stage resource/gameplay mutations.
-4. Preserve child results.
-5. Commit or roll back once, publish once and correlate the first frame.
-
-## Gates 5 and 6
-
-1. Inject session-owned random streams for apples and pests.
-2. Record random decisions and committed ticks for replay.
-3. Add a versioned save envelope with staged restore, migration, commit and rollback.
-4. Consume session, tick and state-fingerprint identities from earlier gates.
+Loading gameplay state without random stream state is not a valid continuation.
 
 ## Next safe ledge
 
 ```txt
 ZombieOrchard Runtime Session Instance Authority
-+ ZombieOrchard Fixed-Step Clock Authority
-+ Start / Pause / 30-60-120 Hz / Stall / Visibility / Manual-Step Fixture Gate
++ Fixed-Step Clock Authority
++ Composite Command Transaction Authority
++ Seeded Random and Replay Authority
++ Same-Seed / Stream-Isolation / Replay-Parity Fixture Gate
 ```
