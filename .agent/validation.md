@@ -2,7 +2,7 @@
 
 ## Latest pass
 
-`2026-07-10T22-11-24-04-00`
+`2026-07-10T23-50-53-04-00`
 
 ## Documentation validation performed
 
@@ -11,18 +11,18 @@
 - Confirmed all nine eligible non-Cavalry repositories have central ledger and root .agent state.
 - Excluded LuminaryLabs-Publish/TheCavalryOfRome.
 - Selected only ZombieOrchard as the oldest eligible documented fallback.
-- Re-read package.json and the active source path.
-- Re-read src/start.js and src/game.js.
-- Re-read runtime.js, game-domains.js, composition.js, scoped-interface-domains.js, and orchard-preset.js.
-- Re-read both renderer modules and tests/smoke.mjs.
-- Reconfirmed the interaction loop, active domains, kits, and offered services.
-- Traced Play, New Game, Pause, Resume, Title, Outcome, Stop, and Dispose behavior.
-- Confirmed that Play and New Game are screen transitions only.
-- Confirmed that Title does not retire or reset the current state graph.
-- Confirmed that ended state survives Outcome -> Title and can force Outcome again.
-- Confirmed that no session epoch, reset factory, stop, or disposal contract exists.
-- Added timestamped tracker, turn ledger, architecture, render, gameplay, interaction, session-authority, and deploy audits.
-- Refreshed the required root .agent files and kit registry.
+- Re-read package.json, src/start.js, src/game.js and tests/smoke.mjs.
+- Re-read runtime.js, game-domains.js, composition.js, scoped-interface-domains.js and orchard-preset.js.
+- Re-read both renderer modules.
+- Reconfirmed the interaction loop, domains, kits and offered services.
+- Traced every direct global Math.random() consumer.
+- Confirmed orchard-world randomizes tree selection, apple ID, offsets and kind.
+- Confirmed active-session randomizes night spawn admission, pest angle and pest ID.
+- Confirmed no seed, random provider, stream state, draw index, decision row or replay receipt exists.
+- Confirmed snapshots and GameHost omit random provenance.
+- Confirmed the existing smoke test does not assert deterministic behavior.
+- Added timestamped tracker, turn ledger, architecture, render, gameplay, interaction, randomness and deploy audits.
+- Refreshed all required root .agent files and the kit registry.
 ```
 
 ## Runtime validation not performed
@@ -37,78 +37,79 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-session start/reset fixture: not run because it does not exist yet
-title/outcome fixture: not run because it does not exist yet
-stop/dispose fixture: not run because it does not exist yet
-30/60/120 Hz parity fixture: not run because it does not exist yet
-movement reachability fixture: not run because it does not exist yet
+session fixtures: not run because they do not exist yet
+clock parity fixtures: not run because they do not exist yet
+capability fixtures: not run because they do not exist yet
+seed/replay fixtures: not run because they do not exist yet
 ```
 
 ## Why runtime validation was not run
 
-This pass changed internal documentation only. The available GitHub connector supported source inspection and direct documentation updates but did not execute repository-local Node or browser commands.
+This pass changed internal documentation only. Source inspection and documentation updates were performed through the GitHub connector; repository-local Node and browser execution were not available in this run.
 
 ## Required Gate 1 fixtures — session instance and reset fidelity
 
 ```txt
 fresh boot reports idle with sessionEpoch 0
-Play commits running with sessionEpoch 1
-Play creates one preset-backed state fingerprint
-New Game increments the epoch and restores every reset-owned domain
-resources reset to preset values
-pressure resets to preset values
-orchard population resets according to the selected deterministic policy
-construction built list resets
-roster actors reset
-inventory equipment resets
-active-session day, phase, player, pests, score, message, and ended reset
+Play commits one running session
+New Game increments epoch and restores every reset-owned domain
 Pause freezes gameplay-owned fingerprints
-Resume preserves epoch and resumes from the same committed state
-Title retires or stops the session according to explicit policy
+Title retires or stops the current run
 Outcome records ended once
-Outcome -> Title stays on Entry and does not bounce back
-repeated New Game produces exactly one live session owner
+Outcome -> Title stays on Entry
 Stop cancels future automatic ticks
 Dispose removes click and RAF ownership
-commands after dispose return a stable rejection result
-GameHost readback is detached, bounded, and JSON-safe
+commands after dispose return a stable rejection
+GameHost lifecycle readback is detached, bounded and JSON-safe
 ```
 
 ## Required Gate 2 fixtures — fixed-step clock
 
 ```txt
 manual wall clock
-30 Hz render schedule over fixed wall time
-60 Hz render schedule over fixed wall time
-120 Hz render schedule over fixed wall time
-same committed simulation tick count across schedules
-same gameplay fingerprint across schedules
-maximum catch-up policy enforced
+30/60/120 Hz render schedules over equal wall time
+same committed simulation tick count
+same gameplay fingerprint
+maximum catch-up policy
 bounded dropped-time result
 render frame ID separated from simulation tick ID
-manual GameHost tick rejected during automatic mode
+manual tick rejected during automatic mode
 ```
 
 ## Required Gate 3 fixtures — capability reachability
 
 ```txt
 canonical capability catalog
-stable capability IDs and ownership
 public/direct/indirect/internal/dormant/unsupported classification
-route for every public screen capability
-rendered affordance for every public direct capability
-binding for every rendered affordance
+route and affordance for every public direct capability
 typed result for every public command
-keyboard and accessible on-screen movement
-movement rejection outside running state
+keyboard and accessible movement
+movement rejected outside running state
 seeded move-to-apple and collect scenario
 roster hire and inventory equip reachable or non-public
-Session Select linked or dormant
 Market explicitly unsupported until implemented
 disabled actions rendered disabled
-browser smoke for movement, collection, build, and pause rejection
+```
+
+## Required Gate 4 fixtures — seeded random and replay authority
+
+```txt
+explicit seed accepted by session start
+generated seed returned and retained when no seed is supplied
+separate world and encounter stream cursors
+same seed creates the same initial apple IDs, positions and kinds
+same seed plus same collect sequence creates the same replenishment apples
+same seed plus same committed night ticks creates the same spawn decisions
+same seed creates the same pest IDs and spawn positions
+same command/tick schedule creates the same score, damage and ended result
+random decision rows carry epoch, tick, stream, draw index, purpose and outcome
+state fingerprints carry the consumed random decision range
+pause does not advance any random stream
+New Game follows the declared seed reuse or replacement policy
+different seeds diverge while preserving invariants
+replay receipt reproduces the final committed fingerprint
 ```
 
 ## Deployment statement
 
-The existing Pages workflow already runs `npm test` before `npm run build`. The workflow shape is adequate. The missing protection is fixture coverage for session-instance authority, reset fidelity, title/outcome behavior, clock parity, disposal, and capability reachability.
+The existing Pages workflow already runs `npm test` before `npm run build`. The workflow shape is adequate. The missing protection is fixture coverage for session authority, clock parity, capability reachability, seeded streams, deterministic replay, and render/state provenance.
