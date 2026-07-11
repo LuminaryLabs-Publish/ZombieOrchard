@@ -9,7 +9,7 @@ status: lifecycle-first-capability-reachability-second-gate-planned
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: pending until repo-local audit set is complete
+central ledger sync: complete
 ```
 
 ## Selection audit
