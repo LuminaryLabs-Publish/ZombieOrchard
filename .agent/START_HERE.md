@@ -3,7 +3,7 @@
 ## Last aligned
 
 ```txt
-2026-07-10T22-11-24-04-00
+2026-07-10T23-50-53-04-00
 ```
 
 ## Current implementation queue
@@ -17,25 +17,28 @@
 
 3. ZombieOrchard Interaction Capability Reachability
    + Movement/Service-Binding Fixture Gate
+
+4. ZombieOrchard Seeded Random and Replay Authority
+   + Apple/Pest Determinism Fixture Gate
 ```
 
-The first gate is now narrower and more explicit. The browser constructs one mutable game instance before the player starts, and Play, New Game, Title, and Outcome controls only change interface screens. No lifecycle transaction creates, resets, retires, or identifies a session instance.
+The newest audit adds the fourth gate without changing the first three priorities. Apple placement, apple identity and kind, pest identity and spawn direction, and night spawn admission all call global `Math.random()`. No seed, random-stream state, decision journal, or replay receipt reaches the runtime snapshot or `GameHost`.
 
 ## Read this first
 
 ```txt
-.agent/trackers/2026-07-10T22-11-24-04-00/project-breakdown.md
+.agent/trackers/2026-07-10T23-50-53-04-00/project-breakdown.md
 .agent/current-audit.md
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-10T22-11-24-04-00-runtime-session-instance-reset-dsk-map.md
-.agent/render-audit/2026-07-10T22-11-24-04-00-screen-session-state-divergence-gap.md
-.agent/gameplay-audit/2026-07-10T22-11-24-04-00-play-new-title-outcome-reset-loop.md
-.agent/interaction-audit/2026-07-10T22-11-24-04-00-lifecycle-control-admission-result-map.md
-.agent/session-authority-audit/2026-07-10T22-11-24-04-00-session-epoch-reset-dispose-contract.md
-.agent/deploy-audit/2026-07-10T22-11-24-04-00-session-reset-fidelity-fixture-gate.md
-.agent/turn-ledger/2026-07-10T22-11-24-04-00.md
+.agent/architecture-audit/2026-07-10T23-50-53-04-00-random-source-replay-authority-dsk-map.md
+.agent/render-audit/2026-07-10T23-50-53-04-00-random-state-frame-provenance-gap.md
+.agent/gameplay-audit/2026-07-10T23-50-53-04-00-apple-pest-seed-replay-loop.md
+.agent/interaction-audit/2026-07-10T23-50-53-04-00-command-random-outcome-correlation-map.md
+.agent/randomness-audit/2026-07-10T23-50-53-04-00-seeded-rng-deterministic-replay-contract.md
+.agent/deploy-audit/2026-07-10T23-50-53-04-00-seed-replay-parity-fixture-gate.md
+.agent/turn-ledger/2026-07-10T23-50-53-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -44,15 +47,15 @@ The first gate is now narrower and more explicit. The browser constructs one mut
 The accessible `LuminaryLabs-Publish` inventory contains ten repositories. All nine eligible non-Cavalry repositories are centrally tracked and have root `.agent` state. `LuminaryLabs-Publish/TheCavalryOfRome` remains excluded.
 
 ```txt
-ZombieOrchard        selected / 2026-07-10T20-30-23-04-00
-TheUnmappedHouse     tracked  / 2026-07-10T20-38-24-04-00
-MyCozyIsland         tracked  / 2026-07-10T20-48-55-04-00
-PrehistoricRush      tracked  / 2026-07-10T21-00-16-04-00
-AetherVale           tracked  / 2026-07-10T21-08-52-04-00
-IntoTheMeadow        tracked  / 2026-07-10T21-19-36-04-00
-TheOpenAbove         tracked  / 2026-07-10T21-31-01-04-00
-HorrorCorridor       tracked  / 2026-07-10T21-39-22-04-00
-PhantomCommand       tracked  / 2026-07-10T21-49-26-04-00
+ZombieOrchard        selected / 2026-07-10T22-11-24-04-00
+TheUnmappedHouse     tracked  / 2026-07-10T22-21-17-04-00
+MyCozyIsland         tracked  / 2026-07-10T22-29-21-04-00
+AetherVale           tracked  / 2026-07-10T22-50-02-04-00
+IntoTheMeadow        tracked  / 2026-07-10T22-58-36-04-00
+PrehistoricRush      tracked  / 2026-07-10T23-08-11-04-00
+TheOpenAbove         tracked  / 2026-07-10T23-20-41-04-00
+HorrorCorridor       tracked  / 2026-07-10T23-30-13-04-00
+PhantomCommand       tracked  / 2026-07-10T23-40-35-04-00
 TheCavalryOfRome     excluded by rule
 ```
 
@@ -60,7 +63,7 @@ TheCavalryOfRome     excluded by rule
 
 ## Product read
 
-`ZombieOrchard` is a dependency-free static browser orchard survival and economy shell. It composes a small kit runtime, 12 scoped interface domains, gameplay service domains, two render surfaces, a diagnostic host, one Node smoke test, and a Pages deployment workflow.
+`ZombieOrchard` is a dependency-free static browser orchard survival and economy shell. It composes a small kit runtime, 12 scoped interface domains, six gameplay service domains, two render surfaces, a diagnostic host, one Node smoke test, and a Pages deployment workflow.
 
 ## Actual interaction loop
 
@@ -69,23 +72,30 @@ index.html
   -> src/boot.js
   -> src/start.js
   -> createOrchardGame(orchardPreset)
-  -> construct every gameplay and interface domain immediately
+  -> construct all interface and gameplay domains
+  -> orchard-world seeds 26 apples through global Math.random()
   -> attach one delegated root click listener
   -> begin one uncancelled requestAnimationFrame loop
   -> engine.tick(1 / 60)
-  -> tick all domains
+  -> pressure tick
+  -> active-session night spawn decision through global Math.random()
+  -> pest pursuit and damage
+  -> interface outcome projection
   -> aggregate snapshot
   -> render canvas and replace interface HTML
+  -> request next frame
 
-Play / New Game / Pause / Resume / Title / Outcome
-  -> interface-composition.activate
-  -> screen transition only
-  -> no session create, reset, epoch, stop, or disposal transaction
+browser commands
+  -> interface-composition or active-session command
+  -> synchronous state mutation
+  -> no command sequence, random-decision row, replay receipt, or committed fingerprint
 ```
 
 ## Main finding
 
-The runtime has screen navigation but no authoritative session instance. Because the same engine and mutable domains survive every route transition, `New Game` does not create a new run, `Title` does not retire the old run, and an ended session can force the interface back to Outcome on the next tick.
+The game has no authoritative random source. Two domains consume global `Math.random()` directly, random IDs are generated from random strings, and neither the seed nor generator state is captured. Equal inputs cannot reproduce the same orchard, pest sequence, score path, or failure time.
+
+Randomness is also coupled to tick cadence. Night spawn admission occurs once per simulation tick, so refresh-rate and catch-up behavior change both the number and order of random draws. A future fixed-step clock will improve cadence consistency, but deterministic replay still requires session-scoped seeded streams and durable random-decision rows.
 
 ## Next safe ledge
 
@@ -94,4 +104,11 @@ ZombieOrchard Runtime Session Instance Authority
 + Start/Reset/Title/Outcome Fidelity Fixture Gate
 ```
 
-Do not begin with Market content, economy balancing, renderer replacement, new pests, or visual polish. Establish session ownership and reset fidelity first.
+After session, clock, and capability ownership are established, implement:
+
+```txt
+ZombieOrchard Seeded Random and Replay Authority
++ Apple/Pest Determinism Fixture Gate
+```
+
+Do not begin with Market expansion, economy balancing, renderer replacement, new pests, or visual polish.
