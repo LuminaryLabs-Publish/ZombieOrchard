@@ -3,95 +3,105 @@
 ## Last aligned
 
 ```txt
-2026-07-11T17-01-11-04-00
+2026-07-11T18-28-40-04-00
 ```
 
 ## Summary
 
 `ZombieOrchard` is a dependency-free static orchard survival and economy shell built from a small kit runtime, 12 interface domains, gameplay services, canvas and HTML projection, diagnostics, smoke proof, static build and Pages deployment.
 
-The current audit establishes the missing seeded-random and replay authority. Apple startup/refill and night pest generation share process-global `Math.random()`. Player collection timing and browser tick cadence can therefore alter future random outcomes. No run seed, isolated stream, cursor, deterministic entity sequence, committed random receipt, replay journal or state fingerprint exists.
+The current audit establishes the missing runtime-session instance authority. The browser creates one mutable graph before Play, and Play, New Game, Start, Pause, Outcome and Title only change interface routes. After failure, Title returns to Entry without retiring the ended run; Play or Start reuses `ended = true`, and the next tick routes back to Outcome. Resources, pressures, orchard state, construction, roster, inventory, pests, score and player condition also survive.
 
 ## Plan ledger
 
-**Goal:** preserve the orchard's variability while making every committed apple and pest decision reproducible, stream-isolated, session-owned, replay-verifiable and continuable through future save/load authority.
+**Goal:** make every orchard run an identified, fresh, atomically committed and disposable authority before adding fixed-step clock, command transaction, seeded replay or persistence work.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
 - [x] Exclude `LuminaryLabs-Publish/TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
 - [x] Select only `ZombieOrchard` as the oldest eligible central entry.
 - [x] Identify the interaction loop, domains, implemented kits and services.
-- [x] Trace every source-backed global random draw.
-- [x] Define seed, named streams, cursors, receipts, deterministic IDs, replay journal and verification.
+- [x] Trace module boot, graph creation, routing, terminal failure, Title and restart paths.
+- [x] Define runtime/run identity, lifecycle, reset transaction, rollback, first-frame and disposal contracts.
 - [x] Add timestamped architecture and system audits.
 - [x] Change documentation only on `main` with no branch or pull request.
-- [ ] Implement prerequisite session, fixed-step clock and transaction authorities.
-- [ ] Implement seeded streams and replay fixtures.
+- [ ] Implement runtime-session authority and lifecycle fixtures.
+- [ ] Implement dependent clock, transaction, random/replay and persistence authorities.
 
 ## Read this first
 
 ```txt
-.agent/trackers/2026-07-11T17-01-11-04-00/project-breakdown.md
+.agent/trackers/2026-07-11T18-28-40-04-00/project-breakdown.md
 .agent/current-audit.md
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-11T17-01-11-04-00-seeded-random-replay-authority-dsk-map.md
-.agent/render-audit/2026-07-11T17-01-11-04-00-random-decision-frame-correlation-gap.md
-.agent/gameplay-audit/2026-07-11T17-01-11-04-00-apple-collection-pest-spawn-rng-coupling-loop.md
-.agent/interaction-audit/2026-07-11T17-01-11-04-00-command-tick-random-receipt-map.md
-.agent/random-replay-audit/2026-07-11T17-01-11-04-00-seed-stream-cursor-replay-contract.md
-.agent/deploy-audit/2026-07-11T17-01-11-04-00-random-replay-determinism-fixture-gate.md
-.agent/turn-ledger/2026-07-11T17-01-11-04-00.md
+.agent/architecture-audit/2026-07-11T18-28-40-04-00-runtime-session-instance-authority-dsk-map.md
+.agent/render-audit/2026-07-11T18-28-40-04-00-stale-run-first-frame-projection-gap.md
+.agent/gameplay-audit/2026-07-11T18-28-40-04-00-outcome-title-play-reuse-loop.md
+.agent/interaction-audit/2026-07-11T18-28-40-04-00-start-new-game-title-lifecycle-map.md
+.agent/session-lifecycle-audit/2026-07-11T18-28-40-04-00-run-instance-reset-transaction-contract.md
+.agent/deploy-audit/2026-07-11T18-28-40-04-00-fresh-run-lifecycle-fixture-gate.md
+.agent/turn-ledger/2026-07-11T18-28-40-04-00.md
 .agent/kit-registry.json
+```
+
+Retain the seeded-random audit as the later dependency:
+
+```txt
+.agent/architecture-audit/2026-07-11T17-01-11-04-00-seeded-random-replay-authority-dsk-map.md
+.agent/random-replay-audit/2026-07-11T17-01-11-04-00-seed-stream-cursor-replay-contract.md
 ```
 
 ## Product interaction loop
 
 ```txt
 module boot
-  -> create one engine graph
-  -> orchard-world seeds 26 apples
-     -> random tree, id, x, y and kind
-  -> create renderers and start RAF
+  -> create one mutable engine graph
+  -> seed orchard apples
+  -> create canvas and HTML renderers
+  -> install delegated click listener
+  -> start recursive RAF
 
-Collect
-  -> remove nearest apple
-  -> refill one apple through the same global random source
-  -> add resources, pressure and score
+Play / New Game / Start / Pause / Resume / Title
+  -> interface-composition route mutation only
+  -> no lifecycle transaction
+  -> no new graph or run identity
 
-Night RAF tick
-  -> global random pest-spawn trial
-  -> optional random pest angle and id
-  -> pursue player and apply damage
-  -> snapshot and render
+RAF
+  -> engine.tick(1 / 60) on every callback and route
+  -> world canvas renders orchard and active-session
+  -> HTML renders selected interface route
+
+failure
+  -> active-session.ended = true
+  -> composition routes to Outcome
+
+Outcome -> Title -> Play
+  -> Entry route, then active-session route
+  -> same ended graph
+  -> next tick routes back to Outcome
 ```
 
 ## Main finding
 
 ```txt
-successful apple collection
-  -> consumes five global random draws
-  -> shifts the next pest-admission value
-  -> changes later pest population and placement
-
-more browser callbacks
-  -> more night spawn trials
-  -> faster global random cursor advancement
+visible New Game semantics
+  !=
+actual route-only behavior
 ```
 
-Global `Math.random()` is not observable or restorable. Random string entity IDs make canonical replay comparison harder. Presentation snapshots show resulting entities but not the seed, stream, cursor, decision, tick or transaction that created them.
+There is no `runtimeId`, `runId`, `sessionEpoch`, lifecycle state machine, fresh-run factory, reset transaction, rollback, stale-callback rejection, first-run-frame acknowledgement or ordered disposal.
 
 ## Domains in use
 
 ```txt
 static browser route and ESM boot
-browser runtime/session host
+runtime and run lifecycle authority: missing
 kit registration and mutable graph construction
 command, tick, event, snapshot, subscription and publication routing
-runtime-session lifecycle authority: missing
-fixed-step clock and committed tick identity: missing
-public capability and command transaction authority: missing
+fixed-step committed tick authority: missing
+public capability and composite transaction authority: missing
 seeded random stream and replay authority: missing
 versioned persistence authority: missing
 12 scoped interface-screen domains
@@ -142,33 +152,34 @@ pages-deploy-kit
 | Kit group | Services |
 |---|---|
 | runtime | registration, domain creation, commands, ticks, events, snapshots, subscriptions and publication |
-| interface | screen state, actions, fields, activation, routing, nested dispatch and Outcome routing |
-| game | resources, pressure, orchard/apples, collection/refill, construction, hiring, equipment, movement, phases, pest spawning, pursuit, damage, score and failure |
+| interface | screen state, actions, selection, fields, activation, routing, nested dispatch and automatic Outcome routing |
+| game | resources, pressure, orchard/apples, collection/refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
 | render | orchard canvas, HUD, generic screens, delegated bindings and per-frame DOM projection |
 | diagnostics/proof/deploy | raw engine, snapshot, manual tick, smoke proof, static copy and Pages chain |
 
-## Required random and replay domain
+## Required runtime-session domain
 
 ```txt
-zombie-orchard-seeded-random-replay-authority-domain
-  -> run-seed-descriptor-kit
-  -> deterministic-prng-kit
-  -> random-stream-registry-kit
-  -> random-stream-id-kit
-  -> random-cursor-kit
-  -> random-draw-result-kit
-  -> apple-generation-policy-kit
-  -> pest-spawn-policy-kit
-  -> deterministic-entity-id-kit
-  -> committed-tick-random-receipt-kit
-  -> replay-command-envelope-kit
-  -> replay-journal-kit
-  -> replay-state-fingerprint-kit
-  -> replay-verifier-kit
-  -> random-stream-snapshot-kit
-  -> stale-replay-rejection-kit
-  -> apple-pest-determinism-fixture-kit
-  -> replay-parity-fixture-kit
+zombie-orchard-runtime-session-authority-domain
+  -> runtime-instance-id-kit
+  -> run-instance-id-kit
+  -> session-epoch-kit
+  -> lifecycle-state-machine-kit
+  -> fresh-run-state-factory-kit
+  -> run-start-command-kit
+  -> run-start-admission-kit
+  -> run-reset-plan-kit
+  -> run-reset-transaction-kit
+  -> run-state-commit-kit
+  -> route-session-binding-kit
+  -> run-end-latch-kit
+  -> title-exit-transaction-kit
+  -> stale-run-command-rejection-kit
+  -> run-snapshot-provenance-kit
+  -> first-run-frame-ack-kit
+  -> runtime-session-journal-kit
+  -> fresh-run-fixture-kit
+  -> restart-disposal-fixture-kit
 ```
 
 ## Ordered implementation queue
@@ -186,10 +197,10 @@ zombie-orchard-seeded-random-replay-authority-domain
 
 ```txt
 ZombieOrchard Runtime Session Instance Authority
-+ Fixed-Step Clock Authority
-+ Composite Command Transaction Authority
-+ Seeded Random and Replay Authority
-+ Apple/Pest Determinism and Replay Parity Fixture Gate
++ Start / New Game / Outcome / Title / Reset Contract
++ Stale Callback and Command Fence
++ First Fresh Run Frame Acknowledgement
++ Lifecycle and Disposal Fixture Gate
 ```
 
-Seeded replay must consume earlier runtime/session, committed-tick and transaction identities. It must not introduce parallel ownership.
+Later authorities must consume the committed runtime/run/epoch identity and must not create parallel ownership.
