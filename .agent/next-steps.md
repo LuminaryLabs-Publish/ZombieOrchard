@@ -2,185 +2,183 @@
 
 ## Plan ledger
 
-**Goal:** Turn every orchard run into an identified, clocked, reachable, atomic, and reproducible transaction with truthful command results and proof-grade readback.
+**Goal:** Turn every orchard run into an identified, clocked, reachable, atomic, reproducible, and safely persistable session.
 
 - [ ] Establish runtime session instance authority.
 - [ ] Establish fixed-step clock authority.
 - [ ] Make public capabilities reachable and classified.
 - [ ] Establish composite command transaction authority.
 - [ ] Establish seeded random and replay authority.
-- [ ] Gate deployment on the corresponding DOM-free fixtures.
+- [ ] Establish versioned save/load authority.
+- [ ] Gate deployment on corresponding DOM-free and browser fixtures.
 
 ## Ordered implementation queue
 
 ```txt
-1. ZombieOrchard Runtime Session Instance Authority
+1. Runtime Session Instance Authority
    + Start/Reset/Title/Outcome Fidelity Fixture Gate
 
-2. ZombieOrchard Fixed-Step Clock Authority
+2. Fixed-Step Clock Authority
    + Pause/30-60-120 Hz Parity Fixture Gate
 
-3. ZombieOrchard Interaction Capability Reachability
+3. Interaction Capability Reachability
    + Movement/Service-Binding Fixture Gate
 
-4. ZombieOrchard Composite Command Transaction Authority
+4. Composite Command Transaction Authority
    + Parent/Child Result and Single-Publication Fixture Gate
 
-5. ZombieOrchard Seeded Random and Replay Authority
+5. Seeded Random and Replay Authority
    + Apple/Pest Determinism Fixture Gate
+
+6. Versioned Save/Load Authority
+   + Slot Roundtrip and Atomic Load Fixture Gate
 ```
 
 ## Gate 1 — Session instance authority
 
-1. Add JSON-safe lifecycle states and a monotonic `sessionEpoch`.
-2. Create a preset-backed factory for fresh resource, pressure, world, construction, roster, inventory, and active-session state.
-3. Treat Play as start/admit, New Game as reset/start, Pause/Resume as lifecycle commands, and Title as stop/retire.
-4. Project Outcome from one ended-session result.
-5. Retain and cancel RAF ownership.
-6. Return and invoke renderer/listener disposal handles.
-7. Reject commands after disposal.
-8. Add bounded lifecycle journals and DOM-free lifecycle fixtures.
+1. Add lifecycle states and a monotonic `sessionEpoch`.
+2. Create a preset-backed fresh graph factory.
+3. Treat Play/New Game/Pause/Resume/Title/Outcome as lifecycle transactions.
+4. Retain and cancel RAF ownership.
+5. Return and invoke renderer/listener disposal handles.
+6. Reject stale commands after stop or dispose.
+7. Add bounded lifecycle journals and fixtures.
 
 ## Gate 2 — Fixed-step clock authority
 
-1. Replace one-fixed-step-per-RAF with a host-owned wall-time accumulator.
+1. Replace one-fixed-step-per-RAF with a wall-time accumulator.
 2. Define fixed step, maximum frame delta, catch-up limit, and dropped-time policy.
 3. Separate render frame IDs from committed simulation tick IDs.
-4. Tick only domains admitted by session state.
+4. Tick only domains admitted by lifecycle state.
 5. Prevent manual ticking from racing automatic mode.
-6. Add 30/60/120 Hz parity and pause-freeze fixtures.
+6. Add cadence-parity and pause-freeze fixtures.
 
 ## Gate 3 — Capability reachability
 
 1. Add a canonical capability registry.
-2. Classify each command/service as public-direct, public-indirect, internal, dormant, or unsupported.
-3. Add keyboard movement and an accessible on-screen fallback.
+2. Classify each service as public-direct, public-indirect, internal, dormant, or unsupported.
+3. Add keyboard movement and an accessible fallback.
 4. Gate movement by session state and return typed results.
 5. Guarantee a recoverable route to a collectible apple.
-6. Link or classify Session Select, hiring, equipment, select, and set-field.
+6. Link or classify Session Select, hiring, equipment, selection, and field mutation.
 7. Mark Market unsupported until a real service exists.
 8. Render disabled actions as disabled.
 9. Add reachability fixtures.
 
 ## Gate 4 — Composite command transaction authority
 
-1. Add a monotonic `commandId` and `transactionId` in `kit-runtime`.
-2. Add a transaction context for parent and nested child commands.
-3. Prevent nested dispatch from using the public notify-on-return path.
-4. Preflight action, child domain, child command, route target, resource effects, and target IDs before mutation.
-5. Preserve every child result inside one parent result.
-6. Reject the composite transaction when a required child rejects.
-7. Publish subscribers once after successful commit.
-8. Preserve the before fingerprint on rejection.
-9. Replace boolean resource payment with typed debit/add results carrying attribution and before/after values.
-10. Reject unknown construction targets instead of falling back to the first catalog item.
-11. Reject unknown equipment IDs.
-12. Record bounded detached command journal rows.
-13. Correlate the next rendered snapshot with the committed command ID.
-14. Add accepted, rejected, nested, route, rollback and publication-count fixtures.
+1. Add monotonic `commandId` and `transactionId`.
+2. Add parent/child transaction context.
+3. Prevent nested dispatch from notifying through the public path.
+4. Preflight action, child domain, route target, resource effects, and target IDs.
+5. Preserve every child result.
+6. Reject the composite when a required child rejects.
+7. Publish once after commit.
+8. Preserve before fingerprints on rejection.
+9. Return typed resource and target-validation results.
+10. Add bounded command journals and render correlation.
+11. Add accepted, rejected, rollback, route, and publication-count fixtures.
 
 ## Gate 5 — Seeded random and replay authority
 
-1. Inject a random-source contract through the game factory and kit context.
-2. Put the run seed and random policy under the session owner.
+1. Inject a random-source contract.
+2. Put seed and random policy under the session owner.
 3. Partition world and encounter streams.
 4. Replace random string IDs with stable IDs.
-5. Record random decisions with epoch, tick, stream, draw index, purpose, sample, and outcome.
-6. Persist sufficient generator cursor state for replay.
-7. Correlate random decision ranges with committed command IDs and state fingerprints.
-8. Publish seed, cursors, decisions, command journal, and replay receipt through detached `GameHost` readback.
-9. Add same-seed equality and different-seed divergence fixtures.
+5. Record draw indexes and random decisions.
+6. Persist generator cursor state.
+7. Correlate decisions with commands, ticks, and state fingerprints.
+8. Add replay receipts and equality/divergence fixtures.
+
+## Gate 6 — Versioned save/load authority
+
+1. Define a JSON-safe save envelope with schema version, product ID, content revision, session epoch, seed, committed tick, command range, random cursors, and state fingerprint.
+2. Separate durable domain state from transient UI messages, action catalogs, listeners, and renderer state.
+3. Give every restorable domain explicit `exportState`, `validateState`, `stageRestore`, `commitRestore`, and `rollbackRestore` services.
+4. Add a slot-index owner with stable slot IDs, labels, timestamps, progress summaries, schema versions, fingerprints, and status.
+5. Add an injected persistence adapter. Use an in-memory adapter in Node and a browser adapter behind one contract.
+6. Validate and migrate before mutating the live session.
+7. Load through one atomic transaction that creates a new `loadEpoch`.
+8. Reject stale commands, ticks, random deliveries, and render observations from the retired epoch.
+9. Publish one terminal save/load result and one committed state publication.
+10. Route Entry or Run Setup to Session Select only after the slot service is operational.
+11. Add save, load, overwrite, delete, corrupted-slot, incompatible-version, migration, rollback, and same-state roundtrip fixtures.
+12. Gate Pages on the Node fixture and a browser persistence smoke.
 
 ## Domain-update-first map
 
 ```txt
 src/start.js
-  -> session owner, wall clock, RAF owner, renderer lifetime, disposal
+  -> lifecycle, clock, RAF, input, renderer lifetime, load epoch admission
 
 src/game.js
-  -> fresh graph creation, reset factory, injected random provider
+  -> fresh graph factory, injected random source, persistence adapter
 
 kit-runtime
-  -> session metadata, committed ticks, command sequence,
-     transaction context, publication barrier, journals, disposal guard
+  -> session/tick/command metadata, transaction barrier, export and staged restore orchestration
 
 interface-composition-kit
-  -> parent/child/route composite result and required-child failure handling
+  -> typed save-select transitions and load result routing
 
-resource-ledger-kit
-  -> typed attributed debit and addition results
+resource-ledger, pressure-field, orchard-world,
+construction, roster, inventory, active-session
+  -> durable export, validation, staged restore, commit, rollback
 
-construction-runtime-kit
-roster-runtime-kit
-inventory-runtime-kit
-  -> strict target validation and typed mutation results
-
-orchard-world-kit
-active-session-domain-kit
-  -> seeded streams, stable IDs and replay facts
+scoped interface domains
+  -> classify durable fields versus transient selected index, messages, and action catalogs
 
 render kits
-  -> source session, tick, command, state fingerprint and random range
+  -> slot status projection and committed session/load provenance
 
 GameHost
-  -> detached lifecycle, clock, capability, command, random and render readback
+  -> detached lifecycle, clock, command, random, save/load, and render journals
 
 tests/smoke.mjs
-  -> lifecycle, clock, reachability, command transaction and replay fixture gates
+  -> all six authority fixture gates
 ```
 
-## Candidate missing kits
+## Candidate persistence kits
 
 ```txt
-runtime-session-authority-kit
-session-instance-factory-kit
-fixed-step-clock-kit
-browser-input-adapter-kit
-capability-registry-kit
-command-envelope-kit
-command-sequence-kit
-composite-command-transaction-kit
-command-result-envelope-kit
-command-publication-barrier-kit
-resource-transaction-result-kit
-command-journal-kit
-render-command-correlation-kit
-seeded-random-source-kit
-random-stream-partition-kit
-random-decision-ledger-kit
-command-replay-ledger-kit
-state-fingerprint-kit
-command-transaction-fixture-kit
-seed-replay-fixture-kit
+save-envelope-kit
+save-schema-version-kit
+content-identity-kit
+save-slot-index-kit
+committed-snapshot-export-kit
+state-restore-kit
+save-admission-validation-kit
+save-migration-registry-kit
+atomic-load-transaction-kit
+browser-persistence-adapter-kit
+load-epoch-authority-kit
+save-load-result-journal-kit
+save-roundtrip-fixture-kit
 ```
 
 ## Acceptance checklist
 
 ```txt
-[ ] No gameplay tick occurs before a running session is committed.
-[ ] Every run has a stable session epoch and declared seed.
-[ ] New Game resets every owned domain.
-[ ] Equal wall time at 30/60/120 Hz yields equivalent committed state.
-[ ] Every public capability has an owner, route, affordance, result, and fixture.
-[ ] Every browser intent has one commandId and one terminal composite result.
-[ ] Required child rejection prevents dependent route mutation.
-[ ] Rejected transactions preserve the before fingerprint.
-[ ] Committed transactions publish subscribers exactly once.
-[ ] Build, hire and equip reject invalid target IDs without mutation.
-[ ] Render observations name the committed command ID.
-[ ] Same seed and same committed schedule yield identical apples and pests.
-[ ] npm test gates deployment on all five authority fixtures.
+[ ] Session Select is either clearly unsupported or backed by a real slot owner.
+[ ] A save envelope names schema, product/content identity, epoch, tick, seed, and fingerprint.
+[ ] Export captures one committed state only.
+[ ] Transient UI/render state is excluded or explicitly classified.
+[ ] Corrupt or incompatible saves reject before live mutation.
+[ ] Migration is explicit and deterministic.
+[ ] Load mutates every required domain or none.
+[ ] Successful load creates a new load epoch.
+[ ] Same save loaded twice yields the same committed durable state.
+[ ] Save/load results are bounded, detached, and visible through GameHost.
+[ ] npm test and Pages gate the persistence fixtures.
 ```
 
 ## Avoid until proof exists
 
 ```txt
-Market expansion
-economy balancing
-new orchard content
-new pest types
+direct localStorage of engine.snapshot()
+save/resume marketing claims
+multiple user-facing slots without a slot owner
+cloud save
+cross-device sync
+economy/content expansion
 renderer replacement
-visual polish
-save/resume claims
-broad runtime rewrites that bypass current kit owners
 ```
