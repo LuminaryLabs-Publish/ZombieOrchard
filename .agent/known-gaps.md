@@ -2,85 +2,144 @@
 
 ## Primary architecture gap
 
-There is no authoritative run boundary joining lifecycle, time, capability admission, composite commands, deterministic randomness, replay, persistence, rendering, and proof readback.
+There is no authoritative runtime session boundary joining lifecycle, graph ownership, tick admission, rendering, input, diagnostics, terminal outcome, reset, disposal, and later persistence.
 
 ```txt
 lifecycle intent
-  -> session epoch and seed
-  -> fixed simulation ticks
-  -> admitted capability
-  -> one command transaction
-  -> random decisions
-  -> committed state fingerprint
-  -> versioned save envelope
-  -> atomic restore/load epoch
-  -> one publication and render observation
-  -> bounded result journals
+  -> admitted session command
+  -> session identity and epoch
+  -> candidate/fresh graph
+  -> tick admission
+  -> committed state
+  -> render observation
+  -> terminal result or rollback
+  -> resource retirement
 ```
 
-## Existing prerequisite gaps
+## Session-instance gaps
 
-### Session, clock, capability, command, and replay
+### Construction and identity
 
-1. The mutable graph is constructed before Play.
-2. Play and New Game are route changes, not session transactions.
-3. No session epoch, stop, dispose, or reset factory exists.
-4. One fixed tick runs per RAF callback.
-5. All domains tick on every screen.
-6. Movement and several services are unreachable.
-7. Nested commands discard child results and can publish twice.
-8. Resource and target validation is weak.
-9. Apple and pest generation use global `Math.random()`.
-10. No command, random-decision, replay, or committed-state journal exists.
+1. The full mutable graph is constructed before Play.
+2. No `runtimeId`, `runtimeGeneration`, `sessionId`, or `sessionEpoch` exists.
+3. Play does not declare whether it resumes or starts fresh.
+4. New Game and Start do not create a new graph.
+5. No preset/content revision is attached to a run.
+6. No initial-state fingerprint exists.
+7. No typed construction failure or rollback result exists.
 
-## New persistence-specific gaps
+### Lifecycle and route authority
 
-### Dormant Save Select surface
+8. Play, New Game, Start, Pause, Resume, Title, and Outcome are route changes only.
+9. No lifecycle state machine exists.
+10. No start, pause, resume, end, title, reset, stop, or dispose command exists.
+11. Interface routes can change without a committed lifecycle result.
+12. Active-session commands are accepted regardless of active screen.
+13. Automatic Outcome routing infers lifecycle from mutable `ended` state.
+14. Outcome does not capture an immutable terminal snapshot.
+15. Title after Outcome is pulled back to Outcome on the next tick.
+16. Play after Outcome reuses the ended session and returns to Outcome.
+17. Title does not define whether the session is retired, suspended, or retained.
 
-11. `session-select-domain-kit` exists but has no incoming route.
-12. The preset defines only a Back action.
-13. The preset supplies no `meta.slots`.
-14. The renderer has a slot-card branch that always receives an empty list.
-15. No Save, Load, Overwrite, Delete, Rename, Import, or Export action exists.
-16. No slot selection result or disabled/corrupt/incompatible state is projected.
+### Tick and pause admission
 
-### Save envelope and identity
+18. One fixed tick runs per RAF callback.
+19. Every domain ticks on every screen.
+20. Pressure advances on Entry, Run Setup, Pause, Title, and Outcome.
+21. At night, pest admission, pursuit, and player damage continue while paused or on other screens.
+22. No skipped-tick result exists.
+23. Manual GameHost ticking can race future automatic ticking.
+24. No stale tick or callback generation is rejected.
 
-17. No save schema version exists.
-18. No product, campaign, or content revision identity exists.
-19. No session epoch, load epoch, committed tick, or command range exists.
-20. No declared seed, random stream cursor, or replay receipt exists.
-21. No canonical durable-state fingerprint exists.
-22. No save timestamp, progress summary, or slot fingerprint exists.
+### Reset and fresh-run fidelity
 
-### Export and restore ownership
+25. Resources survive Title and New Game.
+26. Pressure survives Title and New Game.
+27. Apples and random IDs survive Title and New Game.
+28. Built structures survive Title and New Game.
+29. Hired actors survive Title and New Game.
+30. Inventory/equipment survives Title and New Game.
+31. Player position, condition, phase, pests, score, message, and ended state survive re-entry.
+32. Interface selected indexes and fields also survive.
+33. No atomic fresh-graph ownership transfer exists.
+34. No reset-failure rollback exists.
 
-23. `engine.snapshot()` aggregates presentation snapshots only.
-24. Domains expose no `exportState` or durable/transient classification.
-25. Domains expose no validation, staged restore, commit, or rollback service.
-26. Randomly generated IDs make snapshot equality unstable.
-27. Action catalogs, selected indexes, messages, and route projection are mixed with gameplay data.
-28. No dependency order exists for restoring resources, world, construction, roster, inventory, session, and route.
-29. No partial-load rollback exists.
-30. No load epoch rejects stale input, ticks, commands, or render observations.
+### Runtime and resource ownership
 
-### Persistence adapter and migration
+35. RAF IDs are not retained.
+36. No stop or restart service exists.
+37. The delegated click listener has no removal handle.
+38. The world renderer has no disposal handle.
+39. The HTML renderer has no disposal handle.
+40. GameHost is assigned globally without lease/release semantics.
+41. No cleanup stack exists.
+42. No active RAF/listener/global/resource counts exist.
+43. Disposal cannot be proven idempotent.
+44. A future remount can create duplicate owners.
 
-31. No in-memory persistence adapter exists for deterministic tests.
-32. No browser storage adapter exists.
-33. No storage quota, unavailable-storage, or serialization error result exists.
-34. No migration registry or incompatible-version rejection exists.
-35. No corrupted-slot quarantine exists.
-36. No atomic slot overwrite or delete result exists.
+### Command and result admission
+
+45. Lifecycle actions carry no `commandId`.
+46. No expected session identity or epoch is checked.
+47. Duplicate Start clicks have no exactly-once policy.
+48. Stale commands cannot be identified.
+49. Results do not contain before/after lifecycle state.
+50. Results do not correlate first committed tick or first rendered frame.
+51. No lifecycle result journal exists.
+
+### Render and diagnostics
+
+52. Render snapshots carry no session provenance.
+53. The world continues to render mutable state behind non-gameplay screens.
+54. Outcome is projected from a mutable session closure.
+55. No first-frame acknowledgement exists after start/reset.
+56. No stale snapshot rejection exists.
+57. GameHost exposes the raw mutable engine.
+58. GameHost manual tick is unrestricted.
+59. No detached lifecycle observation exists.
+
+## Existing downstream gaps
+
+### Fixed-step clock
+
+60. Simulation speed depends on RAF cadence.
+61. No wall-time accumulator, catch-up limit, or dropped-time policy exists.
+62. Render frames and committed simulation ticks are not separate identities.
+
+### Capability reachability
+
+63. Movement and several implemented services remain unreachable.
+64. Session Select remains dormant.
+65. Market is visible without a real service.
+66. Disabled-action projection is not authoritative.
+
+### Composite commands
+
+67. Nested commands discard child results.
+68. Nested dispatch can publish before parent completion.
+69. Resource and target validation is weak.
+70. No transaction rollback or single-publication barrier exists.
+
+### Randomness and replay
+
+71. Apple and pest generation use global `Math.random()`.
+72. Random IDs are unstable.
+73. No seed, stream cursor, decision ledger, replay receipt, or state fingerprint exists.
+
+### Persistence
+
+74. Session Select has no incoming route or slot owner.
+75. No save/load commands, adapter, schema, migration, atomic load, or load epoch exists.
+76. `engine.snapshot()` is presentation state, not a restorable save.
+77. No domain exposes export, validation, staged restore, commit, or rollback.
 
 ### Proof and deployment
 
-37. `GameHost` exposes no save/load commands or detached journals.
-38. No fixture proves save -> reset -> load returns the same durable state.
-39. No fixture proves invalid load leaves all live domains unchanged.
-40. No fixture proves migration determinism.
-41. No browser smoke proves slot persistence survives reload.
-42. The Pages workflow gates only Entry -> Play and apple presence.
+78. The smoke test proves only Entry -> Play and apple presence.
+79. No lifecycle fixture exists.
+80. No pause/fresh-start/outcome/title/reset/disposal fixture exists.
+81. No browser smoke proves one RAF/listener owner.
+82. Pages is not gated on session lifecycle fidelity.
 
 ## Explicit non-gaps for this pass
 
@@ -97,15 +156,12 @@ cloud save
 ## Dependency order
 
 ```txt
-session instance authority
-  -> fixed-step clock and pause eligibility
+runtime session instance authority
+  -> fixed-step clock authority
   -> capability reachability
-  -> composite command transaction
-  -> seeded random and replay
+  -> composite command transaction authority
+  -> seeded random and replay authority
   -> committed durable-state fingerprint
-  -> versioned save envelope
-  -> slot index and persistence adapter
-  -> migration and atomic load transaction
-  -> load epoch and render provenance
-  -> save/load deployment fixtures
+  -> versioned save/load authority
+  -> deployment proof
 ```
