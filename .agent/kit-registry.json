@@ -1,7 +1,7 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-11T17-01-11-04-00",
-  "status": "seeded-random-replay-authority-audited",
+  "updatedAt": "2026-07-11T18-28-40-04-00",
+  "status": "runtime-session-instance-fresh-run-authority-audited",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
@@ -18,14 +18,14 @@
     "Versioned Save / Load Authority"
   ],
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-11T17-01-11-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-11T17-01-11-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-11T17-01-11-04-00-seeded-random-replay-authority-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-11T17-01-11-04-00-random-decision-frame-correlation-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T17-01-11-04-00-apple-collection-pest-spawn-rng-coupling-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-11T17-01-11-04-00-command-tick-random-receipt-map.md",
-    "randomReplayAudit": ".agent/random-replay-audit/2026-07-11T17-01-11-04-00-seed-stream-cursor-replay-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-11T17-01-11-04-00-random-replay-determinism-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-11T18-28-40-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-11T18-28-40-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-11T18-28-40-04-00-runtime-session-instance-authority-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-11T18-28-40-04-00-stale-run-first-frame-projection-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T18-28-40-04-00-outcome-title-play-reuse-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-11T18-28-40-04-00-start-new-game-title-lifecycle-map.md",
+    "sessionLifecycleAudit": ".agent/session-lifecycle-audit/2026-07-11T18-28-40-04-00-run-instance-reset-transaction-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-11T18-28-40-04-00-fresh-run-lifecycle-fixture-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -59,44 +59,51 @@
   "services": {
     "kit-runtime": ["registration", "domain creation", "commands", "ticks", "events", "snapshots", "subscriptions", "publication"],
     "interface-kits": ["screen state", "actions", "selection", "fields", "activation", "routing", "nested dispatch", "automatic Outcome routing"],
-    "game-kits": ["resources", "pressure", "trees and apples", "random apple population", "collection refill", "construction", "hiring", "equipment", "movement", "phases", "random pest admission and placement", "damage", "score", "failure"],
+    "game-kits": ["resources", "pressure", "trees and apples", "apple population", "collection refill", "construction", "hiring", "equipment", "movement", "phases", "pest admission and placement", "damage", "score", "failure"],
     "render-kits": ["orchard canvas", "HUD", "generic screen HTML", "delegated bindings", "per-frame DOM replacement"],
     "diagnostics-proof-deploy": ["raw engine", "snapshot readback", "manual tick", "Entry-to-Play smoke", "apple proof", "static copy", "Pages chain"]
   },
-  "randomSurface": {
-    "source": "process-global Math.random",
-    "runSeed": "missing",
-    "randomPolicyVersion": "missing",
-    "namedStreams": "missing",
-    "streamCursors": "missing",
-    "deterministicEntityIds": "missing",
-    "randomDecisionReceipts": "missing",
-    "replayJournal": "missing",
-    "durableStateFingerprint": "missing",
-    "applePestStreamIsolation": false,
-    "saveRestoreRandomContinuation": "missing"
+  "runtimeSessionSurface": {
+    "engineConstruction": "module boot singleton",
+    "runtimeId": "missing",
+    "runtimeGeneration": "missing",
+    "runId": "missing",
+    "sessionEpoch": "missing",
+    "lifecycleStateMachine": "missing",
+    "freshRunFactory": "missing",
+    "atomicResetTransaction": "missing",
+    "rollback": "missing",
+    "routeRunBinding": "missing",
+    "staleWorkRejection": "missing",
+    "firstRunFrameAck": "missing",
+    "orderedDisposal": "missing",
+    "outcomeTitlePlayFreshRun": false
   },
-  "proposedRandomReplayKits": [
-    "zombie-orchard-seeded-random-replay-authority-domain",
-    "run-seed-descriptor-kit",
-    "deterministic-prng-kit",
-    "random-stream-registry-kit",
-    "random-stream-id-kit",
-    "random-cursor-kit",
-    "random-draw-result-kit",
-    "apple-generation-policy-kit",
-    "pest-spawn-policy-kit",
-    "deterministic-entity-id-kit",
-    "committed-tick-random-receipt-kit",
-    "replay-command-envelope-kit",
-    "replay-journal-kit",
-    "replay-state-fingerprint-kit",
-    "replay-verifier-kit",
-    "random-stream-snapshot-kit",
-    "stale-replay-rejection-kit",
-    "apple-pest-determinism-fixture-kit",
-    "replay-parity-fixture-kit"
+  "proposedRuntimeSessionKits": [
+    "zombie-orchard-runtime-session-authority-domain",
+    "runtime-instance-id-kit",
+    "run-instance-id-kit",
+    "session-epoch-kit",
+    "lifecycle-state-machine-kit",
+    "fresh-run-state-factory-kit",
+    "run-start-command-kit",
+    "run-start-admission-kit",
+    "run-reset-plan-kit",
+    "run-reset-transaction-kit",
+    "run-state-commit-kit",
+    "route-session-binding-kit",
+    "run-end-latch-kit",
+    "title-exit-transaction-kit",
+    "stale-run-command-rejection-kit",
+    "run-snapshot-provenance-kit",
+    "first-run-frame-ack-kit",
+    "runtime-session-journal-kit",
+    "fresh-run-fixture-kit",
+    "restart-disposal-fixture-kit"
   ],
+  "retainedAudits": {
+    "seededRandomReplay": "2026-07-11T17-01-11-04-00"
+  },
   "validation": {
     "runtimeSourceChangedThisPass": false,
     "dependenciesChanged": false,
@@ -108,7 +115,7 @@
     "npmBuildRun": false,
     "fixtureRun": false,
     "browserSmokeRun": false,
-    "centralLedgerSynchronized": true,
-    "centralChangeLogAdded": true
+    "centralLedgerSynchronized": false,
+    "centralChangeLogAdded": false
   }
 }
