@@ -10,12 +10,12 @@
     "reason": "oldest eligible central ledger timestamp"
   },
   "safeLedges": [
-    "ZombieOrchard Runtime Session Instance Authority + Start / New Run / Title / Outcome / Dispose Fixture Gate",
-    "ZombieOrchard Fixed-Step Clock Authority + Pause / 30-60-120 Hz / Stall / Visibility / Manual-Step Fixture Gate",
-    "ZombieOrchard Public Capability Gateway and Reachability + Registry / Binding / Diagnostics-Quarantine Fixture Gate",
-    "ZombieOrchard Composite Command Transaction Authority + Parent / Child Result and Single-Publication Fixture Gate",
-    "ZombieOrchard Seeded Random and Replay Authority + Apple / Pest Determinism Fixture Gate",
-    "ZombieOrchard Versioned Save / Load Authority + Slot Roundtrip and Atomic Load Fixture Gate"
+    "Runtime Session Instance Authority",
+    "Fixed-Step Clock Authority",
+    "Public Capability Gateway and Reachability",
+    "Composite Command Transaction Authority",
+    "Seeded Random and Replay Authority",
+    "Versioned Save / Load Authority"
   ],
   "latestFiles": {
     "tracker": ".agent/trackers/2026-07-11T15-20-27-04-00/project-breakdown.md",
@@ -57,75 +57,11 @@
     "pages-deploy-kit"
   ],
   "services": {
-    "kit-runtime": [
-      "kit registration",
-      "domain creation",
-      "direct command routing",
-      "single-call delta clamping",
-      "elapsed and frame mutation",
-      "all-domain tick routing",
-      "event recording",
-      "snapshot aggregation",
-      "subscriptions",
-      "publication"
-    ],
-    "interface-kits": [
-      "screen state",
-      "action catalogs",
-      "selection",
-      "field mutation",
-      "activation",
-      "disabled-state projection",
-      "route transitions",
-      "nested child dispatch",
-      "automatic Outcome routing"
-    ],
-    "game-kits": [
-      "resource affordability and payment",
-      "pressure adjustment and passive growth",
-      "tree and apple generation",
-      "nearby apple collection",
-      "construction",
-      "hiring",
-      "equipment",
-      "movement",
-      "phase changes",
-      "pest spawning and pursuit",
-      "damage",
-      "score",
-      "failure"
-    ],
-    "render-kits": [
-      "orchard canvas projection",
-      "active-session HUD",
-      "generic screen HTML",
-      "delegated action binding",
-      "per-frame HTML replacement"
-    ],
-    "diagnostics-proof-deploy": [
-      "raw engine handle",
-      "aggregate snapshot readback",
-      "unrestricted manual tick",
-      "entry-to-play smoke",
-      "apple-presence smoke",
-      "static dist copy",
-      "Pages test-build-deploy chain"
-    ]
-  },
-  "runtimeSessionSurface": {
-    "runtimeId": "missing",
-    "sessionId": "missing",
-    "sessionEpoch": "missing",
-    "lifecycleState": "missing",
-    "callbackGeneration": "missing",
-    "freshRunConstruction": "missing",
-    "startupRollback": "missing",
-    "authorityTransfer": "missing",
-    "rafLease": "missing",
-    "listenerLease": "missing",
-    "rendererDispose": "missing",
-    "publicHostLease": "missing",
-    "orderedDispose": "missing"
+    "kit-runtime": ["registration", "domain creation", "commands", "delta clamp", "elapsed/frame mutation", "all-domain ticks", "events", "snapshots", "subscriptions", "publication"],
+    "interface-kits": ["screen state", "actions", "selection", "fields", "activation", "routing", "nested dispatch", "automatic Outcome routing"],
+    "game-kits": ["resources", "pressure", "trees and apples", "collection", "construction", "hiring", "equipment", "movement", "phases", "pests", "damage", "score", "failure"],
+    "render-kits": ["orchard canvas", "HUD", "generic screen HTML", "delegated bindings", "per-frame DOM replacement"],
+    "diagnostics-proof-deploy": ["raw engine", "snapshot readback", "manual tick", "Entry-to-Play smoke", "apple proof", "static copy", "Pages chain"]
   },
   "clockSurface": {
     "rafDeltaSource": "constant 1/60 per callback",
@@ -182,7 +118,7 @@
     "npmBuildRun": false,
     "fixtureRun": false,
     "browserSmokeRun": false,
-    "centralLedgerSynchronized": false,
-    "centralChangeLogAdded": false
+    "centralLedgerSynchronized": true,
+    "centralChangeLogAdded": true
   }
 }
