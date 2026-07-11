@@ -3,46 +3,48 @@
 ## Last aligned
 
 ```txt
-2026-07-11T07-59-08-04-00
+2026-07-11T09-49-27-04-00
 ```
 
 ## Summary
 
-`ZombieOrchard` is a dependency-free static orchard survival and economy shell with a small domain-kit runtime, 12 interface screens, gameplay services, canvas and HTML rendering, diagnostics, smoke proof, static build, and Pages deployment. The current focused finding is that composite UI actions do not form one transaction: child results are discarded, nested commands publish intermediate state, and the parent can report success without proof that required gameplay work committed.
+`ZombieOrchard` is a dependency-free static orchard survival and economy shell with a small kit runtime, 12 interface screens, gameplay services, canvas and HTML rendering, diagnostics, smoke proof, static build and Pages deployment. The current focused finding is that implemented domain commands, visible routes and browser controls are not joined by one capability authority, so movement, hiring and equipment are unreachable while Market is presented without a service.
 
 ## Plan ledger
 
-**Goal:** keep one clear entry point to the active architecture findings, complete kit inventory, implementation order, and proof gaps.
+**Goal:** keep one entry point to the interaction loop, complete domain and kit inventory, capability reachability findings, dependency order and proof gaps.
 
-- [x] Compare the complete accessible Publish inventory with the central ledger.
+- [x] Compare all ten accessible Publish repositories.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only `ZombieOrchard` because the repo-local audit was newer than central tracking.
+- [x] Confirm all nine eligible repositories are centrally tracked and have root `.agent` state.
+- [x] Select only `ZombieOrchard` as the oldest eligible central-ledger entry.
 - [x] Identify the interaction loop.
 - [x] Identify all active domains.
 - [x] Identify all implemented kits and services.
-- [x] Trace the Storage Shed parent and child command path.
-- [x] Document preflight, commit, rollback, publication, and frame-proof requirements.
+- [x] Classify supported, unreachable, dormant, unsupported and internal capabilities.
+- [x] Trace browser bindings and discarded results.
+- [x] Define the capability registry, admission, binding, projection and fixture contract.
 - [x] Add a new timestamped tracker and audit set.
 - [x] Change no runtime source.
 - [x] Push only to `main`.
 - [x] Create no branch or pull request.
-- [ ] Implement runtime session authority and dependent gates.
+- [ ] Implement session, clock and capability authority with executable fixtures.
 
 ## Read this first
 
 ```txt
-.agent/trackers/2026-07-11T07-59-08-04-00/project-breakdown.md
+.agent/trackers/2026-07-11T09-49-27-04-00/project-breakdown.md
 .agent/current-audit.md
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-11T07-59-08-04-00-composite-command-central-reconciliation-dsk-map.md
-.agent/render-audit/2026-07-11T07-59-08-04-00-single-publication-frame-proof-gap.md
-.agent/gameplay-audit/2026-07-11T07-59-08-04-00-storage-shed-parent-child-result-loop.md
-.agent/interaction-audit/2026-07-11T07-59-08-04-00-dom-click-child-dispatch-result-map.md
-.agent/command-transaction-audit/2026-07-11T07-59-08-04-00-preflight-commit-rollback-publication-contract.md
-.agent/deploy-audit/2026-07-11T07-59-08-04-00-composite-command-fixture-gate.md
-.agent/turn-ledger/2026-07-11T07-59-08-04-00.md
+.agent/architecture-audit/2026-07-11T09-49-27-04-00-capability-reachability-authority-dsk-map.md
+.agent/render-audit/2026-07-11T09-49-27-04-00-capability-affordance-truth-gap.md
+.agent/gameplay-audit/2026-07-11T09-49-27-04-00-movement-collect-hire-equip-loop.md
+.agent/interaction-audit/2026-07-11T09-49-27-04-00-capability-binding-result-map.md
+.agent/capability-reachability-audit/2026-07-11T09-49-27-04-00-registry-binding-projection-contract.md
+.agent/deploy-audit/2026-07-11T09-49-27-04-00-capability-reachability-fixture-gate.md
+.agent/turn-ledger/2026-07-11T09-49-27-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -50,38 +52,74 @@
 
 ```txt
 browser boot
-  -> construct one engine and all domain closures
-  -> create canvas and HTML renderers
+  -> construct engine and all domain closures
+  -> construct canvas and HTML renderers
   -> install delegated click input
-  -> expose raw engine and manual tick on GameHost
+  -> expose raw engine and manual tick through GameHost
   -> begin recursive RAF
 
 RAF
   -> engine.tick(1 / 60)
   -> tick every domain
   -> aggregate snapshots
-  -> render world canvas and interface HTML
+  -> render canvas and replace interface HTML
 
-composite UI action
-  -> parent screen activation
-  -> nested public child command
-  -> child mutation and publication
-  -> discarded child result
-  -> optional independent route mutation
-  -> parent publication
+browser action
+  -> data-action or data-command binding
+  -> public engine.command
+  -> mutation or rejection
+  -> subscriber publication
+  -> next rendered snapshot
+```
+
+## Capability status
+
+```txt
+supported/public:
+  route actions
+  collect, clear, next-phase
+  Storage Shed action
+
+implemented but unreachable:
+  move
+  hire
+  equip
+
+visible but unsupported:
+  Market transaction
+
+dormant:
+  Session Select
+
+internal but bypassable through raw GameHost:
+  resource ledger API
+  pressure API
+  unrestricted domain commands and manual tick
 ```
 
 ## Main finding
 
 ```txt
-Storage Shed parent action accepted
-  -> child build may reject
-  -> child result is discarded
-  -> parent may still report accepted
-  -> child and parent each publish
+implemented service
+  != declared public capability
+  != shipped input binding
+  != reachable target
+  != truthful enabled affordance
+  != retained command result
+  != first-frame proof
 ```
 
-The runtime also falls back to the first construction item for an unknown target, returns only a Boolean payment result, stages no resource or gameplay effects, provides no rollback, and attaches no command, transaction, session, tick, fingerprint, journal, or first-frame identity.
+Concrete mismatches:
+
+1. `active-session.move` exists but has no shipped input binding.
+2. Collect is visible but the player cannot deliberately move to an apple.
+3. Hire and Equip exist but Roster and Inventory are read-only.
+4. Equip accepts unknown item IDs.
+5. Market is visible without an exchange runtime service.
+6. Session Select has no incoming route or slot owner.
+7. Static disabled flags are not derived from runtime capability state and are not projected by the button renderer.
+8. DOM callers discard command results.
+9. Raw engine access bypasses any product capability policy.
 
 ## Ordered implementation queue
 
@@ -101,4 +139,4 @@ ZombieOrchard Runtime Session Instance Authority
 + Start / Reset / Title / Outcome Fidelity Fixture Gate
 ```
 
-Do not add persistence, extra content, or new interface routes before the runtime session owner can prove fresh start, pause freeze, terminal finalization, stable return to title, reset, stale-work rejection, and idempotent disposal.
+Do not add more interface routes or content before session ownership, fixed-step timing and truthful capability admission are fixture-backed.
