@@ -19,8 +19,8 @@ Documentation-only runtime-session instance and fresh-run authority audit. Runti
 - [x] Confirm runtime/run/session identity, reset, rollback, first-frame and disposal contracts are absent.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
+- [x] Synchronize the central ledger and internal change log.
 - [ ] Implement and run runtime-session fixtures.
-- [ ] Synchronize the central ledger and internal change log.
 
 ## Source-backed findings
 
@@ -130,8 +130,8 @@ RAF/listener leak fixture: unavailable / not run
 disposal fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: pending
-central internal change log: pending
+central ledger update: complete
+central internal change log: complete
 ```
 
 No fresh New Game, restart, pause, lifecycle safety, first-frame coherence or resource-retirement claim is made.
