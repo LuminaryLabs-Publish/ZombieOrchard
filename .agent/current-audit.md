@@ -3,35 +3,35 @@
 ## Status
 
 ```txt
-last aligned: 2026-07-11T12-01-38-04-00
-status: fixed-step-clock-cadence-pause-manual-tick-authority-audited
+last aligned: 2026-07-11T13-41-23-04-00
+status: runtime-session-instance-authority-audited
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: complete
-central internal change log: complete
+central ledger sync: pending until central commit
+central internal change log: pending until central commit
 ```
 
 ## Summary
 
-`ZombieOrchard` advances one hard-coded `1/60` simulation step for every browser animation frame. The runtime also exposes unrestricted manual ticking. Simulation rate therefore depends on RAF cadence and debug calls rather than elapsed wall time, lifecycle state or one authoritative committed-tick schedule.
+`ZombieOrchard` creates one mutable graph at module evaluation and keeps that graph for the page lifetime. Play, New Game, Start, Pause, Resume, Title and Outcome are interface-route operations, not run-instance lifecycle operations. The browser host has no runtime/session identity, lifecycle revision, off-line graph construction, atomic authority transfer, startup rollback, retained RAF lease, removable listener lease, renderer disposal or public-host revocation.
 
 ## Plan ledger
 
-**Goal:** preserve the complete repository breakdown while defining a session-owned fixed-step clock with deterministic tick identity, bounded catch-up, pause barriers and render correlation.
+**Goal:** establish one product-level runtime-session owner before the fixed-step clock and all later mutation authorities.
 
 - [x] Compare all ten accessible Publish repositories and central ledgers.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only `ZombieOrchard` as the oldest eligible documented repository.
-- [x] Read browser host, runtime, composition and gameplay timing paths.
-- [x] Identify all domains, implemented kits and provided services.
-- [x] Trace automatic RAF and manual `GameHost.tick()` mutation paths.
-- [x] Define accumulator, catch-up, dropped-time and pause contracts.
-- [x] Add architecture, render, gameplay, interaction, clock and deploy audits.
+- [x] Select only `ZombieOrchard` as the oldest eligible central entry.
+- [x] Read startup, graph construction, preset routing, composition, gameplay and render surfaces.
+- [x] Identify all domains, implemented kits and services.
+- [x] Trace graph reuse across Play, New Game, Start, Pause, Title and Outcome.
+- [x] Trace RAF, listener, renderer and `GameHost` ownership.
+- [x] Define runtime/session identity, lifecycle commands, handoff, rollback and disposal contracts.
+- [x] Add architecture, render, gameplay, interaction, lifecycle and deploy audits.
 - [x] Push documentation only to `main`.
-- [x] Synchronize the central ledger and internal change log.
 - [x] Create no branch or pull request.
-- [ ] Runtime implementation and executable fixtures remain future work.
+- [ ] Implement and execute runtime-session fixtures.
 
 ## Selection audit
 
@@ -41,7 +41,7 @@ eligible non-Cavalry repositories: 9
 new or central-ledger-missing repositories: 0
 root-.agent-missing repositories: 0
 selected: ZombieOrchard
-reason: oldest eligible central review timestamp after concurrent PhantomCommand refresh
+reason: oldest eligible central review timestamp after PhantomCommand was refreshed at 13:28
 excluded: TheCavalryOfRome
 ```
 
@@ -50,90 +50,74 @@ Only `LuminaryLabs-Publish/ZombieOrchard` was changed in the Publish organizatio
 ## Interaction loop
 
 ```txt
-src/boot.js
-  -> src/start.js
+src/start.js module evaluation
   -> createOrchardGame()
-  -> create canvas and HTML renderers
-  -> expose GameHost
-  -> draw()
+  -> create all domain closures
+  -> create canvas renderer
+  -> create HTML renderer and delegated click listener
+  -> expose window.GameHost
+  -> call draw()
 
 one draw callback
   -> engine.tick(1 / 60)
-  -> ctx.delta = clamp(delta, 0, 0.1)
-  -> ctx.elapsed += delta
-  -> ctx.frame += 1
-  -> clear events
-  -> tick every domain once
-  -> notify subscribers
+  -> mutate the same graph
   -> aggregate snapshot
   -> render world and UI
   -> requestAnimationFrame(draw)
+
+route actions
+  -> engine.command(interface-composition, activate)
+  -> route same graph among Entry, Setup, Active, Pause and Outcome
 ```
 
-## Clock findings
+## Runtime-session findings
 
-### Display cadence controls gameplay speed
+### The graph exists before the player starts
 
-`draw()` passes a constant `1 / 60`; it never reads the RAF timestamp. At 30 Hz, only 30 simulation steps occur per second. At 120 Hz, 120 steps occur per second.
+`src/start.js` calls `createOrchardGame()` immediately. Resource, pressure, orchard, construction, roster, inventory, interface and active-session state all exist before Play or New Game is selected.
+
+### New Game is a route, not a new run
+
+The preset maps Entry `new` to `run-setup` and `start` to `active-session`. No fresh graph is constructed. The same resources, pressure, apples, buildings, roster, inventory, player, pests, score and `ended` latch remain authoritative.
+
+### Title does not retire the run
+
+Pause `title` and Outcome `title` move the interface to Entry only. The runtime continues ticking every domain. If `active-session.ended` remains true, composition can move the route back to Outcome on a later tick.
+
+### Browser resources have no owner
 
 ```txt
-pressure growth per real second
-  30 Hz  -> 0.4 rowPressure, 0.1 curse
-  60 Hz  -> 0.8 rowPressure, 0.2 curse
-  120 Hz -> 1.6 rowPressure, 0.4 curse
+RAF request ID: discarded
+RAF generation fence: missing
+HTML listener lease: missing
+runtime subscription lease: missing
+canvas renderer dispose: missing
+HTML renderer dispose: missing
+GameHost revocation: missing
+startup rollback stack: missing
+ordered disposal result: missing
 ```
 
-Night pest admission, pursuit and damage scale the same way because they consume the same fixed delta once per RAF.
+### Public mutation authority is not revocable
 
-### The runtime is not an accumulator
-
-`engine.tick(delta)` clamps one supplied delta and ticks each domain once. It does not:
-
-```txt
-measure wall time
-accumulate residual time
-run zero or multiple fixed updates
-limit catch-up work
-record dropped time
-publish overrun results
-```
-
-### Automatic and manual ticks race
-
-`window.GameHost.tick(dt)` calls the same `engine.tick()` directly. A debug caller can advance elapsed time, frame count, pressure, pests, damage and automatic Outcome routing between browser RAF callbacks.
-
-### Lifecycle does not gate the clock
-
-Every domain ticks regardless of the active route. Pause, Entry, Title and Outcome are interface states, not simulation-clock barriers. The composition domain also checks terminal state on every tick and can route back to Outcome after Title.
-
-### Tick and render identities are conflated
-
-`ctx.frame` increments once per `engine.tick()`. The renderers consume a later aggregate snapshot, but there is no distinct:
-
-```txt
-simulationTickId
-renderFrameId
-clockRevision
-sessionEpoch
-stateFingerprint
-firstFrameAcknowledgement
-```
+`window.GameHost` exposes the live engine and direct `tick(dt)`. There is no session, epoch, lifecycle or graph-revision admission and no clone-safe limited capability surface.
 
 ## Domains in use
 
 ```txt
-browser route and runtime host
-runtime graph construction
+browser route and ESM boot
+browser runtime/session host
+kit registration and graph construction
 command, tick, event, snapshot, subscription and publication routing
 12 interface-screen domains
-route composition and automatic Outcome routing
+interface composition and automatic Outcome routing
 resource ledger and pressure field
 orchard world and apple lifecycle
 construction, roster and inventory
 active-session movement, collection, phases, pests, damage, score and failure
 world canvas projection
 HTML projection and delegated input
-GameHost diagnostics/manual control
+GameHost diagnostics and direct control
 smoke, build and Pages deployment
 missing runtime-session authority
 missing fixed-step clock authority
@@ -145,68 +129,85 @@ missing capability, transaction, replay and persistence authority
 | Kit | Services |
 |---|---|
 | `kit-runtime` | kit registration, domain creation, direct command routing, delta clamp, all-domain tick, events, snapshots, subscriptions, publication |
-| screen domain kits | screen state, action catalogs, selection, fields, activation, static disabled state, snapshots |
+| screen domain kits | screen state, actions, selection, fields, activation, static disabled state, snapshots |
 | `interface-composition-kit` | route ownership, transitions, back, nested dispatch, automatic Outcome routing |
-| `resource-ledger-kit` | affordability, Boolean payment, addition, snapshot |
-| `pressure-field-kit` | bounded adjustment, passive per-tick growth, snapshot |
-| `orchard-world-kit` | tree generation, random apple seeding/replenishment, nearby collection, snapshot |
+| `resource-ledger-kit` | affordability, payment, addition, snapshot |
+| `pressure-field-kit` | bounded adjustment, passive growth, snapshot |
+| `orchard-world-kit` | tree creation, random apple seeding/replenishment, nearby collection, snapshot |
 | `construction-runtime-kit` | catalog lookup, payment, construction creation, status |
 | `roster-runtime-kit` | hiring payment, actor creation, status |
-| `inventory-runtime-kit` | item/equipment state, equip mutation |
-| `active-session-domain-kit` | movement, collection, pest clearing, phase change, pest spawn/pursuit, damage, score, failure |
-| render kits | canvas world/HUD, interface HTML, delegated bindings, full projection replacement |
-| diagnostics/proof/deploy kits | raw engine, snapshot, manual tick, smoke, static copy, Pages deployment |
+| `inventory-runtime-kit` | item/equipment state and equip mutation |
+| `active-session-domain-kit` | movement, collection, clearing, phase changes, pest spawn/pursuit, damage, score and failure |
+| render kits | canvas projection, active HUD, generic screen HTML, delegated bindings, full HTML replacement |
+| diagnostics/proof/deploy kits | raw engine, snapshot, manual tick, smoke, static copy and Pages deployment |
 
 ## Required composed domain
 
 ```txt
-zombie-orchard-fixed-step-clock-authority-domain
-  -> clock-descriptor-kit
-  -> wall-time-sample-kit
-  -> fixed-step-accumulator-kit
-  -> simulation-tick-id-kit
-  -> render-frame-id-kit
-  -> lifecycle-tick-admission-kit
-  -> clock-catchup-budget-kit
-  -> dropped-time-result-kit
-  -> clock-overrun-policy-kit
-  -> automatic-tick-lease-kit
-  -> manual-step-command-kit
-  -> manual-automatic-exclusion-kit
-  -> visibility-resume-policy-kit
-  -> committed-tick-receipt-kit
-  -> render-frame-clock-ack-kit
-  -> clock-observation-kit
-  -> clock-journal-kit
-  -> cadence-parity-fixture-kit
-  -> pause-freeze-fixture-kit
+zombie-orchard-runtime-session-instance-authority-domain
+  -> runtime-id-kit
+  -> session-id-kit
+  -> session-epoch-kit
+  -> lifecycle-state-kit
+  -> runtime-start-command-kit
+  -> new-run-command-kit
+  -> runtime-startup-transaction-kit
+  -> graph-construction-plan-kit
+  -> authority-transfer-kit
+  -> animation-frame-lease-kit
+  -> delegated-listener-lease-kit
+  -> renderer-resource-owner-kit
+  -> public-host-lease-kit
+  -> runtime-cleanup-stack-kit
+  -> ordered-runtime-dispose-kit
+  -> startup-rollback-kit
+  -> lifecycle-result-kit
+  -> lifecycle-journal-kit
+  -> lifecycle-observation-kit
+  -> runtime-session-fixture-kit
 ```
 
-## Required clock contract
+## Required contract
 
 ```txt
-wall-time sample
-  -> clamp frame delta
-  -> accumulate admitted time
-  -> run 0..N fixed simulation steps
-  -> advance one monotonic tick ID per step
-  -> stop at catch-up budget
-  -> emit dropped/deferred-time result
-  -> render latest committed tick once
-  -> acknowledge tick ID in render frame receipt
+start host
+  -> allocate runtime identity
+  -> construct graph/resources off-line
+  -> register cleanup leases
+  -> atomically publish current authority
+  -> start one retained RAF
+
+start new run
+  -> allocate new session ID and epoch
+  -> construct fresh graph off-line
+  -> fence old callbacks
+  -> atomically transfer clock/render/input authority
+  -> dispose old graph and resources
+
+stop host
+  -> reject new commands
+  -> cancel RAF
+  -> remove listeners
+  -> revoke GameHost
+  -> dispose renderers
+  -> retire graph
+  -> publish stable DISPOSED result
 ```
 
 ## Fixture matrix
 
 ```txt
-30 / 60 / 120 Hz for equal wall duration -> equal committed tick count and state
-pause for wall duration -> zero gameplay ticks
-resume -> no unbounded catch-up burst
-large stall -> bounded steps plus explicit dropped/deferred time
-manual step while automatic clock active -> typed rejection
-manual step under debug lease -> exactly one committed tick
-terminal state -> exactly-once final tick and stable Outcome
-render frame -> cites latest committed tick and clock revision
+fresh startup and exactly one RAF
+double-start rejection
+New Game creates fully fresh state
+pause/resume preserves one session
+Title follows explicit retain-or-retire policy
+terminal graph cannot reopen after retirement
+old-session commands and RAF callbacks reject
+startup failure rolls back in reverse order
+listener and GameHost leases are revoked
+dispose is ordered and idempotent
+render frames cite live session and epoch
 ```
 
 ## Ordered safe ledges
@@ -220,4 +221,4 @@ render frame -> cites latest committed tick and clock revision
 6. Versioned Save / Load Authority
 ```
 
-Clock authority must consume session identity from Gate 1. Capability, transaction, replay and persistence layers must consume committed tick identity from this gate.
+The clock must consume session identity and lifecycle state from Gate 1. It must not invent its own runtime or epoch model.
