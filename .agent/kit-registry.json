@@ -1,20 +1,21 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-11T01-31-15-04-00",
+  "updatedAt": "2026-07-11T03-48-31-04-00",
   "currentNextSafeLedge": "ZombieOrchard Runtime Session Instance Authority + Start/Reset/Title/Outcome Fidelity Fixture Gate",
   "secondaryNextSafeLedge": "ZombieOrchard Fixed-Step Clock Authority + Pause/30-60-120 Hz Parity Fixture Gate",
   "tertiaryNextSafeLedge": "ZombieOrchard Interaction Capability Reachability + Movement/Service-Binding Fixture Gate",
   "quaternaryNextSafeLedge": "ZombieOrchard Composite Command Transaction Authority + Parent/Child Result and Single-Publication Fixture Gate",
   "quinaryNextSafeLedge": "ZombieOrchard Seeded Random and Replay Authority + Apple/Pest Determinism Fixture Gate",
-  "latestTracker": ".agent/trackers/2026-07-11T01-31-15-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-11T01-31-15-04-00.md",
-  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-11T01-31-15-04-00-command-transaction-authority-dsk-map.md",
-  "latestRenderAudit": ".agent/render-audit/2026-07-11T01-31-15-04-00-command-commit-render-correlation-gap.md",
-  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-11T01-31-15-04-00-build-hire-equip-transaction-loop.md",
-  "latestInteractionAudit": ".agent/interaction-audit/2026-07-11T01-31-15-04-00-parent-child-command-result-map.md",
-  "latestCommandTransactionAudit": ".agent/command-transaction-audit/2026-07-11T01-31-15-04-00-nested-command-atomicity-contract.md",
-  "latestDeployAudit": ".agent/deploy-audit/2026-07-11T01-31-15-04-00-command-transaction-fixture-gate.md",
-  "previousTracker": ".agent/trackers/2026-07-10T23-50-53-04-00/project-breakdown.md",
+  "senaryNextSafeLedge": "ZombieOrchard Versioned Save/Load Authority + Slot Roundtrip and Atomic Load Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-11T03-48-31-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-11T03-48-31-04-00.md",
+  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-11T03-48-31-04-00-versioned-save-load-authority-dsk-map.md",
+  "latestRenderAudit": ".agent/render-audit/2026-07-11T03-48-31-04-00-session-select-slot-projection-gap.md",
+  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-11T03-48-31-04-00-committed-state-save-load-loop.md",
+  "latestInteractionAudit": ".agent/interaction-audit/2026-07-11T03-48-31-04-00-save-select-load-command-map.md",
+  "latestPersistenceAudit": ".agent/persistence-audit/2026-07-11T03-48-31-04-00-save-envelope-migration-contract.md",
+  "latestDeployAudit": ".agent/deploy-audit/2026-07-11T03-48-31-04-00-save-roundtrip-atomic-load-fixture-gate.md",
+  "previousTracker": ".agent/trackers/2026-07-11T01-31-15-04-00/project-breakdown.md",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
@@ -89,6 +90,21 @@
     "state-fingerprint-kit",
     "seed-replay-fixture-kit"
   ],
+  "proposedPersistenceKits": [
+    "save-envelope-kit",
+    "save-schema-version-kit",
+    "content-identity-kit",
+    "save-slot-index-kit",
+    "committed-snapshot-export-kit",
+    "state-restore-kit",
+    "save-admission-validation-kit",
+    "save-migration-registry-kit",
+    "atomic-load-transaction-kit",
+    "browser-persistence-adapter-kit",
+    "load-epoch-authority-kit",
+    "save-load-result-journal-kit",
+    "save-roundtrip-fixture-kit"
+  ],
   "services": {
     "kit-runtime": [
       "kit registration",
@@ -106,6 +122,7 @@
       "action catalog",
       "selection",
       "field mutation",
+      "metadata",
       "action activation",
       "disabled action rejection",
       "screen snapshot"
@@ -172,6 +189,7 @@
       "orchard canvas projection",
       "active-session HUD",
       "generic screen projection",
+      "Session Select slot-card projection",
       "DOM action binding",
       "hard-coded gameplay command binding",
       "per-frame HTML replacement"
@@ -188,59 +206,31 @@
       "Pages test-build-deploy chain"
     ]
   },
-  "commandTransaction": {
-    "parentOwner": "interface-composition-kit",
-    "childDispatchPath": "ctx.engine.command",
-    "childResultPropagation": "missing",
-    "commandId": "missing",
-    "transactionId": "missing",
-    "preflight": "missing",
-    "singlePublicationBarrier": "missing",
-    "rollback": "missing",
-    "journal": "missing",
-    "renderCorrelation": "missing",
-    "knownRisks": [
-      "child notification before parent completion",
-      "outer notification after parent completion",
-      "parent accepted result can hide child rejection",
-      "child mutation can precede route failure",
-      "boolean resource payment lacks attribution",
-      "unknown construction target falls back to first catalog item",
-      "unknown equipment id is accepted"
-    ]
-  },
-  "randomConsumption": {
-    "orchard-world": [
-      "apple tree index",
-      "apple id",
-      "apple x offset",
-      "apple y offset",
-      "apple kind"
-    ],
-    "active-session": [
-      "night pest admission",
-      "pest angle",
-      "pest id"
-    ],
-    "currentSource": "global Math.random",
-    "seed": "missing",
-    "streamPartitioning": "missing",
-    "decisionJournal": "missing",
-    "replayReceipt": "missing"
+  "persistenceSurface": {
+    "sessionSelectDomain": "implemented but unreachable",
+    "slotProjection": "renderer reads current.meta.slots",
+    "slotMetadataSource": "missing",
+    "saveCommands": "missing",
+    "loadCommands": "missing",
+    "persistenceAdapter": "missing",
+    "schemaVersion": "missing",
+    "contentIdentity": "missing",
+    "domainRestoreServices": "missing",
+    "migrationRegistry": "missing",
+    "atomicLoadTransaction": "missing",
+    "loadEpoch": "missing",
+    "roundtripFixture": "missing"
   },
   "blockers": [
     "The entire mutable game graph is constructed before Play.",
-    "Play and New Game do not start or reset a session instance.",
-    "No session epoch distinguishes runs.",
-    "All domains tick regardless of screen or lifecycle intent.",
     "Simulation advances one fixed step per requestAnimationFrame.",
-    "No stop or disposal contract exists.",
     "Movement and several implemented services remain unbound.",
     "Nested child commands can publish before parent completion.",
-    "Interface composition discards child command results.",
-    "No command sequence, transaction, commit barrier, rollback or command journal exists.",
     "Apple and pest generation consume global Math.random directly.",
-    "No session, clock, capability, command transaction, seed or replay proof fixtures exist."
+    "Session Select exists but has no incoming route or slot owner.",
+    "Aggregate snapshots are presentation-only and cannot be restored.",
+    "No save schema, persistence adapter, migration registry, atomic load, or load epoch exists.",
+    "No session, clock, capability, command, replay, or persistence fixtures exist."
   ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
