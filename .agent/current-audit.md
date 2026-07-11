@@ -8,7 +8,7 @@ status: composite-command-transaction-child-result-single-publication-gate-audit
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: pending until central write completes
+central ledger sync: complete
 ```
 
 ## Selection audit
@@ -28,7 +28,7 @@ PhantomCommand       tracked  / 2026-07-11T07-38-25-04-00
 TheCavalryOfRome     excluded by rule
 ```
 
-Only `LuminaryLabs-Publish/ZombieOrchard` is changed in the Publish organization.
+Only `LuminaryLabs-Publish/ZombieOrchard` was changed in the Publish organization.
 
 ## Product interaction loop
 
