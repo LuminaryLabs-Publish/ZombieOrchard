@@ -15,6 +15,7 @@ Documentation-only seeded-random and replay authority audit. Runtime source, dep
 - [x] Confirm snapshots do not contain random causality or durable fingerprints.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
+- [x] Synchronize the central ledger and internal change log.
 - [ ] Implement prerequisite session, clock and transaction authorities.
 - [ ] Implement and run random/replay fixtures.
 
@@ -109,8 +110,8 @@ replay parity fixture: unavailable / not run
 save/restore continuation fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: pending
-central internal change log: pending
+central ledger update: complete
+central internal change log: complete
 ```
 
 No deterministic random or replay claim is made.
