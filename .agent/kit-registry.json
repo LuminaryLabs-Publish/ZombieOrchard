@@ -1,28 +1,31 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-11T07-51-07-04-00",
+  "updatedAt": "2026-07-11T07-59-08-04-00",
   "status": "composite-command-transaction-child-result-single-publication-gate-audited",
-  "currentNextSafeLedge": "ZombieOrchard Runtime Session Instance Authority + Start / Reset / Title / Outcome Fidelity Fixture Gate",
-  "secondaryNextSafeLedge": "ZombieOrchard Fixed-Step Clock Authority + Pause / 30-60-120 Hz Parity Fixture Gate",
-  "tertiaryNextSafeLedge": "ZombieOrchard Interaction Capability Reachability + Movement / Service-Binding Fixture Gate",
-  "quaternaryNextSafeLedge": "ZombieOrchard Composite Command Transaction Authority + Parent / Child Result and Single-Publication Fixture Gate",
-  "quinaryNextSafeLedge": "ZombieOrchard Seeded Random and Replay Authority + Apple / Pest Determinism Fixture Gate",
-  "senaryNextSafeLedge": "ZombieOrchard Versioned Save / Load Authority + Slot Roundtrip and Atomic Load Fixture Gate",
-  "latestTracker": ".agent/trackers/2026-07-11T07-51-07-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-11T07-51-07-04-00.md",
-  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-11T07-51-07-04-00-composite-command-transaction-dsk-map.md",
-  "latestRenderAudit": ".agent/render-audit/2026-07-11T07-51-07-04-00-command-publication-frame-correlation-gap.md",
-  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-11T07-51-07-04-00-build-resource-command-state-loop.md",
-  "latestInteractionAudit": ".agent/interaction-audit/2026-07-11T07-51-07-04-00-parent-child-command-result-map.md",
-  "latestCommandTransactionAudit": ".agent/command-transaction-audit/2026-07-11T07-51-07-04-00-single-publication-rollback-contract.md",
-  "latestDeployAudit": ".agent/deploy-audit/2026-07-11T07-51-07-04-00-command-transaction-fixture-gate.md",
-  "previousTracker": ".agent/trackers/2026-07-11T06-02-00-04-00/project-breakdown.md",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
-    "eligibleRepositoryCount": 9,
     "accessibleRepositoryCount": 10,
-    "reason": "oldest eligible documented fallback after current Publish inventory, central ledger and root agent comparison"
+    "eligibleRepositoryCount": 9,
+    "reason": "repo-local composite-command audit was newer than the prior central ledger"
+  },
+  "safeLedges": [
+    "ZombieOrchard Runtime Session Instance Authority + Start / Reset / Title / Outcome Fidelity Fixture Gate",
+    "ZombieOrchard Fixed-Step Clock Authority + Pause / 30-60-120 Hz Parity Fixture Gate",
+    "ZombieOrchard Interaction Capability Reachability + Movement / Service-Binding Fixture Gate",
+    "ZombieOrchard Composite Command Transaction Authority + Parent / Child Result and Single-Publication Fixture Gate",
+    "ZombieOrchard Seeded Random and Replay Authority + Apple / Pest Determinism Fixture Gate",
+    "ZombieOrchard Versioned Save / Load Authority + Slot Roundtrip and Atomic Load Fixture Gate"
+  ],
+  "latestFiles": {
+    "tracker": ".agent/trackers/2026-07-11T07-59-08-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-11T07-59-08-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-11T07-59-08-04-00-composite-command-central-reconciliation-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-11T07-59-08-04-00-single-publication-frame-proof-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T07-59-08-04-00-storage-shed-parent-child-result-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-11T07-59-08-04-00-dom-click-child-dispatch-result-map.md",
+    "commandTransactionAudit": ".agent/command-transaction-audit/2026-07-11T07-59-08-04-00-preflight-commit-rollback-publication-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-11T07-59-08-04-00-composite-command-fixture-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -52,80 +55,6 @@
     "smoke-fixture-kit",
     "static-build-copy-kit",
     "pages-deploy-kit"
-  ],
-  "proposedSessionKits": [
-    "runtime-session-authority-domain",
-    "runtime-session-id-kit",
-    "session-instance-factory-kit",
-    "session-lifecycle-state-kit",
-    "session-command-kit",
-    "session-command-result-kit",
-    "session-epoch-kit",
-    "session-tick-admission-kit",
-    "session-reset-plan-kit",
-    "raf-ownership-kit",
-    "input-listener-lease-kit",
-    "renderer-session-projection-kit",
-    "outcome-finalization-kit",
-    "session-graph-disposal-kit",
-    "GameHost-session-observation-kit",
-    "session-lifecycle-journal-kit",
-    "session-lifecycle-fixture-kit"
-  ],
-  "proposedClockKits": [
-    "fixed-step-clock-kit",
-    "committed-tick-ledger-kit",
-    "refresh-rate-parity-fixture-kit"
-  ],
-  "proposedCapabilityKits": [
-    "browser-input-adapter-kit",
-    "capability-registry-kit",
-    "capability-result-projection-kit",
-    "capability-reachability-fixture-kit"
-  ],
-  "proposedCommandTransactionKits": [
-    "composite-command-transaction-domain",
-    "command-envelope-kit",
-    "command-sequence-kit",
-    "transaction-id-kit",
-    "command-preflight-kit",
-    "child-command-plan-kit",
-    "internal-dispatch-kit",
-    "child-command-result-kit",
-    "required-child-policy-kit",
-    "resource-debit-receipt-kit",
-    "target-admission-kit",
-    "mutation-stage-kit",
-    "command-rollback-kit",
-    "route-commit-kit",
-    "command-result-envelope-kit",
-    "command-publication-barrier-kit",
-    "command-journal-kit",
-    "render-command-correlation-kit",
-    "command-transaction-fixture-kit"
-  ],
-  "proposedRandomnessKits": [
-    "seeded-random-source-kit",
-    "random-stream-partition-kit",
-    "random-decision-ledger-kit",
-    "command-replay-ledger-kit",
-    "state-fingerprint-kit",
-    "seed-replay-fixture-kit"
-  ],
-  "proposedPersistenceKits": [
-    "save-envelope-kit",
-    "save-schema-version-kit",
-    "content-identity-kit",
-    "save-slot-index-kit",
-    "committed-snapshot-export-kit",
-    "state-restore-kit",
-    "save-admission-validation-kit",
-    "save-migration-registry-kit",
-    "atomic-load-transaction-kit",
-    "browser-persistence-adapter-kit",
-    "load-epoch-authority-kit",
-    "save-load-result-journal-kit",
-    "save-roundtrip-fixture-kit"
   ],
   "services": {
     "kit-runtime": [
@@ -180,7 +109,7 @@
       "build catalog",
       "catalog lookup with first-item fallback",
       "Boolean resource payment",
-      "built object creation",
+      "built-object creation",
       "status message"
     ],
     "roster-runtime-kit": [
@@ -228,6 +157,27 @@
       "Pages test-build-deploy chain"
     ]
   },
+  "proposedCommandTransactionKits": [
+    "composite-command-transaction-domain",
+    "command-envelope-kit",
+    "transaction-id-kit",
+    "command-sequence-kit",
+    "command-preflight-kit",
+    "child-command-plan-kit",
+    "internal-dispatch-kit",
+    "child-command-result-kit",
+    "required-child-policy-kit",
+    "target-admission-kit",
+    "resource-debit-receipt-kit",
+    "mutation-stage-kit",
+    "command-rollback-kit",
+    "route-commit-kit",
+    "command-result-envelope-kit",
+    "command-publication-barrier-kit",
+    "command-journal-kit",
+    "render-command-correlation-kit",
+    "command-transaction-fixture-kit"
+  ],
   "commandTransactionSurface": {
     "commandId": "missing",
     "transactionId": "missing",
@@ -245,21 +195,6 @@
     "renderCorrelation": "missing",
     "fixtureGate": "missing"
   },
-  "blockers": [
-    "The entire mutable graph is constructed before Play.",
-    "Play, New Game and Start are route changes into the same graph.",
-    "Pause, Title and Outcome do not gate all-domain ticking.",
-    "Title after Outcome is automatically routed back to Outcome on the next tick.",
-    "Simulation advances one fixed step per requestAnimationFrame.",
-    "Movement and several implemented services remain unbound.",
-    "Nested public child commands publish before parent completion.",
-    "Child command results are discarded and can be concealed by parent success.",
-    "Unknown construction IDs fall back to the first catalog item.",
-    "Resource debit and built-object creation have no staged rollback boundary.",
-    "Apple and pest generation consume global Math.random directly.",
-    "Session Select exists but has no incoming route or slot owner.",
-    "No session, clock, capability, transaction, replay or persistence fixture gate exists."
-  ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
     "dependenciesChanged": false,
@@ -270,6 +205,8 @@
     "npmTestRun": false,
     "npmBuildRun": false,
     "fixtureRun": false,
-    "browserSmokeRun": false
+    "browserSmokeRun": false,
+    "centralLedgerSynchronized": true,
+    "centralChangeLogAdded": true
   }
 }
