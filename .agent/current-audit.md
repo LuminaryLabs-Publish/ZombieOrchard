@@ -1,9 +1,9 @@
-# Current audit — ZombieOrchard
+# Current audit: ZombieOrchard
 
 ## Status
 
 ```txt
-last aligned: 2026-07-11T07-51-07-04-00
+last aligned: 2026-07-11T07-59-08-04-00
 status: composite-command-transaction-child-result-single-publication-gate-audited
 runtime source changed: no
 branch: main
@@ -11,21 +11,40 @@ root .agent state: refreshed
 central ledger sync: complete
 ```
 
+## Summary
+
+`ZombieOrchard` is a dependency-free static browser game built from a small kit runtime, 12 interface domains, orchard/economy/survival services, canvas and HTML renderers, diagnostics, a Node smoke test, a static build, and Pages deployment. The current audit documents the fourth architecture gate: composite screen actions are not one transaction.
+
+## Plan ledger
+
+**Goal:** preserve the complete repository breakdown while defining one truthful boundary from interface intent through required child work, route mutation, publication, result return, and first rendered frame.
+
+- [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
+- [x] Exclude `TheCavalryOfRome`.
+- [x] Confirm all nine eligible repositories have central ledger and root `.agent` state.
+- [x] Select only `ZombieOrchard` because repo-local documentation was newer than the prior central ledger.
+- [x] Re-read runtime, composition, gameplay, renderer, preset, proof, and `.agent` surfaces.
+- [x] Identify the interaction loop.
+- [x] Identify all domains in use.
+- [x] Identify all implemented kits and services.
+- [x] Trace Construction to Storage Shed through parent and child command dispatch.
+- [x] Identify child-result loss, nested publication, false parent success, target fallback, and missing rollback/correlation.
+- [x] Add timestamped architecture and system audits.
+- [x] Push documentation only to `main`.
+- [x] Synchronize the central ledger and internal change log.
+- [x] Create no branch or pull request.
+- [ ] Runtime implementation and executable fixtures remain future work.
+
 ## Selection audit
 
-All ten accessible `LuminaryLabs-Publish` repositories were compared. All nine eligible non-Cavalry repositories had a central ledger and root `.agent` state, so the oldest documented-selection rule applied.
-
 ```txt
-ZombieOrchard        selected / 2026-07-11T06-02-00-04-00
-TheUnmappedHouse     tracked  / 2026-07-11T06-21-57-04-00
-AetherVale           tracked  / 2026-07-11T06-29-11-04-00
-IntoTheMeadow        tracked  / 2026-07-11T06-38-59-04-00
-MyCozyIsland         tracked  / 2026-07-11T07-01-49-04-00
-PrehistoricRush      tracked  / 2026-07-11T07-08-45-04-00
-TheOpenAbove         tracked  / 2026-07-11T07-18-44-04-00
-HorrorCorridor       tracked  / 2026-07-11T07-30-40-04-00
-PhantomCommand       tracked  / 2026-07-11T07-38-25-04-00
-TheCavalryOfRome     excluded by rule
+accessible Publish repositories: 10
+eligible non-Cavalry repositories: 9
+new or central-ledger-missing repositories: 0
+root-.agent-missing repositories: 0
+selected: ZombieOrchard
+reason: repo-local composite-command audit was newer than the prior central ledger
+excluded: TheCavalryOfRome
 ```
 
 Only `LuminaryLabs-Publish/ZombieOrchard` was changed in the Publish organization.
@@ -68,7 +87,7 @@ interface click
 static browser route and ESM boot
 browser runtime host
 kit registration and domain graph construction
-runtime command routing, tick routing, events, snapshots and subscriptions
+runtime command routing, tick routing, events, snapshots, subscriptions, and publication
 12 scoped interface screens
 interface route composition and automatic Outcome routing
 resource ledger
@@ -77,7 +96,7 @@ orchard world and apple lifecycle
 construction runtime
 roster runtime
 inventory runtime
-active-session movement, collection, phase, pests, damage, score and failure
+active-session movement, collection, phase, pests, damage, score, and failure
 world canvas projection
 HTML interface projection and delegated input
 GameHost diagnostics
@@ -87,45 +106,67 @@ Pages deployment
 missing session identity and lifecycle authority
 missing fixed-step simulation clock
 missing capability registry and reachability proof
-missing composite command transaction authority
+missing composite-command transaction authority
 missing seeded random and replay authority
 missing versioned save/load authority
 ```
 
-## Implemented kits and services
+## Implemented kit inventory
 
-- `kit-runtime`: kit registration, domain creation, public command dispatch, delta clamping, all-domain ticking, ephemeral event emission, aggregate snapshots, subscriptions and publication.
-- `scoped-interface-domain-kit` plus 12 screen kits: screen state, action catalogs, selection, field mutation, metadata, disabled-action rejection, activation and screen snapshots.
-- `interface-composition-kit`: active/previous route ownership, transition, back navigation, active-screen activation, nested child dispatch and automatic Outcome routing.
-- `resource-ledger-kit`: affordability checks, Boolean payment, addition and resource snapshots.
-- `pressure-field-kit`: bounded channel adjustment, passive growth and snapshots.
-- `orchard-world-kit`: tree creation, global-random apple seeding/replenishment, nearby collection and snapshots.
-- `construction-runtime-kit`: catalog lookup, first-item fallback, resource payment, built-object creation and message state.
-- `roster-runtime-kit`: actor/role state, hiring payment, actor creation and messages.
+```txt
+kit-runtime
+scoped-interface-domain-kit
+entry-domain-kit
+session-select-domain-kit
+run-setup-domain-kit
+active-session-domain-kit
+interrupt-domain-kit
+construction-domain-kit
+exchange-domain-kit
+roster-domain-kit
+inventory-domain-kit
+knowledge-domain-kit
+preferences-domain-kit
+outcome-domain-kit
+interface-composition-kit
+resource-ledger-kit
+pressure-field-kit
+orchard-world-kit
+construction-runtime-kit
+roster-runtime-kit
+inventory-runtime-kit
+world-canvas-render-kit
+html-interface-render-kit
+game-host-diagnostics-kit
+smoke-fixture-kit
+static-build-copy-kit
+pages-deploy-kit
+```
+
+## Kit services
+
+- `kit-runtime`: kit registration, domain creation, public command routing, delta clamping, all-domain ticking, ephemeral events, aggregate snapshots, subscriptions, and publication.
+- Screen kits: screen state, action catalogs, selection, field mutation, metadata, activation, disabled-action rejection, and snapshots.
+- `interface-composition-kit`: active and previous route ownership, transition, back navigation, parent activation, nested public child dispatch, and automatic Outcome routing.
+- `resource-ledger-kit`: affordability checks, Boolean payment, resource addition, and snapshots.
+- `pressure-field-kit`: bounded adjustment, passive pressure growth, and snapshots.
+- `orchard-world-kit`: tree creation, random apple seeding and replenishment, nearby collection, and snapshots.
+- `construction-runtime-kit`: catalog lookup with first-item fallback, resource payment, built-object creation, and messages.
+- `roster-runtime-kit`: actor and role state, hiring payment, actor creation, and messages.
 - `inventory-runtime-kit`: item state and unvalidated equipment mutation.
-- `active-session-domain-kit`: movement, apple collection, pest clearing, phase changes, global-random pest spawning, pursuit, damage, score and terminal failure.
-- `world-canvas-render-kit`: world, apple, pest and player canvas projection.
-- `html-interface-render-kit`: HUD/screen/slot projection, delegated DOM input, hard-coded gameplay command binding and per-frame HTML replacement.
-- `game-host-diagnostics-kit`: raw engine exposure, aggregate snapshot readback and unrestricted manual ticking.
-- `smoke-fixture-kit`, `static-build-copy-kit`, `pages-deploy-kit`: minimal route/apple proof, static artifact copy and Pages deployment.
+- `active-session-domain-kit`: movement, apple collection, pest clearing, phase changes, pest spawning, pursuit, damage, score, and failure.
+- Render kits: canvas world projection, HUD and screen HTML, slot cards, DOM action binding, gameplay command binding, and per-frame HTML replacement.
+- Diagnostics and proof kits: raw engine exposure, snapshot readback, manual tick, smoke checks, static build copy, and Pages deployment.
 
 ## Composite command trace
 
-### Current Construction action
-
-`src/presets/orchard-preset.js` declares:
-
 ```txt
-construction.shed
-  -> parent action activation
+Construction screen Storage Shed action
+  -> parent activation accepted
   -> child domain: construction-runtime
   -> child type: build
   -> payload id: storage-shed
-```
 
-### Current dispatch path
-
-```txt
 HTML click
   -> outer engine.command(interface-composition, activate)
     -> interface-composition.command(activate)
@@ -142,33 +183,33 @@ HTML click
   -> caller receives only parent result
 ```
 
-### Exact defects
+## Exact defects
 
-1. **Child result loss.** `interface-composition` does not retain or return the result of the required child command.
-2. **False parent success.** The parent can report `accepted: true` even when the child rejects for missing resources, missing domain or invalid behavior.
-3. **Nested publication.** The child dispatch uses the public command path, causing publication before the parent command has completed.
-4. **Double publication.** The outer command publishes again after the nested publication.
-5. **Route independence.** A future action with both `command` and `to` can route after a rejected child because the route decision does not depend on child success.
-6. **No preflight.** Domain existence, command support, catalog target, affordability and route availability are not validated as one plan.
-7. **Weak target admission.** An unknown construction ID falls back to the first catalog item instead of rejecting the target.
-8. **Weak resource receipt.** Payment returns only a Boolean, with no before/after values, debit ID or reason.
-9. **No rollback.** Resource debit and built-object creation are not staged under one reversible transaction.
-10. **No correlation.** Commands, events, snapshots and rendered frames carry no command ID, transaction ID, session ID, tick ID or state fingerprint.
+1. `interface-composition` does not retain or return the required child result.
+2. The parent can report `accepted: true` when the child rejected.
+3. Nested public dispatch publishes before parent completion.
+4. The outer command publishes again.
+5. A command-plus-route action can route after child rejection.
+6. The complete action plan is not preflighted.
+7. An unknown construction ID falls back to the first catalog item.
+8. Payment returns only a Boolean, with no receipt or shortfall.
+9. Resource and construction mutations are not staged or rolled back together.
+10. Commands, snapshots, and frames share no command, transaction, session, tick, or fingerprint identity.
 
-## Required transaction authority DSK map
+## Required transaction authority
 
 ```txt
 composite-command-transaction-domain
   -> command-envelope-kit
-  -> command-sequence-kit
   -> transaction-id-kit
+  -> command-sequence-kit
   -> command-preflight-kit
   -> child-command-plan-kit
   -> internal-dispatch-kit
   -> child-command-result-kit
   -> required-child-policy-kit
-  -> resource-debit-receipt-kit
   -> target-admission-kit
+  -> resource-debit-receipt-kit
   -> mutation-stage-kit
   -> command-rollback-kit
   -> route-commit-kit
@@ -179,25 +220,17 @@ composite-command-transaction-domain
   -> command-transaction-fixture-kit
 ```
 
-## Required parent result
+## Latest audit set
 
 ```txt
-commandId
-transactionId
-sessionId
-sessionEpoch
-source
-parentDomain
-parentType
-parentAccepted
-childResults[]
-routeResult
-beforeFingerprint
-afterFingerprint
-publicationCount
-committedTickId
-firstRenderedFrameId
-reason
+.agent/trackers/2026-07-11T07-59-08-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-11T07-59-08-04-00.md
+.agent/architecture-audit/2026-07-11T07-59-08-04-00-composite-command-central-reconciliation-dsk-map.md
+.agent/render-audit/2026-07-11T07-59-08-04-00-single-publication-frame-proof-gap.md
+.agent/gameplay-audit/2026-07-11T07-59-08-04-00-storage-shed-parent-child-result-loop.md
+.agent/interaction-audit/2026-07-11T07-59-08-04-00-dom-click-child-dispatch-result-map.md
+.agent/command-transaction-audit/2026-07-11T07-59-08-04-00-preflight-commit-rollback-publication-contract.md
+.agent/deploy-audit/2026-07-11T07-59-08-04-00-composite-command-fixture-gate.md
 ```
 
 ## Ordered safe ledges
@@ -211,4 +244,4 @@ reason
 6. Versioned Save / Load Authority
 ```
 
-The transaction gate remains fourth. It depends on session/epoch identity, committed tick identity and a truthful capability registry, but its exact contract is now documented.
+The transaction gate remains fourth because command identity and stale-command admission must be scoped to an authoritative session, committed simulation clock, and truthful capability registry.
