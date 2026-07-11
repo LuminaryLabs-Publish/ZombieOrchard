@@ -2,64 +2,46 @@
 
 ## Scope
 
-This was a documentation-only audit. Runtime source, dependencies, package scripts, render behavior and deployment configuration were not changed.
+This was a documentation-only fixed-step clock audit. Runtime source, dependencies, package scripts, render behavior and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record inspected surfaces, source-backed gateway findings, documentation changes and missing proof without overstating validation.
+**Goal:** record source-backed timing findings and the exact proof required before cadence, pause or tick/frame claims are made.
 
-- [x] Re-read runtime, scoped-interface, composition, gameplay, preset and HTML-renderer findings.
-- [x] Re-read package scripts and current root `.agent` state.
-- [x] Compare all current Publish repositories against the central ledger.
-- [x] Trace browser direct-command, nested composition and `GameHost` bypass paths.
-- [x] Reconfirm movement, collect, build, market, hire, equip and Session Select reachability.
-- [x] Confirm missing gateway, diagnostics quarantine, result retention and first-frame acknowledgement.
+- [x] Read `src/start.js`, `src/kits/runtime.js`, `src/kits/game-domains.js` and `src/kits/composition.js`.
+- [x] Confirm one hard-coded `1/60` step is submitted per RAF.
+- [x] Confirm the runtime ticks every domain once per call.
+- [x] Confirm pressure, pest admission, pursuit and damage consume that delta.
+- [x] Confirm `GameHost.tick(dt)` advances the same graph outside RAF.
+- [x] Confirm no accumulator, catch-up limit, dropped-time result or render-frame receipt exists.
 - [x] Update root `.agent` state and add timestamped audits.
-- [x] Push only to `main`.
-- [x] Synchronize the central ledger and internal change log.
-- [x] Create no branch or pull request.
-- [ ] Runtime gateway implementation remains future work.
+- [x] Push only to `main` and create no branch or pull request.
+- [ ] Implement and run clock fixtures.
 
 ## Source-backed findings
 
 ```txt
+src/start.js
+  -> draw() calls engine.tick(1 / 60)
+  -> RAF timestamp is ignored
+  -> one simulation update occurs per display frame
+  -> GameHost exposes direct tick(dt)
+
 src/kits/runtime.js
-  -> commands route by domain ID/type without product capability admission
-  -> every public command publishes
-  -> raw domain commands remain callable through exposed engine
-  -> manual tick can advance the graph outside the browser RAF path
-
-src/kits/scoped-interface-domains.js
-  -> actions use static disabled flags
-  -> activate resolves by action ID or selected index
-  -> select/set-field services exist without shipped bindings
-
-src/kits/composition.js
-  -> parent actions can dispatch nested child commands
-  -> child dispatch uses the same public engine path
+  -> delta clamps to [0, 0.1]
+  -> elapsed and frame advance once per tick call
+  -> every domain ticks once
+  -> no wall-time accumulator or multi-step loop
+  -> no catch-up budget or dropped-time result
 
 src/kits/game-domains.js
-  -> move, collect, clear, next-phase, hire and equip services exist
-  -> equip accepts unknown item IDs
-  -> construction unknown IDs fall back to the first item
+  -> pressure grows by dt on every runtime tick
+  -> night pest admission probability is dt-scaled per tick
+  -> pest movement and player damage are dt-scaled per tick
 
-src/presets/orchard-preset.js
-  -> active-session exposes route actions
-  -> Construction exposes Storage Shed
-  -> Market, Roster and Inventory expose route/read-only shells
-  -> Session Select has no incoming route
-
-src/renderer/html-interface-renderer.js
-  -> binds data-action and selected active-session data-command controls
-  -> hard-codes Collect, Clear and Next Phase
-  -> has no movement binding
-  -> Roster and Inventory cards are read-only
-  -> button helper does not project disabled state or reason
-  -> DOM command results are discarded
-
-src/start.js / GameHost projection
-  -> exposes raw engine and unrestricted manual tick
-  -> exposes mutation authority rather than detached observations
+src/kits/composition.js
+  -> terminal state is checked on every tick
+  -> route can be forced to Outcome after Title while ended remains true
 ```
 
 ## Current proof surface
@@ -74,62 +56,54 @@ npm test
   -> verify at least one apple
 ```
 
-The current smoke does not prove that a public action entered through an admitted gateway, that internal/debug access was quarantined, that a result was retained, or that a rendered frame acknowledged it.
+This does not prove wall-time parity, pause freeze, catch-up policy, automatic/manual exclusion, terminal stability or tick-to-frame correlation.
 
-## Required DOM-free gateway fixture matrix
+## Required DOM-free clock fixtures
 
 ```txt
-registry and ownership
-  -> every public capability resolves to one owner command
-  -> no duplicate capability IDs
-  -> unsupported/dormant/internal/debug states are explicit
+cadence parity
+  -> simulate equal wall duration at 30, 60 and 120 Hz
+  -> equal committed tick count
+  -> equal pressure and deterministic state
 
-public gateway
-  -> browser callers cannot invoke public engine.command directly
-  -> lifecycle, route, binding and target admission are evaluated
-  -> accepted and rejected results carry session/tick identity
-  -> result remains pending until a frame acknowledgement
+pause freeze
+  -> pause for a wall-time interval
+  -> zero gameplay ticks
+  -> no catch-up burst on resume
 
-internal/debug quarantine
-  -> default GameHost exposes detached observations only
-  -> debug command requires an explicit lease
-  -> manual tick requires debug mode and clock exclusion
-  -> stale lease rejects after reset or disposal
+stall policy
+  -> inject large frame delta
+  -> clamp input
+  -> run at most maxCatchupSteps
+  -> return explicit deferred/dropped time
 
-movement and collection
-  -> admitted move changes position
-  -> deliberate movement reaches a known apple
-  -> collect commits target/resource/score effects
-  -> out-of-range collect returns typed rejection
+manual exclusion
+  -> automatic clock owns session
+  -> manual step rejects without mutation
+  -> valid debug/manual mode commits exactly one tick
 
-roster and inventory
-  -> valid hire commits debit and actor
-  -> insufficient funds rejects without mutation
-  -> known equip succeeds
-  -> unknown equip rejects without mutation
+terminal stability
+  -> failure commits once
+  -> Outcome route remains stable
+  -> no post-terminal gameplay ticks
 
-presentation truth
-  -> Market is unsupported/disabled
-  -> Session Select is dormant
-  -> rendered disabled state and reason match gateway state
+frame correlation
+  -> every render receipt cites session, epoch, clock revision and latest committed tick
 ```
 
 ## Required browser fixture
 
 ```txt
 fresh run
-  -> inspect GameHost and confirm no raw mutation surface
-  -> move through orchard through the public gateway
-  -> collect a known apple
-  -> observe typed accepted result and resource update
-  -> observe truthful Roster/Inventory/Market/Session Select states
-  -> verify one rendered frame acknowledges registry revision and result
-  -> reset and confirm prior debug lease/result cannot affect the new session
+  -> observe clock/session descriptors
+  -> run at forced 30, 60 and 120 Hz schedules
+  -> compare committed tick count and state
+  -> pause and verify pressure/pests/player stop
+  -> resume without burst
+  -> simulate visibility stall and verify bounded catch-up result
+  -> confirm default GameHost cannot manually advance automatic time
+  -> confirm canvas and HTML frame receipts cite the same committed tick
 ```
-
-## Attempted validation
-
-No executable validation was run because this pass changed documentation only and the required gateway fixtures do not exist yet.
 
 ## Validation result
 
@@ -144,13 +118,13 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-capability gateway fixture: unavailable / not run
-diagnostics quarantine fixture: unavailable / not run
-movement/reachability fixture: unavailable / not run
-affordance truth fixture: unavailable / not run
-render acknowledgement fixture: unavailable / not run
+cadence fixture: unavailable / not run
+pause fixture: unavailable / not run
+stall fixture: unavailable / not run
+manual exclusion fixture: unavailable / not run
+render correlation fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: complete
-central internal change log: complete
+central ledger update: pending
+central internal change log: pending
 ```
