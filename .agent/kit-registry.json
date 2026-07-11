@@ -1,23 +1,24 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-10T20-30-23-04-00",
-  "currentNextSafeLedge": "ZombieOrchard Runtime Session Clock and Lifecycle Authority + Pause/Reset/Refresh-Rate Fixture Gate",
-  "secondaryNextSafeLedge": "ZombieOrchard Interaction Capability Reachability + Movement/Service-Binding Fixture Gate",
-  "latestTracker": ".agent/trackers/2026-07-10T20-30-23-04-00/project-breakdown.md",
-  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T20-30-23-04-00.md",
-  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T20-30-23-04-00-interaction-capability-reachability-dsk-map.md",
-  "latestRenderAudit": ".agent/render-audit/2026-07-10T20-30-23-04-00-render-affordance-command-binding-gap.md",
-  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T20-30-23-04-00-core-loop-movement-admission-gap.md",
-  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T20-30-23-04-00-capability-route-binding-result-map.md",
-  "latestCapabilityReachabilityAudit": ".agent/capability-reachability-audit/2026-07-10T20-30-23-04-00-command-service-exposure-contract.md",
-  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T20-30-23-04-00-interaction-capability-fixture-gate.md",
-  "previousTracker": ".agent/trackers/2026-07-10T18-49-54-04-00/project-breakdown.md",
+  "updatedAt": "2026-07-10T22-11-24-04-00",
+  "currentNextSafeLedge": "ZombieOrchard Runtime Session Instance Authority + Start/Reset/Title/Outcome Fidelity Fixture Gate",
+  "secondaryNextSafeLedge": "ZombieOrchard Fixed-Step Clock Authority + Pause/30-60-120 Hz Parity Fixture Gate",
+  "tertiaryNextSafeLedge": "ZombieOrchard Interaction Capability Reachability + Movement/Service-Binding Fixture Gate",
+  "latestTracker": ".agent/trackers/2026-07-10T22-11-24-04-00/project-breakdown.md",
+  "latestTurnLedger": ".agent/turn-ledger/2026-07-10T22-11-24-04-00.md",
+  "latestArchitectureAudit": ".agent/architecture-audit/2026-07-10T22-11-24-04-00-runtime-session-instance-reset-dsk-map.md",
+  "latestRenderAudit": ".agent/render-audit/2026-07-10T22-11-24-04-00-screen-session-state-divergence-gap.md",
+  "latestGameplayAudit": ".agent/gameplay-audit/2026-07-10T22-11-24-04-00-play-new-title-outcome-reset-loop.md",
+  "latestInteractionAudit": ".agent/interaction-audit/2026-07-10T22-11-24-04-00-lifecycle-control-admission-result-map.md",
+  "latestSessionAuthorityAudit": ".agent/session-authority-audit/2026-07-10T22-11-24-04-00-session-epoch-reset-dispose-contract.md",
+  "latestDeployAudit": ".agent/deploy-audit/2026-07-10T22-11-24-04-00-session-reset-fidelity-fixture-gate.md",
+  "previousTracker": ".agent/trackers/2026-07-10T20-30-23-04-00/project-breakdown.md",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
     "eligibleRepositoryCount": 9,
     "accessibleRepositoryCount": 10,
-    "reason": "oldest eligible documented fallback after full Publish inventory, central ledger, and root agent timestamp comparison"
+    "reason": "oldest eligible documented fallback after current Publish inventory, central ledger, and root agent comparison"
   },
   "implementedKits": [
     "kit-runtime",
@@ -48,33 +49,22 @@
     "static-build-copy-kit",
     "pages-deploy-kit"
   ],
-  "proposedLifecycleKits": [
+  "proposedSessionKits": [
     "runtime-session-authority-kit",
-    "fixed-step-clock-kit",
+    "session-instance-factory-kit",
+    "session-fingerprint-kit",
     "runtime-lifecycle-fixture-adapter-kit"
+  ],
+  "proposedClockKits": [
+    "fixed-step-clock-kit",
+    "committed-tick-ledger-kit",
+    "refresh-rate-parity-fixture-kit"
   ],
   "proposedCapabilityKits": [
     "browser-input-adapter-kit",
     "capability-registry-kit",
     "capability-result-projection-kit",
     "capability-reachability-fixture-kit"
-  ],
-  "companionDeterminismKits": [
-    "deterministic-random-source-kit",
-    "state-fingerprint-kit",
-    "scenario-fixture-adapter-kit"
-  ],
-  "downstreamMarketKits": [
-    "market-source-catalog-kit",
-    "runtime-command-journal-kit",
-    "interface-nested-result-adapter-kit",
-    "resource-transaction-history-kit",
-    "inventory-purchase-intake-kit",
-    "market-atomic-transaction-kit",
-    "market-result-projection-kit",
-    "market-render-consumption-kit",
-    "market-gamehost-journal-kit",
-    "market-causality-fixture-kit"
   ],
   "services": {
     "kit-runtime": [
@@ -112,7 +102,7 @@
     ],
     "pressure-field-kit": [
       "bounded pressure adjustment",
-      "unconditional passive pressure tick",
+      "passive pressure tick",
       "channel snapshot"
     ],
     "orchard-world-kit": [
@@ -171,61 +161,29 @@
       "Pages test build deploy chain"
     ]
   },
-  "capabilityReachability": {
-    "publicDirectReachable": [
-      "entry.play",
-      "entry.new",
-      "entry.settings",
-      "active-session.collect",
-      "active-session.clear",
-      "active-session.next-phase",
-      "active-session.pause",
-      "active-session.build",
-      "active-session.market",
-      "active-session.roster",
-      "active-session.inventory",
-      "active-session.codex",
-      "interrupt.resume",
-      "interrupt.title",
-      "construction.build-storage-shed",
-      "screen.back-actions"
-    ],
-    "publicIndirectReachable": [
-      "resource-ledger.add",
-      "resource-ledger.pay",
-      "pressure-field.adjust",
-      "orchard-world.collectNear"
-    ],
-    "implementedButUnbound": [
-      "active-session.move",
-      "roster-runtime.hire",
-      "inventory-runtime.equip",
-      "scoped-interface.select",
-      "scoped-interface.set-field",
-      "interface-composition.transition",
-      "interface-composition.back"
-    ],
-    "dormantOrShellOnly": [
-      "session-select",
-      "run-setup.fields",
-      "preferences.fields",
-      "knowledge.content"
-    ],
-    "unsupported": [
-      "exchange.market-transaction"
-    ]
+  "sessionControlCurrentState": {
+    "play": "screen transition only",
+    "newGame": "screen transitions only, no reset",
+    "pause": "screen transition only, gameplay continues",
+    "resume": "screen transition only",
+    "title": "screen transition only, session remains live",
+    "outcome": "derived repeatedly from persistent ended state",
+    "stop": "missing",
+    "dispose": "missing",
+    "sessionEpoch": "missing",
+    "resetFactory": "missing"
   },
   "blockers": [
-    "Gameplay session state is constructed and ticked before Play or New Game.",
-    "Simulation advances one fixed step per requestAnimationFrame, making game speed refresh-rate dependent.",
-    "All domains tick regardless of active screen or pause intent.",
-    "No start, pause, resume, reset, stop, or dispose contract exists.",
-    "The active-session movement command has no browser input binding.",
-    "Random apple placement does not guarantee a collectible apple near the immobile starting player.",
-    "Roster hiring and inventory equipment are implemented but unreachable.",
-    "Session Select has no incoming route and Market has no operational service.",
-    "No canonical capability registry or reachability fixture exists.",
-    "Deterministic scenario and Market transaction proof remain downstream gaps."
+    "The entire mutable game graph is constructed before Play.",
+    "Play and New Game do not start or reset a session instance.",
+    "No session epoch distinguishes runs.",
+    "Title does not retire or reset the current run.",
+    "Outcome to Title can bounce back because ended state persists.",
+    "All domains tick regardless of screen or lifecycle intent.",
+    "Simulation advances one fixed step per requestAnimationFrame.",
+    "No stop or disposal contract exists.",
+    "Movement and several implemented services remain unbound.",
+    "No session, clock, or capability proof fixtures exist."
   ],
   "validation": {
     "runtimeSourceChangedThisPass": false,
