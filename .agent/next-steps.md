@@ -2,9 +2,11 @@
 
 ## Plan ledger
 
-**Goal:** turn each orchard run into one identified, cadence-independent, capability-declared, atomic, reproducible, persistable and disposable session.
+**Goal:** turn each orchard run into one identified, fresh, cadence-independent, capability-declared, atomic, reproducible, persistable and disposable session.
 
 - [ ] Implement runtime-session instance authority first.
+- [ ] Add fresh graph staging, commit, rollback and predecessor retirement.
+- [ ] Bind routes and render frames to the committed run identity.
 - [ ] Implement fixed-step clock authority using the session owner.
 - [ ] Add a public capability gateway and quarantine raw diagnostics.
 - [ ] Add composite command transaction authority.
@@ -16,7 +18,7 @@
 
 ```txt
 1. Runtime Session Instance Authority
-   + Start / New Run / Title / Outcome / Dispose Fixture Gate
+   + Start / New Game / Outcome / Title / Reset / Dispose Fixture Gate
 
 2. Fixed-Step Clock Authority
    + Pause / 30-60-120 Hz / Stall / Visibility / Manual-Step Fixture Gate
@@ -34,197 +36,214 @@
    + Slot Roundtrip / Random Continuation / Atomic Load Fixture Gate
 ```
 
-## Gates 1–4 prerequisites
-
-Gate 5 must consume, not duplicate:
-
-```txt
-runtimeId
-sessionId
-runId
-sessionEpoch
-lifecycle state and revision
-committed simulationTickId
-commandId
-transactionId
-commit or rollback result
-canonical durable-state fingerprint hook
-```
-
-Random draws cannot be authoritative until the command or tick that requested them has an authoritative commit boundary.
-
-## Gate 5 — Seeded Random and Replay Authority
+## Gate 1 — Runtime Session Instance Authority
 
 ### 1. Add the parent owner
 
 Create:
 
 ```txt
-zombie-orchard-seeded-random-replay-authority-domain
+zombie-orchard-runtime-session-authority-domain
 ```
 
 It owns:
 
 ```txt
-runSeed
-randomPolicyId
-randomPolicyVersion
-seedFingerprint
-named stream registry
-per-stream PRNG state and cursor
-committed entity sequences
-committed random receipts
-bounded replay journal
-replay journal revision
+runtimeId
+runtimeGeneration
+runId
+sessionEpoch
+lifecycle
+lifecycleRevision
+graphRevision
+presetId
+presetFingerprint
+latestLifecycleCommandId
+latestLifecycleResult
+firstCommittedFrameId
+bounded lifecycle journal
 ```
 
-### 2. Replace global randomness
+### 2. Convert game construction into a fresh-run factory
 
-Current random consumers:
+Current:
 
 ```txt
-orchard-world-kit
-  -> apple tree choice
-  -> apple id
-  -> apple x/y offsets
-  -> apple rarity
-
-active-session-domain-kit
-  -> pest admission
-  -> pest angle
-  -> pest id
+module boot
+  -> createOrchardGame()
+  -> one graph for page lifetime
 ```
 
-Required named streams:
+Required:
 
 ```txt
-orchard.apple-tree
-orchard.apple-offset-x
-orchard.apple-offset-y
-orchard.apple-kind
-session.pest-admission
-session.pest-angle
+createRuntime()
+  -> idle runtime owner
+
+stageRun(preset)
+  -> fresh resource ledger
+  -> fresh pressure field
+  -> fresh orchard world
+  -> fresh construction state
+  -> fresh roster state
+  -> fresh inventory state
+  -> fresh active session
+  -> fresh interface composition
+  -> validated candidate graph
 ```
 
-### 3. Use deterministic entity identity
+Do not clear the ended graph in place.
 
-Replace random strings with committed sequence-derived IDs:
+### 3. Add typed lifecycle commands
 
 ```txt
-apple-{runId}-{appleSequence}
-pest-{runId}-{pestSequence}
+StartRun
+RequestNewRun
+CommitNewRun
+PauseRun
+ResumeRun
+EndRun
+ExitRunToTitle
+DisposeRuntime
 ```
 
-Sequence increments occur only when entity creation commits.
-
-### 4. Stage random draws inside transactions
+Each carries:
 
 ```txt
-admitted command or fixed tick
-  -> stage named-stream draws
-  -> stage gameplay mutation
-  -> commit transaction
-  -> advance stream cursor
-  -> append random receipts
-  -> fingerprint durable state
+commandId
+runtimeId
+expectedRunId
+expectedSessionEpoch
+expectedLifecycle
+expectedLifecycleRevision
+source
 ```
 
-Rejected, duplicate, stale or rolled-back work must not advance authoritative cursors.
-
-### 5. Isolate gameplay systems
-
-Apple generation must not perturb pest outcomes. Pest admission must consume exactly one draw per committed eligible night tick. Pest placement draws occur only after an admitted spawn commits.
-
-### 6. Add replay envelopes
-
-Record:
+### 4. Define lifecycle state transitions
 
 ```txt
-replay event sequence
-runtime/session/run/epoch
-committed simulation tick
-public or system command
-transaction result
-random receipt range
-state fingerprint
-terminal result when present
+idle -> starting -> active
+active -> pausing -> paused
+paused -> resuming -> active
+active -> ended
+active|paused|ended -> resetting -> active
+active|paused|ended -> exiting -> idle
+any live state -> disposing -> disposed
 ```
 
-Do not record canvas pixels or HTML as replay inputs.
+Reject illegal and stale transitions with typed results.
 
-### 7. Add replay verification
+### 5. Stage and commit atomically
 
 ```txt
-load manifest, preset and random policy revisions
-  -> restore initial authority state
-  -> replay admitted commands at recorded committed ticks
-  -> reproduce stream receipts and cursors
-  -> compare durable-state fingerprints
-  -> stop at first typed divergence
+preflight command and lifecycle
+  -> allocate candidate runId and next epoch
+  -> create candidate graph
+  -> validate domain/service registry
+  -> stage route and presentation
+  -> fence predecessor generation
+  -> atomically swap committed graph and identity
+  -> acknowledge first canvas and HTML frame
+  -> retire predecessor resources
+  -> publish result and journal row
 ```
 
-### 8. Add observability
+A candidate failure must leave the prior committed run unchanged.
 
-Canvas, HTML and GameHost observations should cite:
+### 6. Bind routes to lifecycle
 
 ```txt
-seedFingerprint
-randomPolicyVersion
-latestRandomReceiptId
-randomReceiptRange for acknowledged result/tick
-stateFingerprint
+Entry
+  -> idle runtime projection
+
+Run Setup
+  -> candidate configuration projection
+
+Active Session
+  -> active committed run projection
+
+Pause
+  -> paused committed run projection
+
+Outcome
+  -> ended committed run summary projection
+```
+
+`interface-composition` must consume lifecycle results rather than create lifecycle truth.
+
+### 7. Fence stale work
+
+RAF callbacks, delegated events, GameHost commands, manual ticks, render callbacks and later asynchronous work must carry runtime generation and session epoch. Predecessor work performs no mutation after authority transfer.
+
+### 8. Add snapshot and frame provenance
+
+Every authoritative snapshot and committed presentation frame should cite:
+
+```txt
+runtimeId
+runtimeGeneration
+runId
+sessionEpoch
+lifecycle
+lifecycleRevision
+graphRevision
 simulationTickId
 renderFrameId
+stateFingerprint
 ```
 
 ### 9. Add DOM-free fixtures
 
 ```txt
-same-seed startup parity
-different-seed intentional divergence
-apple stream determinism
-pest stream determinism
-apple/pest stream isolation
-rejected command cursor freeze
-duplicate command idempotency
-rollback cursor restoration
-fixed-tick replay parity
-first-divergence localization
+initial Play fresh state
+New Game from Entry
+Outcome -> Title -> Play
+Outcome -> Title -> New Game -> Start
+full state reset across all domains
+candidate graph failure rollback
+stale command rejection
+stale callback rejection
+repeated reset
+idempotent disposal
 ```
 
 ### 10. Add browser fixtures
 
 ```txt
-explicit-seed run startup
-visible seed/policy observation
-collection and night random receipt acknowledgement
-replay final-frame parity
-stale policy/manifest rejection
+first run frame identity
+Outcome and Title frame identity
+first fresh restart frame identity
+canvas / HTML / GameHost parity
+one RAF chain after repeated restart
+one delegated listener after repeated restart
+no predecessor frame after epoch advance
 ```
 
-## Gate 6 — Versioned Save / Load Authority
+## Gates 2–6 prerequisites
 
-A durable save must include:
+Later gates must consume, not duplicate:
 
 ```txt
-manifest and preset fingerprints
-runtime/session/run identity policy
-committed durable gameplay state
-random policy and seed fingerprint
-all stream algorithm states and cursors
-entity sequences
-latest committed tick
-replay journal revision or continuation marker
+runtimeId
+runtimeGeneration
+runId
+sessionEpoch
+lifecycle and revision
+graphRevision
+committed simulationTickId
+commandId
+transactionId
+commit or rollback result
+state fingerprint hook
 ```
-
-Loading gameplay state without random stream state is not a valid continuation.
 
 ## Next safe ledge
 
 ```txt
 ZombieOrchard Runtime Session Instance Authority
-+ Fixed-Step Clock Authority
-+ Composite Command Transaction Authority
-+ Seeded Random and Replay Authority
-+ Same-Seed / Stream-Isolation / Replay-Parity Fixture Gate
++ Fresh Graph Factory
++ Lifecycle Command and Transaction Results
++ Route/Run Binding
++ Stale Work Fence
++ First Fresh Frame and Disposal Fixture Gate
 ```
