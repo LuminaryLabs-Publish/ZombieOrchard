@@ -16,6 +16,7 @@ This was a documentation-only fixed-step clock audit. Runtime source, dependenci
 - [x] Confirm no accumulator, catch-up limit, dropped-time result or render-frame receipt exists.
 - [x] Update root `.agent` state and add timestamped audits.
 - [x] Push only to `main` and create no branch or pull request.
+- [x] Synchronize the central ledger and internal change log.
 - [ ] Implement and run clock fixtures.
 
 ## Source-backed findings
@@ -125,6 +126,6 @@ manual exclusion fixture: unavailable / not run
 render correlation fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: pending
-central internal change log: pending
+central ledger update: complete
+central internal change log: complete
 ```
