@@ -1,10 +1,10 @@
 # Known gaps - ZombieOrchard
 
-**Timestamp:** `2026-07-12T16-51-47-04-00`
+**Timestamp:** `2026-07-12T18-48-07-04-00`
 
 ## Summary
 
-The newest documented gap is interface action identity, availability and result authority. Explicit invalid IDs can execute the selected action, nested command rejection can be reported as accepted, and disabled actions are projected as enabled controls.
+The newest documented gap is terminal outcome sealing. Failure stops active-session ticking but does not revoke commands, seal participant state or create an immutable result. Outcome displays live score and day, so the final summary can change after the run has ended.
 
 ## Plan ledger
 
@@ -20,44 +20,43 @@ The newest documented gap is interface action identity, availability and result 
 - [ ] Interface action identity, availability and nested-result authority.
 - [ ] Economy command semantic admission and conservation.
 - [ ] Composite multi-domain transaction authority.
+- [ ] Terminal outcome seal, command revocation and immutable result authority.
 - [ ] Frame-publication fault containment and loop liveness.
 - [ ] Canvas render-surface and world-projection authority.
 - [ ] HTML interface projection, focus and encoding authority.
 - [ ] Seeded random and replay continuation.
 - [ ] Versioned save/load authority.
 
-## Interface action gaps
+## Terminal outcome gaps
 
 ```txt
-exact explicit action lookup: absent
-unknown action rejection: absent for generic domains
-missing action rejection: absent for generic domains
-selected activation command: not separated
-route revision: absent
-action-set revision: absent
-action descriptor fingerprint: absent
-runtime session/run generation binding: absent
-disabled availability reason: absent
-disabled HTML projection: absent
-nested command result propagation: absent
-route policy after nested rejection: absent
-command ID/idempotency: absent
-stale action rejection: absent
-action result journal: absent
-first visible action-result acknowledgement: absent
+terminal phase enum: absent
+terminal outcome ID: absent
+terminal cause contract: absent
+terminal result revision: absent
+terminal predicate evidence: absent
+immutable terminal snapshot: absent
+participant freeze receipt: absent
+post-terminal command rejection: absent
+gameplay capability revocation: absent
+economy capability revocation: absent
+terminal/route atomic commit: absent
+duplicate terminal admission: absent
+Outcome bound to terminal result: no
+first visible terminal frame acknowledgement: absent
 ```
 
 ## Source consequences
 
-- `actions.find(...) || actions[selectedIndex]` converts invalid explicit IDs into selected-action activation.
-- Entry defaults to selected index zero, so an invalid ID can execute Play.
-- Generic interface domains and active-session use different action lookup semantics.
-- Construction build rejection is discarded by interface composition.
-- Composition can return accepted even though the required nested gameplay command rejected.
-- Disabled descriptors are rendered as normal clickable buttons.
-- A stale or public caller can submit action IDs without route or action-set revision evidence.
-- Canvas and HTML frames carry no action result or rejection provenance.
-- Existing smoke proof cannot detect any of these failures.
+- `active-session.tick()` returns after `ended`, but `active-session.command()` has no terminal guard.
+- `move` can alter the final player position.
+- `collect` can change orchard membership, resources, pressure, score and message.
+- `clear` can change pests, scrap, score and message.
+- `next-phase` can change final phase and day.
+- `interface-composition.tick()` routes Outcome separately from failure commit.
+- `window.GameHost.engine` permits direct commands regardless of visible route.
+- Outcome cards read live `session.score` and `session.day`.
+- Existing smoke proof cannot detect terminal mutation or summary drift.
 
 ## Retained unresolved gaps
 
@@ -91,6 +90,7 @@ first visible action-result acknowledgement: absent
 - DPR, pixel budgets, world-fit revisions and canvas-frame proof are absent.
 - HTML projection replaces the complete subtree every frame.
 - Canvas and HTML have no shared committed frame receipt.
+- Outcome has no immutable result-backed read model.
 
 ### Replay and persistence
 
@@ -101,15 +101,20 @@ first visible action-result acknowledgement: absent
 ## Proof gaps
 
 ```txt
+terminal threshold fixture: absent
+multiple-pest single-terminal fixture: absent
+post-terminal movement fixture: absent
+post-terminal collection fixture: absent
+post-terminal clearing fixture: absent
+post-terminal phase fixture: absent
+Outcome summary immutability fixture: absent
+terminal duplicate fixture: absent
+terminal route atomicity fixture: absent
+source/dist/Pages terminal parity: absent
 invalid action ID fixture: absent
-missing action ID fixture: absent
-selected-action explicit-command fixture: absent
-stale route/action-set fixture: absent
 disabled action projection fixture: absent
 nested command rejection propagation fixture: absent
 action idempotency fixture: absent
-visible action-result fixture: absent
-source/dist/Pages action parity: absent
 new-game clean-state fixture: absent
 failed-run restart fixture: absent
 kit graph fixtures: absent
@@ -134,9 +139,9 @@ kit graph installation
   -> runtime session
   -> run reset generation
   -> clock, route and input admission
-  -> interface action admission
-  -> public capability and economy gateways
-  -> composite transaction commit
+  -> interface action and public capability admission
+  -> economy and composite transaction commit
+  -> terminal outcome sealing and command revocation
   -> frame publication and render authorities
   -> replay and persistence
   -> deployment proof
@@ -144,4 +149,4 @@ kit graph installation
 
 ## Do not claim
 
-Do not claim exact action identity, truthful availability, nested-result propagation, stale-action fencing, idempotency or visible result correlation until the required fixtures pass on `main`.
+Do not claim immutable terminal results, post-terminal isolation, stable final score/day, atomic Outcome routing, idempotency or visible terminal-frame correlation until the required fixtures pass on `main`.
