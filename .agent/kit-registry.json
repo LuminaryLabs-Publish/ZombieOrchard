@@ -1,7 +1,7 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-12T01-30-07-04-00",
-  "status": "player-control-reachability-authority-audited",
+  "updatedAt": "2026-07-12T03-11-51-04-00",
+  "status": "fixed-step-clock-authority-audited",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
@@ -22,14 +22,14 @@
     "Versioned Save / Load Authority"
   ],
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-12T01-30-07-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-12T01-30-07-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-12T01-30-07-04-00-player-control-reachability-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-12T01-30-07-04-00-unreachable-movement-visible-world-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T01-30-07-04-00-stationary-player-orchard-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-12T01-30-07-04-00-browser-input-movement-admission-map.md",
-    "playerControlAudit": ".agent/player-control-audit/2026-07-12T01-30-07-04-00-movement-binding-route-focus-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-12T01-30-07-04-00-player-control-reachability-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-12T03-11-51-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-12T03-11-51-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-12T03-11-51-04-00-fixed-step-clock-authority-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-12T03-11-51-04-00-refresh-rate-simulation-frame-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T03-11-51-04-00-raf-cadence-orchard-pressure-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-12T03-11-51-04-00-automatic-manual-step-admission-map.md",
+    "clockSystemAudit": ".agent/clock-system-audit/2026-07-12T03-11-51-04-00-step-writer-accumulator-cadence-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-12T03-11-51-04-00-fixed-step-clock-fixture-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -61,40 +61,56 @@
     "pages-deploy-kit"
   ],
   "services": {
-    "kit-runtime": ["registration", "domain creation", "commands", "ticks", "events", "snapshots", "subscriptions", "publication"],
+    "kit-runtime": ["registration", "domain creation", "commands", "delta clamp", "ticks", "events", "snapshots", "subscriptions", "publication"],
     "interface-kits": ["screen state", "actions", "activation", "routing", "nested dispatch", "automatic Outcome routing"],
     "game-kits": ["resources", "pressure", "trees and apples", "collection refill", "construction", "hiring", "equipment", "movement", "phases", "pests", "damage", "score", "failure"],
     "render-kits": ["orchard canvas", "HUD", "route-screen HTML", "card projection", "delegated click bindings", "per-frame DOM replacement"],
-    "diagnostics-proof-deploy": ["raw engine publication", "snapshot readback", "manual tick", "smoke proof", "static copy", "Pages chain"]
+    "diagnostics-proof-deploy": ["raw engine publication", "snapshot readback", "unrestricted manual tick", "smoke proof", "static copy", "Pages chain"]
   },
-  "controlFindings": {
-    "movementCommandImplemented": true,
-    "browserMovementBinding": "missing",
-    "keyboardAdapter": "missing",
-    "touchAdapter": "missing",
-    "heldControlState": "missing",
-    "routeFocusLease": "missing",
-    "inputRetirement": "missing",
-    "movementFrameReceipt": "missing",
-    "playerStart": { "x": 0, "y": 180 },
-    "collectionRadius": 42,
-    "movementIncrementPerCommand": 22
+  "clockFindings": {
+    "rafUsesLiteralFixedDelta": true,
+    "rafTimestampConsumed": false,
+    "simulationRateDependsOnRefreshRate": true,
+    "automaticManualWriterLease": "missing",
+    "simulationEpoch": "missing",
+    "simulationStepId": "missing",
+    "wallTimeAccumulator": "missing",
+    "catchUpBudget": "missing",
+    "lagDropResult": "missing",
+    "visibilitySuspension": "missing",
+    "manualStepCapability": "missing",
+    "singlePublicationBatch": "missing",
+    "simulationFrameReceipt": "missing",
+    "rates": {
+      "30HzSimulationMultiplier": 0.5,
+      "60HzSimulationMultiplier": 1,
+      "120HzSimulationMultiplier": 2
+    }
   },
-  "proposedControlKits": [
-    "zombie-orchard-player-control-reachability-authority-domain",
-    "control-binding-manifest-kit",
-    "browser-keyboard-input-adapter-kit",
-    "held-control-state-kit",
-    "movement-intent-kit",
-    "movement-vector-normalization-kit",
-    "route-focus-control-lease-kit",
-    "movement-command-admission-kit",
-    "input-retirement-kit",
-    "movement-command-result-kit",
-    "control-observation-kit",
-    "movement-frame-receipt-kit",
-    "player-control-fixture-kit",
-    "browser-player-control-smoke-kit"
+  "proposedClockKits": [
+    "zombie-orchard-fixed-step-clock-authority-domain",
+    "runtime-clock-source-kit",
+    "frame-time-observation-kit",
+    "simulation-epoch-kit",
+    "simulation-step-id-kit",
+    "step-writer-lease-kit",
+    "fixed-step-policy-kit",
+    "simulation-accumulator-kit",
+    "catch-up-budget-kit",
+    "lag-drop-policy-kit",
+    "visibility-suspension-kit",
+    "manual-step-capability-kit",
+    "simulation-step-command-kit",
+    "simulation-step-admission-kit",
+    "simulation-step-result-kit",
+    "tick-publication-barrier-kit",
+    "simulation-clock-observation-kit",
+    "simulation-clock-journal-kit",
+    "simulation-frame-receipt-kit",
+    "cadence-parity-fixture-kit",
+    "manual-auto-exclusion-fixture-kit",
+    "hidden-tab-resume-fixture-kit",
+    "browser-clock-smoke-kit"
   ],
   "retainedAudits": {
     "seededRandomReplay": "2026-07-11T17-01-11-04-00",
@@ -102,7 +118,8 @@
     "versionedPersistence": "2026-07-11T20-03-22-04-00",
     "routeScopedSimulationAdmission": "2026-07-11T21-40-49-04-00",
     "publicCapabilityGateway": "2026-07-11T23-41-55-04-00",
-    "compositeCommandTransaction": "2026-07-11T23-48-14-04-00"
+    "compositeCommandTransaction": "2026-07-11T23-48-14-04-00",
+    "playerControlReachability": "2026-07-12T01-30-07-04-00"
   },
   "validation": {
     "runtimeSourceChangedThisPass": false,
@@ -115,7 +132,7 @@
     "npmBuildRun": false,
     "fixtureRun": false,
     "browserSmokeRun": false,
-    "centralLedgerSynchronized": true,
-    "centralChangeLogAdded": true
+    "centralLedgerSynchronized": false,
+    "centralChangeLogAdded": false
   }
 }
