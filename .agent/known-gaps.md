@@ -14,8 +14,11 @@ lifecycle command
   -> staged random decisions
   -> committed random receipts
   -> durable-state fingerprint
-  -> render-frame acknowledgement
-  -> replay or save continuation
+  -> versioned save envelope
+  -> atomic slot result
+  -> staged load candidate
+  -> load epoch and authority transfer
+  -> first restored frame acknowledgement
 ```
 
 ## Runtime-session and fresh-run gaps
@@ -77,36 +80,87 @@ lifecycle command
 46. No canonical durable-state fingerprint exists.
 47. Canvas and HTML output are not correlated with random receipt ranges.
 
-## Persistence gaps
+## Save Select and slot gaps
 
-48. No versioned save/load envelope exists.
-49. No migration, staged restore, load epoch, commit or rollback exists.
-50. No save captures random algorithm state, stream cursors or entity sequences.
-51. Restoring only gameplay state would not preserve future random continuation.
-52. No atomic load proves the first rendered restored frame.
+48. `session-select-domain-kit` exists but Entry never routes to it.
+49. The preset gives Save Select only a Back action.
+50. No slot metadata is supplied to `current.meta.slots`.
+51. No slot index domain owns available, compatible, corrupt or conflicted saves.
+52. No Save, Load, Delete, Rename, Import or Export capability exists.
+53. The renderer cannot project a typed slot command result.
+54. No active slot or save identity is bound to the run.
+
+## Persistence envelope gaps
+
+55. No `saveId`, `slotId` or monotonic `slotRevision` exists.
+56. No schema ID or schema version exists.
+57. No preset ID or preset fingerprint is stored.
+58. No runtime, random or entity policy version is stored.
+59. No created/updated timestamp policy exists.
+60. No durable-domain allowlist separates continuation state from transient presentation resources.
+61. No committed `simulationTickId`, command sequence or lifecycle revision is captured.
+62. No random stream state, cursor or deterministic entity sequence is captured.
+63. No canonical state fingerprint or checksum exists.
+64. No envelope validation or read-after-write validation exists.
+
+## Save transaction gaps
+
+65. No save command envelope or typed save result exists.
+66. No expected slot revision or compare-and-swap conflict check exists.
+67. No atomic slot write and index update boundary exists.
+68. Storage quota, serialization and backend failures are not represented.
+69. Duplicate or stale save behavior is undefined.
+70. A failed save has no guarantee that the prior valid envelope remains intact.
+71. No persistence journal records admitted and rejected attempts.
+
+## Migration and corruption gaps
+
+72. No ordered migration registry exists.
+73. No pure version-to-version migration contract exists.
+74. Unknown future schemas cannot be distinguished from malformed data.
+75. No corruption quarantine preserves original bytes for diagnostics or export.
+76. No compatibility result explains preset or policy mismatch.
+77. No migration fingerprint proves deterministic output.
+
+## Load transaction gaps
+
+78. `engine.snapshot()` is a one-way projection with no restore inverse.
+79. Mutable domain state lives inside closures with no hydrate service.
+80. Runtime `ctx.frame` and `ctx.elapsed` are absent from snapshots.
+81. Future `Math.random()` continuation cannot be reconstructed.
+82. No candidate graph is staged from loaded state.
+83. No domain-by-domain hydration validation exists.
+84. No `loadEpoch` fences predecessor callbacks, commands or render work.
+85. No atomic authority swap or rollback exists.
+86. No first-restored-frame acknowledgement exists.
+87. A failed load has no explicit guarantee that the current live run remains unchanged.
+88. No load result correlates the slot envelope, restored fingerprint and frame ID.
 
 ## Render and observation gaps
 
-53. The world canvas renders orchard/session state on every route.
-54. Entry, Run Setup, Pause and Outcome can show predecessor-run world pixels.
-55. Canvas and HTML publish no run/frame identity.
-56. GameHost samples live mutable state rather than a committed frame record.
-57. No first-run-frame or first-restored-frame acknowledgement exists.
+89. The world canvas renders orchard/session state on every route.
+90. Entry, Run Setup, Pause, Save Select and Outcome can show predecessor-run world pixels.
+91. Canvas and HTML publish no run, save, load or frame identity.
+92. GameHost samples live mutable state rather than a committed frame record.
+93. No first-run-frame or first-restored-frame acknowledgement exists.
+94. The Save Select renderer reads static interface metadata rather than authoritative slot-index state.
 
 ## Proof and deployment gaps
 
-58. The smoke test proves only initial Entry-to-Play and apple presence.
-59. No runtime-session identity or fresh-run fixture exists.
-60. No Outcome -> Title -> Play fixture exists.
-61. No full-domain reset fixture exists.
-62. No candidate failure rollback fixture exists.
-63. No stale callback/command fixture exists.
-64. No RAF/listener leak fixture exists.
-65. No cadence, pause, stall or manual-step fixture exists.
-66. No capability or transaction fixture exists.
-67. No same-seed, stream-isolation or replay parity fixture exists.
-68. No save/restore random-continuation fixture exists.
-69. Pages deployment is not gated on these authority contracts.
+95. The smoke test proves only initial Entry-to-Play and apple presence.
+96. No runtime-session identity or fresh-run fixture exists.
+97. No cadence, pause, stall or manual-step fixture exists.
+98. No capability or transaction fixture exists.
+99. No same-seed, stream-isolation or replay parity fixture exists.
+100. No save/load roundtrip fixture exists.
+101. No random-continuation-after-load fixture exists.
+102. No slot conflict or atomic-write fixture exists.
+103. No migration fixture exists.
+104. No corrupt-save quarantine fixture exists.
+105. No failed-load rollback fixture exists.
+106. No first-restored-frame fixture exists.
+107. No repeated save/load RAF or listener leak fixture exists.
+108. Pages deployment is not gated on these authority contracts.
 
 ## Dependency order
 
@@ -123,4 +177,4 @@ runtime session instance authority
 
 ## Do not claim
 
-Do not claim fresh New Game state, restart, authoritative pause, cadence-independent simulation, deterministic seeds, replayability, resumable continuation, stable entity identity, atomic persistence, lifecycle safety or resource retirement until the corresponding fixtures pass on `main`.
+Do not claim fresh New Game state, authoritative pause, cadence-independent simulation, deterministic replay, reachable Save Select, resumable continuation, schema compatibility, atomic persistence, random continuation after load, corrupt-save recovery, first-restored-frame coherence, lifecycle safety or resource retirement until the corresponding fixtures pass on `main`.
