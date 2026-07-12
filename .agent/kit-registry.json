@@ -1,7 +1,7 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-11T23-48-14-04-00",
-  "status": "composite-command-transaction-authority-audited",
+  "updatedAt": "2026-07-12T01-30-07-04-00",
+  "status": "player-control-reachability-authority-audited",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
@@ -9,26 +9,27 @@
     "eligibleRepositoryCount": 9,
     "newOrCentralLedgerMissingCount": 0,
     "rootAgentMissingCount": 0,
-    "reason": "oldest eligible central ledger entry with newer repo-local audit state requiring central reconciliation"
+    "reason": "oldest eligible central ledger entry after all eligible repositories were confirmed tracked and documented"
   },
   "safeLedges": [
     "Runtime Session Instance Authority",
     "Fixed-Step Clock Authority",
     "Route-Scoped Simulation Admission Authority",
+    "Player-Control Reachability Authority",
     "Public Capability Gateway and Reachability",
     "Composite Command Transaction Authority",
     "Seeded Random and Replay Authority",
     "Versioned Save / Load Authority"
   ],
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-11T23-48-14-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-11T23-48-14-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-11T23-48-14-04-00-composite-command-transaction-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-11T23-48-14-04-00-intermediate-command-publication-frame-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T23-48-14-04-00-activate-child-command-commit-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-11T23-48-14-04-00-nested-command-result-admission-map.md",
-    "commandTransactionAudit": ".agent/command-transaction-audit/2026-07-11T23-48-14-04-00-prepare-commit-rollback-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-11T23-48-14-04-00-command-transaction-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-12T01-30-07-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-12T01-30-07-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-12T01-30-07-04-00-player-control-reachability-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-12T01-30-07-04-00-unreachable-movement-visible-world-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T01-30-07-04-00-stationary-player-orchard-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-12T01-30-07-04-00-browser-input-movement-admission-map.md",
+    "playerControlAudit": ".agent/player-control-audit/2026-07-12T01-30-07-04-00-movement-binding-route-focus-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-12T01-30-07-04-00-player-control-reachability-fixture-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -61,48 +62,47 @@
   ],
   "services": {
     "kit-runtime": ["registration", "domain creation", "commands", "ticks", "events", "snapshots", "subscriptions", "publication"],
-    "interface-kits": ["screen state", "actions", "selection", "fields", "activation", "routing", "nested dispatch", "automatic Outcome routing"],
+    "interface-kits": ["screen state", "actions", "activation", "routing", "nested dispatch", "automatic Outcome routing"],
     "game-kits": ["resources", "pressure", "trees and apples", "collection refill", "construction", "hiring", "equipment", "movement", "phases", "pests", "damage", "score", "failure"],
-    "render-kits": ["orchard canvas", "HUD", "route-screen HTML", "card projection", "delegated bindings", "per-frame DOM replacement"],
+    "render-kits": ["orchard canvas", "HUD", "route-screen HTML", "card projection", "delegated click bindings", "per-frame DOM replacement"],
     "diagnostics-proof-deploy": ["raw engine publication", "snapshot readback", "manual tick", "smoke proof", "static copy", "Pages chain"]
   },
-  "transactionFindings": {
-    "nestedCommandDispatch": true,
-    "childResultIgnored": true,
-    "childRejectionCanBeConcealed": true,
-    "multipleNotificationsPerIntent": true,
-    "participantPreparePhase": "missing",
-    "aggregateCommitBoundary": "missing",
-    "rollbackReceipts": "missing",
-    "idempotencyReceipts": "missing",
-    "frameCorrelatedResult": "missing"
+  "controlFindings": {
+    "movementCommandImplemented": true,
+    "browserMovementBinding": "missing",
+    "keyboardAdapter": "missing",
+    "touchAdapter": "missing",
+    "heldControlState": "missing",
+    "routeFocusLease": "missing",
+    "inputRetirement": "missing",
+    "movementFrameReceipt": "missing",
+    "playerStart": { "x": 0, "y": 180 },
+    "collectionRadius": 42,
+    "movementIncrementPerCommand": 22
   },
-  "proposedTransactionKits": [
-    "zombie-orchard-composite-command-transaction-authority-domain",
-    "command-envelope-kit",
-    "command-id-kit",
-    "transaction-id-kit",
-    "expected-revision-admission-kit",
-    "action-resolution-kit",
-    "command-participant-registry-kit",
-    "participant-prepare-kit",
-    "participant-commit-kit",
-    "participant-rollback-kit",
-    "transaction-idempotency-kit",
-    "aggregate-command-result-kit",
-    "transaction-event-buffer-kit",
-    "single-publication-barrier-kit",
-    "command-result-journal-kit",
-    "command-frame-receipt-kit",
-    "command-transaction-fixture-kit",
-    "browser-command-transaction-smoke-kit"
+  "proposedControlKits": [
+    "zombie-orchard-player-control-reachability-authority-domain",
+    "control-binding-manifest-kit",
+    "browser-keyboard-input-adapter-kit",
+    "held-control-state-kit",
+    "movement-intent-kit",
+    "movement-vector-normalization-kit",
+    "route-focus-control-lease-kit",
+    "movement-command-admission-kit",
+    "input-retirement-kit",
+    "movement-command-result-kit",
+    "control-observation-kit",
+    "movement-frame-receipt-kit",
+    "player-control-fixture-kit",
+    "browser-player-control-smoke-kit"
   ],
   "retainedAudits": {
     "seededRandomReplay": "2026-07-11T17-01-11-04-00",
     "runtimeSessionInstance": "2026-07-11T18-28-40-04-00",
     "versionedPersistence": "2026-07-11T20-03-22-04-00",
     "routeScopedSimulationAdmission": "2026-07-11T21-40-49-04-00",
-    "publicCapabilityGateway": "2026-07-11T23-41-55-04-00"
+    "publicCapabilityGateway": "2026-07-11T23-41-55-04-00",
+    "compositeCommandTransaction": "2026-07-11T23-48-14-04-00"
   },
   "validation": {
     "runtimeSourceChangedThisPass": false,
