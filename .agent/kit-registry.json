@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 82,
-  "generatedAt": "2026-07-12T16-51-47-04-00",
+  "schemaVersion": 83,
+  "generatedAt": "2026-07-12T18-48-07-04-00",
   "repository": "LuminaryLabs-Publish/ZombieOrchard",
   "branch": "main",
-  "status": "interface-action-admission-authority-audited",
+  "status": "terminal-outcome-seal-authority-audited",
   "selection": {
     "inventoryCount": 10,
     "eligibleCount": 9,
@@ -14,38 +14,44 @@
     "selectedRepository": "LuminaryLabs-Publish/ZombieOrchard",
     "reason": "Oldest eligible central-ledger entry after new, missing-ledger and missing-root-agent priorities were cleared.",
     "ledgerOrder": [
-      "ZombieOrchard:2026-07-12T14-38-35-04-00:selected",
-      "MyCozyIsland:2026-07-12T14-59-01-04-00",
-      "TheUnmappedHouse:2026-07-12T15-08-07-04-00",
-      "AetherVale:2026-07-12T15-18-50-04-00",
-      "TheOpenAbove:2026-07-12T15-40-04-00",
-      "IntoTheMeadow:2026-07-12T15-49-09-04-00",
-      "PhantomCommand:2026-07-12T16-00-03-04-00",
-      "PrehistoricRush:2026-07-12T16-20-55-04-00",
-      "HorrorCorridor:2026-07-12T16-39-35-04-00"
+      "ZombieOrchard:2026-07-12T16-51-47-04-00:selected",
+      "MyCozyIsland:2026-07-12T17-10-31-04-00",
+      "TheUnmappedHouse:2026-07-12T17-20-42-04-00",
+      "AetherVale:2026-07-12T17-35-48-04-00",
+      "TheOpenAbove:2026-07-12T17-41-25-04-00",
+      "IntoTheMeadow:2026-07-12T17-58-43-04-00",
+      "PhantomCommand:2026-07-12T18-11-53-04-00",
+      "PrehistoricRush:2026-07-12T18-18-59-04-00",
+      "HorrorCorridor:2026-07-12T18-38-51-04-00"
     ]
   },
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-12T16-51-47-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-12T16-51-47-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-12T16-51-47-04-00-interface-action-admission-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-12T16-51-47-04-00-action-availability-result-frame-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T16-51-47-04-00-interface-action-command-route-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-12T16-51-47-04-00-action-id-command-route-admission-map.md",
-    "interfaceActionAudit": ".agent/interface-action-audit/2026-07-12T16-51-47-04-00-identity-availability-result-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-12T16-51-47-04-00-interface-action-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-12T18-48-07-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-12T18-48-07-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-12T18-48-07-04-00-terminal-outcome-seal-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-12T18-48-07-04-00-outcome-summary-terminal-frame-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T18-48-07-04-00-failure-outcome-post-terminal-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-12T18-48-07-04-00-terminal-command-admission-map.md",
+    "terminalOutcomeAudit": ".agent/terminal-outcome-audit/2026-07-12T18-48-07-04-00-seal-result-revocation-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-12T18-48-07-04-00-terminal-outcome-fixture-gate.md"
   },
   "implementedKitSurfaceCount": 27,
   "engineInstalledKitCount": 19,
   "hostSupportKitCount": 8,
   "engineInstalledKitIds": [
-    "resource-ledger-kit", "pressure-field-kit", "orchard-world-kit", "construction-runtime-kit", "roster-runtime-kit", "inventory-runtime-kit", "entry-domain-kit", "session-select-domain-kit", "run-setup-domain-kit", "interrupt-domain-kit", "construction-domain-kit", "exchange-domain-kit", "roster-domain-kit", "inventory-domain-kit", "knowledge-domain-kit", "preferences-domain-kit", "outcome-domain-kit", "active-session-domain-kit", "interface-composition-kit"
+    "resource-ledger-kit", "pressure-field-kit", "orchard-world-kit", "construction-runtime-kit", "roster-runtime-kit", "inventory-runtime-kit",
+    "entry-domain-kit", "session-select-domain-kit", "run-setup-domain-kit", "interrupt-domain-kit", "construction-domain-kit", "exchange-domain-kit",
+    "roster-domain-kit", "inventory-domain-kit", "knowledge-domain-kit", "preferences-domain-kit", "outcome-domain-kit", "active-session-domain-kit", "interface-composition-kit"
   ],
   "hostSupportKitIds": [
     "kit-runtime", "scoped-interface-domain-kit", "world-canvas-render-kit", "html-interface-render-kit", "game-host-diagnostics-kit", "smoke-fixture-kit", "static-build-copy-kit", "pages-deploy-kit"
   ],
   "implementedKits": [
-    "kit-runtime", "scoped-interface-domain-kit", "entry-domain-kit", "session-select-domain-kit", "run-setup-domain-kit", "active-session-domain-kit", "interrupt-domain-kit", "construction-domain-kit", "exchange-domain-kit", "roster-domain-kit", "inventory-domain-kit", "knowledge-domain-kit", "preferences-domain-kit", "outcome-domain-kit", "interface-composition-kit", "resource-ledger-kit", "pressure-field-kit", "orchard-world-kit", "construction-runtime-kit", "roster-runtime-kit", "inventory-runtime-kit", "world-canvas-render-kit", "html-interface-render-kit", "game-host-diagnostics-kit", "smoke-fixture-kit", "static-build-copy-kit", "pages-deploy-kit"
+    "kit-runtime", "scoped-interface-domain-kit", "entry-domain-kit", "session-select-domain-kit", "run-setup-domain-kit", "active-session-domain-kit",
+    "interrupt-domain-kit", "construction-domain-kit", "exchange-domain-kit", "roster-domain-kit", "inventory-domain-kit", "knowledge-domain-kit",
+    "preferences-domain-kit", "outcome-domain-kit", "interface-composition-kit", "resource-ledger-kit", "pressure-field-kit", "orchard-world-kit",
+    "construction-runtime-kit", "roster-runtime-kit", "inventory-runtime-kit", "world-canvas-render-kit", "html-interface-render-kit",
+    "game-host-diagnostics-kit", "smoke-fixture-kit", "static-build-copy-kit", "pages-deploy-kit"
   ],
   "servicesByKit": {
     "kit-runtime": ["kit registration", "domain creation", "commands", "delta clamp", "ticks", "events", "snapshots", "subscriptions", "synchronous publication"],
@@ -77,43 +83,47 @@
     "pages-deploy-kit": ["GitHub Pages publication"]
   },
   "interactionLoop": [
-    "HTML or public caller submits interface-composition activate with actionId",
-    "current interface domain resolves exact action or selected-index fallback",
-    "domain checks disabled and emits actionRequested",
-    "composition executes optional nested gameplay command",
-    "composition discards nested result",
-    "composition optionally transitions route or reports accepted true",
-    "canvas and HTML render without action-result provenance"
+    "active-session tick advances night pests and player damage",
+    "condition at or below zero sets ended true and failure message",
+    "interface-composition tick observes ended and routes to outcome",
+    "HTML outcome reads live active-session score and day",
+    "raw engine remains public through GameHost",
+    "active-session commands remain callable after ended",
+    "post-terminal move collect clear or next-phase can mutate live state",
+    "no immutable terminal outcome result or first visible terminal frame exists"
   ],
   "domainsInUse": [
     "browser document canvas DOM RAF and public GameHost",
     "runtime registration commands ticks events snapshots subscriptions and publication",
     "11 generic scoped interface domains plus custom active-session",
-    "interface action identity selection availability and activation",
-    "interface composition nested command dispatch routing and automatic Outcome routing",
-    "runtime session run generation route and action-set revision admission",
-    "resource ledger", "pressure field", "orchard world collection and refill", "construction catalog and built state", "roster actor state", "inventory ownership and equipment state", "movement phases pests damage score and failure", "canvas and HTML rendering", "validation static build Pages deployment and central tracking"
+    "interface composition routing and automatic Outcome transition",
+    "runtime session run generation terminal phase and command admission",
+    "resource ledger", "pressure field", "orchard world collection and refill", "construction catalog and built state", "roster actor state",
+    "inventory ownership and equipment state", "movement phases pests damage score failure and terminal outcome",
+    "canvas world and HTML outcome projection", "validation static build Pages deployment and central tracking"
   ],
-  "interfaceActionFindings": {
-    "explicitActionLookup": "fail-open-selected-fallback-in-generic-domains",
-    "invalidActionIdRejected": false,
-    "missingActionIdRejected": false,
-    "activeSessionUsesExactLookup": true,
-    "consistentLookupPolicy": false,
-    "disabledDescriptorProjectedDisabled": false,
-    "nestedCommandResultCaptured": false,
-    "nestedCommandRejectionPropagated": false,
-    "routeRevision": "missing",
-    "actionSetRevision": "missing",
-    "actionDescriptorFingerprint": "missing",
-    "commandId": "missing",
-    "idempotency": "missing",
-    "staleActionRejection": "missing",
-    "visibleActionResultAck": "missing"
+  "terminalOutcomeFindings": {
+    "tickStopsAfterEnded": true,
+    "commandsRejectAfterEnded": false,
+    "rawEnginePublicAfterEnded": true,
+    "outcomeSnapshotImmutable": false,
+    "terminalOutcomeId": "missing",
+    "terminalCause": "message-only",
+    "terminalRevision": "missing",
+    "participantFreeze": "missing",
+    "capabilityRevocation": "missing",
+    "atomicTerminalRouteCommit": "missing",
+    "postTerminalTypedRejection": "missing",
+    "firstVisibleTerminalFrameAck": "missing"
   },
-  "plannedParentDomain": "zombie-orchard-interface-action-admission-authority-domain",
+  "plannedParentDomain": "zombie-orchard-terminal-outcome-seal-authority-domain",
   "plannedKits": [
-    "interface-action-id-kit", "interface-action-set-revision-kit", "interface-route-revision-kit", "interface-action-manifest-kit", "interface-action-availability-kit", "interface-action-command-kit", "interface-action-command-id-kit", "interface-action-admission-kit", "exact-action-lookup-kit", "stale-action-rejection-kit", "nested-command-result-propagation-kit", "action-route-commit-policy-kit", "interface-action-result-kit", "interface-action-idempotency-kit", "interface-action-observation-kit", "interface-action-journal-kit", "action-affordance-projection-kit", "action-result-projection-kit", "first-action-result-frame-ack-kit", "invalid-action-id-fixture-kit", "stale-route-action-fixture-kit", "disabled-action-projection-fixture-kit", "nested-command-rejection-fixture-kit", "action-source-dist-pages-parity-fixture-kit"
+    "terminal-outcome-id-kit", "terminal-cause-kit", "terminal-predicate-evidence-kit", "terminal-outcome-candidate-kit",
+    "terminal-outcome-admission-kit", "terminal-outcome-result-kit", "terminal-outcome-revision-kit", "terminal-state-seal-kit",
+    "terminal-participant-freeze-kit", "terminal-command-revocation-kit", "terminal-capability-lease-kit", "post-terminal-rejection-kit",
+    "terminal-route-commit-kit", "terminal-outcome-read-model-kit", "terminal-outcome-projection-kit", "terminal-outcome-observation-kit",
+    "terminal-outcome-journal-kit", "first-terminal-frame-ack-kit", "failure-threshold-fixture-kit", "post-terminal-command-fixture-kit",
+    "terminal-route-atomicity-fixture-kit", "terminal-summary-immutability-fixture-kit", "terminal-source-dist-pages-parity-fixture-kit"
   ],
   "retainedAudits": {
     "seededRandomReplay": "2026-07-11T17-01-11-04-00",
@@ -131,7 +141,8 @@
     "kitGraphCentralReconciliation": "2026-07-12T10-09-07-04-00",
     "economyCommandAdmission": "2026-07-12T12-39-25-04-00",
     "runResetGeneration": "2026-07-12T14-38-35-04-00",
-    "interfaceActionAdmission": "2026-07-12T16-51-47-04-00"
+    "interfaceActionAdmission": "2026-07-12T16-51-47-04-00",
+    "terminalOutcomeSeal": "2026-07-12T18-48-07-04-00"
   },
   "validation": {
     "runtimeSourceChanged": false,
@@ -144,7 +155,7 @@
     "pullRequestCreated": false,
     "npmTestRun": false,
     "npmBuildRun": false,
-    "interfaceActionFixturesRun": false,
+    "terminalOutcomeFixturesRun": false,
     "browserSmokeRun": false,
     "pagesSmokeRun": false,
     "centralLedgerSynchronized": true,
