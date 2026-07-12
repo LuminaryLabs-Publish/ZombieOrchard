@@ -2,22 +2,24 @@
 
 ## Plan ledger
 
-**Goal:** make orchard movement product-reachable through one lifecycle-safe control path before expanding gameplay or claiming an explorable run.
+**Goal:** establish a cadence-independent simulation clock before routing movement, route admission, replay, persistence, or public diagnostics through time-sensitive gameplay.
 
-- [ ] Implement runtime-session instance authority first.
-- [ ] Implement a monotonic fixed-step clock with one step-writer lease.
-- [ ] Implement route-scoped simulation admission.
-- [ ] Add a canonical control-binding manifest for WASD and arrow keys.
-- [ ] Add browser keydown, keyup, blur and visibility adapters.
-- [ ] Store held bindings behind a runtime/run/session control lease.
-- [ ] Normalize opposed and diagonal direction vectors.
-- [ ] Consume held movement only during admitted fixed simulation steps.
-- [ ] Route movement through the canonical gameplay command path.
-- [ ] Return typed movement results with state/tick/frame provenance.
-- [ ] Retire held input on pause, route exit, outcome, reset and disposal.
-- [ ] Add concise control instructions and unavailable-control reasons to the HUD.
-- [ ] Add DOM-free, built-artifact browser and Pages fixtures.
-- [ ] Preserve public host quarantine and composite transaction requirements.
+- [ ] Implement runtime-session identity and generation fencing.
+- [ ] Add an injectable monotonic clock source.
+- [ ] Add a canonical fixed-step policy, initially `1 / 60` seconds.
+- [ ] Add normalized RAF timestamp observations.
+- [ ] Add a bounded wall-time accumulator.
+- [ ] Add one exclusive automatic/manual step-writer lease.
+- [ ] Add simulation epoch and monotonic step IDs.
+- [ ] Add a declared catch-up-step budget.
+- [ ] Add typed retained-lag and dropped-lag results.
+- [ ] Suspend automatic accumulation while the document is hidden.
+- [ ] Establish a new visibility generation and timestamp baseline on resume.
+- [ ] Replace unrestricted `GameHost.tick(dt)` with an admitted fixed-step capability.
+- [ ] Publish once after each admitted step batch.
+- [ ] Correlate each visible canvas/HTML frame to the committed step range.
+- [ ] Add 30/60/120 Hz, variable-cadence, long-frame, hidden-tab, and writer-exclusion fixtures.
+- [ ] Run the same proof against source, built artifact, and GitHub Pages.
 
 ## Ordered implementation queue
 
@@ -32,84 +34,84 @@
 6. Versioned Save / Load Authority
 ```
 
-## Control implementation
+## Fixed-step implementation
 
-### 1. Binding manifest
+### 1. Clock policy
 
 ```txt
-move-up:    KeyW, ArrowUp
-move-left:  KeyA, ArrowLeft
-move-down:  KeyS, ArrowDown
-move-right: KeyD, ArrowRight
+fixedStepSeconds: 1 / 60
+maxFrameDeltaSeconds: explicit
+maxCatchUpStepsPerFrame: explicit
+hiddenBehavior: suspend
+resumeBehavior: new timestamp baseline
+publication: once per committed batch
 ```
 
-### 2. Held-state rules
-
-- Ignore repeated keydown events when the binding is already held.
-- Opposed directions cancel.
-- Normalize diagonal vectors.
-- Do not use DOM repeat cadence as simulation cadence.
-- Do not accept movement from editable controls.
-
-### 3. Admission
+### 2. Automatic admission
 
 ```txt
-runtime active
-run/session current
-route == active-session
-window/document focused
-run not ended
-control lease current
-input sequence fresh
-vector finite and bounded
+RAF timestamp
+  -> validate runtime session and visibility generation
+  -> derive bounded wall delta
+  -> update accumulator
+  -> derive candidate step count
+  -> acquire automatic writer lease
+  -> execute exact fixed steps
+  -> commit step range
+  -> classify retained/dropped lag
+  -> publish once
+  -> render once
 ```
 
-Rejected input must not mutate position.
-
-### 4. Consumption
-
-At each admitted fixed step:
+### 3. Manual admission
 
 ```txt
-read held-control snapshot
-  -> normalize movement intent
-  -> submit active-session movement command
-  -> commit player position once
-  -> publish MovementCommandResult
-  -> acknowledge first canvas/HTML frame
+manual command
+  -> require diagnostic capability
+  -> validate manual mode policy
+  -> acquire the same exclusive writer lease
+  -> request a count of canonical fixed steps
+  -> commit through the same result path
+  -> reject overlap with automatic ownership
 ```
 
-### 5. Retirement
+### 4. Visibility
 
-Clear all held state and pending intent on:
+On `document.hidden`:
 
 ```txt
-keyup
-blur
-visibility hidden
-pause
-route exit
-outcome
-new run/reset
-runtime stop/dispose
+retire automatic writer
+advance visibility generation
+clear or freeze accumulator per policy
+reject predecessor RAF observations
 ```
 
-### 6. Required fixtures
+On resume:
 
 ```txt
-binding-manifest-parity
-cardinal-movement
-diagonal-normalization
-opposed-direction-cancellation
-boundary-clamp
-route-rejection
-ended-run-rejection
-blur-retirement
-pause-retirement
-stale-sequence-rejection
-movement-to-collectible-reachability
-movement-result-frame-correlation
-single-listener-and-single-control-owner
+capture a new timestamp baseline
+do not replay hidden duration as catch-up debt
+```
+
+### 5. Required fixtures
+
+```txt
+fixed-step-policy-shape
+30hz-60hz-120hz-equal-wall-time-parity
+variable-cadence-parity
+pressure-cadence-parity
+pest-movement-cadence-parity
+contact-damage-cadence-parity
+night-spawn-trial-count-parity
+long-frame-catch-up-limit
+lag-drop-result
+hidden-tab-suspension
+resume-new-baseline
+manual-step-equivalence
+manual-auto-writer-exclusion
+stale-epoch-rejection
+single-publication-per-batch
+step-range-visible-frame-receipt
 ```
 
 ## Next safe ledge
@@ -117,7 +119,8 @@ single-listener-and-single-control-owner
 ```txt
 ZombieOrchard Runtime Session Instance Authority
 + Fixed-Step Clock Authority
-+ Route-Scoped Simulation Admission Authority
-+ Player-Control Reachability Authority
-+ Player-Control Browser/Pages Fixture Gate
++ 30/60/120 Hz Cadence Parity
++ Automatic/Manual Writer Exclusion
++ Hidden-Tab Resume
++ Committed Step/Frame Fixture Gate
 ```
