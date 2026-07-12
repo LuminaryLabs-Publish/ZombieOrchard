@@ -3,76 +3,72 @@
 ## Status
 
 ```txt
-last aligned: 2026-07-11T23-41-55-04-00
-status: public-capability-gateway-and-host-revocation-authority-audited
+last aligned: 2026-07-11T23-48-14-04-00
+status: composite-command-transaction-authority-audited
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: complete
+central ledger sync: pending until repo-local push completes
 ```
 
 ## Summary
 
-`src/start.js` publishes the complete mutable kit runtime as `window.GameHost.engine`. The public object exposes context, the domain table, kit registration, command dispatch, ticking, snapshots and subscriptions, plus another unrestricted `tick()` helper.
+`ZombieOrchard` resolves interface actions and gameplay effects through immediate nested mutations rather than one aggregate command transaction. `interface-composition.activate` can call a child command, ignore its result, optionally change route state and return parent success. The nested `engine.command()` publishes once, then the outer command publishes again.
 
-The current snapshot implementations are generally clone-oriented, but the public host is not a read-only committed observation surface. It lets diagnostics replace domain entries, invoke domain APIs or commands directly, advance one domain independently, mutate runtime clock/event fields or add extra full-graph steps beside the active browser RAF.
+Gameplay commands also span multiple mutable owners without prepare, commit or rollback. Apple collection removes and reseeds an apple before reward and pressure effects; pest clearing can retire a pest and increment score before scrap credit; construction and hiring debit resources before appending the resulting entity.
 
 ## Plan ledger
 
-**Goal:** define one public capability gateway that exposes only versioned observation, allowlisted commands, explicit fixture stepping and revocable subscriptions while keeping the engine graph unreachable.
+**Goal:** define one atomic command transaction that preserves child-result truth, prevents partial multi-domain commits and publishes exactly one typed result tied to one visible frame.
 
 - [x] Compare the full Publish inventory with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only ZombieOrchard as the oldest eligible central entry.
-- [x] Read browser boot, game construction, runtime, composition, scoped interfaces, gameplay domains, HTML bindings and smoke proof.
+- [x] Select only ZombieOrchard.
+- [x] Read browser boot, runtime command dispatch, scoped interfaces, composition, preset actions, gameplay domains, render bindings and smoke proof.
 - [x] Identify the interaction loop, domains, all implemented kits and services.
-- [x] Trace public reachability through engine, context, domains, APIs, registration, commands, ticks and subscriptions.
-- [x] Define the capability, admission, read-model, frame-receipt, duplicate-registration and revocation contracts.
-- [x] Add architecture, render, gameplay, interaction, capability and deploy audits.
-- [ ] Implement the gateway and run fixtures.
+- [x] Trace nested activation and child command behavior.
+- [x] Trace collection, clearing, construction, hiring and equipment mutations.
+- [x] Define participant preparation, atomic commit, rollback, idempotency, one-publication and frame-receipt contracts.
+- [x] Add architecture, render, gameplay, interaction, command-transaction and deploy audits.
+- [ ] Implement and run transaction fixtures.
 
 ## Interaction loop
 
 ```txt
-module boot
-  -> create graph and renderers
-  -> publish raw GameHost
-  -> start RAF
+UI click
+  -> HTML delegated listener
+  -> engine.command(interface-composition, activate)
+  -> active screen command returns an action descriptor
+  -> action.command may invoke nested engine.command(child)
+  -> nested command mutates and notifies
+  -> parent discards child result
+  -> parent may move route
+  -> outer command returns and notifies again
 
-RAF
-  -> engine.tick(1 / 60)
-  -> all-domain mutation
-  -> domain snapshot
-  -> canvas render
-  -> HTML render
-
-UI command
-  -> delegated DOM binding
-  -> engine.command(...)
-  -> optional nested composition command
-  -> notify subscribers
-
-public diagnostic
-  -> GameHost.engine or GameHost.tick
-  -> unrestricted graph access or stepping
+Gameplay effect
+  -> mutate participant A
+  -> mutate participant B if present
+  -> mutate participant C if present
+  -> return local accepted/rejected result
+  -> no aggregate revision, rollback or frame receipt
 ```
 
 ## Source-backed findings
 
-1. `window.GameHost` contains the raw `engine`, `getState()` and unrestricted `tick(dt)`.
-2. The engine publicly exposes `ctx`, `domains`, `addKit`, `command`, `tick`, `snapshot` and `subscribe`.
-3. `ctx` contains mutable frame, elapsed, delta, events, domains and a back-reference to the engine.
-4. `addKit()` assigns by domain ID without duplicate protection; a duplicate can overwrite the previous entry.
-5. Game-domain objects expose internal `api` functions for resource gain/payment, pressure adjustment and apple collection.
-6. Direct domain API calls mutate state without runtime `notify()`.
-7. Direct domain command calls bypass the runtime command boundary and publication.
-8. Direct domain tick calls can advance partial gameplay state.
-9. Public full-graph ticks can run beside the production RAF without a single-writer lease.
-10. Public commands have no capability, host-generation, session, lifecycle, route or expected-revision identity.
-11. Public snapshots omit runtime clock, session, route revision, simulation tick and render-frame receipts.
-12. Subscriptions have no capability lease identity or forced host-level retirement.
-13. The host has no revocation state for dispose, session replacement or fatal failure.
-14. The Node smoke test never instantiates or inspects the browser-global host.
+1. `kit-runtime.command()` immediately calls one domain and always notifies afterward.
+2. `interface-composition.activate` invokes the active screen command, then invokes `ctx.engine.command(...)` for an action child.
+3. The composition domain does not retain or inspect the child result.
+4. If the action has no route target, the parent returns `{ accepted: true }` even when the child rejected.
+5. The Storage Shed action triggers exactly that path.
+6. Nested dispatch causes a child notification followed by an outer notification.
+7. The HTML delegated listener discards the returned parent result.
+8. `collect` removes an apple and calls `seedApples()` before reward, pressure, score and message settlement completes.
+9. Reward and pressure participants are optional-chained, so a missing participant does not reject the aggregate operation.
+10. `clear` can remove a pest and increment score before optional scrap credit.
+11. `build` and `hire` debit the resource ledger before appending the constructed or hired entity.
+12. No command ID, transaction ID, expected revision, participant receipt, rollback receipt or idempotency record exists.
+13. No result identifies the state revision or canvas/HTML frame that first presented it.
+14. The smoke test does not test insufficient resources, participant failure, duplicate submission, nested publication count or frame correlation.
 
 ## Domains in use
 
@@ -84,12 +80,13 @@ runtime/session lifecycle authority: missing
 fixed-step and single-writer clock authority: missing
 route-scoped simulation admission authority: missing
 public capability gateway/revocation authority: missing
+composite command transaction authority: missing
 12 interface-screen domains
-interface composition and nested dispatch
+interface action resolution and route composition
 resource ledger and pressure field
 orchard world and random apple lifecycle
 construction, roster and inventory runtimes
-active-session movement, phases, pests, damage, score and failure
+active-session movement, collection, clearing, phases, pests, damage, score and failure
 world-canvas and HTML projection
 Node smoke proof
 static build and Pages deployment
@@ -99,10 +96,10 @@ static build and Pages deployment
 
 | Kit group | Services |
 |---|---|
-| `kit-runtime` | registration, domain creation, command dispatch, delta clamping, elapsed/frame mutation, all-domain tick, events, snapshots, subscriptions and publication |
+| `kit-runtime` | registration, domain creation, command dispatch, delta clamping, all-domain ticks, events, snapshots, subscriptions and publication |
 | interface kits | screen state, actions, selection, fields, activation, routing, nested dispatch and automatic Outcome routing |
 | `resource-ledger-kit` | affordability, payment, gain and resource projection |
-| `pressure-field-kit` | pressure adjustment, clamping and unconditional per-tick growth |
+| `pressure-field-kit` | pressure adjustment, clamping and per-tick growth |
 | `orchard-world-kit` | tree grid, random apple population, nearest collection and refill |
 | construction/roster/inventory kits | build, hire, equip and state projection |
 | `active-session-domain-kit` | movement, collection, phase changes, pest spawn/pursuit, damage, score and terminal failure |
@@ -144,70 +141,41 @@ pages-deploy-kit
 ## Required composed domain
 
 ```txt
-zombie-orchard-public-capability-gateway-authority-domain
-  -> public-host-contract-kit
-  -> host-capability-manifest-kit
-  -> capability-id-kit
-  -> capability-lease-kit
-  -> public-read-model-kit
-  -> host-observation-revision-kit
-  -> public-command-envelope-kit
-  -> public-command-allowlist-kit
-  -> command-payload-schema-kit
-  -> command-session-admission-kit
-  -> single-writer-step-lease-kit
-  -> manual-step-capability-kit
-  -> public-command-result-kit
-  -> host-frame-receipt-kit
-  -> duplicate-domain-registration-guard-kit
-  -> subscriber-lease-kit
-  -> host-revocation-kit
-  -> capability-journal-kit
-  -> public-host-observation-kit
-  -> public-host-capability-fixture-kit
+zombie-orchard-composite-command-transaction-authority-domain
+  -> command-envelope-kit
+  -> command-id-kit
+  -> transaction-id-kit
+  -> expected-revision-admission-kit
+  -> action-resolution-kit
+  -> command-participant-registry-kit
+  -> participant-prepare-kit
+  -> participant-commit-kit
+  -> participant-rollback-kit
+  -> transaction-idempotency-kit
+  -> aggregate-command-result-kit
+  -> transaction-event-buffer-kit
+  -> single-publication-barrier-kit
+  -> command-result-journal-kit
+  -> command-frame-receipt-kit
+  -> command-transaction-fixture-kit
 ```
 
-## Required public contract
+## Required result
 
 ```txt
-GameHost {
-  apiVersion
-  hostGeneration
-  capabilityRevision
-  capabilities()
-  observe()
-  command(envelope)
-  subscribe(listener) -> lease
-  revoke(reason)
+AggregateCommandResult {
+  commandId
+  transactionId
+  status
+  reason
+  beforeRevision
+  afterRevision
+  participantResults
+  emittedEvents
+  idempotencyStatus
+  canvasFrameId
+  htmlFrameId
 }
-```
-
-The public object must not contain or return:
-
-```txt
-engine
-ctx
-domains
-domain objects
-domain APIs
-addKit
-raw tick
-renderer objects
-DOM nodes
-```
-
-## Required command transaction
-
-```txt
-PublicCommandEnvelope
-  -> host-generation admission
-  -> capability lease admission
-  -> session/lifecycle/route admission
-  -> allowlist and payload-schema validation
-  -> single-writer clock admission when time advances
-  -> composite command transaction
-  -> typed result
-  -> render-frame acknowledgement or explicit headless receipt
 ```
 
 ## Ordered safe ledges
