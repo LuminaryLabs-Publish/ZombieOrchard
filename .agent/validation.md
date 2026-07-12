@@ -17,6 +17,7 @@ Documentation-only audit of simulation-clock authority. Runtime source, dependen
 - [x] Quantify 30/60/120 Hz source-level gameplay divergence.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
+- [x] Synchronize the central ledger and internal change log.
 - [ ] Implement and run clock fixtures.
 
 ## Source-backed findings
@@ -59,7 +60,7 @@ Approximate night pest-spawn probability per wall second:
 120 Hz: 66.9%
 ```
 
-## Required DOM-free fixtures
+## Required fixtures
 
 ```txt
 fixed-step-policy-shape
@@ -67,42 +68,23 @@ monotonic-simulation-step-id
 simulation-epoch-reset
 30hz-60hz-120hz-equal-wall-time-parity
 variable-cadence-parity
-pressure-cadence-parity
-pest-movement-cadence-parity
-contact-damage-cadence-parity
-spawn-trial-count-parity
+pressure/pest/damage/spawn-cadence-parity
 long-frame-catch-up-limit
 lag-drop-result
+hidden-tab-suspension
+resume-new-baseline
 manual-step-equivalence
 manual-auto-writer-exclusion
 single-publication-per-batch
 stale-epoch-rejection
-```
-
-## Required browser fixtures
-
-```txt
-RAF timestamp drives accumulator
-callback count does not define elapsed simulation time
-hidden document suspends automatic accumulation
-resume establishes a new timestamp baseline
-manual stepping cannot overlap automatic ownership
-one runtime owns one RAF writer
-accepted batch publishes once
-canvas and HTML frame cite committed step range
+step-range-visible-frame-receipt
+built-artifact-browser-smoke
+Pages-cadence-smoke
 ```
 
 ## Existing smoke boundary
 
-Current `npm test` verifies:
-
-```txt
-entry screen exists
-Play reaches active-session
-orchard contains apples
-```
-
-It does not execute browser cadence, fixed-step accumulation, hidden-tab behavior, manual/automatic exclusion, catch-up, lag dropping, or frame correlation.
+Current `npm test` verifies only entry route, Play transition, and apple presence. It does not execute browser cadence, fixed-step accumulation, visibility, manual/automatic exclusion, catch-up, lag dropping, or frame correlation.
 
 ## Validation result
 
@@ -126,8 +108,8 @@ step/frame fixture: unavailable / not run
 Pages cadence smoke: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: pending until repo-local completion
-central internal change log: pending until repo-local completion
+central ledger update: complete
+central internal change log: complete
 ```
 
 No cadence parity, fixed-step determinism, automatic/manual writer safety, hidden-tab safety, bounded catch-up, or simulation-to-frame claim is made.
