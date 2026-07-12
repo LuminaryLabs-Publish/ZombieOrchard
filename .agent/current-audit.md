@@ -3,8 +3,8 @@
 ## Status
 
 ```txt
-last aligned: 2026-07-11T23-48-14-04-00
-status: composite-command-transaction-authority-audited
+last aligned: 2026-07-12T01-30-07-04-00
+status: player-control-reachability-authority-audited
 runtime source changed: no
 branch: main
 root .agent state: refreshed
@@ -13,95 +13,84 @@ central ledger sync: complete
 
 ## Summary
 
-`ZombieOrchard` resolves interface actions and gameplay effects through immediate nested mutations rather than one aggregate command transaction. `interface-composition.activate` can call a child command, ignore its result and return parent success. The child command publishes once and the outer command publishes again.
+The browser product does not expose the movement service already implemented by `active-session`. `start.js` creates the game, renderers, public host and RAF without keyboard or touch input. The HTML renderer binds only click actions and exposes Collect, Clear, Next Phase and route buttons. `world-canvas.js` is render-only.
 
-Gameplay commands also span multiple mutable owners without prepare, commit or rollback. Apple collection removes and reseeds an apple before reward and pressure settlement; pest clearing can retire a pest and increment score before scrap credit; construction and hiring debit resources before appending the resulting entity.
+The player starts at `{ x: 0, y: 180 }`. Since collection requires an apple within 42 units, random apple placement can produce a normal run in which the player cannot reach any collectible and has no action capable of changing that condition.
 
 ## Plan ledger
 
-**Goal:** define one atomic command transaction that preserves child-result truth, prevents partial multi-domain commits and publishes exactly one typed result tied to one visible frame.
+**Goal:** establish one browser-to-gameplay movement path with route/focus admission, held-input retirement, typed results and visible-frame proof.
 
 - [x] Compare the full Publish inventory with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only ZombieOrchard.
-- [x] Read browser boot, runtime command dispatch, scoped interfaces, composition, preset actions, gameplay domains, render bindings and smoke proof.
-- [x] Identify the interaction loop, domains, all implemented kits and services.
-- [x] Trace nested activation and child command behavior.
-- [x] Trace collection, clearing, construction, hiring and equipment mutations.
-- [x] Define participant preparation, atomic commit, rollback, idempotency, one-publication and frame-receipt contracts.
-- [x] Add architecture, render, gameplay, interaction, command-transaction and deploy audits.
+- [x] Select only `ZombieOrchard` as the oldest eligible entry.
+- [x] Read boot, runtime composition, preset actions, HTML controls, active-session movement and canvas projection.
+- [x] Identify the interaction loop, domains, all 27 implemented kits and services.
+- [x] Confirm the movement command has no shipped product binding.
+- [x] Define control binding, route/focus admission, retirement, result and fixture contracts.
+- [x] Add architecture, render, gameplay, interaction, player-control and deploy audits.
 - [x] Synchronize the central ledger and internal change log.
-- [ ] Implement and run transaction fixtures.
+- [ ] Implement and run player-control fixtures.
 
 ## Interaction loop
 
 ```txt
-UI click
-  -> HTML delegated listener
-  -> engine.command(interface-composition, activate)
-  -> active screen returns an action descriptor
-  -> optional nested engine.command(child)
-  -> child mutates and notifies
-  -> parent discards child result
-  -> parent may move route
-  -> outer command returns and notifies again
+Play
+  -> route becomes active-session
+  -> RAF ticks every domain and renders the world
 
-Gameplay effect
-  -> mutate participant A
-  -> mutate participant B if present
-  -> mutate participant C if present
-  -> return local accepted/rejected result
-  -> no aggregate revision, rollback or frame receipt
+browser controls
+  -> route buttons
+  -> Collect
+  -> Clear
+  -> Next Phase
+
+movement
+  -> active-session.command("move", { x, y }) exists
+  -> no keyboard/pointer/touch adapter calls it
+  -> player position remains unchanged in normal product use
 ```
 
 ## Source-backed findings
 
-1. `kit-runtime.command()` immediately calls one domain and always notifies afterward.
-2. `interface-composition.activate` invokes the active screen and then an optional nested child command.
-3. The composition domain does not inspect the child result.
-4. A child rejection can be concealed by parent `{ accepted: true }`.
-5. The Storage Shed action triggers this path.
-6. Nested dispatch causes a child notification followed by an outer notification.
-7. The HTML delegated listener discards the returned parent result.
-8. `collect` removes and reseeds an apple before reward, pressure, score and message settlement completes.
-9. Reward and pressure participants are optional, so their absence does not reject the operation.
-10. `clear` can remove a pest and increment score before optional scrap credit.
-11. `build` and `hire` debit the ledger before entity insertion.
-12. No command ID, transaction ID, expected revision, participant receipt, rollback receipt or idempotency record exists.
-13. No result identifies the first canvas/HTML frame presenting it.
-14. Existing smoke proof does not test transaction failure, duplicates, publication count or frame correlation.
+1. `src/start.js` installs no movement input listener.
+2. `html-interface-renderer.js` installs one delegated click listener only.
+3. Active-session buttons are Collect, Clear and Next Phase.
+4. `world-canvas.js` has no pointer or touch input path.
+5. `active-session.command("move")` adds `22 * x/y` and clamps to orchard bounds.
+6. The player starts at `{ x: 0, y: 180 }`.
+7. Collection requires an apple within 42 units.
+8. Apples are randomly seeded around the orchard, so initial reachability is not guaranteed.
+9. No binding manifest, held-key state, focus lease, route admission, input sequence or retirement service exists.
+10. No movement result is correlated to a canvas/HTML frame.
+11. Existing smoke proof checks route transition and apple presence only.
 
 ## Domains in use
 
 ```txt
-browser module boot and window-global publication
-runtime graph registration and mutable context
-commands, ticks, events, snapshots, subscriptions and publication
+browser boot, DOM and recursive RAF
+runtime graph, commands, ticks, events, snapshots and subscriptions
 runtime/session lifecycle authority: missing
-fixed-step and single-writer clock authority: missing
+fixed-step and single-writer authority: missing
 route-scoped simulation admission authority: missing
-public capability gateway/revocation authority: missing
-composite command transaction authority: missing
-12 interface-screen domains
-interface action resolution and route composition
-resource ledger and pressure field
-orchard world and random apple lifecycle
-construction, roster and inventory runtimes
-active-session movement, collection, clearing, phases, pests, damage, score and failure
-world-canvas and HTML projection
-Node smoke proof
-static build and Pages deployment
+player-control reachability authority: missing
+public capability and composite transaction authorities: missing
+12 interface-screen domains and composition
+resources, pressure, orchard world, construction, roster and inventory
+active-session movement, collection, phases, pests, damage and failure
+canvas and HTML rendering
+Node smoke, static build and Pages deployment
 ```
 
 ## Implemented kits and services
 
-| Kit group | Services |
+| Group | Services |
 |---|---|
-| `kit-runtime` | registration, domain creation, command dispatch, ticks, events, snapshots, subscriptions and publication |
-| interface kits | screen state, actions, selection, fields, activation, routing, nested dispatch and Outcome routing |
+| `kit-runtime` | registration, domain creation, command dispatch, clamped ticks, events, snapshots, subscriptions and publication |
+| interface kits | screen state, actions, activation, routing, nested dispatch and Outcome routing |
 | game kits | resources, pressure, apples, collection, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
-| render kits | orchard canvas, HUD, route screens, cards, delegated actions and per-frame DOM replacement |
-| diagnostics/proof/deploy | raw engine publication, snapshot, manual tick, smoke proof, static copy and Pages chain |
+| render kits | orchard canvas, HUD, route screens, cards, delegated click bindings and per-frame DOM replacement |
+| proof/deploy | raw host, snapshot, manual tick, Node smoke, static build and Pages |
 
 ## Complete implemented kit inventory
 
@@ -138,23 +127,19 @@ pages-deploy-kit
 ## Required composed domain
 
 ```txt
-zombie-orchard-composite-command-transaction-authority-domain
-  -> command-envelope-kit
-  -> command-id-kit
-  -> transaction-id-kit
-  -> expected-revision-admission-kit
-  -> action-resolution-kit
-  -> command-participant-registry-kit
-  -> participant-prepare-kit
-  -> participant-commit-kit
-  -> participant-rollback-kit
-  -> transaction-idempotency-kit
-  -> aggregate-command-result-kit
-  -> transaction-event-buffer-kit
-  -> single-publication-barrier-kit
-  -> command-result-journal-kit
-  -> command-frame-receipt-kit
-  -> command-transaction-fixture-kit
+zombie-orchard-player-control-reachability-authority-domain
+  -> control-binding-manifest-kit
+  -> browser-keyboard-input-adapter-kit
+  -> held-control-state-kit
+  -> movement-intent-kit
+  -> movement-vector-normalization-kit
+  -> route-focus-control-lease-kit
+  -> movement-command-admission-kit
+  -> input-retirement-kit
+  -> movement-command-result-kit
+  -> control-observation-kit
+  -> movement-frame-receipt-kit
+  -> player-control-fixture-kit
 ```
 
 ## Ordered safe ledges
@@ -163,6 +148,7 @@ zombie-orchard-composite-command-transaction-authority-domain
 1. Runtime Session Instance Authority
 2. Fixed-Step Clock Authority
 2a. Route-Scoped Simulation Admission Authority
+2b. Player-Control Reachability Authority
 3. Public Capability Gateway and Reachability
 4. Composite Command Transaction Authority
 5. Seeded Random and Replay Authority
