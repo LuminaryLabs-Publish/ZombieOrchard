@@ -1,155 +1,212 @@
 # Current audit: ZombieOrchard
 
-**Timestamp:** `2026-07-12T07-51-04-04-00`  
-**Status:** `html-interface-projection-focus-authority-audited`  
+**Timestamp:** `2026-07-12T10-00-00-04-00`  
+**Status:** `kit-graph-installation-authority-audited`  
 **Branch:** `main`
 
 ## Summary
 
-The shipped HTML renderer rebuilds the complete interface subtree during every animation frame. `src/start.js` always calls `ui.render(snapshot)`, and both active-session and route-screen paths assign `root.innerHTML`. No state fingerprint, keyed reconciliation, mutation budget, focus preservation, safe encoding contract or interface-frame acknowledgement exists.
+The runtime composes the shipped product from 27 implemented kits, but the composition itself is not an authority. `createOrchardGame()` supplies one manually ordered kit array. `createKitRuntime()` calls `kit.create(ctx)` against the live context, checks only for a returned domain ID, and writes the result directly into the mutable domain map.
+
+There is no manifest, version, provided-service declaration, required-service declaration, dependency resolver, deterministic phase plan, duplicate-domain rejection, candidate graph, rollback, predecessor disposal, graph revision or visible-frame receipt. The raw engine is also exposed through `window.GameHost`, so runtime callers can invoke `addKit()` after startup and silently replace a live domain by ID.
 
 ## Plan ledger
 
-**Goal:** define a deterministic HTML projection boundary that emits safe, minimal DOM changes while preserving keyboard and assistive-technology continuity.
+**Goal:** define a deterministic kit-graph installation transaction that validates compatibility before mutation, commits the complete graph atomically and proves which graph produced the visible frame.
 
-- [x] Compare the Publish inventory with the central repository ledger.
+- [x] Compare the complete Publish inventory against central ledgers.
+- [x] Verify root `.agent` coverage and central synchronization for all nine eligible repositories.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only `ZombieOrchard`.
-- [x] Inspect `index.html`, browser boot, runtime snapshots, interface composition, presets, gameplay state and both renderers.
-- [x] Identify the interaction loop, all domains, all 27 kits and their services.
-- [x] Trace route/HUD values into HTML strings and attributes.
-- [x] Confirm per-frame full-subtree replacement.
-- [x] Confirm unchanged-frame no-op behavior is absent.
-- [x] Confirm focus and selection are not captured or restored.
-- [x] Confirm text and attribute encoding are absent.
-- [x] Define a composed parent domain and fixture gate.
-- [ ] Implement the authority and run browser/Pages fixtures.
+- [x] Select only `ZombieOrchard` under the oldest synchronized fallback rule.
+- [x] Read browser boot, game construction, runtime registration, interface composition, gameplay domains and public host exposure.
+- [x] Reconcile the interaction loop, all domains, all 27 kits and their services.
+- [x] Trace initial and post-start kit installation.
+- [x] Confirm duplicate domain IDs overwrite live owners.
+- [x] Confirm domain tick order depends on mutable object insertion order.
+- [x] Confirm service dependencies and versions are implicit.
+- [x] Confirm no atomic install, rollback, uninstall or graph-frame proof exists.
+- [x] Define the parent DSK and fixture boundary.
+- [ ] Implement the authority and run source/browser/Pages graph fixtures.
 
 ## Selection audit
 
 ```txt
-ZombieOrchard      2026-07-12T06-19-56-04-00 selected oldest
-TheUnmappedHouse   2026-07-12T06-30-34-04-00
-AetherVale         2026-07-12T06-41-32-04-00
-MyCozyIsland       2026-07-12T06-51-27-04-00
-TheOpenAbove       2026-07-12T07-00-48-04-00
-PrehistoricRush    2026-07-12T07-09-49-04-00
-IntoTheMeadow      2026-07-12T07-19-47-04-00
-PhantomCommand     2026-07-12T07-29-32-04-00
-HorrorCorridor     2026-07-12T07-41-06-04-00
+ZombieOrchard      2026-07-12T07-51-04-04-00 selected oldest synchronized
+MyCozyIsland       2026-07-12T08-00-16-04-00
+TheUnmappedHouse   2026-07-12T08-10-36-04-00
+AetherVale         2026-07-12T08-31-49-04-00
+PrehistoricRush    2026-07-12T09-01-44-04-00
+TheOpenAbove       2026-07-12T09-02-10-04-00
+IntoTheMeadow      2026-07-12T09-21-40-04-00
+PhantomCommand     2026-07-12T09-28-05-04-00
+HorrorCorridor     2026-07-12T09-48-15-04-00
 TheCavalryOfRome   excluded
 ```
 
 ## Complete interaction loop
 
 ```txt
-module boot
-  -> create mutable engine graph
+browser module evaluation
+  -> createOrchardGame()
+  -> create interface and gameplay kit descriptors
+  -> createKitRuntime({ kits })
+
+initial graph installation
+  -> create mutable domains object and shared ctx
+  -> for each kit call engine.addKit(kit)
+  -> kit.create(ctx) executes against the live predecessor graph
+  -> require only domain.id
+  -> assign domains[domain.id] = domain
+  -> continue without dependency, version or duplicate checks
+
+runtime host setup
   -> create world canvas and HTML renderer
-  -> install delegated click listener on #ui-root
-  -> expose window.GameHost
-  -> call draw()
+  -> attach delegated UI listener
+  -> publish raw engine through window.GameHost
+  -> begin RAF
 
-every RAF callback
-  -> engine.tick(1 / 60)
-  -> produce fresh snapshot
-  -> world.render(snapshot)
-  -> ui.render(snapshot)
-  -> construct complete route/HUD HTML string
-  -> assign root.innerHTML
-  -> discard predecessor descendants
-  -> schedule next RAF
+frame
+  -> clamp one supplied delta
+  -> increment ambient frame and elapsed counters
+  -> clear events
+  -> iterate Object.values(domains)
+  -> call each domain tick in mutable property order
+  -> synchronously notify subscribers
+  -> snapshot domains
+  -> render canvas and HTML
 
-keyboard focus
-  -> user focuses a button
-  -> next RAF removes that node
-  -> no focus key, lease, restoration result or route focus policy exists
-
-content
-  -> values are coerced through String(...)
-  -> values are interpolated into HTML text and data-action attributes
-  -> no text or attribute encoding policy is applied
+post-start graph mutation
+  -> external code calls GameHost.engine.addKit(candidate)
+  -> candidate creates against the live ctx
+  -> matching domain ID replaces predecessor immediately
+  -> no graph revision, migration, disposal or render acknowledgement occurs
 ```
 
 ## Source-backed findings
 
-### Full DOM replacement occurs every frame
+### Installation validates only the returned domain ID
 
-`src/start.js` invokes both renderers on every callback:
-
-```js
-const snapshot = engine.tick(1 / 60);
-world.render(snapshot);
-ui.render(snapshot);
-requestAnimationFrame(draw);
-```
-
-`src/renderer/html-interface-renderer.js` assigns `root.innerHTML` in the active-session branch and again for all other routes. No equality check or dirty flag precedes either assignment.
-
-At 60 callbacks per second, an unchanged route can request:
-
-```txt
-3,600 complete subtree replacements per minute
-216,000 complete subtree replacements per hour
-```
-
-Actual callback frequency can be reduced by browser throttling, but the application requests a mutation on every callback.
-
-### Keyboard focus has no continuity contract
-
-Every replacement creates new button elements. Delegated click handling survives because the listener is attached to the stable root, but focused descendants do not. Missing state includes:
-
-```txt
-domSurfaceId
-interfaceProjectionRevision
-focusedActionId
-focusLease
-focusCaptureResult
-focusRestorationPolicy
-focusRestorationResult
-selectionLease
-routeTransitionFocusTarget
-```
-
-### Accessibility-tree churn is unbounded
-
-The HUD and route subtree are recreated even when semantic values are unchanged. There is no ARIA live-region policy, announcement deduplication, semantic-change fingerprint, screen-reader continuity result or DOM mutation budget.
-
-### Content encoding is not defined
-
-The helper is:
+`src/kits/runtime.js` implements installation as:
 
 ```js
-const text = (value) => String(value ?? "");
+addKit(kit) {
+  const domain = kit.create(ctx);
+  if (!domain?.id) throw new Error("Kit returned a domain without an id.");
+  domains[domain.id] = domain;
+  return domain;
+}
 ```
 
-It performs conversion, not HTML escaping. Values enter text positions and `data-action` attributes. Authored presets are currently trusted source code, but runtime roster names and future loaded or networked content have no safe projection boundary. This audit does not claim a remote exploit.
+The runtime does not inspect a kit manifest, dependencies, provided services, version, lifecycle hooks or phase. It also does not reject an existing `domain.id`.
 
-### Projection provenance is absent
+### Duplicate IDs silently replace live ownership
 
-The renderer returns only `{ render }`. It publishes no projection ID, revision, fingerprint, mutation count, no-op result, focus result, accessibility result or visible-interface receipt. Canvas and HTML cannot prove they displayed the same committed state/frame revision.
+A second kit returning `id: "active-session"` overwrites the existing domain in place. The predecessor receives no stop or dispose call. Existing state disappears, while renderers and public callers continue reading the same map key. No replacement command, migration result, graph revision or first-frame acknowledgement identifies the ownership change.
 
-### Existing proof is engine-only
+### Tick order is an installation-history side effect
 
-`tests/smoke.mjs` checks Entry, Play and apple presence. It creates no DOM and tests no mutation, focus, encoding, accessibility or interface-frame invariant.
+`tick()` uses:
+
+```js
+for (const domain of Object.values(domains)) domain.tick?.(ctx.delta);
+```
+
+Current behavior therefore depends on object property order created by the manually ordered array in `createOrchardGame()`. The interface-composition domain is installed last and routes to Outcome after active-session ticks. A future insertion, replacement or refactor can change whether a consumer observes predecessor or current-tick state without any explicit phase contract.
+
+### Dependencies are implicit and weakly admitted
+
+Gameplay domains find collaborators through `ctx.domains[domainId]?.api`. Examples include construction using `resource-ledger`, roster hiring using the ledger, and active-session collection using orchard, ledger and pressure services. No required-service declaration proves those providers exist or that their API shape and version match.
+
+Optional chaining avoids immediate crashes but converts graph errors into product behavior. A missing ledger can look like insufficient resources. A missing orchard can look like no nearby apple. A missing pressure service silently drops pressure mutation.
+
+### Initial installation is not transactional
+
+The initial loop installs domains one at a time into the live candidate object. If a later `kit.create()` throws, previously created domains and any side effects they acquired have no rollback or disposal path. The current kits are mostly in-memory, but the runtime contract permits future listeners, timers, transports or renderer resources without an acquisition ledger.
+
+### Public runtime mutation bypasses composition policy
+
+`src/start.js` exposes the raw engine as `window.GameHost.engine`. That surface includes `addKit()`. A browser diagnostic, editor or third-party script can mutate the graph after startup without an installation command, capability check, replacement policy or graph lock.
+
+### Graph provenance is absent
+
+Snapshots contain domain projections only. They do not include:
+
+```txt
+graphId
+graphRevision
+graphFingerprint
+kit manifest fingerprints
+resolved dependency order
+service binding receipts
+installation results
+replacement lineage
+```
+
+Canvas and HTML renderers therefore cannot prove which kit graph produced a visible frame.
+
+## Concrete failure paths
+
+### Silent active-session replacement
+
+```txt
+run is active
+  -> external code adds a kit returning domain ID active-session
+  -> predecessor state is overwritten
+  -> player, pests, day and score reset or change shape
+  -> interface-composition and renderers read the new owner
+  -> no lifecycle transition, migration or replacement result exists
+```
+
+### Order-sensitive outcome routing
+
+```txt
+active-session tick commits ended = true
+  -> interface-composition tick currently runs later and moves to outcome
+
+composition is installed before active-session in a future graph
+  -> composition observes predecessor ended = false
+  -> outcome routing is delayed by one tick
+  -> no phase descriptor or graph validation reports the behavior change
+```
+
+### Missing service disguised as gameplay rejection
+
+```txt
+construction-runtime installs without resource-ledger
+  -> build command resolves no ledger API
+  -> pay result is false-like
+  -> player receives Missing resources
+  -> graph misconfiguration is presented as economy state
+```
+
+### Failed creation with leaked acquisition
+
+```txt
+kit A creates a listener or timer
+  -> kit B creation throws
+  -> createKitRuntime aborts
+  -> no reverse cleanup stack runs
+  -> acquired work can survive a failed graph
+```
 
 ## Domains in use
 
 ```txt
-browser document, DOM surface and full-window CSS ownership
+browser document, canvas, DOM and full-window CSS
 module boot, recursive RAF and public GameHost
+kit manifest and graph-installation authority gap
+kit identity, domain identity, versions and compatibility
+provided and required service contracts
+dependency resolution and deterministic phase ordering
+candidate graph construction, validation, commit, rollback and disposal
+graph identity, revision, fingerprint, observation and visible-frame correlation
 runtime registration, commands, ticks, events, snapshots, subscriptions and publication
 12 interface-screen domains and interface composition
 resource ledger and pressure field
 orchard trees, apples and refill
 construction, roster and inventory
 active-session movement, phases, pests, damage, score and failure
-canvas world rendering and canvas-surface authority
-HTML view-model construction and DOM projection
-HTML text and attribute encoding
-DOM mutation planning, no-op detection, commit and rollback
-focus, selection and accessibility continuity
-interface projection identity, revision, observation and frame correlation
+canvas world rendering and HTML projection
 Node smoke, static build, Pages deployment and central audit tracking
 ```
 
@@ -189,72 +246,85 @@ pages-deploy-kit
 
 | Kit group | Services |
 |---|---|
-| runtime | registration, domain creation, command dispatch, delta clamp, ticks, events, snapshots, subscriptions and synchronous publication |
-| interface | screen state, actions, activation, routing, nested dispatch and automatic Outcome routing |
-| game | resources, pressure, trees, apples, collection refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
-| render | canvas world drawing, HUD and route HTML, card projection, delegated click handling and full-subtree `innerHTML` replacement |
-| diagnostics/proof/deploy | raw engine publication, snapshot readback, unrestricted manual tick, Node smoke, static copy and Pages deployment |
+| runtime | Kit registration, domain creation, commands, delta clamp, ticks, events, snapshots, subscriptions and synchronous publication |
+| interface | Screen state, actions, activation, route transitions, nested dispatch and Outcome routing |
+| game | Resource accounting, pressure, orchard population, collection, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
+| render | Canvas world drawing, HUD and route HTML, card projection and delegated clicks |
+| diagnostics/proof/deploy | Raw engine publication, state readback, unrestricted manual tick, Node smoke, static build copy and Pages deployment |
 
 ## Required composed domain
 
 ```txt
-zombie-orchard-html-interface-projection-authority-domain
+zombie-orchard-kit-graph-installation-authority-domain
 ```
 
 Candidate kits:
 
 ```txt
-interface-projection-id-kit
-interface-projection-revision-kit
-interface-state-fingerprint-kit
-interface-view-model-kit
-html-content-escaping-kit
-html-attribute-escaping-kit
-interface-action-key-kit
-dom-surface-lease-kit
-dom-focus-lease-kit
-dom-selection-lease-kit
-interface-projection-plan-kit
-interface-projection-diff-kit
-interface-projection-commit-kit
-interface-projection-noop-kit
-interface-projection-result-kit
-stale-interface-projection-rejection-kit
-focus-restoration-policy-kit
-screen-reader-announcement-policy-kit
-dom-mutation-budget-kit
-interface-projection-observation-kit
-interface-projection-journal-kit
-visible-interface-frame-receipt-kit
-unchanged-ui-no-mutation-fixture-kit
-keyboard-focus-retention-fixture-kit
-html-escaping-fixture-kit
-route-transition-focus-fixture-kit
-browser-interface-accessibility-smoke-kit
-pages-interface-projection-smoke-kit
+kit-manifest-schema-kit
+kit-id-kit
+kit-version-kit
+kit-compatibility-range-kit
+domain-id-ownership-kit
+provided-service-contract-kit
+required-service-contract-kit
+service-version-kit
+kit-dependency-graph-kit
+kit-cycle-detection-kit
+kit-phase-descriptor-kit
+deterministic-kit-order-kit
+kit-graph-predecessor-kit
+kit-graph-candidate-kit
+isolated-kit-context-kit
+kit-create-result-kit
+kit-graph-validation-kit
+duplicate-kit-rejection-kit
+duplicate-domain-rejection-kit
+missing-service-rejection-kit
+incompatible-service-rejection-kit
+kit-graph-commit-kit
+kit-graph-rollback-kit
+kit-predecessor-retirement-kit
+kit-disposal-result-kit
+kit-graph-id-kit
+kit-graph-revision-kit
+kit-graph-fingerprint-kit
+kit-installation-receipt-kit
+kit-graph-observation-kit
+kit-graph-journal-kit
+first-kit-graph-frame-ack-kit
+kit-order-fixture-kit
+duplicate-domain-fixture-kit
+missing-service-fixture-kit
+failed-create-rollback-fixture-kit
+runtime-replacement-fixture-kit
+pages-kit-graph-smoke-kit
 ```
 
 ## Required transaction
 
 ```txt
-committed StateSnapshot
-  -> validate runtime session, route and expected state revision
-  -> build immutable InterfaceViewModel
-  -> encode text and attribute values
-  -> calculate semantic and structural fingerprints
-  -> publish a typed no-op when unchanged
-  -> otherwise capture focused action and selection leases
-  -> prepare keyed DOM changes under a mutation budget
-  -> reject stale preparation
-  -> commit one InterfaceProjectionRevision
-  -> restore or deliberately move focus using route policy
-  -> publish projection, focus and accessibility results
-  -> acknowledge the first visible interface frame
+KitGraphInstallCommand
+  -> admit against expected runtime session and graph predecessor
+  -> normalize and freeze all kit manifests
+  -> validate unique kit and domain ownership
+  -> resolve required services to compatible providers
+  -> reject missing, cyclic or incompatible graphs
+  -> calculate deterministic lifecycle and tick phase order
+  -> create domains inside an isolated candidate context
+  -> collect acquisition and disposal leases
+  -> validate candidate APIs, snapshots and service bindings
+  -> atomically replace the graph under one revision
+  -> migrate or retire explicitly replaced predecessors
+  -> rollback candidate acquisition on any failure
+  -> publish graph fingerprint and per-kit receipts
+  -> acknowledge first canvas and HTML frame citing that graph revision
 ```
 
 ## Ordered implementation queue
 
 ```txt
+0. Kit Graph Installation Authority
 1. Runtime Session Instance Authority
 2. Fixed-Step Clock Authority
 2a. Route-Scoped Simulation Admission Authority
@@ -270,4 +340,4 @@ committed StateSnapshot
 
 ## Proof boundary
 
-Do not claim efficient DOM rendering, keyboard-focus continuity, screen-reader stability, safe external-content projection, canvas/HTML parity or visible interface-frame provenance until source, browser, built-artifact and Pages fixtures pass on `main`.
+Do not claim deterministic composition, dependency safety, compatible services, duplicate-owner protection, atomic replacement, resource-safe failed installation or graph-to-frame provenance until source, candidate-graph, browser, built-artifact and Pages fixtures pass on `main`.
