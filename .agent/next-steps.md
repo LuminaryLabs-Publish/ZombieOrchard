@@ -1,101 +1,111 @@
-# Next steps — ZombieOrchard
+# Next steps - ZombieOrchard
 
-**Timestamp:** `2026-07-12T07-51-04-04-00`
+**Timestamp:** `2026-07-12T10-00-00-04-00`
 
 ## Summary
 
-Preserve the existing runtime, clock, route, capability, transaction, frame and canvas boundaries, then replace the string-only HTML renderer with an immutable view-model and revisioned projection transaction. Unchanged frames should perform no DOM mutation, route transitions should move focus intentionally, and all text/attribute content should be encoded before commit.
+Introduce a graph manifest and candidate-installation transaction before changing gameplay or renderer behavior. The runtime should reject duplicate ownership, missing services, incompatible versions and cyclic dependencies before any live domain is replaced.
 
 ## Plan ledger
 
-**Goal:** implement a focus-safe, minimally mutating HTML projection without coupling UI correctness to animation-frame cadence.
+**Goal:** replace imperative live-map mutation with a deterministic, validated and reversible kit-graph commit.
 
-- [ ] Add stable DOM surface identity and interface projection revision.
-- [ ] Derive an immutable `InterfaceViewModel` from a committed state snapshot.
-- [ ] Separate text-node encoding from attribute encoding.
-- [ ] Fingerprint semantic and structural UI state.
-- [ ] Return a typed no-op result when the fingerprint is unchanged.
-- [ ] Preserve keyed action/card nodes when their identity is unchanged.
-- [ ] Capture focused action and selection before mutation.
-- [ ] Define route-specific initial and restoration focus policies.
-- [ ] Bound DOM mutation counts and reject stale projection plans.
-- [ ] Deduplicate accessibility announcements.
-- [ ] Publish projection, focus and visible-interface frame results.
+- [ ] Define immutable kit manifests with kit ID, domain ID, version, lifecycle phase, provided services and required services.
+- [ ] Give every service a stable ID and compatibility version.
+- [ ] Build a dependency graph and reject cycles.
+- [ ] Resolve one deterministic creation and tick order from named phases and dependencies.
+- [ ] Reject duplicate kit IDs and domain IDs by default.
+- [ ] Require an explicit replacement policy for intentional owner changes.
+- [ ] Build all candidate domains in an isolated context.
+- [ ] Record every acquired listener, timer, transport and renderer lease.
+- [ ] Validate candidate APIs and initial snapshots before commit.
+- [ ] Commit the complete graph atomically under one revision.
+- [ ] Roll back and dispose the candidate graph on failure.
+- [ ] Retire or migrate replaced predecessors explicitly.
+- [ ] Remove unrestricted `GameHost.engine.addKit()` access from public capabilities.
+- [ ] Publish graph fingerprints and per-kit installation receipts.
+- [ ] Correlate the first canvas and HTML frame with the committed graph revision.
 - [ ] Add source, browser, built-artifact and Pages fixtures.
 
 ## Immediate safe ledge
 
-1. Extract `buildInterfaceViewModel(snapshot)` as a pure function.
-2. Add `escapeHtmlText()` and `escapeHtmlAttribute()` fixtures before using string templates.
-3. Compute a stable fingerprint from route, action IDs, cards, HUD statistics and message.
-4. Skip `root.innerHTML` when the fingerprint is unchanged.
-5. Capture `document.activeElement?.dataset.action` before accepted mutations.
-6. Restore the same action when it remains valid.
-7. Define a named route-transition focus target when it does not.
-8. Add mutation counters and a typed render result.
-9. Prove 600 unchanged frames cause zero subtree replacements.
-10. Only then consider keyed DOM reconciliation instead of whole-subtree replacement.
+1. Add a pure `normalizeKitManifest(kit)` helper.
+2. Require each shipped kit to declare `kitId`, `domainId`, `version`, `provides`, `requires` and `phase`.
+3. Add `validateKitGraph(manifests)` with duplicate, missing-provider, version and cycle diagnostics.
+4. Calculate a stable graph fingerprint from normalized manifests and resolved order.
+5. Construct a candidate `domains` map without exposing it through the live context.
+6. Collect candidate creation results and cleanup leases.
+7. Commit the candidate map only after all kits validate.
+8. Return a typed `KitGraphInstallResult`.
+9. Gate runtime replacement behind an explicit command and expected predecessor revision.
+10. Add first-frame graph acknowledgement after both renderers complete.
 
 ## Required runtime flow
 
 ```txt
-state/frame commit
-  -> InterfaceViewModel
-  -> safe text and attribute encoding
-  -> semantic/structural fingerprint
-  -> unchanged no-op OR prepared DOM projection
-  -> focus and selection lease capture
-  -> stale-plan check
-  -> bounded DOM commit
-  -> focus restoration/transition result
-  -> accessibility announcement result
-  -> visible interface-frame acknowledgement
+kit descriptors
+  -> normalized manifests
+  -> unique ownership validation
+  -> service compatibility resolution
+  -> dependency and cycle validation
+  -> deterministic phase order
+  -> isolated candidate context
+  -> candidate domain creation
+  -> API and snapshot validation
+  -> atomic KitGraphRevision commit
+  -> predecessor retirement or candidate rollback
+  -> installation receipts and graph fingerprint
+  -> first visible graph-frame acknowledgement
 ```
 
 ## Target files
 
 ```txt
-src/renderer/html-interface-renderer.js
+src/kits/runtime.js
+src/game.js
 src/start.js
-src/interface/interface-view-model.js
-src/interface/html-encoding.js
-src/interface/interface-projection-state.js
-src/interface/interface-focus-policy.js
-tests/interface-view-model.fixture.mjs
-tests/html-encoding.fixture.mjs
-tests/interface-noop.fixture.mjs
-scripts/smoke-interface-focus.mjs
+src/kits/kit-manifest.js
+src/kits/service-contracts.js
+src/kits/kit-graph-validator.js
+src/kits/kit-graph-installer.js
+src/kits/kit-lifecycle.js
+tests/kit-manifest.fixture.mjs
+tests/kit-graph-order.fixture.mjs
+tests/kit-graph-duplicate.fixture.mjs
+tests/kit-graph-missing-service.fixture.mjs
+tests/kit-graph-rollback.fixture.mjs
+scripts/smoke-kit-graph.mjs
 package.json
 ```
 
 ## Required fixtures
 
 ```txt
-same view model -> zero DOM mutations
-changed HUD statistic -> one accepted projection revision
-same focused action survives an unrelated HUD update
-removed action moves focus to the declared route target
-route transition receives deterministic initial focus
-malformed text is rendered as text, not markup
-malformed action ID cannot break the data-action attribute
-stale projection cannot replace a newer route
-repeated identical message creates no repeated announcement
-canvas and HTML receipts cite the same state/frame revision
-source, dist and Pages behavior remain equivalent
+same manifests in different input order -> same resolved order and graph fingerprint
+duplicate kit ID -> typed rejection and zero live mutation
+duplicate domain ID -> typed rejection and predecessor retained
+missing provider -> exact required-service diagnostic
+incompatible provider version -> exact compatibility diagnostic
+cyclic dependency -> cycle path returned
+candidate create failure -> reverse cleanup and unchanged live graph
+intentional replacement -> explicit migration or predecessor disposal receipt
+late stale replacement -> rejected by expected graph revision
+first canvas and HTML frame -> matching graph revision and fingerprint
+source, dist and Pages -> equivalent graph inventory
 ```
 
 ## Dependency order
 
 ```txt
-runtime session
-  -> fixed-step and route admission
-  -> public capability and transactions
-  -> frame fault containment
-  -> canvas surface authority
-  -> HTML interface projection authority
+kit graph installation
+  -> runtime session
+  -> clock and route admission
+  -> public capability gateway
+  -> command transactions
+  -> frame and render authorities
   -> replay and persistence
 ```
 
 ## Do not claim
 
-Do not claim keyboard accessibility, safe content encoding, reduced DOM work, route-focus correctness or canvas/HTML frame parity until the fixtures pass on `main`.
+Do not claim deterministic installation, dependency safety, service compatibility, atomic graph replacement or graph-to-frame provenance until the fixtures pass on `main`.
