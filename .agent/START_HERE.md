@@ -3,95 +3,123 @@
 ## Last aligned
 
 ```txt
-2026-07-11T18-28-40-04-00
+2026-07-11T20-03-22-04-00
 ```
 
 ## Summary
 
 `ZombieOrchard` is a dependency-free static orchard survival and economy shell built from a small kit runtime, 12 interface domains, gameplay services, canvas and HTML projection, diagnostics, smoke proof, static build and Pages deployment.
 
-The current audit establishes the missing runtime-session instance authority. The browser creates one mutable graph before Play, and Play, New Game, Start, Pause, Outcome and Title only change interface routes. After failure, Title returns to Entry without retiring the ended run; Play or Start reuses `ended = true`, and the next tick routes back to Outcome. Resources, pressures, orchard state, construction, roster, inventory, pests, score and player condition also survive.
+The current audit establishes the missing versioned save/load authority. A `session-select` domain and slot renderer exist, but the screen is unreachable from Entry, has no slot data or load actions, and no storage service exists. `engine.snapshot()` is a one-way projection with no hydration path, schema version, migration, checksum, atomic slot write, staged load, rollback, random continuation, load epoch, or first-restored-frame acknowledgement.
 
 ## Plan ledger
 
-**Goal:** make every orchard run an identified, fresh, atomically committed and disposable authority before adding fixed-step clock, command transaction, seeded replay or persistence work.
+**Goal:** define a durable save/load boundary that can preserve one committed run exactly, migrate older envelopes safely, reject corrupt or conflicting data, atomically replace the live graph, and prove the first rendered restored frame.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
 - [x] Exclude `LuminaryLabs-Publish/TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
 - [x] Select only `ZombieOrchard` as the oldest eligible central entry.
 - [x] Identify the interaction loop, domains, implemented kits and services.
-- [x] Trace module boot, graph creation, routing, terminal failure, Title and restart paths.
-- [x] Define runtime/run identity, lifecycle, reset transaction, rollback, first-frame and disposal contracts.
+- [x] Trace Entry, New Game, Save Select, runtime snapshots, random state, rendering and proof surfaces.
+- [x] Define versioned envelopes, migration, slot indexing, atomic save/load, rollback and restored-frame contracts.
 - [x] Add timestamped architecture and system audits.
 - [x] Change documentation only on `main` with no branch or pull request.
-- [ ] Implement runtime-session authority and lifecycle fixtures.
-- [ ] Implement dependent clock, transaction, random/replay and persistence authorities.
+- [x] Synchronize the central ledger and internal change log.
+- [ ] Implement prerequisite session, clock, command and random authorities.
+- [ ] Implement persistence authority and roundtrip fixtures.
 
 ## Read this first
 
 ```txt
-.agent/trackers/2026-07-11T18-28-40-04-00/project-breakdown.md
+.agent/trackers/2026-07-11T20-03-22-04-00/project-breakdown.md
 .agent/current-audit.md
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-11T18-28-40-04-00-runtime-session-instance-authority-dsk-map.md
-.agent/render-audit/2026-07-11T18-28-40-04-00-stale-run-first-frame-projection-gap.md
-.agent/gameplay-audit/2026-07-11T18-28-40-04-00-outcome-title-play-reuse-loop.md
-.agent/interaction-audit/2026-07-11T18-28-40-04-00-start-new-game-title-lifecycle-map.md
-.agent/session-lifecycle-audit/2026-07-11T18-28-40-04-00-run-instance-reset-transaction-contract.md
-.agent/deploy-audit/2026-07-11T18-28-40-04-00-fresh-run-lifecycle-fixture-gate.md
-.agent/turn-ledger/2026-07-11T18-28-40-04-00.md
+.agent/architecture-audit/2026-07-11T20-03-22-04-00-versioned-save-load-authority-dsk-map.md
+.agent/render-audit/2026-07-11T20-03-22-04-00-save-slot-load-result-frame-gap.md
+.agent/gameplay-audit/2026-07-11T20-03-22-04-00-play-new-game-save-select-continuity-loop.md
+.agent/interaction-audit/2026-07-11T20-03-22-04-00-save-load-slot-command-result-map.md
+.agent/persistence-audit/2026-07-11T20-03-22-04-00-versioned-slot-migration-restore-contract.md
+.agent/deploy-audit/2026-07-11T20-03-22-04-00-persistence-roundtrip-fixture-gate.md
+.agent/turn-ledger/2026-07-11T20-03-22-04-00.md
 .agent/kit-registry.json
 ```
 
-Retain the seeded-random audit as the later dependency:
+Retain the prerequisite audits:
 
 ```txt
-.agent/architecture-audit/2026-07-11T17-01-11-04-00-seeded-random-replay-authority-dsk-map.md
-.agent/random-replay-audit/2026-07-11T17-01-11-04-00-seed-stream-cursor-replay-contract.md
+runtime session: 2026-07-11T18-28-40-04-00
+seeded random and replay: 2026-07-11T17-01-11-04-00
 ```
+
+## Selection
+
+```txt
+accessible Publish repositories: 10
+eligible non-Cavalry repositories: 9
+new or central-ledger-missing repositories: 0
+root-.agent-missing repositories: 0
+
+ZombieOrchard      2026-07-11T18-28-40-04-00 selected
+TheUnmappedHouse   2026-07-11T18-38-45-04-00
+AetherVale         2026-07-11T18-48-21-04-00
+IntoTheMeadow      2026-07-11T19-01-08-04-00
+PrehistoricRush    2026-07-11T19-09-25-04-00
+MyCozyIsland       2026-07-11T19-20-22-04-00
+TheOpenAbove       2026-07-11T19-28-28-04-00
+HorrorCorridor     2026-07-11T19-38-14-04-00
+PhantomCommand     2026-07-11T19-48-09-04-00
+TheCavalryOfRome   excluded
+```
+
+Only `LuminaryLabs-Publish/ZombieOrchard` was changed in the Publish organization.
 
 ## Product interaction loop
 
 ```txt
 module boot
   -> create one mutable engine graph
-  -> seed orchard apples
+  -> seed orchard apples with Math.random()
   -> create canvas and HTML renderers
   -> install delegated click listener
   -> start recursive RAF
 
-Play / New Game / Start / Pause / Resume / Title
-  -> interface-composition route mutation only
-  -> no lifecycle transaction
-  -> no new graph or run identity
+Entry
+  -> Play routes directly to active-session
+  -> New Game routes to run-setup
+  -> Settings routes to preferences
+  -> no route to session-select
+
+session-select, if forced active
+  -> renderer reads current.meta.slots
+  -> preset provides no slots
+  -> only Back action exists
+  -> no save, load, delete or inspect command exists
+
+engine.snapshot()
+  -> exports current domain projections
+  -> omits runtime clock context and random-generator state
+  -> has no inverse import or hydration service
 
 RAF
-  -> engine.tick(1 / 60) on every callback and route
-  -> world canvas renders orchard and active-session
-  -> HTML renders selected interface route
-
-failure
-  -> active-session.ended = true
-  -> composition routes to Outcome
-
-Outcome -> Title -> Play
-  -> Entry route, then active-session route
-  -> same ended graph
-  -> next tick routes back to Outcome
+  -> mutates retained graph
+  -> renders canvas and HTML
+  -> exposes raw snapshot through GameHost
 ```
 
 ## Main finding
 
 ```txt
-visible New Game semantics
+visible Save Select surface
   !=
-actual route-only behavior
+versioned persistence system
 ```
 
-There is no `runtimeId`, `runId`, `sessionEpoch`, lifecycle state machine, fresh-run factory, reset transaction, rollback, stale-callback rejection, first-run-frame acknowledgement or ordered disposal.
+There is no `saveId`, slot revision, schema version, migration registry, preset fingerprint, state checksum, committed tick, random stream state, deterministic entity sequence, atomic write result, staged load candidate, load epoch, rollback, corruption quarantine, conflict result, or first-restored-frame acknowledgement.
+
+A raw JSON copy of `engine.snapshot()` would not be sufficient. The runtime has no restore API, `ctx.frame` and `ctx.elapsed` are not included, future `Math.random()` continuation cannot be reproduced, and all authoritative state lives inside closures that cannot be atomically replaced from a snapshot.
 
 ## Domains in use
 
@@ -103,7 +131,7 @@ command, tick, event, snapshot, subscription and publication routing
 fixed-step committed tick authority: missing
 public capability and composite transaction authority: missing
 seeded random stream and replay authority: missing
-versioned persistence authority: missing
+versioned persistence and migration authority: missing
 12 scoped interface-screen domains
 interface composition and automatic Outcome routing
 resource ledger and pressure field
@@ -154,32 +182,66 @@ pages-deploy-kit
 | runtime | registration, domain creation, commands, ticks, events, snapshots, subscriptions and publication |
 | interface | screen state, actions, selection, fields, activation, routing, nested dispatch and automatic Outcome routing |
 | game | resources, pressure, orchard/apples, collection/refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
-| render | orchard canvas, HUD, generic screens, delegated bindings and per-frame DOM projection |
+| render | orchard canvas, HUD, generic screens, delegated bindings, slot-card projection and per-frame DOM replacement |
 | diagnostics/proof/deploy | raw engine, snapshot, manual tick, smoke proof, static copy and Pages chain |
 
-## Required runtime-session domain
+## Required persistence domain
 
 ```txt
-zombie-orchard-runtime-session-authority-domain
-  -> runtime-instance-id-kit
-  -> run-instance-id-kit
-  -> session-epoch-kit
-  -> lifecycle-state-machine-kit
-  -> fresh-run-state-factory-kit
-  -> run-start-command-kit
-  -> run-start-admission-kit
-  -> run-reset-plan-kit
-  -> run-reset-transaction-kit
-  -> run-state-commit-kit
-  -> route-session-binding-kit
-  -> run-end-latch-kit
-  -> title-exit-transaction-kit
-  -> stale-run-command-rejection-kit
-  -> run-snapshot-provenance-kit
-  -> first-run-frame-ack-kit
-  -> runtime-session-journal-kit
-  -> fresh-run-fixture-kit
-  -> restart-disposal-fixture-kit
+zombie-orchard-versioned-persistence-authority-domain
+  -> save-slot-id-kit
+  -> save-slot-index-kit
+  -> save-envelope-schema-kit
+  -> save-schema-version-kit
+  -> save-preset-fingerprint-kit
+  -> durable-state-projection-kit
+  -> random-continuation-state-kit
+  -> save-state-fingerprint-kit
+  -> save-checksum-kit
+  -> save-command-kit
+  -> save-result-kit
+  -> atomic-storage-adapter-kit
+  -> load-command-kit
+  -> load-admission-kit
+  -> save-migration-registry-kit
+  -> load-candidate-graph-kit
+  -> load-validation-kit
+  -> load-transaction-kit
+  -> load-epoch-kit
+  -> load-rollback-kit
+  -> slot-conflict-result-kit
+  -> corrupt-save-quarantine-kit
+  -> persistence-journal-kit
+  -> first-restored-frame-ack-kit
+  -> persistence-roundtrip-fixture-kit
+  -> persistence-migration-fixture-kit
+```
+
+## Required durable envelope
+
+```txt
+saveId
+slotId
+slotRevision
+schemaId
+schemaVersion
+createdAt
+updatedAt
+runtimeId
+runId
+sessionEpoch
+lifecycle
+presetId
+presetFingerprint
+simulationTickId
+commandSequence
+randomPolicyId
+randomPolicyVersion
+randomStreamStates
+entitySequences
+durableDomainState
+stateFingerprint
+checksum
 ```
 
 ## Ordered implementation queue
@@ -193,14 +255,15 @@ zombie-orchard-runtime-session-authority-domain
 6. Versioned Save / Load Authority
 ```
 
+Persistence must consume the identities and commit semantics from Gates 1–5. It must not invent parallel run, tick, command, random or frame authority.
+
 ## Next safe ledge
 
 ```txt
 ZombieOrchard Runtime Session Instance Authority
-+ Start / New Game / Outcome / Title / Reset Contract
-+ Stale Callback and Command Fence
-+ First Fresh Run Frame Acknowledgement
-+ Lifecycle and Disposal Fixture Gate
++ Fresh Graph Factory
++ Lifecycle Transaction and Stale Work Fence
++ First Fresh Frame and Disposal Fixture Gate
 ```
 
-Later authorities must consume the committed runtime/run/epoch identity and must not create parallel ownership.
+The persistence boundary is now documented, but implementation remains blocked until the earlier authorities produce a canonical durable state and deterministic continuation.
