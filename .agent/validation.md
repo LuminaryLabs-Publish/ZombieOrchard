@@ -1,92 +1,92 @@
-# Validation — ZombieOrchard
+# Validation - ZombieOrchard
 
-**Timestamp:** `2026-07-12T07-51-04-04-00`
+**Timestamp:** `2026-07-12T10-00-00-04-00`
 
 ## Scope
 
-Documentation-only audit of HTML interface projection, focus continuity, encoding and visible-frame provenance. Runtime source, dependencies, package scripts, gameplay behavior, rendering behavior and deployment configuration were not changed.
+Documentation-only audit of kit manifests, dependency and service admission, deterministic order, atomic installation, rollback, predecessor retirement and graph-to-frame provenance. Runtime source, dependencies, package scripts, gameplay, rendering and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record the source-backed projection defects and the proof required before DOM efficiency or accessibility claims are made.
+**Goal:** record source-backed graph defects and the exact proof required before composition safety claims are made.
 
-- [x] Read `index.html` and identify the stable `#ui-root`.
-- [x] Read browser boot and recursive RAF ownership.
-- [x] Read runtime tick and snapshot behavior.
-- [x] Read interface composition and active route snapshots.
-- [x] Read HTML view construction, delegated click handling and subtree replacement.
-- [x] Read runtime values that can enter cards, labels and attributes.
-- [x] Confirm `root.innerHTML` is assigned on every UI render.
-- [x] Confirm no unchanged-state short circuit exists.
-- [x] Confirm no focus/selection capture or restoration exists.
-- [x] Confirm string conversion is not HTML/attribute encoding.
-- [x] Confirm Node smoke creates no DOM.
+- [x] Read `src/game.js` and identify the manually ordered kit list.
+- [x] Read `src/kits/runtime.js` and trace initial and post-start installation.
+- [x] Read interface composition and its order-sensitive Outcome routing.
+- [x] Read gameplay domains and their implicit service lookups.
+- [x] Read browser host exposure of the raw engine.
+- [x] Confirm duplicate domain IDs overwrite live owners.
+- [x] Confirm tick order follows mutable domain property order.
+- [x] Confirm no manifest, dependency, version or service validation exists.
+- [x] Confirm no candidate graph, atomic commit, rollback or disposal exists.
+- [x] Confirm snapshots and renderers carry no graph identity.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
-- [ ] Implement and run DOM/focus/encoding fixtures.
+- [ ] Implement and run graph-installation fixtures.
 
 ## Source-backed findings
 
 ```txt
-index.html
-  -> owns one stable #ui-root surface
-
-src/start.js
-  -> calls ui.render(snapshot) every RAF callback
-  -> supplies no state or interface revision
-  -> receives no typed UI result
+src/game.js
+  -> manually constructs one ordered kit array
+  -> supplies no manifest or explicit phase plan
 
 src/kits/runtime.js
-  -> creates a new deep snapshot for ticks and notifications
-  -> exposes no state revision or dirty-domain set
+  -> creates domains against the live ctx
+  -> validates only returned domain.id
+  -> writes domains[domain.id] directly
+  -> silently overwrites an existing owner
+  -> iterates Object.values(domains) during tick
+  -> provides no graph revision, rollback, uninstall or dispose
 
-src/renderer/html-interface-renderer.js
-  -> attaches one delegated click listener to the stable root
-  -> converts values with String(...)
-  -> interpolates values into HTML text and data-action attributes
-  -> assigns root.innerHTML in active-session mode
-  -> assigns root.innerHTML in every other route mode
-  -> returns no projection/focus/accessibility result
+src/kits/composition.js
+  -> relies on installation order to observe active-session after its tick
+  -> exposes no required-service or phase descriptor
 
 src/kits/game-domains.js
-  -> permits runtime roster names to enter state
-  -> exposes mutable game commands through the engine
+  -> resolves collaborators by optional domain/API lookup
+  -> converts missing providers into ordinary gameplay behavior
 
 src/start.js
-  -> exposes the raw engine through window.GameHost
+  -> exposes raw engine and addKit through window.GameHost
+  -> renderers receive no graph identity or installation result
 
 tests/smoke.mjs
-  -> creates no document or DOM root
-  -> checks no mutation, focus, encoding or accessibility invariant
+  -> validates no manifest, duplicate, dependency, order, rollback or graph-frame invariant
 ```
 
-## Deterministic calculations
+## Deterministic observations
 
 ```txt
-one UI replacement per RAF callback
-60 callbacks/second -> 3,600 requested replacements/minute
-60 callbacks/second -> 216,000 requested replacements/hour
+current initial kit descriptors: 21 runtime/domain kit entries assembled by createOrchardGame
+implemented kit responsibilities documented across repo: 27
+duplicate domain rejection paths: 0
+required service declarations: 0
+provided service declarations: 0
+explicit lifecycle/tick phases: 0
+graph revisions in snapshots: 0
 ```
 
-These are application-level mutation requests derived from the current loop. Actual callback frequency can be reduced by browser throttling.
+The implemented-kit count includes renderer, host, proof, build and deployment responsibilities in addition to the 21 kits installed into the mutable engine graph.
 
 ## Required fixtures
 
 ```txt
-view-model determinism
-text encoding
-attribute encoding
-unchanged projection no-op
-projection revision monotonicity
-stale projection rejection
-focused action retention
-route-transition focus policy
-selection continuity
-mutation budget
-announcement deduplication
-canvas/HTML frame correlation
-built-artifact browser focus smoke
-Pages interface projection smoke
+manifest normalization determinism
+unique kit and domain ownership
+service-provider resolution
+service-version compatibility
+cycle detection with exact path
+deterministic phase and dependency order
+duplicate-domain zero-mutation rejection
+missing-provider typed rejection
+candidate create failure reverse cleanup
+atomic graph commit
+stale replacement rejection
+explicit predecessor migration/disposal
+source/dist graph inventory parity
+first canvas and HTML frame graph acknowledgement
+Pages kit-graph smoke
 ```
 
 ## Validation result
@@ -104,11 +104,9 @@ pull request created: no
 
 npm test: not run
 npm run build: not run
-DOM fixture: unavailable / not run
-focus fixture: unavailable / not run
-encoding fixture: unavailable / not run
-browser accessibility smoke: unavailable / not run
-Pages interface smoke: unavailable / not run
+kit graph fixtures: unavailable / not run
+browser graph smoke: unavailable / not run
+Pages graph smoke: unavailable / not run
 ```
 
-No minimal-DOM, keyboard-focus, safe-encoding, accessibility continuity or visible interface-frame claim is made.
+No deterministic-order, dependency-safe, compatible-service, duplicate-owner, atomic-installation, rollback, predecessor-retirement or graph-to-frame claim is made.
