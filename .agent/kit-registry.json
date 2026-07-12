@@ -1,6 +1,6 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-12T06-11-18-04-00",
+  "updatedAt": "2026-07-12T06-19-56-04-00",
   "status": "canvas-render-surface-authority-audited",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
@@ -9,10 +9,10 @@
     "eligibleRepositoryCount": 9,
     "newOrCentralLedgerMissingCount": 0,
     "rootAgentMissingCount": 0,
-    "reason": "oldest eligible fully synchronized repository"
+    "reason": "newer repo-local canvas render-surface audit was not yet represented in the central ledger"
   },
   "selectionOrder": [
-    ["LuminaryLabs-Publish/ZombieOrchard", "2026-07-12T04-38-12-04-00", "selected"],
+    ["LuminaryLabs-Publish/ZombieOrchard", "repo-local 2026-07-12T06-11-18-04-00 / central 2026-07-12T04-38-12-04-00", "selected recent undocumented"],
     ["LuminaryLabs-Publish/TheUnmappedHouse", "2026-07-12T04-44-36-04-00", "eligible"],
     ["LuminaryLabs-Publish/AetherVale", "2026-07-12T04-50-41-04-00", "eligible"],
     ["LuminaryLabs-Publish/MyCozyIsland", "2026-07-12T05-00-19-04-00", "eligible"],
@@ -35,14 +35,14 @@
     "Versioned Save / Load Authority"
   ],
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-12T06-11-18-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-12T06-11-18-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-12T06-11-18-04-00-canvas-render-surface-authority-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-12T06-11-18-04-00-css-dpr-drawing-buffer-parity-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T06-11-18-04-00-fixed-world-small-viewport-visibility-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-12T06-11-18-04-00-viewport-observation-surface-result-map.md",
-    "renderSurfaceAudit": ".agent/render-surface-audit/2026-07-12T06-11-18-04-00-pixel-budget-projection-revision-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-12T06-11-18-04-00-canvas-surface-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-12T06-19-56-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-12T06-19-56-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-12T06-19-56-04-00-canvas-render-surface-authority-sync-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-12T06-19-56-04-00-drawing-buffer-world-projection-proof-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T06-19-56-04-00-small-viewport-offscreen-gameplay-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-12T06-19-56-04-00-viewport-observation-surface-commit-map.md",
+    "renderSurfaceAudit": ".agent/render-surface-audit/2026-07-12T06-19-56-04-00-dpr-budget-projection-frame-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-12T06-19-56-04-00-browser-viewport-matrix-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -188,7 +188,8 @@
     "compositeCommandTransaction": "2026-07-11T23-48-14-04-00",
     "playerControlReachability": "2026-07-12T01-30-07-04-00",
     "fixedStepClockAuthority": "2026-07-12T03-11-51-04-00",
-    "framePublicationFaultContainment": "2026-07-12T04-38-12-04-00"
+    "framePublicationFaultContainment": "2026-07-12T04-38-12-04-00",
+    "canvasRenderSurfaceSourceAudit": "2026-07-12T06-11-18-04-00"
   },
   "validation": {
     "runtimeSourceChangedThisPass": false,
