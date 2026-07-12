@@ -2,95 +2,97 @@
 
 ## Scope
 
-Documentation-only audit of the browser-global public capability surface. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
+Documentation-only audit of composite command execution. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record the exact raw-engine reachability gap and the proof required before the public host is treated as bounded, revocable, clock-safe or frame-coherent.
+**Goal:** record the exact nested-result, partial-commit and duplicate-publication gaps and define the proof required before browser commands are treated as atomic or frame-coherent.
 
-- [x] Read browser boot and `window.GameHost` construction.
-- [x] Read runtime engine/context/domain exposure.
-- [x] Read domain APIs, commands and ticks reachable through the graph.
-- [x] Read HTML delegated command bindings.
-- [x] Read smoke and build scripts.
-- [x] Confirm no capability manifest, lease, allowlist, schema, writer lock or revocation exists.
-- [x] Confirm duplicate domain registration overwrites the previous entry.
+- [x] Read browser boot and delegated HTML bindings.
+- [x] Read runtime command dispatch and publication.
+- [x] Read scoped action resolution and composition.
+- [x] Read construction, roster, inventory and active-session mutations.
+- [x] Confirm child results are ignored by the composition parent.
+- [x] Confirm nested dispatch can publish before parent completion.
+- [x] Confirm multi-domain gameplay effects have no prepare/rollback boundary.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
-- [x] Synchronize the central ledger and internal change log.
-- [ ] Implement and run public-host fixtures.
+- [ ] Implement and run transaction fixtures.
 
 ## Source-backed findings
 
 ```txt
-src/start.js
-  -> publishes window.GameHost.engine
-  -> publishes getState()
-  -> publishes unrestricted tick(dt)
-  -> starts the production RAF
+src/renderer/html-interface-renderer.js
+  -> delegates data-action to interface-composition.activate
+  -> discards the returned result
+
+src/kits/composition.js
+  -> resolves the active interface action
+  -> invokes nested ctx.engine.command for action.command
+  -> ignores the nested result
+  -> may return parent accepted=true
 
 src/kits/runtime.js
-  -> engine exposes ctx and domains
-  -> engine exposes addKit, command, tick, snapshot and subscribe
-  -> ctx exposes mutable frame, elapsed, delta, events and domain table
-  -> addKit overwrites domains[domain.id]
+  -> every engine.command invokes notify()
+  -> nested child notifies before the outer command returns
+  -> outer command notifies again
 
 src/kits/game-domains.js
-  -> resource, pressure and orchard domains expose direct api functions
-  -> domains expose command and/or tick functions
+  -> collect removes/reseeds an apple before reward/pressure/score settlement
+  -> clear can remove a pest and add score before optional scrap settlement
+  -> build and hire debit resources before entity insertion
+  -> no participant prepare, rollback or idempotency service
 
-src/renderer/html-interface-renderer.js
-  -> UI delegates to raw engine.command()
-  -> no typed capability envelope or frame acknowledgement
+src/presets/orchard-preset.js
+  -> Storage Shed uses a nested construction command
+  -> the action has no route target
+  -> parent activation can report success after child rejection
 
 tests/smoke.mjs
-  -> validates Entry, Play transition and apples
-  -> does not instantiate the browser host
-  -> does not inspect reachability, leases, revocation or frame receipts
+  -> does not test insufficient resources, participant failure, duplicate submission, publication count or frame receipt
 ```
 
 ## Required DOM-free fixtures
 
 ```txt
-contract-shape
-  -> approved host members only
+child-rejection-propagation
+  -> insufficient-resource build returns aggregate rejected
 
-raw-engine-unreachable
-  -> no engine, ctx, domains, addKit or raw tick
+no-partial-build
+  -> resource and built-list fingerprints unchanged on rejection
 
-duplicate-domain-guard
-  -> duplicate ID rejected and predecessor retained
+collect-rollback
+  -> injected reward or pressure failure leaves apple, reward, pressure and score unchanged
 
-command-admission
-  -> unknown command, invalid payload and stale generation/session rejected
+clear-rollback
+  -> injected ledger failure leaves pest, score and scrap unchanged
 
-single-writer-step
-  -> manual public step rejected while RAF owns writer
-  -> fixture step admitted only after writer transfer
+single-publication
+  -> one intent emits one committed notification
 
-clone-safe-observation
-  -> returned object mutation cannot affect runtime
+idempotent-success
+  -> duplicate command ID does not repeat payment, reward or entity creation
 
-subscription-lease
-  -> lease can unsubscribe and is force-retired on revocation
+stale-revision
+  -> rejected before participant mutation
 
-host-revocation
-  -> predecessor generation cannot command successor session
+aggregate-result
+  -> every participant result and before/after revision retained
 
 frame-receipt
-  -> observation cites state, route, tick, canvas and HTML frame revisions
+  -> result cites first canvas and HTML frame presenting the commit
 ```
 
 ## Required browser fixtures
 
 ```txt
-window.GameHost exposes approved members only
-UI controls still execute allowlisted commands
-DOM attributes carry no capability token
-manual public tick cannot accelerate production gameplay
-observer output is clone-safe
-observer output matches the visible canvas and HTML frame
-host revokes on teardown or session replacement
+Storage Shed failure displays the rejected reason
+successful Storage Shed debits and constructs exactly once
+rapid double click creates one transaction effect
+Collect failure cannot consume an apple without reward settlement
+Clear failure cannot retire a pest without scrap settlement
+no intermediate subscriber state is observable
+canvas, HTML and public observation agree on transaction revision
 one RAF chain and one delegated listener remain
 ```
 
@@ -108,17 +110,16 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-contract-shape fixture: unavailable / not run
-raw-engine reachability fixture: unavailable / not run
-duplicate-domain fixture: unavailable / not run
-capability admission fixture: unavailable / not run
-single-writer step fixture: unavailable / not run
-host revocation fixture: unavailable / not run
-frame-receipt fixture: unavailable / not run
+child-result fixture: unavailable / not run
+partial-commit fixture: unavailable / not run
+rollback fixture: unavailable / not run
+idempotency fixture: unavailable / not run
+single-publication fixture: unavailable / not run
+result-frame fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: complete
-central internal change log: complete
+central ledger update: pending after repo-local completion
+central internal change log: pending after repo-local completion
 ```
 
-No read-only-host, capability-admission, revocation, single-writer stepping or frame-coherence claim is made.
+No atomic-command, rollback, idempotency, one-publication or result-to-frame claim is made.
