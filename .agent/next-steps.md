@@ -11,7 +11,7 @@
 - [ ] Add a public capability gateway and quarantine raw diagnostics.
 - [ ] Add composite command transaction authority.
 - [ ] Inject isolated seeded random streams and replay receipts.
-- [ ] Add versioned save/load authority that restores random authority state.
+- [ ] Add versioned save/load authority using canonical durable state.
 - [ ] Gate deployment on lifecycle, cadence, transaction, replay and persistence fixtures.
 
 ## Ordered implementation queue
@@ -33,195 +33,230 @@
    + Apple / Pest / Stream Isolation / Replay Parity Fixture Gate
 
 6. Versioned Save / Load Authority
-   + Slot Roundtrip / Random Continuation / Atomic Load Fixture Gate
+   + Slot Roundtrip / Migration / Corruption / Random Continuation / Atomic Load Fixture Gate
 ```
 
-## Gate 1 — Runtime Session Instance Authority
+## Gate 1 remains the next safe implementation ledge
 
-### 1. Add the parent owner
-
-Create:
-
-```txt
-zombie-orchard-runtime-session-authority-domain
-```
-
-It owns:
-
-```txt
-runtimeId
-runtimeGeneration
-runId
-sessionEpoch
-lifecycle
-lifecycleRevision
-graphRevision
-presetId
-presetFingerprint
-latestLifecycleCommandId
-latestLifecycleResult
-firstCommittedFrameId
-bounded lifecycle journal
-```
-
-### 2. Convert game construction into a fresh-run factory
-
-Current:
-
-```txt
-module boot
-  -> createOrchardGame()
-  -> one graph for page lifetime
-```
-
-Required:
+Create one runtime-session owner and convert `createOrchardGame()` into a candidate graph factory. Every later persistence action must cite the committed `runtimeId`, `runId`, `sessionEpoch`, lifecycle revision and graph revision.
 
 ```txt
 createRuntime()
-  -> idle runtime owner
+  -> idle owner
 
 stageRun(preset)
-  -> fresh resource ledger
-  -> fresh pressure field
-  -> fresh orchard world
-  -> fresh construction state
-  -> fresh roster state
-  -> fresh inventory state
-  -> fresh active session
-  -> fresh interface composition
-  -> validated candidate graph
+  -> fresh candidate graph
+  -> validated domain registry
+  -> atomic authority transfer
+  -> first frame acknowledgement
 ```
 
-Do not clear the ended graph in place.
+Do not clear the current closure graph in place.
 
-### 3. Add typed lifecycle commands
+## Gate 6 design — Versioned Save / Load Authority
+
+The persistence design is now documented. Implement it only after Gates 1–5 expose canonical identities, committed ticks, command results, random stream state and durable fingerprints.
+
+### 1. Define durable versus presentation state
+
+Persist only state required to continue the run:
 
 ```txt
-StartRun
-RequestNewRun
-CommitNewRun
-PauseRun
-ResumeRun
-EndRun
-ExitRunToTitle
-DisposeRuntime
+resource values
+pressure channels
+orchard trees and apples
+construction catalog state and built objects
+roster actors and roles
+inventory items and equipped item
+active-session day, phase, player, pests, score, message and ended state
+interface route only when explicitly part of restore policy
+clock continuation
+command sequence
+random stream states
+entity sequences
 ```
 
-Each carries:
+Do not persist transient DOM nodes, canvas state, listeners, RAF handles, raw engine references or renderer objects.
+
+### 2. Add a versioned envelope
+
+```txt
+schemaId: zombie-orchard-save
+schemaVersion: integer
+saveId
+slotId
+slotRevision
+createdAt
+updatedAt
+presetId
+presetFingerprint
+runtimePolicyVersion
+randomPolicyId
+randomPolicyVersion
+runtimeId
+runId
+sessionEpoch
+lifecycle
+simulationTickId
+commandSequence
+randomStreamStates
+entitySequences
+durableDomainState
+stateFingerprint
+checksum
+```
+
+The envelope must be validated before storage and after readback.
+
+### 3. Add an atomic storage adapter
+
+Start with a browser adapter whose public contract is independent of the backend:
+
+```txt
+listSlots()
+readSlot(slotId)
+writeSlot(candidate, expectedRevision)
+deleteSlot(slotId, expectedRevision)
+quarantineSlot(slotId, reason)
+```
+
+Use compare-and-swap slot revisions. A failed write must preserve the previous valid envelope and slot index.
+
+### 4. Make Save Select real and reachable
+
+Current Entry does not route to `session-select`. Add an explicit Continue or Load action only after a canonical slot index exists.
+
+Required projection:
+
+```txt
+slotId
+label
+updatedAt
+schemaVersion
+run summary
+compatibility state
+corruption state
+available actions
+latest command result
+```
+
+The renderer must consume authoritative slot-index state rather than static preset metadata.
+
+### 5. Add typed save commands and results
+
+```txt
+SaveRun
+DeleteSave
+RenameSave
+ExportSave
+```
+
+Each command carries:
 
 ```txt
 commandId
 runtimeId
-expectedRunId
-expectedSessionEpoch
+runId
+sessionEpoch
 expectedLifecycle
-expectedLifecycleRevision
+expectedSimulationTickId
+slotId
+expectedSlotRevision
 source
 ```
 
-### 4. Define lifecycle state transitions
+Results distinguish accepted, stale, conflict, quota, storage failure, serialization failure and validation failure.
+
+### 6. Add ordered migrations
 
 ```txt
-idle -> starting -> active
-active -> pausing -> paused
-paused -> resuming -> active
-active -> ended
-active|paused|ended -> resetting -> active
-active|paused|ended -> exiting -> idle
-any live state -> disposing -> disposed
+v1 -> v2 -> v3 -> current
 ```
 
-Reject illegal and stale transitions with typed results.
+Each migration must be pure, deterministic, version-specific and independently fixture-tested. Unknown future versions are rejected without mutation. Failed migrations quarantine the candidate copy while retaining the original bytes for diagnostics or export.
 
-### 5. Stage and commit atomically
+### 7. Stage load into a fresh candidate graph
 
 ```txt
-preflight command and lifecycle
-  -> allocate candidate runId and next epoch
-  -> create candidate graph
-  -> validate domain/service registry
-  -> stage route and presentation
-  -> fence predecessor generation
-  -> atomically swap committed graph and identity
-  -> acknowledge first canvas and HTML frame
-  -> retire predecessor resources
-  -> publish result and journal row
+read envelope
+  -> checksum validation
+  -> schema migration
+  -> compatibility validation
+  -> candidate graph construction
+  -> domain hydration
+  -> clock/random/entity continuation hydration
+  -> candidate fingerprint verification
 ```
 
-A candidate failure must leave the prior committed run unchanged.
+No live domain should mutate during candidate staging.
 
-### 6. Bind routes to lifecycle
+### 8. Commit load atomically
 
 ```txt
-Entry
-  -> idle runtime projection
-
-Run Setup
-  -> candidate configuration projection
-
-Active Session
-  -> active committed run projection
-
-Pause
-  -> paused committed run projection
-
-Outcome
-  -> ended committed run summary projection
+LoadRun
+  -> admit command and slot revision
+  -> allocate loadEpoch
+  -> fence predecessor callbacks and commands
+  -> swap committed graph and continuation state
+  -> bind route to loaded lifecycle
+  -> render first restored canvas and HTML frame
+  -> acknowledge restored frame
+  -> retire predecessor graph
 ```
 
-`interface-composition` must consume lifecycle results rather than create lifecycle truth.
+Any failure before the first restored frame keeps the previous committed run authoritative.
 
-### 7. Fence stale work
+### 9. Add persistence observation
 
-RAF callbacks, delegated events, GameHost commands, manual ticks, render callbacks and later asynchronous work must carry runtime generation and session epoch. Predecessor work performs no mutation after authority transfer.
-
-### 8. Add snapshot and frame provenance
-
-Every authoritative snapshot and committed presentation frame should cite:
+Expose only read-only diagnostics:
 
 ```txt
-runtimeId
-runtimeGeneration
-runId
-sessionEpoch
-lifecycle
-lifecycleRevision
-graphRevision
-simulationTickId
-renderFrameId
-stateFingerprint
+latest save result
+latest load result
+slot index revision
+active saveId and slotId
+schema version
+migration path
+load epoch
+restored state fingerprint
+first restored frame ID
+bounded persistence journal
 ```
 
-### 9. Add DOM-free fixtures
+Do not expose raw storage mutation through `GameHost`.
+
+### 10. Add fixtures
+
+DOM-free:
 
 ```txt
-initial Play fresh state
-New Game from Entry
-Outcome -> Title -> Play
-Outcome -> Title -> New Game -> Start
-full state reset across all domains
-candidate graph failure rollback
-stale command rejection
-stale callback rejection
-repeated reset
-idempotent disposal
+save/load roundtrip
+same durable fingerprint
+same future random continuation
+slot compare-and-swap conflict
+old-version migration
+unknown-version rejection
+checksum corruption quarantine
+candidate hydration failure rollback
+duplicate save/load idempotency
 ```
 
-### 10. Add browser fixtures
+Browser:
 
 ```txt
-first run frame identity
-Outcome and Title frame identity
-first fresh restart frame identity
-canvas / HTML / GameHost parity
-one RAF chain after repeated restart
-one delegated listener after repeated restart
-no predecessor frame after epoch advance
+Save Select reachability
+slot list projection
+save result projection
+load result projection
+first restored canvas/HTML/GameHost parity
+no predecessor frame after load epoch
+no duplicate RAF or delegated listener after repeated loads
+storage failure remains recoverable
 ```
 
-## Gates 2–6 prerequisites
+## Cross-gate prerequisites
 
-Later gates must consume, not duplicate:
+Gate 6 must consume, not duplicate:
 
 ```txt
 runtimeId
@@ -234,7 +269,10 @@ committed simulationTickId
 commandId
 transactionId
 commit or rollback result
-state fingerprint hook
+random policy and named stream states
+entity sequences
+durable state fingerprint
+renderFrameId
 ```
 
 ## Next safe ledge
@@ -247,3 +285,5 @@ ZombieOrchard Runtime Session Instance Authority
 + Stale Work Fence
 + First Fresh Frame and Disposal Fixture Gate
 ```
+
+The persistence design is ready for later implementation, but it is unsafe to implement before the authoritative run, tick, command and randomness layers exist.
