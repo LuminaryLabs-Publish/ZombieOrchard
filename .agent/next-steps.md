@@ -2,288 +2,142 @@
 
 ## Plan ledger
 
-**Goal:** turn each orchard run into one identified, fresh, cadence-independent, capability-declared, atomic, reproducible, persistable and disposable session.
+**Goal:** turn each orchard run into one identified, cadence-independent session whose simulation advances only under an explicit lifecycle and route policy.
 
 - [ ] Implement runtime-session instance authority first.
-- [ ] Add fresh graph staging, commit, rollback and predecessor retirement.
-- [ ] Bind routes and render frames to the committed run identity.
-- [ ] Implement fixed-step clock authority using the session owner.
-- [ ] Add a public capability gateway and quarantine raw diagnostics.
-- [ ] Add composite command transaction authority.
-- [ ] Inject isolated seeded random streams and replay receipts.
-- [ ] Add versioned save/load authority using canonical durable state.
-- [ ] Gate deployment on lifecycle, cadence, transaction, replay and persistence fixtures.
+- [ ] Add a fresh graph factory, staged commit, rollback and predecessor retirement.
+- [ ] Implement a monotonic fixed-step clock owned by the committed session.
+- [ ] Add route-scoped simulation admission before exposing more gameplay commands.
+- [ ] Classify every domain tick as simulation, presentation or lifecycle work.
+- [ ] Freeze Entry, Run Setup, Save Select, Preferences, Pause and Outcome mutation.
+- [ ] Choose and fixture-test an explicit policy for management screens.
+- [ ] Make manual stepping use a privileged typed capability rather than bypassing policy.
+- [ ] Correlate route revision, simulation phase, tick ID and render frame ID.
+- [ ] Add capability, transaction, replay and persistence authorities after this gate.
 
 ## Ordered implementation queue
 
 ```txt
 1. Runtime Session Instance Authority
-   + Start / New Game / Outcome / Title / Reset / Dispose Fixture Gate
-
 2. Fixed-Step Clock Authority
-   + Pause / 30-60-120 Hz / Stall / Visibility / Manual-Step Fixture Gate
-
+2a. Route-Scoped Simulation Admission Authority
 3. Public Capability Gateway and Reachability
-   + Registry / Binding / Result / Diagnostics-Quarantine Fixture Gate
-
 4. Composite Command Transaction Authority
-   + Parent / Child / Resource / Rollback / Single-Publication Fixture Gate
-
 5. Seeded Random and Replay Authority
-   + Apple / Pest / Stream Isolation / Replay Parity Fixture Gate
-
 6. Versioned Save / Load Authority
-   + Slot Roundtrip / Migration / Corruption / Random Continuation / Atomic Load Fixture Gate
 ```
 
-## Gate 1 remains the next safe implementation ledge
+## Route-scoped simulation admission design
 
-Create one runtime-session owner and convert `createOrchardGame()` into a candidate graph factory. Every later persistence action must cite the committed `runtimeId`, `runId`, `sessionEpoch`, lifecycle revision and graph revision.
+### 1. Add canonical simulation phases
 
 ```txt
-createRuntime()
-  -> idle owner
-
-stageRun(preset)
-  -> fresh candidate graph
-  -> validated domain registry
-  -> atomic authority transfer
-  -> first frame acknowledgement
+NO_RUN
+RUNNING
+PAUSED
+TERMINAL
+SUSPENDED
+DISPOSED
 ```
 
-Do not clear the current closure graph in place.
+The interface route is an input to policy, not the phase itself.
 
-## Gate 6 design — Versioned Save / Load Authority
-
-The persistence design is now documented. Implement it only after Gates 1–5 expose canonical identities, committed ticks, command results, random stream state and durable fingerprints.
-
-### 1. Define durable versus presentation state
-
-Persist only state required to continue the run:
+### 2. Classify domain work
 
 ```txt
-resource values
-pressure channels
-orchard trees and apples
-construction catalog state and built objects
-roster actors and roles
-inventory items and equipped item
-active-session day, phase, player, pests, score, message and ended state
-interface route only when explicitly part of restore policy
-clock continuation
-command sequence
-random stream states
-entity sequences
-```
+simulation
+  pressure-field
+  active-session
+  future AI, combat, economy and world mutation
 
-Do not persist transient DOM nodes, canvas state, listeners, RAF handles, raw engine references or renderer objects.
+presentation
+  interface composition snapshot
+  canvas projection
+  HTML projection
 
-### 2. Add a versioned envelope
-
-```txt
-schemaId: zombie-orchard-save
-schemaVersion: integer
-saveId
-slotId
-slotRevision
-createdAt
-updatedAt
-presetId
-presetFingerprint
-runtimePolicyVersion
-randomPolicyId
-randomPolicyVersion
-runtimeId
-runId
-sessionEpoch
 lifecycle
+  startup, reset, load, dispose and authority transfer
+```
+
+### 3. Add a route policy table
+
+```txt
+entry, session-select, run-setup, preferences -> NO_RUN or SUSPENDED
+active-session -> RUNNING
+interrupt -> PAUSED
+construction, exchange, roster, inventory, knowledge -> explicit product policy
+outcome -> TERMINAL
+```
+
+For the current prototype, suspend simulation on management routes until an intentional real-time policy is approved.
+
+### 4. Admit steps transactionally
+
+```txt
+StepCommand
+  -> session/lifecycle admission
+  -> route revision admission
+  -> route policy resolution
+  -> fixed-step budget
+  -> selected domain tick plan
+  -> committed simulation receipt
+  -> route/tick/frame acknowledgement
+```
+
+### 5. Define pause and resume semantics
+
+```txt
+pause
+  -> finish or reject the current admitted step
+  -> commit PAUSED
+  -> admit presentation frames only
+
+resume
+  -> commit RUNNING
+  -> reset wall-time baseline
+  -> do not replay hidden paused duration
+```
+
+### 6. Fence manual stepping
+
+`GameHost.tick(dt)` must be replaced or wrapped by a typed test capability carrying runtime, run, session, lifecycle, route and expected tick identity. It must obey the same route policy unless an explicit fixture-only override is admitted and journaled.
+
+### 7. Add observation
+
+Expose clone-safe read models only:
+
+```txt
+simulationPhase
+routeId
+routeRevision
+routePolicyId
+latestStepAdmissionResult
 simulationTickId
-commandSequence
-randomStreamStates
-entitySequences
-durableDomainState
-stateFingerprint
-checksum
-```
-
-The envelope must be validated before storage and after readback.
-
-### 3. Add an atomic storage adapter
-
-Start with a browser adapter whose public contract is independent of the backend:
-
-```txt
-listSlots()
-readSlot(slotId)
-writeSlot(candidate, expectedRevision)
-deleteSlot(slotId, expectedRevision)
-quarantineSlot(slotId, reason)
-```
-
-Use compare-and-swap slot revisions. A failed write must preserve the previous valid envelope and slot index.
-
-### 4. Make Save Select real and reachable
-
-Current Entry does not route to `session-select`. Add an explicit Continue or Load action only after a canonical slot index exists.
-
-Required projection:
-
-```txt
-slotId
-label
-updatedAt
-schemaVersion
-run summary
-compatibility state
-corruption state
-available actions
-latest command result
-```
-
-The renderer must consume authoritative slot-index state rather than static preset metadata.
-
-### 5. Add typed save commands and results
-
-```txt
-SaveRun
-DeleteSave
-RenameSave
-ExportSave
-```
-
-Each command carries:
-
-```txt
-commandId
-runtimeId
-runId
-sessionEpoch
-expectedLifecycle
-expectedSimulationTickId
-slotId
-expectedSlotRevision
-source
-```
-
-Results distinguish accepted, stale, conflict, quota, storage failure, serialization failure and validation failure.
-
-### 6. Add ordered migrations
-
-```txt
-v1 -> v2 -> v3 -> current
-```
-
-Each migration must be pure, deterministic, version-specific and independently fixture-tested. Unknown future versions are rejected without mutation. Failed migrations quarantine the candidate copy while retaining the original bytes for diagnostics or export.
-
-### 7. Stage load into a fresh candidate graph
-
-```txt
-read envelope
-  -> checksum validation
-  -> schema migration
-  -> compatibility validation
-  -> candidate graph construction
-  -> domain hydration
-  -> clock/random/entity continuation hydration
-  -> candidate fingerprint verification
-```
-
-No live domain should mutate during candidate staging.
-
-### 8. Commit load atomically
-
-```txt
-LoadRun
-  -> admit command and slot revision
-  -> allocate loadEpoch
-  -> fence predecessor callbacks and commands
-  -> swap committed graph and continuation state
-  -> bind route to loaded lifecycle
-  -> render first restored canvas and HTML frame
-  -> acknowledge restored frame
-  -> retire predecessor graph
-```
-
-Any failure before the first restored frame keeps the previous committed run authoritative.
-
-### 9. Add persistence observation
-
-Expose only read-only diagnostics:
-
-```txt
-latest save result
-latest load result
-slot index revision
-active saveId and slotId
-schema version
-migration path
-load epoch
-restored state fingerprint
-first restored frame ID
-bounded persistence journal
-```
-
-Do not expose raw storage mutation through `GameHost`.
-
-### 10. Add fixtures
-
-DOM-free:
-
-```txt
-save/load roundtrip
-same durable fingerprint
-same future random continuation
-slot compare-and-swap conflict
-old-version migration
-unknown-version rejection
-checksum corruption quarantine
-candidate hydration failure rollback
-duplicate save/load idempotency
-```
-
-Browser:
-
-```txt
-Save Select reachability
-slot list projection
-save result projection
-load result projection
-first restored canvas/HTML/GameHost parity
-no predecessor frame after load epoch
-no duplicate RAF or delegated listener after repeated loads
-storage failure remains recoverable
-```
-
-## Cross-gate prerequisites
-
-Gate 6 must consume, not duplicate:
-
-```txt
-runtimeId
-runtimeGeneration
-runId
-sessionEpoch
-lifecycle and revision
-graphRevision
-committed simulationTickId
-commandId
-transactionId
-commit or rollback result
-random policy and named stream states
-entity sequences
-durable state fingerprint
 renderFrameId
+suspendedSince
+bounded admission journal
+```
+
+## Required fixtures
+
+```txt
+Entry idle does not change pressure, pests, score or player state
+Run Setup idle does not age the hidden run
+Active Session advances exactly admitted fixed steps
+Pause preserves simulation state across many presentation frames
+Resume does not catch up paused wall time
+management routes follow their declared policy
+Settings and Title do not mutate the run
+Outcome remains terminal and pressure does not continue
+manual step cannot bypass route policy
+route transition and first frame cite the same route revision
 ```
 
 ## Next safe ledge
 
 ```txt
 ZombieOrchard Runtime Session Instance Authority
-+ Fresh Graph Factory
-+ Lifecycle Command and Transaction Results
-+ Route/Run Binding
-+ Stale Work Fence
-+ First Fresh Frame and Disposal Fixture Gate
++ Fixed-Step Clock Authority
++ Route-Scoped Simulation Admission Authority
++ Menu/Pause/Management/Outcome Suspension Fixture Gate
 ```
-
-The persistence design is ready for later implementation, but it is unsafe to implement before the authoritative run, tick, command and randomness layers exist.
