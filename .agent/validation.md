@@ -2,55 +2,65 @@
 
 ## Scope
 
-Documentation-only runtime-session instance and fresh-run authority audit. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
+Documentation-only versioned save/load authority audit. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record the exact source-backed restart defect and proof required before fresh New Game, restart, pause, lifecycle or disposal claims are made.
+**Goal:** record the exact source-backed persistence gap and the proof required before save slots, resumable continuation, migration, corruption recovery or atomic load claims are made.
 
 - [x] Read module boot and graph construction.
-- [x] Confirm one mutable graph is created before Play.
-- [x] Confirm route transitions do not instantiate or reset domains.
-- [x] Confirm terminal `ended` survives Outcome -> Title.
-- [x] Confirm Play/Start reuse the ended active-session.
-- [x] Confirm composition routes the reused session back to Outcome.
-- [x] Confirm all state-owning domains survive route changes.
-- [x] Confirm canvas continues rendering the same graph on every route.
-- [x] Confirm runtime/run/session identity, reset, rollback, first-frame and disposal contracts are absent.
+- [x] Read interface-domain creation, preset routing and Save Select projection.
+- [x] Confirm Entry has no route to `session-select`.
+- [x] Confirm Save Select has no slot data or load actions.
+- [x] Confirm no storage, save, load, delete, migration or hydration service exists.
+- [x] Confirm `engine.snapshot()` has no inverse restore path.
+- [x] Confirm runtime clock and global random continuation are absent from snapshots.
+- [x] Confirm no schema, checksum, candidate graph, load epoch, rollback or restored-frame contract exists.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
 - [x] Synchronize the central ledger and internal change log.
-- [ ] Implement and run runtime-session fixtures.
+- [ ] Implement prerequisite authorities and persistence fixtures.
 
 ## Source-backed findings
 
 ```txt
 src/start.js
-  -> createOrchardGame() once at module boot
-  -> recursive RAF always ticks the engine
-  -> raw GameHost exposes engine, snapshot and manual tick
+  -> creates one graph before player action
+  -> recursively ticks it forever
+  -> exposes raw snapshot and manual tick
 
 src/game.js
-  -> constructs all mutable domains once
+  -> constructs every mutable domain once
+  -> no persistence domain or hydration factory
 
-src/kits/composition.js
-  -> route move mutates only active and previous
-  -> ended active-session auto-routes to Outcome every tick
+src/kits/runtime.js
+  -> snapshot gathers domain projections
+  -> no restore/import operation
+  -> ctx frame and elapsed are not included in snapshot
 
-src/kits/game-domains.js
-  -> active-session sets ended at zero condition
-  -> no reset/new-run service
-  -> resource, pressure, orchard, construction,
-     roster and inventory state live in retained closures
+src/kits/scoped-interface-domains.js
+  -> session-select is a generic interface domain
+  -> meta comes only from preset configuration
+  -> no slot-specific commands
 
 src/presets/orchard-preset.js
-  -> Entry Play, Run Setup Start and Outcome Title are route actions
+  -> Entry exposes Play, New Game and Settings
+  -> no route to session-select
+  -> session-select exposes Back only
+  -> no slot metadata
 
-src/renderer/world-canvas.js
-  -> world renders orchard/session regardless active route
+src/kits/game-domains.js
+  -> mutable state remains in closures
+  -> orchard and pest generation use Math.random()
+  -> no hydrate/reset/import service
 
 src/renderer/html-interface-renderer.js
-  -> action results are not surfaced
+  -> can render current.meta.slots
+  -> does not own a slot index or command results
+
+src/renderer/world-canvas.js
+  -> renders current orchard/session projection
+  -> no save/load/frame provenance
 ```
 
 ## Current proof surface
@@ -65,46 +75,61 @@ npm run build
   -> copies static application into dist
 ```
 
-This does not prove failure, Outcome, Title, fresh New Game, reset, stale work rejection, first-frame parity, listener/RAF retirement or disposal.
+This does not prove Save Select reachability, slot indexing, save durability, schema migration, random continuation, atomic load, rollback, corruption recovery or first-restored-frame parity.
 
 ## Required DOM-free fixtures
 
 ```txt
-initial Play
-  -> canonical fresh state and run A identity
+slot save roundtrip
+  -> saved durable fingerprint equals current committed fingerprint
 
-Outcome -> Title -> Play
-  -> run B identity
-  -> canonical fresh state across every domain
+slot load roundtrip
+  -> restored durable fingerprint equals saved fingerprint
 
-Outcome -> Title -> New Game -> Start
-  -> distinct run and epoch
-  -> no predecessor state
+random continuation
+  -> next apple and pest decisions match uninterrupted continuation
 
-candidate validation failure
-  -> no partial graph or route commit
-  -> prior committed run preserved
+slot conflict
+  -> stale expected revision receives typed conflict
+  -> prior valid envelope remains unchanged
 
-stale predecessor command/tick
-  -> typed rejection
-  -> no run-B mutation
+atomic write failure
+  -> prior valid slot and slot index remain intact
 
-repeated restart and dispose
-  -> deterministic identity progression
-  -> idempotent retirement
+schema migration
+  -> each supported old version migrates deterministically to current
+
+unknown future schema
+  -> typed incompatibility rejection
+  -> no live mutation
+
+checksum corruption
+  -> candidate quarantined
+  -> original bytes retained
+  -> current run unchanged
+
+candidate hydration failure
+  -> no partial authority transfer
+  -> current graph remains committed
+
+duplicate save/load command
+  -> cached idempotent result
+  -> no duplicate revision or graph swap
 ```
 
 ## Required browser fixtures
 
 ```txt
-canvas, HTML and GameHost first-run identity parity
-Outcome frame identity
-Entry-after-exit identity
-first fresh restart frame acknowledgement
-no run-A frame after run-B epoch commit
-one RAF chain after repeated restarts
-one delegated listener after repeated restarts
-page disposal blocks late callbacks
+Entry exposes authoritative Continue or Save Select capability
+Save Select projects current slot index
+slot actions surface typed results
+save acknowledgement cites committed tick and slot revision
+load acknowledgement cites load epoch and restored fingerprint
+first restored canvas, HTML and GameHost frame agree
+no predecessor frame after load epoch commit
+failed load leaves current visible run unchanged
+repeated save/load retains one RAF chain and one delegated listener
+storage/quota failure remains recoverable
 ```
 
 ## Validation result
@@ -121,17 +146,18 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-runtime-session fixture: unavailable / not run
-fresh-run full-state fixture: unavailable / not run
-candidate rollback fixture: unavailable / not run
-stale work fixture: unavailable / not run
-first-frame fixture: unavailable / not run
-RAF/listener leak fixture: unavailable / not run
-disposal fixture: unavailable / not run
+save/load roundtrip fixture: unavailable / not run
+random continuation fixture: unavailable / not run
+slot conflict fixture: unavailable / not run
+migration fixture: unavailable / not run
+corruption quarantine fixture: unavailable / not run
+load rollback fixture: unavailable / not run
+first restored frame fixture: unavailable / not run
+repeated load lifecycle fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
 central ledger update: complete
 central internal change log: complete
 ```
 
-No fresh New Game, restart, pause, lifecycle safety, first-frame coherence or resource-retirement claim is made.
+No reachable Save Select, durable slot, schema compatibility, deterministic continuation, atomic load, corruption recovery or restored-frame coherence claim is made.
