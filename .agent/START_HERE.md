@@ -3,55 +3,55 @@
 ## Last aligned
 
 ```txt
-2026-07-11T20-03-22-04-00
+2026-07-11T21-40-49-04-00
 ```
 
 ## Summary
 
 `ZombieOrchard` is a dependency-free static orchard survival and economy shell built from a small kit runtime, 12 interface domains, gameplay services, canvas and HTML projection, diagnostics, smoke proof, static build and Pages deployment.
 
-The current audit establishes the missing versioned save/load authority. A `session-select` domain and slot renderer exist, but the screen is unreachable from Entry, has no slot data or load actions, and no storage service exists. `engine.snapshot()` is a one-way projection with no hydration path, schema version, migration, checksum, atomic slot write, staged load, rollback, random continuation, load epoch, or first-restored-frame acknowledgement.
+The current audit establishes the missing route-scoped simulation admission boundary. The browser RAF calls `engine.tick()` continuously, the runtime ticks every domain, and interface composition only changes the visible route. Entry, Run Setup, Settings, Pause, management screens and Outcome therefore do not define whether pressure, pests, damage and other run state may advance.
 
 ## Plan ledger
 
-**Goal:** define a durable save/load boundary that can preserve one committed run exactly, migrate older envelopes safely, reject corrupt or conflicting data, atomically replace the live graph, and prove the first rendered restored frame.
+**Goal:** define one authoritative policy that classifies every route and lifecycle phase, admits only the correct simulation work, freezes hidden gameplay when required, and correlates route, simulation phase, committed tick and rendered frame.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
 - [x] Exclude `LuminaryLabs-Publish/TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
-- [x] Select only `ZombieOrchard` as the oldest eligible central entry.
-- [x] Identify the interaction loop, domains, implemented kits and services.
-- [x] Trace Entry, New Game, Save Select, runtime snapshots, random state, rendering and proof surfaces.
-- [x] Define versioned envelopes, migration, slot indexing, atomic save/load, rollback and restored-frame contracts.
+- [x] Avoid `PhantomCommand` because same-window documentation writes were active.
+- [x] Select only `ZombieOrchard` as the oldest stable eligible repository.
+- [x] Identify the interaction loop, domains, implemented kits and offered services.
+- [x] Trace RAF, all-domain ticking, interface routing, pressure growth, pest updates, pause and terminal behavior.
 - [x] Add timestamped architecture and system audits.
-- [x] Change documentation only on `main` with no branch or pull request.
+- [x] Push documentation only to `main` with no branch or pull request.
 - [x] Synchronize the central ledger and internal change log.
-- [ ] Implement prerequisite session, clock, command and random authorities.
-- [ ] Implement persistence authority and roundtrip fixtures.
+- [ ] Implement session, clock and route-scoped simulation admission fixtures.
 
 ## Read this first
 
 ```txt
-.agent/trackers/2026-07-11T20-03-22-04-00/project-breakdown.md
+.agent/trackers/2026-07-11T21-40-49-04-00/project-breakdown.md
 .agent/current-audit.md
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-11T20-03-22-04-00-versioned-save-load-authority-dsk-map.md
-.agent/render-audit/2026-07-11T20-03-22-04-00-save-slot-load-result-frame-gap.md
-.agent/gameplay-audit/2026-07-11T20-03-22-04-00-play-new-game-save-select-continuity-loop.md
-.agent/interaction-audit/2026-07-11T20-03-22-04-00-save-load-slot-command-result-map.md
-.agent/persistence-audit/2026-07-11T20-03-22-04-00-versioned-slot-migration-restore-contract.md
-.agent/deploy-audit/2026-07-11T20-03-22-04-00-persistence-roundtrip-fixture-gate.md
-.agent/turn-ledger/2026-07-11T20-03-22-04-00.md
+.agent/architecture-audit/2026-07-11T21-40-49-04-00-route-scoped-simulation-admission-dsk-map.md
+.agent/render-audit/2026-07-11T21-40-49-04-00-route-simulation-frame-correlation-gap.md
+.agent/gameplay-audit/2026-07-11T21-40-49-04-00-hidden-route-simulation-loop.md
+.agent/interaction-audit/2026-07-11T21-40-49-04-00-route-phase-command-admission-map.md
+.agent/simulation-admission-audit/2026-07-11T21-40-49-04-00-route-policy-tick-contract.md
+.agent/deploy-audit/2026-07-11T21-40-49-04-00-route-suspension-fixture-gate.md
+.agent/turn-ledger/2026-07-11T21-40-49-04-00.md
 .agent/kit-registry.json
 ```
 
 Retain the prerequisite audits:
 
 ```txt
-runtime session: 2026-07-11T18-28-40-04-00
 seeded random and replay: 2026-07-11T17-01-11-04-00
+runtime session instance: 2026-07-11T18-28-40-04-00
+versioned save/load: 2026-07-11T20-03-22-04-00
 ```
 
 ## Selection
@@ -62,15 +62,15 @@ eligible non-Cavalry repositories: 9
 new or central-ledger-missing repositories: 0
 root-.agent-missing repositories: 0
 
-ZombieOrchard      2026-07-11T18-28-40-04-00 selected
-TheUnmappedHouse   2026-07-11T18-38-45-04-00
-AetherVale         2026-07-11T18-48-21-04-00
-IntoTheMeadow      2026-07-11T19-01-08-04-00
-PrehistoricRush    2026-07-11T19-09-25-04-00
-MyCozyIsland       2026-07-11T19-20-22-04-00
-TheOpenAbove       2026-07-11T19-28-28-04-00
-HorrorCorridor     2026-07-11T19-38-14-04-00
-PhantomCommand     2026-07-11T19-48-09-04-00
+PhantomCommand     active same-window writes, skipped
+ZombieOrchard      2026-07-11T20-03-22-04-00 selected
+TheUnmappedHouse   2026-07-11T20-11-26-04-00
+AetherVale         2026-07-11T20-30-33-04-00
+IntoTheMeadow      2026-07-11T20-38-07-04-00
+MyCozyIsland       2026-07-11T20-51-14-04-00
+PrehistoricRush    2026-07-11T21-00-00-04-00
+TheOpenAbove       2026-07-11T21-08-57-04-00
+HorrorCorridor     2026-07-11T21-21-12-04-00
 TheCavalryOfRome   excluded
 ```
 
@@ -81,57 +81,56 @@ Only `LuminaryLabs-Publish/ZombieOrchard` was changed in the Publish organizatio
 ```txt
 module boot
   -> create one mutable engine graph
-  -> seed orchard apples with Math.random()
+  -> seed orchard apples
   -> create canvas and HTML renderers
   -> install delegated click listener
   -> start recursive RAF
 
-Entry
-  -> Play routes directly to active-session
-  -> New Game routes to run-setup
-  -> Settings routes to preferences
-  -> no route to session-select
-
-session-select, if forced active
-  -> renderer reads current.meta.slots
-  -> preset provides no slots
-  -> only Back action exists
-  -> no save, load, delete or inspect command exists
-
-engine.snapshot()
-  -> exports current domain projections
-  -> omits runtime clock context and random-generator state
-  -> has no inverse import or hydration service
-
 RAF
-  -> mutates retained graph
-  -> renders canvas and HTML
-  -> exposes raw snapshot through GameHost
+  -> engine.tick(1 / 60)
+  -> runtime ticks every domain
+  -> pressure grows regardless visible route
+  -> active-session pests and damage update whenever not ended
+  -> canvas renders orchard/session state
+  -> HTML renders the current interface route
+
+interface action
+  -> composition activates current route action
+  -> optional nested domain command
+  -> visible route changes
+  -> no simulation admission state changes
 ```
 
 ## Main finding
 
 ```txt
-visible Save Select surface
+visible interface route
   !=
-versioned persistence system
+authoritative simulation phase
 ```
 
-There is no `saveId`, slot revision, schema version, migration registry, preset fingerprint, state checksum, committed tick, random stream state, deterministic entity sequence, atomic write result, staged load candidate, load epoch, rollback, corruption quarantine, conflict result, or first-restored-frame acknowledgement.
+`interface-composition` owns only `active` and `previous`. It does not own `NOT_STARTED`, `RUNNING`, `PAUSED`, `TERMINAL` or a route policy. `kit-runtime.tick()` invokes every domain tick on every RAF callback. `pressure-field.tick()` always advances, while `active-session.tick()` advances whenever the retained run is not ended.
 
-A raw JSON copy of `engine.snapshot()` would not be sufficient. The runtime has no restore API, `ctx.frame` and `ctx.elapsed` are not included, future `Math.random()` continuation cannot be reproduced, and all authoritative state lives inside closures that cannot be atomically replaced from a snapshot.
+Consequences:
+
+```txt
+Entry and Run Setup can age the hidden graph before Play
+Pause can continue pressure, pests, pursuit and damage
+Build, Market, Roster, Inventory and Codex can hide advancing danger
+Title and Settings do not suspend the retained run
+Outcome freezes only active-session through ended, while pressure continues
+GameHost.tick(dt) bypasses visible-route expectations
+```
 
 ## Domains in use
 
 ```txt
 static browser route and ESM boot
 runtime and run lifecycle authority: missing
+fixed-step clock authority: missing
+route-scoped simulation admission authority: missing
 kit registration and mutable graph construction
-command, tick, event, snapshot, subscription and publication routing
-fixed-step committed tick authority: missing
-public capability and composite transaction authority: missing
-seeded random stream and replay authority: missing
-versioned persistence and migration authority: missing
+commands, ticks, events, snapshots, subscriptions and publication
 12 scoped interface-screen domains
 interface composition and automatic Outcome routing
 resource ledger and pressure field
@@ -179,69 +178,51 @@ pages-deploy-kit
 
 | Kit group | Services |
 |---|---|
-| runtime | registration, domain creation, commands, ticks, events, snapshots, subscriptions and publication |
+| runtime | registration, domain creation, command dispatch, delta clamping, all-domain ticks, events, snapshots, subscriptions and publication |
 | interface | screen state, actions, selection, fields, activation, routing, nested dispatch and automatic Outcome routing |
-| game | resources, pressure, orchard/apples, collection/refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
-| render | orchard canvas, HUD, generic screens, delegated bindings, slot-card projection and per-frame DOM replacement |
-| diagnostics/proof/deploy | raw engine, snapshot, manual tick, smoke proof, static copy and Pages chain |
+| game | resources, pressure, trees and apples, collection/refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
+| render | orchard canvas, HUD, generic screens, slot-card projection, delegated bindings and per-frame DOM replacement |
+| diagnostics/proof/deploy | raw engine, snapshots, manual tick, smoke proof, static copy and Pages chain |
 
-## Required persistence domain
+## Required authority
 
 ```txt
-zombie-orchard-versioned-persistence-authority-domain
-  -> save-slot-id-kit
-  -> save-slot-index-kit
-  -> save-envelope-schema-kit
-  -> save-schema-version-kit
-  -> save-preset-fingerprint-kit
-  -> durable-state-projection-kit
-  -> random-continuation-state-kit
-  -> save-state-fingerprint-kit
-  -> save-checksum-kit
-  -> save-command-kit
-  -> save-result-kit
-  -> atomic-storage-adapter-kit
-  -> load-command-kit
-  -> load-admission-kit
-  -> save-migration-registry-kit
-  -> load-candidate-graph-kit
-  -> load-validation-kit
-  -> load-transaction-kit
-  -> load-epoch-kit
-  -> load-rollback-kit
-  -> slot-conflict-result-kit
-  -> corrupt-save-quarantine-kit
-  -> persistence-journal-kit
-  -> first-restored-frame-ack-kit
-  -> persistence-roundtrip-fixture-kit
-  -> persistence-migration-fixture-kit
+zombie-orchard-route-scoped-simulation-admission-authority-domain
+  -> simulation-phase-state-kit
+  -> route-simulation-policy-kit
+  -> domain-tick-classification-kit
+  -> simulation-step-admission-kit
+  -> simulation-step-plan-kit
+  -> inactive-run-suspension-kit
+  -> pause-resume-admission-kit
+  -> management-route-time-policy-kit
+  -> terminal-freeze-policy-kit
+  -> manual-step-capability-kit
+  -> simulation-step-receipt-kit
+  -> route-tick-frame-correlation-kit
+  -> simulation-admission-journal-kit
+  -> route-suspension-fixture-kit
+  -> hidden-mutation-fixture-kit
 ```
 
-## Required durable envelope
+## Safe default route policy
 
 ```txt
-saveId
-slotId
-slotRevision
-schemaId
-schemaVersion
-createdAt
-updatedAt
-runtimeId
-runId
-sessionEpoch
-lifecycle
-presetId
-presetFingerprint
-simulationTickId
-commandSequence
-randomPolicyId
-randomPolicyVersion
-randomStreamStates
-entitySequences
-durableDomainState
-stateFingerprint
-checksum
+entry, session-select, run-setup, preferences
+  -> no run simulation admitted
+
+active-session
+  -> run simulation admitted
+
+interrupt
+  -> run simulation suspended
+
+construction, exchange, roster, inventory, knowledge
+  -> explicit product policy required
+  -> safe prototype default: suspended
+
+outcome
+  -> terminal run mutation suspended
 ```
 
 ## Ordered implementation queue
@@ -249,21 +230,18 @@ checksum
 ```txt
 1. Runtime Session Instance Authority
 2. Fixed-Step Clock Authority
+2a. Route-Scoped Simulation Admission Authority
 3. Public Capability Gateway and Reachability
 4. Composite Command Transaction Authority
 5. Seeded Random and Replay Authority
 6. Versioned Save / Load Authority
 ```
 
-Persistence must consume the identities and commit semantics from Gates 1–5. It must not invent parallel run, tick, command, random or frame authority.
-
 ## Next safe ledge
 
 ```txt
 ZombieOrchard Runtime Session Instance Authority
-+ Fresh Graph Factory
-+ Lifecycle Transaction and Stale Work Fence
-+ First Fresh Frame and Disposal Fixture Gate
++ Fixed-Step Clock Authority
++ Route-Scoped Simulation Admission
++ Menu/Pause/Management/Outcome Suspension Fixture Gate
 ```
-
-The persistence boundary is now documented, but implementation remains blocked until the earlier authorities produce a canonical durable state and deterministic continuation.
