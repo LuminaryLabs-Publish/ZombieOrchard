@@ -6,7 +6,7 @@ Documentation-only audit of composite command execution. Runtime source, depende
 
 ## Plan ledger
 
-**Goal:** record the exact nested-result, partial-commit and duplicate-publication gaps and define the proof required before browser commands are treated as atomic or frame-coherent.
+**Goal:** record the nested-result, partial-commit and duplicate-publication gaps and the proof required before browser commands are treated as atomic or frame-coherent.
 
 - [x] Read browser boot and delegated HTML bindings.
 - [x] Read runtime command dispatch and publication.
@@ -17,70 +17,50 @@ Documentation-only audit of composite command execution. Runtime source, depende
 - [x] Confirm multi-domain gameplay effects have no prepare/rollback boundary.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
+- [x] Synchronize the central ledger and internal change log.
 - [ ] Implement and run transaction fixtures.
 
 ## Source-backed findings
 
 ```txt
-src/renderer/html-interface-renderer.js
+html-interface-renderer
   -> delegates data-action to interface-composition.activate
   -> discards the returned result
 
-src/kits/composition.js
-  -> resolves the active interface action
-  -> invokes nested ctx.engine.command for action.command
-  -> ignores the nested result
+interface-composition
+  -> resolves active action
+  -> invokes nested child command
+  -> ignores child result
   -> may return parent accepted=true
 
-src/kits/runtime.js
+kit-runtime
   -> every engine.command invokes notify()
-  -> nested child notifies before the outer command returns
+  -> child notifies before outer completion
   -> outer command notifies again
 
-src/kits/game-domains.js
-  -> collect removes/reseeds an apple before reward/pressure/score settlement
-  -> clear can remove a pest and add score before optional scrap settlement
-  -> build and hire debit resources before entity insertion
-  -> no participant prepare, rollback or idempotency service
+game-domains
+  -> collect mutates apple world before full settlement
+  -> clear can retire pest before scrap settlement
+  -> build/hire debit before entity insertion
+  -> no prepare, rollback or idempotency services
 
-src/presets/orchard-preset.js
-  -> Storage Shed uses a nested construction command
-  -> the action has no route target
-  -> parent activation can report success after child rejection
-
-tests/smoke.mjs
-  -> does not test insufficient resources, participant failure, duplicate submission, publication count or frame receipt
+orchard-preset
+  -> Storage Shed uses nested construction command
+  -> parent can report success after child rejection
 ```
 
 ## Required DOM-free fixtures
 
 ```txt
 child-rejection-propagation
-  -> insufficient-resource build returns aggregate rejected
-
 no-partial-build
-  -> resource and built-list fingerprints unchanged on rejection
-
 collect-rollback
-  -> injected reward or pressure failure leaves apple, reward, pressure and score unchanged
-
 clear-rollback
-  -> injected ledger failure leaves pest, score and scrap unchanged
-
 single-publication
-  -> one intent emits one committed notification
-
 idempotent-success
-  -> duplicate command ID does not repeat payment, reward or entity creation
-
 stale-revision
-  -> rejected before participant mutation
-
 aggregate-result
-  -> every participant result and before/after revision retained
-
 frame-receipt
-  -> result cites first canvas and HTML frame presenting the commit
 ```
 
 ## Required browser fixtures
@@ -89,8 +69,8 @@ frame-receipt
 Storage Shed failure displays the rejected reason
 successful Storage Shed debits and constructs exactly once
 rapid double click creates one transaction effect
-Collect failure cannot consume an apple without reward settlement
-Clear failure cannot retire a pest without scrap settlement
+Collect failure cannot consume an apple without complete settlement
+Clear failure cannot retire a pest without complete settlement
 no intermediate subscriber state is observable
 canvas, HTML and public observation agree on transaction revision
 one RAF chain and one delegated listener remain
@@ -118,8 +98,8 @@ single-publication fixture: unavailable / not run
 result-frame fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: pending after repo-local completion
-central internal change log: pending after repo-local completion
+central ledger update: complete
+central internal change log: complete
 ```
 
 No atomic-command, rollback, idempotency, one-publication or result-to-frame claim is made.
