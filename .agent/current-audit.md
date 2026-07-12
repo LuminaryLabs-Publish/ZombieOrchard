@@ -1,203 +1,155 @@
 # Current audit: ZombieOrchard
 
-**Timestamp:** `2026-07-12T06-11-18-04-00`  
-**Status:** `canvas-render-surface-authority-audited`  
+**Timestamp:** `2026-07-12T07-51-04-04-00`  
+**Status:** `html-interface-projection-focus-authority-audited`  
 **Branch:** `main`
 
 ## Summary
 
-The world canvas is styled to fill the browser viewport, but the renderer rewrites its drawing-buffer width and height from CSS dimensions during every frame. Device pixel ratio, physical-pixel budgets, resize generations, actual allocation readback, world-fit policy and surface/frame correlation are absent. This creates high-DPI softness, redundant context resets and a concrete small-viewport path where valid gameplay entities exist outside the visible canvas.
+The shipped HTML renderer rebuilds the complete interface subtree during every animation frame. `src/start.js` always calls `ui.render(snapshot)`, and both active-session and route-screen paths assign `root.innerHTML`. No state fingerprint, keyed reconciliation, mutation budget, focus preservation, safe encoding contract or interface-frame acknowledgement exists.
 
 ## Plan ledger
 
-**Goal:** define one render-surface authority from viewport observation through bounded physical allocation, world projection, atomic commit, diagnostics and visible-frame proof.
+**Goal:** define a deterministic HTML projection boundary that emits safe, minimal DOM changes while preserving keyboard and assistive-technology continuity.
 
-- [x] Compare the current Publish inventory with central tracking.
+- [x] Compare the Publish inventory with the central repository ledger.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only `ZombieOrchard` as the oldest eligible synchronized repository.
-- [x] Inspect the page shell, CSS, browser boot, game constructor, runtime, gameplay domains, renderers and smoke test.
-- [x] Identify the complete interaction loop, all domains, all 27 implemented kits and offered services.
-- [x] Confirm canvas dimensions are assigned on every render call.
-- [x] Confirm CSS dimensions are used directly as physical buffer dimensions.
-- [x] Confirm no DPR, pixel-budget, resize-generation or surface-revision authority exists.
-- [x] Confirm fixed world coordinates are not fitted to the viewport.
-- [x] Define canvas-surface identities, commands, plans, results and fixtures.
-- [x] Add timestamped architecture and system-specific audits.
-- [x] Refresh all required root `.agent` files and registry.
-- [ ] Implement and execute render-surface fixtures.
+- [x] Select only `ZombieOrchard`.
+- [x] Inspect `index.html`, browser boot, runtime snapshots, interface composition, presets, gameplay state and both renderers.
+- [x] Identify the interaction loop, all domains, all 27 kits and their services.
+- [x] Trace route/HUD values into HTML strings and attributes.
+- [x] Confirm per-frame full-subtree replacement.
+- [x] Confirm unchanged-frame no-op behavior is absent.
+- [x] Confirm focus and selection are not captured or restored.
+- [x] Confirm text and attribute encoding are absent.
+- [x] Define a composed parent domain and fixture gate.
+- [ ] Implement the authority and run browser/Pages fixtures.
 
 ## Selection audit
 
 ```txt
-accessible Publish repositories: 10
-eligible non-Cavalry repositories: 9
-new or central-ledger-missing eligible repositories: 0
-root-.agent-missing eligible repositories: 0
-
-ZombieOrchard      2026-07-12T04-38-12-04-00 selected oldest
-TheUnmappedHouse   2026-07-12T04-44-36-04-00
-AetherVale         2026-07-12T04-50-41-04-00
-MyCozyIsland       2026-07-12T05-00-19-04-00
-TheOpenAbove       2026-07-12T05-11-46-04-00
-PrehistoricRush    2026-07-12T05-21-52-04-00
-IntoTheMeadow      2026-07-12T05-39-42-04-00
-PhantomCommand     2026-07-12T05-49-04-04-00
-HorrorCorridor     2026-07-12T05-59-28-04-00
+ZombieOrchard      2026-07-12T06-19-56-04-00 selected oldest
+TheUnmappedHouse   2026-07-12T06-30-34-04-00
+AetherVale         2026-07-12T06-41-32-04-00
+MyCozyIsland       2026-07-12T06-51-27-04-00
+TheOpenAbove       2026-07-12T07-00-48-04-00
+PrehistoricRush    2026-07-12T07-09-49-04-00
+IntoTheMeadow      2026-07-12T07-19-47-04-00
+PhantomCommand     2026-07-12T07-29-32-04-00
+HorrorCorridor     2026-07-12T07-41-06-04-00
 TheCavalryOfRome   excluded
 ```
-
-Only `LuminaryLabs-Publish/ZombieOrchard` is in scope for Publish changes.
 
 ## Complete interaction loop
 
 ```txt
-module evaluation
-  -> create engine and all domains
-  -> locate #world and #ui-root
-  -> create 2D world renderer and HTML renderer
-  -> expose window.GameHost.engine/getState/tick
+module boot
+  -> create mutable engine graph
+  -> create world canvas and HTML renderer
+  -> install delegated click listener on #ui-root
+  -> expose window.GameHost
   -> call draw()
 
-frame path
+every RAF callback
   -> engine.tick(1 / 60)
-  -> snapshot runtime state
+  -> produce fresh snapshot
   -> world.render(snapshot)
-       -> read canvas.clientWidth/clientHeight
-       -> fall back to window.innerWidth/innerHeight
-       -> assign canvas.width and canvas.height
-       -> clear the full buffer
-       -> draw trees, apples, pests and player around canvas center
   -> ui.render(snapshot)
-       -> replace root.innerHTML
-  -> requestAnimationFrame(draw)
+  -> construct complete route/HUD HTML string
+  -> assign root.innerHTML
+  -> discard predecessor descendants
+  -> schedule next RAF
 
-viewport path
-  -> browser layout, resize, orientation or zoom changes ambient values
-  -> no explicit event/result enters the runtime
-  -> next world render samples current CSS dimensions
-  -> DPR remains unobserved
-  -> drawing-buffer mutation has no revision, readback or receipt
+keyboard focus
+  -> user focuses a button
+  -> next RAF removes that node
+  -> no focus key, lease, restoration result or route focus policy exists
+
+content
+  -> values are coerced through String(...)
+  -> values are interpolated into HTML text and data-action attributes
+  -> no text or attribute encoding policy is applied
 ```
 
-## Source-backed defects
+## Source-backed findings
 
-### Drawing-buffer reset occurs every frame
+### Full DOM replacement occurs every frame
 
-`src/renderer/world-canvas.js` assigns:
+`src/start.js` invokes both renderers on every callback:
 
 ```js
-canvas.width = w;
-canvas.height = h;
+const snapshot = engine.tick(1 / 60);
+world.render(snapshot);
+ui.render(snapshot);
+requestAnimationFrame(draw);
 ```
 
-inside every `render(snapshot)` call. The assignments execute even when dimensions are unchanged. Canvas dimension writes reset the drawing buffer and 2D context state. The runtime has no equality guard, resize dirty flag or surface plan.
+`src/renderer/html-interface-renderer.js` assigns `root.innerHTML` in the active-session branch and again for all other routes. No equality check or dirty flag precedes either assignment.
 
-At 60 display callbacks per second, this path can request:
+At 60 callbacks per second, an unchanged route can request:
 
 ```txt
-3,600 resets/minute
-216,000 resets/hour
+3,600 complete subtree replacements per minute
+216,000 complete subtree replacements per hour
 ```
 
-when the viewport remains unchanged.
+Actual callback frequency can be reduced by browser throttling, but the application requests a mutation on every callback.
 
-### CSS and physical resolution are conflated
+### Keyboard focus has no continuity contract
 
-The renderer treats CSS pixels as drawing-buffer pixels. It does not read `window.devicePixelRatio`.
-
-Example:
+Every replacement creates new button elements. Delegated click handling survives because the listener is attached to the stable root, but focused descendants do not. Missing state includes:
 
 ```txt
-CSS viewport:         1920 x 1080
-DPR:                  2
-current buffer:       1920 x 1080
-physical-resolution candidate: 3840 x 2160
-current pixel count:  2,073,600
-physical pixel count: 8,294,400
+domSurfaceId
+interfaceProjectionRevision
+focusedActionId
+focusLease
+focusCaptureResult
+focusRestorationPolicy
+focusRestorationResult
+selectionLease
+routeTransitionFocusTarget
 ```
 
-The current buffer contains one quarter of the physical pixels in this example.
+### Accessibility-tree churn is unbounded
 
-A fix must be bounded. A `3840 x 2160` CSS viewport at DPR `2` would request `7680 x 4320`, or 33,177,600 pixels. No product pixel budget or fallback tier currently exists.
+The HUD and route subtree are recreated even when semantic values are unchanged. There is no ARIA live-region policy, announcement deduplication, semantic-change fingerprint, screen-reader continuity result or DOM mutation budget.
 
-### World projection has no viewport policy
+### Content encoding is not defined
 
-The active-session movement clamps the player to:
+The helper is:
 
-```txt
-x: -360..360
-y: -280..280
+```js
+const text = (value) => String(value ?? "");
 ```
 
-The orchard world also reports default bounds of `720 x 560`. The renderer projects each entity as:
+It performs conversion, not HTML escaping. Values enter text positions and `data-action` attributes. Authored presets are currently trusted source code, but runtime roster names and future loaded or networked content have no safe projection boundary. This audit does not claim a remote exploit.
 
-```txt
-screenX = canvasWidth / 2 + worldX
-screenY = canvasHeight / 2 + worldY
-```
+### Projection provenance is absent
 
-There is no world scale, camera transform, contain policy or required-entity visibility check.
-
-A 320-pixel-wide canvas exposes approximately `-160..160` around the center, while the player remains valid at `-360..360`. Valid simulation state can therefore be outside the visible surface.
-
-### Zero-size fallback can break CSS/buffer parity
-
-When either `canvas.clientWidth` or `canvas.clientHeight` is falsy, the renderer falls back to window dimensions. The selected dimensions can disagree with the actual canvas rectangle, but no fallback reason or mismatch result is published.
-
-### Surface provenance is absent
-
-There is no:
-
-```txt
-canvasSurfaceId
-surfaceRevision
-resizeGeneration
-viewportObservationId
-cssWidth/cssHeight
-requestedDpr/appliedDpr
-requestedBufferWidth/requestedBufferHeight
-actualBufferWidth/actualBufferHeight
-pixelBudget
-fallbackTier
-worldProjectionRevision
-worldScale/worldOffset
-surfaceCommitResult
-visibleSurfaceFrameReceipt
-```
-
-`window.GameHost.getState()` returns gameplay snapshots only. It cannot identify which canvas surface displayed a state.
+The renderer returns only `{ render }`. It publishes no projection ID, revision, fingerprint, mutation count, no-op result, focus result, accessibility result or visible-interface receipt. Canvas and HTML cannot prove they displayed the same committed state/frame revision.
 
 ### Existing proof is engine-only
 
-`tests/smoke.mjs` creates the engine in Node and verifies:
-
-```txt
-Entry route exists
-Play reaches active-session
-orchard contains apples
-```
-
-It does not instantiate a browser canvas or test DPR, resize, orientation, unchanged-frame behavior, world fit, allocation readback or surface/frame correlation.
+`tests/smoke.mjs` checks Entry, Play and apple presence. It creates no DOM and tests no mutation, focus, encoding, accessibility or interface-frame invariant.
 
 ## Domains in use
 
 ```txt
-browser document, full-window CSS layout and DOM ownership
-module boot, recursive RAF and public host
-runtime registration, domain creation, commands, ticks, events, snapshots, subscriptions and publication
-simulation clock and fixed-step gap
+browser document, DOM surface and full-window CSS ownership
+module boot, recursive RAF and public GameHost
+runtime registration, commands, ticks, events, snapshots, subscriptions and publication
 12 interface-screen domains and interface composition
 resource ledger and pressure field
-orchard trees, apples and collection refill
+orchard trees, apples and refill
 construction, roster and inventory
 active-session movement, phases, pests, damage, score and failure
-CSS viewport and canvas-rectangle observation
-2D drawing-buffer allocation and context-state lifecycle
-device-pixel-ratio normalization, capabilities and pixel budgets
-world-coordinate projection, fit and viewport membership
-resize command, generation, coalescing, commit, rollback and stale-result rejection
-canvas world rendering and HTML interface rendering
-surface, frame and public diagnostics
+canvas world rendering and canvas-surface authority
+HTML view-model construction and DOM projection
+HTML text and attribute encoding
+DOM mutation planning, no-op detection, commit and rollback
+focus, selection and accessibility continuity
+interface projection identity, revision, observation and frame correlation
 Node smoke, static build, Pages deployment and central audit tracking
 ```
 
@@ -240,67 +192,67 @@ pages-deploy-kit
 | runtime | registration, domain creation, command dispatch, delta clamp, ticks, events, snapshots, subscriptions and synchronous publication |
 | interface | screen state, actions, activation, routing, nested dispatch and automatic Outcome routing |
 | game | resources, pressure, trees, apples, collection refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
-| render | full-window canvas ownership, centered orchard projection, 2D world drawing, HUD, route screens, cards, delegated click bindings and per-frame DOM replacement |
-| diagnostics/proof/deploy | raw engine publication, snapshot readback, unrestricted manual tick, Node smoke, static build copy and Pages chain |
+| render | canvas world drawing, HUD and route HTML, card projection, delegated click handling and full-subtree `innerHTML` replacement |
+| diagnostics/proof/deploy | raw engine publication, snapshot readback, unrestricted manual tick, Node smoke, static copy and Pages deployment |
 
 ## Required composed domain
 
 ```txt
-zombie-orchard-canvas-render-surface-authority-domain
+zombie-orchard-html-interface-projection-authority-domain
 ```
 
 Candidate kits:
 
 ```txt
-canvas-surface-id-kit
-canvas-surface-revision-kit
-viewport-observation-kit
-device-pixel-ratio-policy-kit
-render-pixel-budget-kit
-canvas-capability-kit
-resize-command-kit
-resize-generation-kit
-resize-coalescing-kit
-render-surface-plan-kit
-drawing-buffer-allocation-kit
-drawing-buffer-readback-kit
-world-projection-policy-kit
-world-scale-policy-kit
-world-viewport-membership-kit
-render-surface-commit-kit
-render-surface-rollback-kit
-stale-resize-rejection-kit
-render-surface-observation-kit
-render-surface-journal-kit
-visible-surface-frame-receipt-kit
-viewport-size-matrix-fixture-kit
-dpr-resolution-fixture-kit
-unchanged-frame-no-resize-fixture-kit
-world-fit-membership-fixture-kit
-browser-resize-orientation-smoke-kit
-pages-canvas-surface-smoke-kit
+interface-projection-id-kit
+interface-projection-revision-kit
+interface-state-fingerprint-kit
+interface-view-model-kit
+html-content-escaping-kit
+html-attribute-escaping-kit
+interface-action-key-kit
+dom-surface-lease-kit
+dom-focus-lease-kit
+dom-selection-lease-kit
+interface-projection-plan-kit
+interface-projection-diff-kit
+interface-projection-commit-kit
+interface-projection-noop-kit
+interface-projection-result-kit
+stale-interface-projection-rejection-kit
+focus-restoration-policy-kit
+screen-reader-announcement-policy-kit
+dom-mutation-budget-kit
+interface-projection-observation-kit
+interface-projection-journal-kit
+visible-interface-frame-receipt-kit
+unchanged-ui-no-mutation-fixture-kit
+keyboard-focus-retention-fixture-kit
+html-escaping-fixture-kit
+route-transition-focus-fixture-kit
+browser-interface-accessibility-smoke-kit
+pages-interface-projection-smoke-kit
 ```
 
 ## Required transaction
 
 ```txt
-viewport observation
-  -> assign observation ID and resize generation
-  -> validate runtime session, canvas identity and positive dimensions
-  -> normalize requested DPR
-  -> enforce canvas capabilities and product pixel budget
-  -> derive bounded physical dimensions and fallback tier
-  -> derive world scale, offset and membership policy
-  -> coalesce superseded resize observations
-  -> skip drawing-buffer writes when candidate is unchanged
-  -> prepare candidate buffer
-  -> read actual canvas dimensions
-  -> atomically commit one surface revision or preserve predecessor
-  -> render world using committed projection
-  -> publish visible surface/frame receipt
+committed StateSnapshot
+  -> validate runtime session, route and expected state revision
+  -> build immutable InterfaceViewModel
+  -> encode text and attribute values
+  -> calculate semantic and structural fingerprints
+  -> publish a typed no-op when unchanged
+  -> otherwise capture focused action and selection leases
+  -> prepare keyed DOM changes under a mutation budget
+  -> reject stale preparation
+  -> commit one InterfaceProjectionRevision
+  -> restore or deliberately move focus using route policy
+  -> publish projection, focus and accessibility results
+  -> acknowledge the first visible interface frame
 ```
 
-## Ordered safe ledges
+## Ordered implementation queue
 
 ```txt
 1. Runtime Session Instance Authority
@@ -311,10 +263,11 @@ viewport observation
 4. Composite Command Transaction Authority
 4a. Frame Publication Fault Containment Authority
 4b. Canvas Render Surface Authority
+4c. HTML Interface Projection and Focus Authority
 5. Seeded Random and Replay Authority
 6. Versioned Save / Load Authority
 ```
 
 ## Proof boundary
 
-Do not claim high-DPI clarity, bounded canvas allocation, redundant-resize elimination, viewport-safe gameplay, surface revision correctness or visible-frame parity until the viewport, DPR, pixel-budget, projection, stale-generation and Pages fixtures pass on `main`.
+Do not claim efficient DOM rendering, keyboard-focus continuity, screen-reader stability, safe external-content projection, canvas/HTML parity or visible interface-frame provenance until source, browser, built-artifact and Pages fixtures pass on `main`.
