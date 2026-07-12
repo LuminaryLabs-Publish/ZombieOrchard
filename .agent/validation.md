@@ -1,53 +1,51 @@
 # Validation - ZombieOrchard
 
-**Timestamp:** `2026-07-12T16-51-47-04-00`
+**Timestamp:** `2026-07-12T18-48-07-04-00`
 
 ## Scope
 
-Documentation-only audit of interface action identity, selection fallback, availability projection, nested command result propagation, route admission, stale-action fencing, idempotency and visible-result correlation. Runtime source, dependencies, package scripts, gameplay, rendering and deployment configuration were not changed.
+Documentation-only audit of failure detection, terminal outcome sealing, post-terminal command admission, Outcome routing, immutable result projection and visible-frame correlation. Runtime source, dependencies, package scripts, gameplay, rendering and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record exact source evidence and executable proof required before interface-action correctness claims are made.
+**Goal:** record exact source evidence and executable proof required before terminal-outcome correctness claims are made.
 
-- [x] Read `src/start.js` and confirm delegated HTML and public raw-engine command paths.
+- [x] Read `src/start.js` and confirm raw engine publication.
 - [x] Read `src/game.js` and confirm all interface/gameplay kits install into one runtime.
-- [x] Read `src/kits/runtime.js` and confirm commands publish synchronously without command identity or revisions.
-- [x] Read `src/kits/scoped-interface-domains.js` and confirm explicit-ID fallback to selected action.
-- [x] Read `src/kits/composition.js` and confirm nested command results are discarded.
-- [x] Read `src/kits/game-domains.js` and confirm active-session exact lookup and construction rejection behavior.
-- [x] Read `src/presets/orchard-preset.js` and trace current route and command-bearing actions.
-- [x] Read `src/renderer/html-interface-renderer.js` and confirm disabled state and action result are not projected.
-- [x] Read `tests/smoke.mjs` and confirm action-admission coverage is absent.
+- [x] Read `src/kits/runtime.js` and confirm commands have no lifecycle or terminal admission.
+- [x] Read `src/kits/composition.js` and confirm Outcome routing follows a later snapshot observation.
+- [x] Read `src/kits/game-domains.js` and confirm tick-only terminal suspension and post-terminal command availability.
+- [x] Read `src/presets/orchard-preset.js` and confirm Outcome route actions and active-session command surfaces.
+- [x] Read `src/renderer/html-interface-renderer.js` and confirm Outcome reads live score/day.
+- [x] Read `src/renderer/world-canvas.js` and confirm no terminal result revision is consumed.
+- [x] Read `tests/smoke.mjs` and confirm terminal coverage is absent.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
-- [ ] Implement and run interface-action fixtures.
+- [ ] Implement and run terminal-outcome fixtures.
 
 ## Source-backed findings
 
 ```txt
-src/kits/scoped-interface-domains.js
-  -> explicit activate uses exact match OR selectedIndex fallback
-  -> invalid or missing actionId can execute a selected action
-  -> disabled is checked after fallback resolution
-
 src/kits/game-domains.js
-  -> active-session activate uses exact match only
-  -> action semantics differ across interface domains
-  -> construction-runtime can return accepted=false for missing resources
+  -> tick returns early when ended
+  -> command handler does not reject when ended
+  -> move, collect, clear and next-phase can still mutate
+  -> failure creates no terminal result ID or revision
 
 src/kits/composition.js
-  -> optional nested engine.command result is not stored
-  -> route transition can proceed independently of nested result
-  -> command-bearing action without route returns accepted=true unconditionally
-
-src/renderer/html-interface-renderer.js
-  -> action.disabled is ignored
-  -> every action is rendered as a clickable button
-  -> no action result or rejection feedback is projected
+  -> Outcome route is committed in a separate domain tick
+  -> route commit has no shared terminal transaction
 
 src/start.js
-  -> window.GameHost exposes the raw engine command surface
+  -> window.GameHost exposes raw engine commands
+
+src/renderer/html-interface-renderer.js
+  -> Outcome cards read current active-session score and day
+  -> no immutable terminal result is projected
+
+src/renderer/world-canvas.js
+  -> canvas consumes live world/session state
+  -> no terminal result or terminal frame revision is consumed
 
 tests/smoke.mjs
   -> verifies Entry, Play and apples only
@@ -58,35 +56,31 @@ tests/smoke.mjs
 ```txt
 implemented kit surfaces: 27
 engine-installed kits: 19
-generic scoped interface definitions: 11
-custom active-session interface: 1
-exact explicit lookup policies: inconsistent
-unknown explicit ID rejection in generic domains: no
-missing explicit ID rejection in generic domains: no
-nested command result propagation: no
-disabled HTML controls: no
-route revision fields: 0
-action-set revision fields: 0
-action command IDs: 0
-action result revisions: 0
-first visible action-result receipts: 0
+terminal flags: 1 ended Boolean
+terminal result objects: 0
+terminal revisions: 0
+post-terminal command guards: 0
+commands still callable after ended: move, collect, clear, next-phase
+immutable Outcome read models: 0
+first visible terminal receipts: 0
+terminal fixtures: 0
 ```
 
 ## Required fixtures
 
 ```txt
-invalid Entry action ID -> rejected, no Play transition
-missing Entry action ID -> rejected, no selected fallback
-explicit selected activation -> separate command and deterministic result
-active-session and generic domains -> same identity contract
-stale route revision -> typed rejection
-stale action-set revision -> typed rejection
-disabled descriptor -> disabled HTML and command rejection
-construction insufficient resources -> composition returns nested rejection
-successful construction -> exactly one mutation and success result
-duplicate action command ID -> stable replay and no duplicate effect
-canvas/HTML -> matching action result revision
-source/dist/Pages -> equivalent admission and feedback
+failure threshold -> exactly one terminal result
+multiple damaging pests -> one terminal commit
+terminal commit -> Outcome route from same result
+post-terminal move -> rejected with no state change
+post-terminal collect -> rejected with no world/economy/score change
+post-terminal clear -> rejected with no pest/economy/score change
+post-terminal next-phase -> rejected with no day/phase change
+raw GameHost post-terminal command -> rejected
+Outcome score/day -> immutable after terminal
+duplicate terminal candidate -> stable replay
+canvas/HTML -> matching terminal result revision
+source/dist/Pages -> equivalent terminal result and summary
 ```
 
 ## Validation result
@@ -104,9 +98,9 @@ pull request created: no
 
 npm test: not run
 npm run build: not run
-interface action fixtures: unavailable / not run
-browser action smoke: unavailable / not run
-Pages action smoke: unavailable / not run
+terminal outcome fixtures: unavailable / not run
+browser terminal smoke: unavailable / not run
+Pages terminal smoke: unavailable / not run
 ```
 
-Source evidence was read through the connected repository. No exact-ID admission, truthful disabled projection, nested-result propagation, stale-action isolation, idempotency or visible result-frame claim is made.
+Source evidence was read through the connected repository. No terminal seal, immutable final summary, post-terminal command revocation, atomic route commit, idempotency or visible terminal-frame claim is made.
