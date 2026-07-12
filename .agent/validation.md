@@ -17,6 +17,7 @@ Documentation-only route-scoped simulation admission audit. Runtime source, depe
 - [x] Confirm no route-scoped simulation admission policy exists.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
+- [x] Synchronize the central ledger and internal change log.
 - [ ] Implement and run route suspension fixtures.
 
 ## Source-backed findings
@@ -119,8 +120,8 @@ manual-step admission fixture: unavailable / not run
 route/tick/frame parity fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: pending until central commit
-central internal change log: pending until central commit
+central ledger update: complete
+central internal change log: complete
 ```
 
 No authoritative pause, menu idleness, management-route safety, terminal freeze or route/frame coherence claim is made.
