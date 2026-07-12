@@ -1,44 +1,44 @@
 # Current audit: ZombieOrchard
 
-**Timestamp:** `2026-07-12T16-51-47-04-00`  
-**Status:** `interface-action-admission-authority-audited`  
+**Timestamp:** `2026-07-12T18-48-07-04-00`  
+**Status:** `terminal-outcome-seal-authority-audited`  
 **Branch:** `main`
 
 ## Summary
 
-ZombieOrchard does not have one authoritative interface-action transaction. Generic scoped interface domains resolve `activate` with `actions.find(actionId) || actions[selectedIndex]`, so an unknown or missing explicit action ID can execute the currently selected action. The active-session domain uses exact matching instead, creating inconsistent admission semantics.
+ZombieOrchard has no authoritative terminal outcome transaction. `active-session.tick()` returns early after `state.ended`, but its command handler does not check the terminal flag. Movement, collection, pest clearing and phase changes therefore remain callable after failure.
 
-The composition layer invokes an optional nested gameplay command but discards its result. When the construction action requests a storage shed and the build rejects for insufficient resources, composition still returns `{ accepted: true }`. The HTML renderer also ignores `action.disabled`, so an unavailable action is projected as an enabled button.
+`interface-composition.tick()` independently routes to Outcome when it observes `ended`. The browser also exposes the raw engine through `window.GameHost`. The Outcome renderer reads `active-session.score` and `active-session.day` on every render, so direct post-terminal commands can change the supposedly final result.
 
 ## Plan ledger
 
-**Goal:** define exact action identity, availability, nested-result propagation and visible-result proof across every route and caller.
+**Goal:** define a single terminal commit that freezes mutable gameplay, revokes commands, publishes an immutable result and correlates the first Outcome frame with that result.
 
 - [x] Compare the complete Publish inventory against central tracking.
 - [x] Verify eligible central-ledger and root `.agent` coverage.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Select only `ZombieOrchard` under the oldest eligible fallback rule.
-- [x] Read boot, runtime, scoped interface domains, composition, gameplay domains, preset, HTML renderer and smoke proof.
+- [x] Read boot, runtime, composition, gameplay domains, preset, HTML renderer, canvas renderer and smoke proof.
 - [x] Identify the complete interaction loop, all domains, all 27 implemented kit surfaces and their services.
-- [x] Confirm explicit action lookup fails open to selection in generic interface domains.
-- [x] Confirm active-session activation uses different exact-match semantics.
-- [x] Confirm nested command results are ignored by interface composition.
-- [x] Confirm disabled actions are not projected as disabled controls.
-- [x] Define action identity, route/action-set revisions, availability, result propagation, idempotency and first-frame contracts.
-- [ ] Implement and execute action-admission fixtures.
+- [x] Confirm failure is committed inside active-session tick.
+- [x] Confirm only tick is suspended after failure.
+- [x] Confirm post-terminal commands still mutate live state.
+- [x] Confirm Outcome reads mutable live score and day.
+- [x] Define terminal identity, sealing, revocation, immutable result and first-frame contracts.
+- [ ] Implement and execute terminal-outcome fixtures.
 
 ## Selection audit
 
 ```txt
-ZombieOrchard      2026-07-12T14-38-35-04-00 selected
-MyCozyIsland       2026-07-12T14-59-01-04-00
-TheUnmappedHouse   2026-07-12T15-08-07-04-00
-AetherVale         2026-07-12T15-18-50-04-00
-TheOpenAbove       2026-07-12T15-40-04-00
-IntoTheMeadow      2026-07-12T15-49-09-04-00
-PhantomCommand     2026-07-12T16-00-03-04-00
-PrehistoricRush    2026-07-12T16-20-55-04-00
-HorrorCorridor     2026-07-12T16-39-35-04-00
+ZombieOrchard      2026-07-12T16-51-47-04-00 selected
+MyCozyIsland       2026-07-12T17-10-31-04-00
+TheUnmappedHouse   2026-07-12T17-20-42-04-00
+AetherVale         2026-07-12T17-35-48-04-00
+TheOpenAbove       2026-07-12T17-41-25-04-00
+IntoTheMeadow      2026-07-12T17-58-43-04-00
+PhantomCommand     2026-07-12T18-11-53-04-00
+PrehistoricRush    2026-07-12T18-18-59-04-00
+HorrorCorridor     2026-07-12T18-38-51-04-00
 TheCavalryOfRome   excluded
 ```
 
@@ -50,77 +50,76 @@ No new, ledger-missing or root-`.agent`-missing eligible repository was found.
 browser module boot
   -> createOrchardGame()
   -> install 19 engine kits once
-  -> create world and HTML renderers
+  -> create canvas and HTML renderers
   -> expose raw engine through window.GameHost
   -> start recursive RAF
 
-interface input
-  -> delegated HTML click extracts data-action
-  -> public callers may invoke the same raw engine command
-  -> interface-composition.activate(actionId)
-  -> current domain resolves activate
+survival simulation
+  -> active-session.tick()
+  -> night may spawn pests
+  -> pests move toward player
+  -> every contacting pest subtracts condition
+  -> condition <= 0 clamps condition to zero
+  -> ended=true and failure message are committed
 
-scoped-domain admission
-  -> exact action lookup is attempted
-  -> unknown or missing id falls back to selectedIndex
-  -> disabled is checked only after resolution
-  -> actionRequested event is emitted
+route projection
+  -> interface-composition.tick() reads active-session snapshot
+  -> ended=true moves route to outcome
+  -> HTML Outcome reads live score and day
 
-composition
-  -> optional nested gameplay command executes synchronously
-  -> nested result is discarded
-  -> optional route move executes
-  -> otherwise accepted=true is returned
-  -> listeners receive a successor snapshot
-
-presentation
-  -> RAF ticks all domains
-  -> canvas renders world state
-  -> HTML rebuilds route or HUD
-  -> no action command/result revision is projected
+post-terminal mutation
+  -> raw engine or another caller commands active-session directly
+  -> command handler has no ended guard
+  -> move, collect, clear and next-phase may accept
+  -> world, economy, score, player, day or phase may mutate
+  -> next HTML frame projects a different final summary
 ```
 
 ## Source-backed findings
 
-### Generic explicit activation fails open
+### Tick suspension is not terminal sealing
 
-`src/kits/scoped-interface-domains.js` resolves activation with:
+`src/kits/game-domains.js` begins the active-session tick with:
 
 ```js
-const action = actions.find((item) => item.id === payload.actionId) || actions[state.selectedIndex];
+if (state.ended) return;
 ```
 
-An explicit invalid ID is therefore not rejected. On Entry, the default selected index is zero, so an invalid ID can execute Play. The same behavior applies to run setup, pause, construction, exchange, roster, inventory, knowledge, preferences and outcome domains.
+This stops future pest simulation, but it does not change the command surface or freeze participant domains.
 
-### Admission semantics differ by domain
+### Commands remain active after failure
 
-`active-session` resolves `activate` only with an exact ID and rejects when no action matches. A caller cannot reason about one consistent action contract across the 12 interface definitions.
-
-### Nested command result is discarded
-
-`src/kits/composition.js` calls `ctx.engine.command(...)` for `action.command` but stores no result. It then returns a route result or unconditional `{ accepted: true }`.
-
-Current source-backed example:
+The active-session command handler checks command type directly. It has no terminal-phase admission before:
 
 ```txt
-construction action shed
-  -> construction-runtime.build(storage-shed)
-  -> resource-ledger.pay can reject
-  -> construction-runtime returns accepted=false
-  -> interface-composition returns accepted=true
+move
+collect
+clear
+next-phase
 ```
 
-### Visible availability is untruthful
+Consequences include:
 
-Action descriptors carry `disabled`, and domains reject disabled actions. `html-interface-renderer.js` renders every descriptor as a normal button and does not emit `disabled`, `aria-disabled` or an availability reason.
+- `move` can change the final player position.
+- `collect` can remove and replenish an apple, grant apples and money, adjust pressure, increase score and replace the terminal message.
+- `clear` can damage or remove a pest, grant scrap, increase score and replace the terminal message.
+- `next-phase` can change phase and increment the final day.
 
-### Stale and public callers are not fenced
+### Outcome routing and terminal commit are separate
 
-`window.GameHost.engine` exposes raw command dispatch. There is no runtime session, run generation, route revision, action-set revision, action fingerprint or expected predecessor bound to an action command. Because invalid IDs fall back, a stale action from another route can be reinterpreted as the current selected action instead of rejected.
+`src/kits/composition.js` observes the active-session snapshot during its own tick and calls `move("outcome")`. Failure state and route state are not one atomic commit and carry no shared result ID or revision.
+
+### Public callers bypass the visible route
+
+`src/start.js` publishes the raw engine as `window.GameHost.engine`. A caller can command `active-session` while the visible route is Outcome.
+
+### Final projection is live, not sealed
+
+`src/renderer/html-interface-renderer.js` constructs the Outcome cards from current `session.score` and `session.day` on every render. No immutable `TerminalOutcomeResult` is projected.
 
 ### Proof is absent
 
-`tests/smoke.mjs` validates Entry, one Play transition and apple presence. It does not test invalid IDs, missing IDs, stale route actions, disabled projection, nested rejection propagation or source/dist/Pages parity.
+`tests/smoke.mjs` validates only Entry, Play and apple population. It does not force failure, assert Outcome routing, issue post-terminal commands or compare a terminal result with the visible frame.
 
 ## Domains in use
 
@@ -128,13 +127,12 @@ Action descriptors carry `disabled`, and domains reject disabled actions. `html-
 browser document, canvas, DOM, RAF and public GameHost
 runtime registration, commands, ticks, events, snapshots, subscriptions and publication
 11 generic scoped interface domains plus custom active-session
-interface action identity, availability, selection and activation
 interface composition, nested command dispatch, routing and automatic Outcome routing
-runtime session, run generation, route and action-set revision admission
+runtime session, run generation, route and terminal revision admission
 resource ledger and pressure field
 orchard world, collection and refill
 construction, roster and inventory
-movement, phase, pests, damage, score and failure
+movement, phase, pests, contact damage, score, failure and terminal outcome
 canvas world and HTML interface projection
 Node smoke, static build, Pages deployment and central tracking
 ```
@@ -176,62 +174,61 @@ pages-deploy-kit
 | Kit group | Services |
 |---|---|
 | runtime | Registration, live domain creation, commands, delta clamp, ticks, events, snapshots, subscriptions and synchronous publication |
-| interface | Screen state, fields, selection, action descriptors, activation, routing, back navigation, nested dispatch and Outcome routing |
-| gameplay | Resources, pressure, orchard collection/refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
-| render | Canvas world drawing, HTML route/HUD projection and delegated actions |
+| interface | Screen state, fields, selection, action descriptors, activation, routing, back navigation, nested dispatch and automatic Outcome routing |
+| gameplay | Resources, pressure, orchard collection/refill, construction, hiring, equipment, movement, phases, pests, contact damage, score and failure |
+| render | Canvas world drawing, HTML route/HUD projection, Outcome cards and delegated actions |
 | diagnostics/proof/deploy | Raw engine publication, state readback, manual tick, Node smoke, static copy and Pages deployment |
 
 ## Required composed domain
 
 ```txt
-zombie-orchard-interface-action-admission-authority-domain
+zombie-orchard-terminal-outcome-seal-authority-domain
 ```
 
 ## Required transaction
 
 ```txt
-InterfaceActionCommand
-  -> bind command ID, runtime session, run generation, route revision and action-set revision
-  -> require exact action ID and descriptor fingerprint
-  -> evaluate availability and disabled reason
-  -> reject missing, unknown, stale, duplicate or unavailable action
-  -> execute the nested command exactly once
-  -> capture the typed nested command result
-  -> apply route transition policy only when permitted by that result
-  -> publish one InterfaceActionResult and journal row
-  -> project availability, success or rejection feedback
-  -> acknowledge first canvas/HTML frame citing the action result revision
+TerminalOutcomeCandidate
+  -> bind runtime session, run generation and expected gameplay revision
+  -> bind terminal cause, predicate evidence and participant revisions
+  -> freeze score, day, phase, player, resources, pressure, world and roster summaries
+  -> validate exactly one terminal transition
+  -> atomically commit TerminalOutcomeResult and terminal phase
+  -> revoke gameplay, economy and simulation capabilities
+  -> reject stale and duplicate terminal commits
+  -> route Outcome from the committed result
+  -> project immutable result data
+  -> acknowledge first canvas/HTML frame citing terminal result revision
 ```
 
 ## Candidate kits
 
 ```txt
-interface-action-id-kit
-interface-action-set-revision-kit
-interface-route-revision-kit
-interface-action-manifest-kit
-interface-action-availability-kit
-interface-action-command-kit
-interface-action-command-id-kit
-interface-action-admission-kit
-exact-action-lookup-kit
-stale-action-rejection-kit
-nested-command-result-propagation-kit
-action-route-commit-policy-kit
-interface-action-result-kit
-interface-action-idempotency-kit
-interface-action-observation-kit
-interface-action-journal-kit
-action-affordance-projection-kit
-action-result-projection-kit
-first-action-result-frame-ack-kit
-invalid-action-id-fixture-kit
-stale-route-action-fixture-kit
-disabled-action-projection-fixture-kit
-nested-command-rejection-fixture-kit
-action-source-dist-pages-parity-fixture-kit
+terminal-outcome-id-kit
+terminal-cause-kit
+terminal-predicate-evidence-kit
+terminal-outcome-candidate-kit
+terminal-outcome-admission-kit
+terminal-outcome-result-kit
+terminal-outcome-revision-kit
+terminal-state-seal-kit
+terminal-participant-freeze-kit
+terminal-command-revocation-kit
+terminal-capability-lease-kit
+post-terminal-rejection-kit
+terminal-route-commit-kit
+terminal-outcome-read-model-kit
+terminal-outcome-projection-kit
+terminal-outcome-observation-kit
+terminal-outcome-journal-kit
+first-terminal-frame-ack-kit
+failure-threshold-fixture-kit
+post-terminal-command-fixture-kit
+terminal-route-atomicity-fixture-kit
+terminal-summary-immutability-fixture-kit
+terminal-source-dist-pages-parity-fixture-kit
 ```
 
 ## Runtime non-claims
 
-No runtime source, action behavior, gameplay, rendering, package scripts or deployment configuration changed. No exact-ID admission, disabled affordance, nested-result propagation, stale-action fencing, idempotency or visible action-result claim is made.
+No runtime source, terminal behavior, gameplay, rendering, package scripts or deployment configuration changed. No immutable terminal result, post-terminal command revocation, atomic Outcome route commit, idempotency or visible terminal-frame claim is made.
