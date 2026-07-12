@@ -7,6 +7,7 @@ runtime session identity
   -> lifecycle state
   -> fixed-step clock and single-writer lease
   -> committed interface route and simulation policy
+  -> player-control reachability and input retirement
   -> public capability gateway
   -> admitted composite command transaction
   -> committed simulation/state revision
@@ -14,115 +15,91 @@ runtime session identity
   -> replay and persistence continuation
 ```
 
+## Player-control reachability gaps
+
+1. `active-session.command("move")` is implemented but not bound to the shipped browser UI.
+2. `src/start.js` installs no keyboard, pointer-direction or touch movement adapter.
+3. The HTML renderer binds clicks only.
+4. Active-session controls expose Collect, Clear and Next Phase but no movement controls.
+5. The world canvas is render-only.
+6. No control-binding manifest exists.
+7. No held-key state or input sequence exists.
+8. No route/focus control lease exists.
+9. No diagonal normalization or opposed-direction policy exists.
+10. No blur, visibility, pause, route-exit, outcome, reset or disposal retirement path exists.
+11. No typed movement result or rejection reason exists.
+12. No movement result identifies the first canvas/HTML frame that presents it.
+13. Player starts at `{ x: 0, y: 180 }` and remains there in normal product use.
+14. Apple collection requires a target within 42 units, while random seeding does not guarantee one at the start position.
+15. Existing smoke proof does not exercise movement or browser input.
+
 ## Composite command transaction gaps
 
-1. Browser actions call `engine.command()` and discard the returned result.
-2. Interface activation can invoke a nested child `engine.command()`.
-3. The composition domain ignores the child result.
-4. A rejected child can be concealed by a successful parent activation result.
-5. Nested dispatch can notify subscribers before the parent finishes.
-6. The outer command notifies again, so one intent can publish more than once.
-7. No command ID or transaction ID exists.
-8. No expected state revision is required.
-9. No participant registry exists.
-10. No prepare phase proves every participant can commit.
-11. No event or publication buffer exists.
-12. No aggregate commit boundary exists.
-13. No rollback service exists.
-14. No idempotency receipt exists.
-15. No stable aggregate result includes every participant outcome.
-16. No result identifies the first canvas and HTML frame that presents it.
-17. The Storage Shed parent can report success when the child rejects for insufficient resources.
-18. Apple collection removes and reseeds the apple before reward and pressure settlement completes.
-19. Missing reward or pressure participants do not reject collection because optional chaining is used.
-20. Pest clearing can retire a pest and add score before optional scrap credit.
-21. Construction and hiring debit resources before appending the resulting entity.
-22. Equipment accepts an arbitrary item ID without inventory admission.
-23. Tests do not inject participant failure or verify rollback.
-24. Tests do not verify duplicate-submission behavior.
-25. Tests do not verify one-publication or result-to-frame correlation.
+- Browser actions discard returned results.
+- Interface activation can invoke a nested child command and ignore its result.
+- Child rejection can be concealed by parent success.
+- Nested dispatch can publish intermediate state and then publish again.
+- Multi-domain gameplay effects have no prepare/commit/rollback boundary.
+- No command ID, expected revision, idempotency receipt or first-visible-frame acknowledgement exists.
 
-## Public capability and reachability gaps
+## Public capability gaps
 
-- `window.GameHost` still exposes the complete mutable engine object.
-- Public callers can reach and mutate `ctx`, `domains`, registration, APIs, commands and ticks.
-- Duplicate domain IDs overwrite the existing domain entry.
-- No capability manifest, lease, allowlist, payload schema or revocation state exists.
-- Public full-graph ticks can run beside the production RAF.
-- Public snapshots omit runtime, session, route, tick and frame provenance.
-- Public subscriptions have no lease identity or forced retirement.
+- `window.GameHost` exposes the complete mutable engine.
+- Public callers can reach context, domains, commands, ticks and registration.
+- No capability manifest, lease, allowlist, schema or revocation state exists.
+- Public snapshots omit runtime, run, route, tick and committed-frame provenance.
 
-## Runtime-session and fresh-run gaps
+## Runtime-session and clock gaps
 
-- One mutable graph is constructed at module boot.
-- Play, New Game and Start reuse the same graph.
-- No runtime ID, run ID, session epoch, graph revision or lifecycle revision exists.
-- New Game does not create fresh resources, pressure, apples, construction, roster, inventory or active-session state.
+- One mutable graph is constructed at module boot and reused by Play/New Game/Start.
 - Outcome -> Title -> Play reuses terminal state.
-- RAF, listener, renderer and public host resources have no leases or ordered disposal.
+- RAF, listeners, renderers and host resources have no ordered disposal.
+- RAF submits hard-coded `1 / 60` and ignores elapsed browser time.
+- Automatic and manual steps have no single-writer exclusion.
 
-## Fixed-step clock gaps
+## Route admission gaps
 
-- RAF submits a hard-coded `1 / 60` step and ignores the RAF timestamp.
-- Simulation speed follows callback cadence.
-- Stalls have no catch-up budget or drop/defer policy.
-- No monotonic simulation tick ID, render frame ID or clock revision exists.
-- Automatic and manual steps have no exclusion lease.
-
-## Route-scoped simulation admission gaps
-
-- The graph begins ticking before Play or New Game.
-- Every registered domain tick is invoked on each runtime step.
-- No canonical simulation phase exists.
-- Pause and management screens are routes, not simulation barriers.
-- Pressure can grow on inactive and terminal routes.
-- Active-session mutation checks only `ended`.
-- No route-policy revision, step admission result or domain mutation receipt exists.
+- The graph begins ticking before Play.
+- Every domain ticks on every route.
+- Pause and management screens are not simulation barriers.
+- Pressure can grow outside active gameplay.
+- No route policy revision or step-admission result exists.
 
 ## Randomness and replay gaps
 
 - Apples and pests use process-global `Math.random()`.
-- No run seed, policy version, named stream, cursor or draw receipt exists.
-- Callback cadence changes pest trial count and random advancement.
+- No run seed, named stream, cursor or draw receipt exists.
+- Callback cadence changes pest trials and random advancement.
 - Random string entity IDs prevent stable replay identity.
-- No deterministic replay verifier or first-divergence result exists.
 
 ## Persistence gaps
 
-- Save Select is unreachable and has no authoritative slots or actions.
-- No storage adapter, save/load commands, schema, migration, checksum or slot revision exists.
-- `engine.snapshot()` has no restore inverse and omits clock/random continuation.
-- No candidate graph, load epoch, rollback, corruption quarantine or first restored frame acknowledgement exists.
+- Save Select is unreachable and has no slot authority.
+- No storage adapter, schema, migration, checksum or slot revision exists.
+- Snapshot has no restore inverse and omits clock/random continuation.
+- No load epoch, rollback or first-restored-frame acknowledgement exists.
 
 ## Render and observation gaps
 
-- Canvas and HTML render after the RAF snapshot but publish no typed render result.
-- Command callers receive no frame acknowledgement.
-- Nested command notifications can expose an intermediate state to subscribers.
-- Public observation can advance ahead of visible pixels after a manual tick.
-- No runtime/run/session/route/tick/state/transaction/frame correlation exists.
-- No explicit first-frame, failed-frame or pending-frame state exists.
+- Canvas and HTML publish no typed render result.
+- Commands and movement have no frame acknowledgement.
+- Public observation can advance ahead of visible pixels.
+- No runtime/run/route/tick/state/transaction/input/frame correlation exists.
 - Menus and Outcome can show predecessor-run pixels.
 
 ## Proof and deployment gaps
 
 ```txt
+player-control fixtures: absent
+browser movement smoke: absent
+Pages movement smoke: absent
 runtime-session fixture: absent
-fixed-step cadence fixture: absent
-route suspension fixture: absent
-public-host reachability fixture: absent
-capability admission fixture: absent
-single-writer step fixture: absent
-host revocation fixture: absent
-command transaction fixture: absent
-participant failure/rollback fixture: absent
-idempotency fixture: absent
-single-publication fixture: absent
-result-frame correlation fixture: absent
+fixed-step fixture: absent
+route-suspension fixture: absent
+public-host fixture: absent
+command-transaction fixture: absent
 replay fixture: absent
-save/load roundtrip fixture: absent
-browser host smoke: absent
-Pages gate for these contracts: absent
+save/load fixture: absent
 ```
 
 ## Dependency order
@@ -131,13 +108,14 @@ Pages gate for these contracts: absent
 runtime session instance authority
   -> fixed-step clock authority
   -> route-scoped simulation admission authority
-  -> public capability gateway and reachability
+  -> player-control reachability authority
+  -> public capability gateway
   -> composite command transaction authority
-  -> seeded random and replay authority
-  -> versioned save/load authority
+  -> seeded replay authority
+  -> versioned persistence authority
   -> deployment proof
 ```
 
 ## Do not claim
 
-Do not claim browser commands are atomic, child-result truthful, rollback-safe, idempotent, single-publication or frame-correlated until the corresponding fixtures pass on `main`.
+Do not claim the orchard is explorable, movement is lifecycle-safe, browser controls are frame-correlated or held input is retired until the corresponding fixtures pass on `main`.
