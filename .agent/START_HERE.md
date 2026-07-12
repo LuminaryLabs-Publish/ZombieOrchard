@@ -2,122 +2,199 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Updated:** `2026-07-12T06-19-56-04-00`
+**Updated:** `2026-07-12T07-51-04-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a dependency-free orchard survival/economy shell built from a mutable kit runtime, 12 interface domains, gameplay services, canvas and HTML projection, diagnostics, Node smoke proof, static build and Pages deployment.
 
-The current audit isolates canvas render-surface authority. The world canvas fills the viewport, but every frame rewrites `canvas.width` and `canvas.height` from CSS dimensions, ignores device pixel ratio, applies no physical-pixel budget and projects the fixed `720 x 560` world without a fit or camera policy. Small viewports can hide valid gameplay positions, while high-DPI displays receive a low-resolution buffer.
-
-This run selected the repository because the `2026-07-12T06-11-18-04-00` source audit was newer than central tracking. It adds a fresh timestamped breakdown, aligns the machine registry and closes the repo-local/central documentation gap without changing runtime code.
+The current audit isolates HTML interface projection and focus authority. `src/start.js` invokes the HTML renderer every animation frame, and `src/renderer/html-interface-renderer.js` replaces the complete `#ui-root` subtree with `innerHTML` even when the route and values are unchanged. This can destroy keyboard focus every frame, cause continuous DOM and accessibility-tree churn, and provides no projection revision or visible-interface receipt.
 
 ## Plan ledger
 
-**Goal:** make CSS viewport state, physical canvas resolution, world projection and the visible frame one bounded and revisioned transaction, while keeping repo-local and central audit state synchronized.
+**Goal:** make HTML projection a revisioned transaction that preserves focus and accessibility state, performs no mutation when the view is unchanged, encodes content safely and proves the first visible DOM revision.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
-- [x] Detect the newer repo-local ZombieOrchard canvas audit.
-- [x] Select and modify only `ZombieOrchard`.
-- [x] Trace page/CSS ownership, browser boot, per-frame canvas sizing, world projection, HTML projection and smoke proof.
-- [x] Identify the interaction loop, all domains, all 27 implemented kits and offered services.
-- [x] Confirm drawing-buffer dimensions are assigned every rendered frame.
-- [x] Confirm DPR, pixel-budget, resize-generation and surface-revision authority are absent.
-- [x] Confirm fixed world coordinates can exceed a small viewport.
-- [x] Define canvas surface, allocation, projection, commit and visible-frame contracts.
-- [x] Add a new timestamped architecture and system audit family.
-- [x] Refresh the kit registry and route this entrypoint to the current run.
+- [x] Select only `ZombieOrchard` as the oldest eligible repository.
+- [x] Trace browser boot, RAF ownership, snapshots, route state, HTML string construction, click delegation and DOM replacement.
+- [x] Identify the complete interaction loop, all domains, all 27 implemented kits and offered services.
+- [x] Confirm the entire UI subtree is replaced on every animation frame.
+- [x] Confirm no projection fingerprint, no-op path, focus lease or accessibility continuity policy exists.
+- [x] Confirm `text()` converts values to strings but does not escape HTML or attribute syntax.
+- [x] Define view-model, escaping, diff, commit, focus-restoration and visible-interface contracts.
+- [x] Add timestamped architecture, render, gameplay, interaction, HTML-interface and deployment audits.
+- [x] Refresh required root `.agent` files and the machine registry.
 - [x] Push documentation directly to `main`; create no branch or pull request.
-- [ ] Implement and execute render-surface fixtures.
+- [ ] Runtime implementation and executable browser fixtures remain future work.
 
-## Current interaction loop
+## Selection
+
+```txt
+ZombieOrchard      2026-07-12T06-19-56-04-00 selected oldest
+TheUnmappedHouse   2026-07-12T06-30-34-04-00
+AetherVale         2026-07-12T06-41-32-04-00
+MyCozyIsland       2026-07-12T06-51-27-04-00
+TheOpenAbove       2026-07-12T07-00-48-04-00
+PrehistoricRush    2026-07-12T07-09-49-04-00
+IntoTheMeadow      2026-07-12T07-19-47-04-00
+PhantomCommand     2026-07-12T07-29-32-04-00
+HorrorCorridor     2026-07-12T07-41-06-04-00
+TheCavalryOfRome   excluded
+```
+
+Only `LuminaryLabs-Publish/ZombieOrchard` is in scope for Publish changes.
+
+## Interaction loop
 
 ```txt
 module boot
-  -> create mutable engine graph
-  -> create #world canvas renderer and HTML renderer
-  -> expose raw engine through window.GameHost
-  -> start draw()
+  -> create the mutable engine graph
+  -> create the world canvas and HTML interface renderer
+  -> install one delegated click listener on #ui-root
+  -> expose window.GameHost
+  -> call draw()
 
-browser frame
+every RAF callback
   -> engine.tick(1 / 60)
-  -> read canvas CSS width/height
-  -> fall back to window dimensions when zero
-  -> assign canvas.width and canvas.height
-  -> draw raw orchard coordinates around canvas center
-  -> replace HTML UI
-  -> schedule next RAF
+  -> produce a fresh deep-cloned snapshot
+  -> redraw the world canvas
+  -> call ui.render(snapshot)
+  -> build a complete HTML string for the active route
+  -> assign root.innerHTML
+  -> discard every predecessor DOM node
+  -> schedule the next RAF
 
-viewport/DPR change
-  -> no explicit observation command or generation
-  -> next frame samples ambient CSS dimensions
-  -> DPR is ignored
-  -> drawing buffer resets without a typed result
+keyboard-focus path
+  -> user focuses a button
+  -> next RAF replaces the focused button node
+  -> browser focus falls back or becomes unstable
+  -> no focus token, keyed node, restoration result or typed failure exists
+
+content path
+  -> preset/runtime values are converted with String(...)
+  -> values are interpolated into HTML and attributes
+  -> no HTML or attribute escaping policy is applied
 ```
 
 ## Main findings
 
 ```txt
-canvas drawing buffer resets every rendered frame
-unchanged frames have no resize short circuit
-CSS pixels are treated as physical pixels
-window.devicePixelRatio is not observed
-no maximum physical-pixel count or fallback tier exists
-no resize generation or stale-result rejection exists
-world coordinates are centered but not fitted to the viewport
-valid player, pest and apple positions can be outside small canvases
-surface dimensions and projection are absent from GameHost snapshots
-Node smoke does not instantiate, resize or inspect a canvas
+root.innerHTML is assigned on every UI render
+ui.render executes on every RAF callback
+unchanged menu/HUD state has no no-op projection path
+all predecessor button/card nodes are discarded every frame
+focused controls can be replaced before the next keyboard action
+no stable action-node key or focus restoration result exists
+no DOM surface ID, projection revision or mutation receipt exists
+no accessibility-tree update policy exists
+no HTML text escaping exists
+no HTML attribute escaping exists
+no projection result is correlated with the world frame
+Node smoke does not instantiate a DOM or test focus/mutation behavior
 ```
 
-## Current ledge
+## Current authority boundary
 
 ```txt
-ZombieOrchard Canvas Render Surface Authority
-+ Bounded DPR and Pixel Budget
-+ Resize Generation and Commit Result
-+ World Fit / Membership Policy
-+ Unchanged-Frame No-Resize Proof
-+ Browser and Pages Viewport Matrix
+zombie-orchard-html-interface-projection-authority-domain
 ```
 
-## Domains and services
+Required flow:
 
 ```txt
-browser page shell, CSS viewport and recursive RAF
-runtime registration, commands, ticks, snapshots, subscriptions and publication
+committed state snapshot
+  -> derive immutable InterfaceViewModel
+  -> encode all text and attribute values
+  -> fingerprint route, actions, cards and HUD values
+  -> return a typed no-op when the fingerprint is unchanged
+  -> capture focus/selection lease
+  -> prepare keyed DOM changes
+  -> commit one interface projection revision
+  -> restore or intentionally move focus under a named policy
+  -> publish projection and accessibility results
+  -> acknowledge the first visible frame using the new revision
+```
+
+## Domains in use
+
+```txt
+browser document, DOM surface and full-window CSS ownership
+module boot, recursive RAF and public GameHost
+runtime registration, commands, ticks, events, snapshots, subscriptions and publication
 12 interface-screen domains and interface composition
-resources, pressure, orchard, construction, roster, inventory and active gameplay
-canvas CSS rectangle and viewport observation
-2D drawing-buffer allocation and context-state lifecycle
-DPR, capability and physical-pixel policy
-world projection, fit and viewport membership
-resize generation, coalescing, commit, rollback and observation
-canvas world rendering and HTML UI projection
-surface/state/frame diagnostics
-Node smoke, static build, Pages deployment and central tracking
+resource ledger and pressure field
+orchard trees, apples and refill
+construction, roster and inventory
+active-session movement, phases, pests, damage, score and failure
+canvas world rendering and canvas-surface authority
+HTML view-model construction and DOM projection
+HTML text and attribute encoding
+DOM mutation planning, no-op detection, commit and rollback
+focus, selection and accessibility continuity
+interface projection identity, revision, observation and frame correlation
+Node smoke, static build, Pages deployment and central audit tracking
 ```
 
-Implemented services remain provided by 27 kits covering runtime composition, interface routing, orchard/economy/survival state, canvas/HTML rendering, diagnostics, smoke proof, static build and Pages deployment.
+## Implemented kits
+
+```txt
+kit-runtime
+scoped-interface-domain-kit
+entry-domain-kit
+session-select-domain-kit
+run-setup-domain-kit
+active-session-domain-kit
+interrupt-domain-kit
+construction-domain-kit
+exchange-domain-kit
+roster-domain-kit
+inventory-domain-kit
+knowledge-domain-kit
+preferences-domain-kit
+outcome-domain-kit
+interface-composition-kit
+resource-ledger-kit
+pressure-field-kit
+orchard-world-kit
+construction-runtime-kit
+roster-runtime-kit
+inventory-runtime-kit
+world-canvas-render-kit
+html-interface-render-kit
+game-host-diagnostics-kit
+smoke-fixture-kit
+static-build-copy-kit
+pages-deploy-kit
+```
+
+## Offered services
+
+| Kit group | Services |
+|---|---|
+| runtime | registration, domain creation, command dispatch, delta clamp, ticks, events, snapshots, subscriptions and synchronous publication |
+| interface | screen state, action descriptors, activation, route movement, nested dispatch and automatic Outcome routing |
+| game | resources, pressure, trees, apples, collection refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
+| render | canvas world drawing, HUD and route HTML, card projection, delegated click handling and full-subtree `innerHTML` replacement |
+| diagnostics/proof/deploy | raw engine publication, snapshot readback, unrestricted manual tick, Node smoke, static copy and Pages deployment |
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-12T06-19-56-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-12T06-19-56-04-00.md
+.agent/trackers/2026-07-12T07-51-04-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-12T07-51-04-04-00.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/architecture-audit/2026-07-12T06-19-56-04-00-canvas-render-surface-authority-sync-dsk-map.md
-.agent/render-audit/2026-07-12T06-19-56-04-00-drawing-buffer-world-projection-proof-gap.md
-.agent/gameplay-audit/2026-07-12T06-19-56-04-00-small-viewport-offscreen-gameplay-loop.md
-.agent/interaction-audit/2026-07-12T06-19-56-04-00-viewport-observation-surface-commit-map.md
-.agent/render-surface-audit/2026-07-12T06-19-56-04-00-dpr-budget-projection-frame-contract.md
-.agent/deploy-audit/2026-07-12T06-19-56-04-00-browser-viewport-matrix-gate.md
+.agent/architecture-audit/2026-07-12T07-51-04-04-00-html-interface-projection-authority-dsk-map.md
+.agent/render-audit/2026-07-12T07-51-04-04-00-per-frame-dom-replacement-visible-interface-gap.md
+.agent/gameplay-audit/2026-07-12T07-51-04-04-00-hud-route-projection-loop.md
+.agent/interaction-audit/2026-07-12T07-51-04-04-00-focus-preserving-interface-commit-map.md
+.agent/html-interface-audit/2026-07-12T07-51-04-04-00-escaping-diff-focus-contract.md
+.agent/deploy-audit/2026-07-12T07-51-04-04-00-dom-focus-accessibility-fixture-gate.md
 ```
 
 ## Retained prerequisite audits
@@ -132,7 +209,7 @@ composite command transaction:     2026-07-11T23-48-14-04-00
 player-control reachability:       2026-07-12T01-30-07-04-00
 fixed-step clock authority:        2026-07-12T03-11-51-04-00
 frame publication fault handling:  2026-07-12T04-38-12-04-00
-canvas source audit:               2026-07-12T06-11-18-04-00
+canvas render surface:             2026-07-12T06-19-56-04-00
 ```
 
 ## Guardrails
@@ -141,9 +218,8 @@ canvas source audit:               2026-07-12T06-11-18-04-00
 Push only to main.
 Create no branch or pull request.
 Do not work on TheCavalryOfRome.
-Do not multiply by DPR without a bounded pixel budget.
-Do not mutate canvas dimensions on every unchanged frame.
-Do not let world projection depend on unrecorded ambient viewport state.
-Do not claim a visible surface from allocation or RAF scheduling alone.
-Do not claim viewport-safe gameplay until the browser matrix passes.
+Do not replace focused DOM nodes on an unchanged frame.
+Do not interpolate unencoded values into HTML or attributes.
+Do not treat a string build or innerHTML assignment as visible-frame proof.
+Do not claim keyboard or screen-reader continuity until browser fixtures pass.
 ```
