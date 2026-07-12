@@ -1,124 +1,128 @@
 # Next steps — ZombieOrchard
 
-**Timestamp:** `2026-07-12T04-38-12-04-00`
+**Timestamp:** `2026-07-12T06-11-18-04-00`
 
 ## Summary
 
-Preserve runtime-session, clock, route, input, capability, and transaction boundaries, then make publication and rendering fault-contained. A committed command result must not be rewritten by an observer exception, and a subscriber or renderer failure must produce an explicit cycle result instead of silently terminating the RAF chain.
+Preserve the existing runtime, clock, route, capability, transaction and frame-fault boundaries, then extract canvas sizing and world projection from `world.render()`. The next implementation should mutate the drawing buffer only after a bounded resize plan is admitted and should prove the first frame that uses the committed surface revision.
 
 ## Plan ledger
 
-**Goal:** add deterministic post-commit delivery and render-stage handling without hiding critical simulation failures or allowing stale observers to control loop liveness.
+**Goal:** implement a bounded canvas surface without coupling gameplay state to ambient browser dimensions or introducing unbounded high-DPI allocation.
 
 - [ ] Preserve runtime session and callback generation fencing.
 - [ ] Preserve fixed-step writer and route-step admission.
-- [ ] Preserve public capability and composite transaction boundaries.
-- [ ] Add monotonically increasing frame-cycle and publication IDs.
-- [ ] Create one detached snapshot per committed publication cycle.
-- [ ] Replace raw listeners with identified observer leases.
-- [ ] Invoke observers independently and collect typed delivery results.
-- [ ] Define quarantine/revocation policy for repeated observer failures.
-- [ ] Return committed command results independently of delivery failures.
-- [ ] Add typed world-render and HTML-render stage results.
-- [ ] Classify complete, partial, failed, recovery, and stopped frame cycles.
-- [ ] Move successor scheduling into an explicit finalization stage.
-- [ ] Add bounded fault journal and detached observation.
-- [ ] Acknowledge visible frames only after required surfaces commit.
-- [ ] Add source, built-artifact, browser, and Pages fault fixtures.
+- [ ] Preserve public capability, transaction and frame-cycle boundaries.
+- [ ] Add stable canvas surface identity and revision.
+- [ ] Add normalized viewport observations and resize generations.
+- [ ] Add DPR normalization, capability limits and a product pixel budget.
+- [ ] Add a deterministic render-surface plan and typed commit result.
+- [ ] Skip drawing-buffer mutation when dimensions are unchanged.
+- [ ] Read back actual canvas dimensions after preparation.
+- [ ] Add a declared world projection policy for the nominal `720 x 560` orchard.
+- [ ] Add world membership results for player, pests and collectables.
+- [ ] Add rollback/preservation behavior for failed preparation.
+- [ ] Publish bounded surface observations and a visible-frame receipt.
+- [ ] Add source, built-artifact, browser and Pages surface fixtures.
 
 ## Immediate safe ledge
 
-1. Wrap listener invocation in a delivery adapter that never throws into the command/tick caller.
-2. Assign observer IDs and return revocable leases.
-3. Preserve the original command result and attach a separate publication summary.
-4. Wrap world and HTML renderers in independently typed stage results.
-5. Schedule the successor cycle from `finally` or transition to an explicit stopped/faulted state.
-6. Add subscriber-throw and renderer-throw fixtures before introducing automatic recovery.
-7. Keep critical simulation-stage failure separate from recoverable observer/render failure.
+1. Extract dimension calculation from `world-canvas.js` into a pure `planRenderSurface()` function.
+2. Introduce `CanvasRenderSurface` state with `surfaceId`, `surfaceRevision`, CSS dimensions, applied DPR and actual drawing-buffer dimensions.
+3. Define a product pixel budget before applying DPR.
+4. Add equality checks so unchanged frames perform no dimension writes.
+5. Select and encode a world-fit policy for the `720 x 560` simulation space.
+6. Make `world.render()` consume a committed surface descriptor rather than ambient browser dimensions.
+7. Add pure fixtures before wiring browser observation.
+8. Add browser and Pages proof before claiming visual correctness.
 
 ## Required runtime flow
 
 ```txt
-committed command or step
-  -> commandCommitRevision / stepRevision
-  -> one detached snapshot
-  -> publicationCycleId
-  -> observer deliveries
-       -> accepted
-       -> failed and isolated
-       -> quarantined/revoked by policy
-  -> world render stage
-  -> HTML render stage
-  -> frame-cycle classification
-  -> schedule successor or commit explicit stop
-  -> bounded fault observation
-  -> visible-frame receipt when required surfaces succeed
+browser viewport adapter
+  -> ViewportObservation
+  -> resizeGeneration
+  -> RenderSurfacePlan
+       normalized CSS dimensions
+       requested/applied DPR
+       bounded physical dimensions
+       pixel budget and fallback tier
+       world scale and offset
+  -> preparation
+       skip when unchanged
+       write candidate dimensions
+       read actual dimensions
+  -> RenderSurfaceCommitResult
+       committed new revision
+       preserved predecessor
+       or rejected stale/invalid plan
+  -> world render against committed revision
+  -> visible surface/frame receipt
 ```
 
 ## Full implementation sequence
 
-1. Add frame-cycle and publication identity modules.
-2. Replace `Set<Function>` with an observer registry carrying IDs, generations, and leases.
-3. Add detached snapshot construction at the publication barrier.
-4. Add per-observer try/catch and typed delivery results.
-5. Add observer failure counts and explicit quarantine policy.
-6. Ensure `engine.command()` returns the domain/transaction result even when publication has failures.
-7. Add a publication summary to command and step observations without mutating the original result meaning.
-8. Wrap `world.render()` and `ui.render()` with typed stage adapters.
-9. Define required versus optional render surfaces.
-10. Add frame-cycle classification and visible-frame receipt.
-11. Move next-frame scheduling into explicit finalization.
-12. Add recovery generation and restart policy for recoverable render faults.
-13. Route critical tick failures into explicit FAULTED/STOPPED lifecycle state.
-14. Add bounded fault journal and public read model.
-15. Add pure and browser fixtures before claiming recovery.
+1. Add `src/render/canvas-surface-state.js` for IDs, revisions and immutable descriptors.
+2. Add `src/render/viewport-observation.js` for CSS rectangle, DPR, orientation and visibility normalization.
+3. Add `src/render/render-surface-policy.js` for DPR cap, pixel budget and fallback tiers.
+4. Add `src/render/world-projection.js` for nominal bounds, scale, offset and membership.
+5. Update `createWorldCanvas()` to retain one committed surface and expose typed resize/render operations.
+6. Remove unconditional `canvas.width` and `canvas.height` writes from each frame.
+7. Add ResizeObserver/window adapters that submit ordered resize commands.
+8. Coalesce observations and reject stale generations.
+9. Read back actual canvas dimensions before committing a revision.
+10. Add surface observation to a restricted GameHost read model.
+11. Correlate world render result with frame-cycle and state revision.
+12. Add pure viewport/DPR/world-fit fixtures.
+13. Add a browser viewport matrix and resize/orientation smoke.
+14. Run the same matrix against `dist` and GitHub Pages.
 
 ## Target files
 
 ```txt
-src/kits/runtime.js
-src/start.js
 src/renderer/world-canvas.js
-src/renderer/html-interface-renderer.js
-src/runtime/observer-registry.js
-src/runtime/publication-cycle.js
-src/runtime/frame-cycle.js
-src/runtime/frame-fault-policy.js
-tests/observer-delivery.fixture.mjs
-tests/command-publication-result.fixture.mjs
-tests/frame-cycle-liveness.fixture.mjs
-scripts/smoke-frame-fault-recovery.mjs
+src/start.js
+src/styles.css
+src/render/canvas-surface-state.js
+src/render/viewport-observation.js
+src/render/render-surface-policy.js
+src/render/world-projection.js
+tests/render-surface.fixture.mjs
+tests/world-projection.fixture.mjs
+scripts/smoke-canvas-resize.mjs
 package.json
 ```
 
 ## Policy decisions
 
 ```txt
-Are world and HTML surfaces both required for a committed visible frame?
-Does one observer failure trigger immediate revocation or a bounded threshold?
-Can a failed HTML frame continue rendering the world canvas?
-Can a failed world frame continue rendering route UI?
-Which failures are recoverable without rebuilding the runtime session?
-Which failures must transition the runtime to FAULTED or STOPPED?
-How is a recovery generation exposed to diagnostics?
-How many fault records are retained?
+What is the supported minimum CSS viewport?
+What is the maximum physical pixel count?
+What is the maximum product DPR?
+Is the full orchard contained, camera-followed or handled through a hybrid policy?
+Are world and HTML surfaces both required for a visible-frame receipt?
+How are zero-size or hidden canvas observations handled?
+Which fallback tiers are acceptable?
+Does orientation change preserve the same runtime session and simulation state?
+How many surface journal records are retained?
 ```
 
 ## Required fixtures
 
 ```txt
-accepted-command + throwing observer -> command remains committed and result returns
-throwing first observer -> later observers still receive one snapshot
-observer failure -> typed delivery result with observer ID
-repeated observer failure -> deterministic quarantine/revocation
-throwing observer during RAF -> next cycle remains scheduled or explicit stop result exists
-world renderer throw -> HTML policy result and successor-cycle result are deterministic
-HTML renderer throw -> world result remains observable
-both renderers throw -> explicit failed cycle, no false visible-frame receipt
-critical tick throw -> explicit FAULTED/STOPPED result, no silent continuation
-recovery generation rejects stale callbacks
-visible frame cites publicationCycleId and committed state revision
-source/built/browser/Pages behavior parity
+positive CSS dimensions normalize deterministically
+zero/non-finite dimensions reject without mutation
+DPR 1/2/3 plans respect the same pixel budget
+4K CSS at DPR 2 selects a bounded fallback
+600 unchanged frames perform zero resize commits
+resize revision increments once per accepted change
+stale generation cannot replace a newer surface
+allocation/readback mismatch preserves predecessor
+world corners follow the declared projection policy
+player and required interaction targets have explicit viewport membership
+portrait/landscape transition preserves simulation coordinates
+visible frame cites state and surface revisions
+source/built/browser/Pages behavior is equivalent
 ```
 
 ## Dependency order
@@ -130,9 +134,10 @@ runtime session
   -> public capability gateway
   -> composite command transaction
   -> frame-publication fault containment
+  -> canvas render-surface authority
   -> replay and persistence
 ```
 
 ## Do not claim
 
-Do not claim observer isolation, command-result preservation, automatic recovery, frame-loop liveness, or publication-to-visible-frame parity until the corresponding fixtures pass on `main`.
+Do not claim high-DPI clarity, bounded resolution, stable resize behavior, viewport-safe gameplay, canvas/HTML parity or surface-to-visible-frame correlation until the corresponding fixtures pass on `main`.
