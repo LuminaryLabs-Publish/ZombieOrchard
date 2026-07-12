@@ -3,92 +3,96 @@
 ## Status
 
 ```txt
-last aligned: 2026-07-11T21-40-49-04-00
-status: route-scoped-simulation-admission-authority-audited
+last aligned: 2026-07-11T23-41-55-04-00
+status: public-capability-gateway-and-host-revocation-authority-audited
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: pending until central commit
+central ledger sync: complete
 ```
 
 ## Summary
 
-`ZombieOrchard` renders interface routes independently from simulation admission. `src/start.js` calls `engine.tick(1 / 60)` on every RAF callback. `src/kits/runtime.js` then ticks every domain without consulting the active route, lifecycle or pause state. `interface-composition` changes only the visible route.
+`src/start.js` publishes the complete mutable kit runtime as `window.GameHost.engine`. The public object exposes context, the domain table, kit registration, command dispatch, ticking, snapshots and subscriptions, plus another unrestricted `tick()` helper.
 
-The result is hidden mutation: pressure grows before Play and while menus are open; pests, pursuit and damage may continue while Pause or management screens cover the world; Outcome freezes only the active-session domain through `ended`, while pressure still advances.
+The current snapshot implementations are generally clone-oriented, but the public host is not a read-only committed observation surface. It lets diagnostics replace domain entries, invoke domain APIs or commands directly, advance one domain independently, mutate runtime clock/event fields or add extra full-graph steps beside the active browser RAF.
 
 ## Plan ledger
 
-**Goal:** define one route/lifecycle admission policy that decides which simulation domains may advance, produces a committed step receipt, and correlates that decision with the visible interface and rendered frame.
+**Goal:** define one public capability gateway that exposes only versioned observation, allowlisted commands, explicit fixture stepping and revocable subscriptions while keeping the engine graph unreachable.
 
-- [x] Compare all accessible Publish repositories and central ledgers.
+- [x] Compare the full Publish inventory with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Skip active same-window `PhantomCommand` writes.
-- [x] Select only `ZombieOrchard` as the oldest stable eligible repository.
-- [x] Read boot, runtime, composition, scoped interfaces, gameplay, preset and renderers.
-- [x] Identify the interaction loop, all domains, implemented kits and offered services.
-- [x] Trace hidden mutation across Entry, Run Setup, Pause, management, Title, Settings and Outcome.
-- [x] Define route policy, simulation phase, step admission, result, journal and fixture contracts.
-- [x] Add architecture, render, gameplay, interaction, simulation-admission and deploy audits.
-- [ ] Implement the authority and run executable fixtures.
+- [x] Select only ZombieOrchard as the oldest eligible central entry.
+- [x] Read browser boot, game construction, runtime, composition, scoped interfaces, gameplay domains, HTML bindings and smoke proof.
+- [x] Identify the interaction loop, domains, all implemented kits and services.
+- [x] Trace public reachability through engine, context, domains, APIs, registration, commands, ticks and subscriptions.
+- [x] Define the capability, admission, read-model, frame-receipt, duplicate-registration and revocation contracts.
+- [x] Add architecture, render, gameplay, interaction, capability and deploy audits.
+- [ ] Implement the gateway and run fixtures.
 
 ## Interaction loop
 
 ```txt
 module boot
-  -> create retained graph
-  -> start RAF immediately
+  -> create graph and renderers
+  -> publish raw GameHost
+  -> start RAF
 
 RAF
   -> engine.tick(1 / 60)
-  -> pressure-field.tick()
-  -> active-session.tick()
-  -> interface-composition.tick()
-  -> snapshot
-  -> world canvas render
-  -> interface render
+  -> all-domain mutation
+  -> domain snapshot
+  -> canvas render
+  -> HTML render
 
-interface activation
-  -> activate action on visible route
-  -> optional nested command
-  -> move composition.active
-  -> no simulation phase transition
+UI command
+  -> delegated DOM binding
+  -> engine.command(...)
+  -> optional nested composition command
+  -> notify subscribers
+
+public diagnostic
+  -> GameHost.engine or GameHost.tick
+  -> unrestricted graph access or stepping
 ```
 
 ## Source-backed findings
 
-1. `src/start.js` begins ticking immediately after module evaluation, before Play or New Game.
-2. `createKitRuntime().tick()` iterates every registered domain on every admitted call.
-3. `pressure-field.tick()` always increments `rowPressure` and `curse`.
-4. `active-session.tick()` checks only `state.ended`; it does not check the visible route or pause state.
-5. `interface-composition` stores `active` and `previous` only and has no simulation policy.
-6. The Pause action routes to `interrupt`, but the RAF and gameplay ticks continue.
-7. Construction, Market, Roster, Inventory and Codex are interface routes, not simulation barriers.
-8. Entry, Run Setup and Settings can age the retained graph before gameplay begins.
-9. Outcome stops active-session mutation only because `ended` is true; pressure continues.
-10. `GameHost.tick(dt)` can advance the same graph regardless route.
-11. Canvas rendering continues on every route and carries no route/phase/tick/frame receipt.
-12. The smoke test does not assert menu idleness, pause suspension or management-screen policy.
+1. `window.GameHost` contains the raw `engine`, `getState()` and unrestricted `tick(dt)`.
+2. The engine publicly exposes `ctx`, `domains`, `addKit`, `command`, `tick`, `snapshot` and `subscribe`.
+3. `ctx` contains mutable frame, elapsed, delta, events, domains and a back-reference to the engine.
+4. `addKit()` assigns by domain ID without duplicate protection; a duplicate can overwrite the previous entry.
+5. Game-domain objects expose internal `api` functions for resource gain/payment, pressure adjustment and apple collection.
+6. Direct domain API calls mutate state without runtime `notify()`.
+7. Direct domain command calls bypass the runtime command boundary and publication.
+8. Direct domain tick calls can advance partial gameplay state.
+9. Public full-graph ticks can run beside the production RAF without a single-writer lease.
+10. Public commands have no capability, host-generation, session, lifecycle, route or expected-revision identity.
+11. Public snapshots omit runtime clock, session, route revision, simulation tick and render-frame receipts.
+12. Subscriptions have no capability lease identity or forced host-level retirement.
+13. The host has no revocation state for dispose, session replacement or fatal failure.
+14. The Node smoke test never instantiates or inspects the browser-global host.
 
 ## Domains in use
 
 ```txt
-browser module boot and RAF host
-runtime/run/session lifecycle authority: missing
-fixed-step clock authority: missing
+browser module boot and window-global publication
+runtime graph registration and mutable context
+commands, ticks, events, snapshots, subscriptions and publication
+runtime/session lifecycle authority: missing
+fixed-step and single-writer clock authority: missing
 route-scoped simulation admission authority: missing
-kit/domain registration and graph construction
-command, tick, event, snapshot, subscription and publication routing
+public capability gateway/revocation authority: missing
 12 interface-screen domains
-interface composition and automatic Outcome routing
-resource ledger
-pressure field
-orchard world and apple lifecycle
-construction, roster and inventory
+interface composition and nested dispatch
+resource ledger and pressure field
+orchard world and random apple lifecycle
+construction, roster and inventory runtimes
 active-session movement, phases, pests, damage, score and failure
-canvas and HTML presentation
-GameHost diagnostics
-smoke, static build and Pages deployment
+world-canvas and HTML projection
+Node smoke proof
+static build and Pages deployment
 ```
 
 ## Implemented kits and services
@@ -98,12 +102,12 @@ smoke, static build and Pages deployment
 | `kit-runtime` | registration, domain creation, command dispatch, delta clamping, elapsed/frame mutation, all-domain tick, events, snapshots, subscriptions and publication |
 | interface kits | screen state, actions, selection, fields, activation, routing, nested dispatch and automatic Outcome routing |
 | `resource-ledger-kit` | affordability, payment, gain and resource projection |
-| `pressure-field-kit` | clamped pressure channels and unconditional per-tick growth |
+| `pressure-field-kit` | pressure adjustment, clamping and unconditional per-tick growth |
 | `orchard-world-kit` | tree grid, random apple population, nearest collection and refill |
-| construction/roster/inventory kits | build, hire and equip mutations |
-| `active-session-domain-kit` | movement, collection, phase changes, pests, pursuit, damage, score and terminal failure |
-| render kits | orchard canvas, HUD, generic screens, cards, delegated actions and per-frame DOM replacement |
-| diagnostics/proof/deploy | raw engine, snapshot, manual tick, smoke proof, static copy and Pages chain |
+| construction/roster/inventory kits | build, hire, equip and state projection |
+| `active-session-domain-kit` | movement, collection, phase changes, pest spawn/pursuit, damage, score and terminal failure |
+| render kits | orchard canvas, HUD, route screens, cards, delegated actions and per-frame DOM replacement |
+| diagnostics/proof/deploy | raw engine publication, snapshot, manual tick, smoke proof, static copy and Pages chain |
 
 ## Complete implemented kit inventory
 
@@ -140,52 +144,71 @@ pages-deploy-kit
 ## Required composed domain
 
 ```txt
-zombie-orchard-route-scoped-simulation-admission-authority-domain
-  -> simulation-phase-state-kit
-  -> route-simulation-policy-kit
-  -> domain-tick-classification-kit
-  -> simulation-step-admission-kit
-  -> simulation-step-plan-kit
-  -> inactive-run-suspension-kit
-  -> pause-resume-admission-kit
-  -> management-route-time-policy-kit
-  -> terminal-freeze-policy-kit
+zombie-orchard-public-capability-gateway-authority-domain
+  -> public-host-contract-kit
+  -> host-capability-manifest-kit
+  -> capability-id-kit
+  -> capability-lease-kit
+  -> public-read-model-kit
+  -> host-observation-revision-kit
+  -> public-command-envelope-kit
+  -> public-command-allowlist-kit
+  -> command-payload-schema-kit
+  -> command-session-admission-kit
+  -> single-writer-step-lease-kit
   -> manual-step-capability-kit
-  -> simulation-step-receipt-kit
-  -> route-tick-frame-correlation-kit
-  -> simulation-admission-journal-kit
-  -> route-suspension-fixture-kit
-  -> hidden-mutation-fixture-kit
+  -> public-command-result-kit
+  -> host-frame-receipt-kit
+  -> duplicate-domain-registration-guard-kit
+  -> subscriber-lease-kit
+  -> host-revocation-kit
+  -> capability-journal-kit
+  -> public-host-observation-kit
+  -> public-host-capability-fixture-kit
 ```
 
-## Required step transaction
+## Required public contract
 
 ```txt
-StepCommand
-  -> admit runtimeId, runId, sessionEpoch and lifecycle
-  -> read committed interface route and route revision
-  -> resolve explicit route simulation policy
-  -> classify domains as simulation, presentation or inactive
-  -> admit bounded fixed steps only when policy permits
-  -> commit one simulationTickId and domain receipts
-  -> render canvas and HTML from the same committed receipt
-  -> acknowledge route, simulation phase, tick and frame
+GameHost {
+  apiVersion
+  hostGeneration
+  capabilityRevision
+  capabilities()
+  observe()
+  command(envelope)
+  subscribe(listener) -> lease
+  revoke(reason)
+}
 ```
 
-Rejected or suspended steps must not mutate pressure, pests, player condition, score or other run state. Resume must not synthesize hidden catch-up unless an explicit product policy admits it.
+The public object must not contain or return:
 
-## Route policy baseline
+```txt
+engine
+ctx
+domains
+domain objects
+domain APIs
+addKit
+raw tick
+renderer objects
+DOM nodes
+```
 
-| Route | Safe default |
-|---|---|
-| entry | no run simulation |
-| session-select | no run simulation |
-| run-setup | no run simulation |
-| active-session | simulation active |
-| interrupt | simulation suspended |
-| construction/exchange/roster/inventory/knowledge | explicit policy; suspend for current prototype |
-| preferences | no run simulation |
-| outcome | terminal mutation suspended |
+## Required command transaction
+
+```txt
+PublicCommandEnvelope
+  -> host-generation admission
+  -> capability lease admission
+  -> session/lifecycle/route admission
+  -> allowlist and payload-schema validation
+  -> single-writer clock admission when time advances
+  -> composite command transaction
+  -> typed result
+  -> render-frame acknowledgement or explicit headless receipt
+```
 
 ## Ordered safe ledges
 
