@@ -1,31 +1,32 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-11T20-03-22-04-00",
-  "status": "versioned-save-load-authority-audited",
+  "updatedAt": "2026-07-11T21-40-49-04-00",
+  "status": "route-scoped-simulation-admission-authority-audited",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
     "accessibleRepositoryCount": 10,
     "eligibleRepositoryCount": 9,
-    "reason": "oldest eligible central ledger timestamp"
+    "reason": "oldest stable eligible repository after active same-window PhantomCommand writes were detected"
   },
   "safeLedges": [
     "Runtime Session Instance Authority",
     "Fixed-Step Clock Authority",
+    "Route-Scoped Simulation Admission Authority",
     "Public Capability Gateway and Reachability",
     "Composite Command Transaction Authority",
     "Seeded Random and Replay Authority",
     "Versioned Save / Load Authority"
   ],
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-11T20-03-22-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-11T20-03-22-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-11T20-03-22-04-00-versioned-save-load-authority-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-11T20-03-22-04-00-save-slot-load-result-frame-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T20-03-22-04-00-play-new-game-save-select-continuity-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-11T20-03-22-04-00-save-load-slot-command-result-map.md",
-    "persistenceAudit": ".agent/persistence-audit/2026-07-11T20-03-22-04-00-versioned-slot-migration-restore-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-11T20-03-22-04-00-persistence-roundtrip-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-11T21-40-49-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-11T21-40-49-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-11T21-40-49-04-00-route-scoped-simulation-admission-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-11T21-40-49-04-00-route-simulation-frame-correlation-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T21-40-49-04-00-hidden-route-simulation-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-11T21-40-49-04-00-route-phase-command-admission-map.md",
+    "simulationAdmissionAudit": ".agent/simulation-admission-audit/2026-07-11T21-40-49-04-00-route-policy-tick-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-11T21-40-49-04-00-route-suspension-fixture-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -59,66 +60,43 @@
   "services": {
     "kit-runtime": ["registration", "domain creation", "commands", "ticks", "events", "snapshots", "subscriptions", "publication"],
     "interface-kits": ["screen state", "actions", "selection", "fields", "activation", "routing", "nested dispatch", "automatic Outcome routing"],
-    "game-kits": ["resources", "pressure", "trees and apples", "apple population", "collection refill", "construction", "hiring", "equipment", "movement", "phases", "pest admission and placement", "damage", "score", "failure"],
+    "game-kits": ["resources", "pressure", "trees and apples", "collection refill", "construction", "hiring", "equipment", "movement", "phases", "pests", "damage", "score", "failure"],
     "render-kits": ["orchard canvas", "HUD", "generic screen HTML", "slot-card projection", "delegated bindings", "per-frame DOM replacement"],
-    "diagnostics-proof-deploy": ["raw engine", "snapshot readback", "manual tick", "Entry-to-Play smoke", "apple proof", "static copy", "Pages chain"]
+    "diagnostics-proof-deploy": ["raw engine", "snapshot readback", "manual tick", "smoke proof", "static copy", "Pages chain"]
   },
-  "persistenceSurface": {
-    "sessionSelectDomain": "implemented but unreachable from Entry",
-    "slotProjection": "renderer reads current.meta.slots",
-    "slotIndexAuthority": "missing",
-    "storageAdapter": "missing",
-    "saveCommand": "missing",
-    "loadCommand": "missing",
-    "deleteCommand": "missing",
-    "schemaId": "missing",
-    "schemaVersion": "missing",
-    "migrationRegistry": "missing",
-    "presetFingerprint": "missing",
-    "durableStateProjection": "missing",
-    "randomContinuationState": "missing",
-    "stateFingerprint": "missing",
-    "checksum": "missing",
-    "slotRevision": "missing",
-    "atomicWrite": "missing",
-    "candidateLoadGraph": "missing",
-    "loadEpoch": "missing",
-    "loadRollback": "missing",
-    "corruptSaveQuarantine": "missing",
-    "firstRestoredFrameAck": "missing"
+  "routeSimulationSurface": {
+    "runtimeTicksEveryDomain": true,
+    "routePolicyAuthority": "missing",
+    "simulationPhaseAuthority": "missing",
+    "pressureAdvancesOnInactiveRoutes": true,
+    "activeSessionChecksRoute": false,
+    "pauseIsSimulationBarrier": false,
+    "managementRoutePolicy": "missing",
+    "manualStepAdmission": "missing",
+    "routeTickFrameCorrelation": "missing"
   },
-  "proposedPersistenceKits": [
-    "zombie-orchard-versioned-persistence-authority-domain",
-    "save-slot-id-kit",
-    "save-slot-index-kit",
-    "save-envelope-schema-kit",
-    "save-schema-version-kit",
-    "save-preset-fingerprint-kit",
-    "durable-state-projection-kit",
-    "random-continuation-state-kit",
-    "save-state-fingerprint-kit",
-    "save-checksum-kit",
-    "save-command-kit",
-    "save-result-kit",
-    "atomic-storage-adapter-kit",
-    "load-command-kit",
-    "load-admission-kit",
-    "save-migration-registry-kit",
-    "load-candidate-graph-kit",
-    "load-validation-kit",
-    "load-transaction-kit",
-    "load-epoch-kit",
-    "load-rollback-kit",
-    "slot-conflict-result-kit",
-    "corrupt-save-quarantine-kit",
-    "persistence-journal-kit",
-    "first-restored-frame-ack-kit",
-    "persistence-roundtrip-fixture-kit",
-    "persistence-migration-fixture-kit"
+  "proposedSimulationAdmissionKits": [
+    "zombie-orchard-route-scoped-simulation-admission-authority-domain",
+    "simulation-phase-state-kit",
+    "route-simulation-policy-kit",
+    "domain-tick-classification-kit",
+    "simulation-step-admission-kit",
+    "simulation-step-plan-kit",
+    "inactive-run-suspension-kit",
+    "pause-resume-admission-kit",
+    "management-route-time-policy-kit",
+    "terminal-freeze-policy-kit",
+    "manual-step-capability-kit",
+    "simulation-step-receipt-kit",
+    "route-tick-frame-correlation-kit",
+    "simulation-admission-journal-kit",
+    "route-suspension-fixture-kit",
+    "hidden-mutation-fixture-kit"
   ],
   "retainedAudits": {
     "seededRandomReplay": "2026-07-11T17-01-11-04-00",
-    "runtimeSessionInstance": "2026-07-11T18-28-40-04-00"
+    "runtimeSessionInstance": "2026-07-11T18-28-40-04-00",
+    "versionedPersistence": "2026-07-11T20-03-22-04-00"
   },
   "validation": {
     "runtimeSourceChangedThisPass": false,
@@ -131,7 +109,7 @@
     "npmBuildRun": false,
     "fixtureRun": false,
     "browserSmokeRun": false,
-    "centralLedgerSynchronized": true,
-    "centralChangeLogAdded": true
+    "centralLedgerSynchronized": false,
+    "centralChangeLogAdded": false
   }
 }
