@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 81,
-  "generatedAt": "2026-07-12T14-38-35-04-00",
+  "schemaVersion": 82,
+  "generatedAt": "2026-07-12T16-51-47-04-00",
   "repository": "LuminaryLabs-Publish/ZombieOrchard",
   "branch": "main",
-  "status": "run-reset-generation-authority-audited",
+  "status": "interface-action-admission-authority-audited",
   "selection": {
     "inventoryCount": 10,
     "eligibleCount": 9,
@@ -12,28 +12,28 @@
     "rootAgentMissingCount": 0,
     "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
     "selectedRepository": "LuminaryLabs-Publish/ZombieOrchard",
-    "reason": "Oldest eligible synchronized central-ledger entry after new, missing-ledger and missing-root-agent priorities were cleared.",
+    "reason": "Oldest eligible central-ledger entry after new, missing-ledger and missing-root-agent priorities were cleared.",
     "ledgerOrder": [
-      "ZombieOrchard:2026-07-12T12-39-25-04-00:selected",
-      "MyCozyIsland:2026-07-12T12-58-08-04-00",
-      "TheUnmappedHouse:2026-07-12T13-08-15-04-00",
-      "AetherVale:2026-07-12T13-20-00-04-00",
-      "TheOpenAbove:2026-07-12T13-29-56-04-00",
-      "IntoTheMeadow:2026-07-12T13-54-00-04-00",
-      "PhantomCommand:2026-07-12T13-59-50-04-00",
-      "PrehistoricRush:2026-07-12T14-10-22-04-00",
-      "HorrorCorridor:2026-07-12T14-22-01-04-00"
+      "ZombieOrchard:2026-07-12T14-38-35-04-00:selected",
+      "MyCozyIsland:2026-07-12T14-59-01-04-00",
+      "TheUnmappedHouse:2026-07-12T15-08-07-04-00",
+      "AetherVale:2026-07-12T15-18-50-04-00",
+      "TheOpenAbove:2026-07-12T15-40-04-00",
+      "IntoTheMeadow:2026-07-12T15-49-09-04-00",
+      "PhantomCommand:2026-07-12T16-00-03-04-00",
+      "PrehistoricRush:2026-07-12T16-20-55-04-00",
+      "HorrorCorridor:2026-07-12T16-39-35-04-00"
     ]
   },
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-12T14-38-35-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-12T14-38-35-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-12T14-38-35-04-00-run-reset-generation-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-12T14-38-35-04-00-reset-generation-visible-frame-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T14-38-35-04-00-new-game-reuses-ended-session-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-12T14-38-35-04-00-play-new-start-reset-admission-map.md",
-    "runResetAudit": ".agent/run-reset-audit/2026-07-12T14-38-35-04-00-participant-reset-atomic-commit-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-12T14-38-35-04-00-run-reset-restart-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-12T16-51-47-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-12T16-51-47-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-12T16-51-47-04-00-interface-action-admission-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-12T16-51-47-04-00-action-availability-result-frame-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T16-51-47-04-00-interface-action-command-route-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-12T16-51-47-04-00-action-id-command-route-admission-map.md",
+    "interfaceActionAudit": ".agent/interface-action-audit/2026-07-12T16-51-47-04-00-identity-availability-result-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-12T16-51-47-04-00-interface-action-fixture-gate.md"
   },
   "implementedKitSurfaceCount": 27,
   "engineInstalledKitCount": 19,
@@ -77,47 +77,43 @@
     "pages-deploy-kit": ["GitHub Pages publication"]
   },
   "interactionLoop": [
-    "module boot creates one mutable engine and installs all domains once",
-    "Entry Play or New Game to Start changes only interface-composition route",
-    "run commands mutate resource pressure orchard construction roster inventory and active-session state",
-    "Pause Title or Outcome Title changes route to Entry without participant reset",
-    "later Play or Start reuses predecessor participant state",
-    "if active-session ended is true the next composition tick returns to Outcome",
-    "canvas and HTML render snapshots without run generation or reset provenance"
+    "HTML or public caller submits interface-composition activate with actionId",
+    "current interface domain resolves exact action or selected-index fallback",
+    "domain checks disabled and emits actionRequested",
+    "composition executes optional nested gameplay command",
+    "composition discards nested result",
+    "composition optionally transitions route or reports accepted true",
+    "canvas and HTML render without action-result provenance"
   ],
   "domainsInUse": [
     "browser document canvas DOM RAF and public GameHost",
     "runtime registration commands ticks events snapshots subscriptions and publication",
-    "11 scoped interface domains plus active-session",
-    "interface composition routing and automatic Outcome routing",
-    "run identity generation reset policy candidate construction commit rollback and retirement",
+    "11 generic scoped interface domains plus custom active-session",
+    "interface action identity selection availability and activation",
+    "interface composition nested command dispatch routing and automatic Outcome routing",
+    "runtime session run generation route and action-set revision admission",
     "resource ledger", "pressure field", "orchard world collection and refill", "construction catalog and built state", "roster actor state", "inventory ownership and equipment state", "movement phases pests damage score and failure", "canvas and HTML rendering", "validation static build Pages deployment and central tracking"
   ],
-  "runResetFindings": {
-    "runId": "missing",
-    "runGeneration": "missing",
-    "runRevision": "missing",
-    "startRunCommand": "missing",
-    "resetRunCommand": "missing",
-    "playAllocatesRun": false,
-    "newGameAllocatesRun": false,
-    "startAllocatesRun": false,
-    "titleResetsParticipants": false,
-    "participantResetRegistry": "missing",
-    "candidateRunConstruction": "missing",
-    "crossDomainInitialValidation": "missing",
-    "atomicResetCommit": "missing",
-    "resetRollback": "missing",
-    "predecessorRetirement": "missing",
-    "staleRunCommandRejection": "missing",
-    "resetIdempotency": "missing",
-    "participantResetReceipts": "missing",
-    "visibleRunGenerationAck": "missing",
-    "failedRunRestartBouncesToOutcome": true
+  "interfaceActionFindings": {
+    "explicitActionLookup": "fail-open-selected-fallback-in-generic-domains",
+    "invalidActionIdRejected": false,
+    "missingActionIdRejected": false,
+    "activeSessionUsesExactLookup": true,
+    "consistentLookupPolicy": false,
+    "disabledDescriptorProjectedDisabled": false,
+    "nestedCommandResultCaptured": false,
+    "nestedCommandRejectionPropagated": false,
+    "routeRevision": "missing",
+    "actionSetRevision": "missing",
+    "actionDescriptorFingerprint": "missing",
+    "commandId": "missing",
+    "idempotency": "missing",
+    "staleActionRejection": "missing",
+    "visibleActionResultAck": "missing"
   },
-  "plannedParentDomain": "zombie-orchard-run-reset-generation-authority-domain",
+  "plannedParentDomain": "zombie-orchard-interface-action-admission-authority-domain",
   "plannedKits": [
-    "run-id-kit", "run-generation-kit", "run-preset-id-kit", "run-reset-command-kit", "run-reset-command-id-kit", "run-reset-policy-kit", "run-reset-admission-kit", "run-predecessor-revision-kit", "run-seed-allocation-kit", "run-participant-registry-kit", "run-participant-reset-contract-kit", "run-candidate-state-kit", "run-candidate-validation-kit", "run-reset-commit-kit", "run-reset-rollback-kit", "run-predecessor-retirement-kit", "stale-run-command-rejection-kit", "run-reset-result-kit", "run-participant-reset-receipt-kit", "run-observation-kit", "run-reset-journal-kit", "first-run-generation-frame-ack-kit"
+    "interface-action-id-kit", "interface-action-set-revision-kit", "interface-route-revision-kit", "interface-action-manifest-kit", "interface-action-availability-kit", "interface-action-command-kit", "interface-action-command-id-kit", "interface-action-admission-kit", "exact-action-lookup-kit", "stale-action-rejection-kit", "nested-command-result-propagation-kit", "action-route-commit-policy-kit", "interface-action-result-kit", "interface-action-idempotency-kit", "interface-action-observation-kit", "interface-action-journal-kit", "action-affordance-projection-kit", "action-result-projection-kit", "first-action-result-frame-ack-kit", "invalid-action-id-fixture-kit", "stale-route-action-fixture-kit", "disabled-action-projection-fixture-kit", "nested-command-rejection-fixture-kit", "action-source-dist-pages-parity-fixture-kit"
   ],
   "retainedAudits": {
     "seededRandomReplay": "2026-07-11T17-01-11-04-00",
@@ -134,7 +130,8 @@
     "kitGraphInstallation": "2026-07-12T10-00-00-04-00",
     "kitGraphCentralReconciliation": "2026-07-12T10-09-07-04-00",
     "economyCommandAdmission": "2026-07-12T12-39-25-04-00",
-    "runResetGeneration": "2026-07-12T14-38-35-04-00"
+    "runResetGeneration": "2026-07-12T14-38-35-04-00",
+    "interfaceActionAdmission": "2026-07-12T16-51-47-04-00"
   },
   "validation": {
     "runtimeSourceChanged": false,
@@ -147,7 +144,7 @@
     "pullRequestCreated": false,
     "npmTestRun": false,
     "npmBuildRun": false,
-    "runResetFixturesRun": false,
+    "interfaceActionFixturesRun": false,
     "browserSmokeRun": false,
     "pagesSmokeRun": false,
     "centralLedgerSynchronized": true,
