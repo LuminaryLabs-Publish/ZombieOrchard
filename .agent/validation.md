@@ -2,100 +2,96 @@
 
 ## Scope
 
-Documentation-only route-scoped simulation admission audit. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
+Documentation-only audit of the browser-global public capability surface. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record the exact hidden-mutation gap and the proof required before Pause, menu idleness, management-screen safety or terminal freeze claims are made.
+**Goal:** record the exact raw-engine reachability gap and the proof required before the public host is treated as bounded, revocable, clock-safe or frame-coherent.
 
-- [x] Read module boot and RAF scheduling.
-- [x] Read runtime all-domain tick behavior.
-- [x] Read interface routing and composition.
-- [x] Read pressure and active-session tick behavior.
-- [x] Read preset routes and visible actions.
-- [x] Read canvas and HTML projection.
-- [x] Confirm no route-scoped simulation admission policy exists.
+- [x] Read browser boot and `window.GameHost` construction.
+- [x] Read runtime engine/context/domain exposure.
+- [x] Read domain APIs, commands and ticks reachable through the graph.
+- [x] Read HTML delegated command bindings.
+- [x] Read smoke and build scripts.
+- [x] Confirm no capability manifest, lease, allowlist, schema, writer lock or revocation exists.
+- [x] Confirm duplicate domain registration overwrites the previous entry.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
 - [x] Synchronize the central ledger and internal change log.
-- [ ] Implement and run route suspension fixtures.
+- [ ] Implement and run public-host fixtures.
 
 ## Source-backed findings
 
 ```txt
 src/start.js
-  -> starts RAF immediately
-  -> submits engine.tick(1 / 60) every callback
-  -> exposes raw manual tick
+  -> publishes window.GameHost.engine
+  -> publishes getState()
+  -> publishes unrestricted tick(dt)
+  -> starts the production RAF
 
 src/kits/runtime.js
-  -> clamps delta
-  -> increments elapsed/frame
-  -> ticks every registered domain
-  -> does not consult lifecycle, route or pause state
-
-src/kits/composition.js
-  -> tracks active and previous route
-  -> moves routes
-  -> does not own simulation phase or tick policy
+  -> engine exposes ctx and domains
+  -> engine exposes addKit, command, tick, snapshot and subscribe
+  -> ctx exposes mutable frame, elapsed, delta, events and domain table
+  -> addKit overwrites domains[domain.id]
 
 src/kits/game-domains.js
-  -> pressure-field always grows
-  -> active-session stops only when ended
-  -> pests, pursuit and damage do not inspect route
+  -> resource, pressure and orchard domains expose direct api functions
+  -> domains expose command and/or tick functions
 
-src/presets/orchard-preset.js
-  -> Pause routes to interrupt
-  -> management screens are routes only
-  -> no policy distinguishes real-time from suspended screens
+src/renderer/html-interface-renderer.js
+  -> UI delegates to raw engine.command()
+  -> no typed capability envelope or frame acknowledgement
 
-src/renderer/world-canvas.js
-  -> renders orchard/session state on every route
-  -> no route/phase/tick/frame provenance
+tests/smoke.mjs
+  -> validates Entry, Play transition and apples
+  -> does not instantiate the browser host
+  -> does not inspect reachability, leases, revocation or frame receipts
 ```
 
 ## Required DOM-free fixtures
 
 ```txt
-entry-idle
-  -> many admitted presentation frames
-  -> pressure, pests, score and player unchanged
+contract-shape
+  -> approved host members only
 
-run-setup-idle
-  -> no hidden run mutation before Start
+raw-engine-unreachable
+  -> no engine, ctx, domains, addKit or raw tick
 
-active-session-advance
-  -> exact admitted fixed steps mutate expected domains
+duplicate-domain-guard
+  -> duplicate ID rejected and predecessor retained
 
-pause-suspension
-  -> many presentation frames
-  -> simulation fingerprint unchanged
+command-admission
+  -> unknown command, invalid payload and stale generation/session rejected
 
-resume-baseline
-  -> no catch-up burst from paused wall time
+single-writer-step
+  -> manual public step rejected while RAF owns writer
+  -> fixture step admitted only after writer transfer
 
-management-policy
-  -> each route follows declared real-time or suspended policy
+clone-safe-observation
+  -> returned object mutation cannot affect runtime
 
-terminal-freeze
-  -> Outcome preserves terminal simulation and pressure state
+subscription-lease
+  -> lease can unsubscribe and is force-retired on revocation
 
-manual-step-admission
-  -> raw or stale manual step rejected
-  -> fixture-only override is explicit and journaled
+host-revocation
+  -> predecessor generation cannot command successor session
+
+frame-receipt
+  -> observation cites state, route, tick, canvas and HTML frame revisions
 ```
 
 ## Required browser fixtures
 
 ```txt
-Entry remains visually responsive while simulation is idle
-Pause overlay stays visible and gameplay state remains frozen
-Resume continues from the same committed tick
-Build/Market/Roster/Inventory/Codex follow declared policy
-Title and Settings do not mutate the retained run
-Outcome frame remains terminal
-canvas, HTML and GameHost agree on route, phase, tick and frame
-one RAF chain and one delegated listener remain after transitions
+window.GameHost exposes approved members only
+UI controls still execute allowlisted commands
+DOM attributes carry no capability token
+manual public tick cannot accelerate production gameplay
+observer output is clone-safe
+observer output matches the visible canvas and HTML frame
+host revokes on teardown or session replacement
+one RAF chain and one delegated listener remain
 ```
 
 ## Validation result
@@ -112,16 +108,17 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-menu-idle fixture: unavailable / not run
-pause fixture: unavailable / not run
-management-route fixture: unavailable / not run
-terminal-freeze fixture: unavailable / not run
-manual-step admission fixture: unavailable / not run
-route/tick/frame parity fixture: unavailable / not run
+contract-shape fixture: unavailable / not run
+raw-engine reachability fixture: unavailable / not run
+duplicate-domain fixture: unavailable / not run
+capability admission fixture: unavailable / not run
+single-writer step fixture: unavailable / not run
+host revocation fixture: unavailable / not run
+frame-receipt fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
 central ledger update: complete
 central internal change log: complete
 ```
 
-No authoritative pause, menu idleness, management-route safety, terminal freeze or route/frame coherence claim is made.
+No read-only-host, capability-admission, revocation, single-writer stepping or frame-coherence claim is made.
