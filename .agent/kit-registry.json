@@ -1,7 +1,7 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-11T23-41-55-04-00",
-  "status": "public-capability-gateway-and-host-revocation-authority-audited",
+  "updatedAt": "2026-07-11T23-48-14-04-00",
+  "status": "composite-command-transaction-authority-audited",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
@@ -9,7 +9,7 @@
     "eligibleRepositoryCount": 9,
     "newOrCentralLedgerMissingCount": 0,
     "rootAgentMissingCount": 0,
-    "reason": "oldest eligible repository in the central Publish ledger"
+    "reason": "oldest eligible central ledger entry with a newer repo-local audit awaiting central synchronization"
   },
   "safeLedges": [
     "Runtime Session Instance Authority",
@@ -21,14 +21,14 @@
     "Versioned Save / Load Authority"
   ],
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-11T23-41-55-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-11T23-41-55-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-11T23-41-55-04-00-public-capability-gateway-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-11T23-41-55-04-00-host-read-model-frame-provenance-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T23-41-55-04-00-raw-host-bypass-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-11T23-41-55-04-00-public-command-capability-admission-map.md",
-    "capabilityAudit": ".agent/capability-audit/2026-07-11T23-41-55-04-00-raw-engine-graph-exposure-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-11T23-41-55-04-00-public-host-capability-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-11T23-48-14-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-11T23-48-14-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-11T23-48-14-04-00-composite-command-transaction-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-11T23-48-14-04-00-intermediate-command-publication-frame-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T23-48-14-04-00-activate-child-command-commit-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-11T23-48-14-04-00-nested-command-result-admission-map.md",
+    "commandTransactionAudit": ".agent/command-transaction-audit/2026-07-11T23-48-14-04-00-prepare-commit-rollback-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-11T23-48-14-04-00-command-transaction-fixture-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -66,53 +66,43 @@
     "render-kits": ["orchard canvas", "HUD", "route-screen HTML", "card projection", "delegated bindings", "per-frame DOM replacement"],
     "diagnostics-proof-deploy": ["raw engine publication", "snapshot readback", "manual tick", "smoke proof", "static copy", "Pages chain"]
   },
-  "publicHostSurface": {
-    "rawEngineExposed": true,
-    "contextExposed": true,
-    "domainTableExposed": true,
-    "registrationExposed": true,
-    "directDomainApisReachable": true,
-    "rawTickExposed": true,
-    "duplicateDomainGuard": "missing",
-    "capabilityManifest": "missing",
-    "capabilityLeases": "missing",
-    "commandAllowlist": "missing",
-    "payloadSchemas": "missing",
-    "singleWriterStepLease": "missing",
-    "hostRevocation": "missing",
-    "frameCorrelatedReadModel": "missing"
+  "transactionFindings": {
+    "nestedCommandDispatch": true,
+    "childResultIgnored": true,
+    "childRejectionCanBeConcealed": true,
+    "multipleNotificationsPerIntent": true,
+    "participantPreparePhase": "missing",
+    "aggregateCommitBoundary": "missing",
+    "rollbackReceipts": "missing",
+    "idempotencyReceipts": "missing",
+    "frameCorrelatedResult": "missing"
   },
-  "proposedCapabilityKits": [
-    "zombie-orchard-public-capability-gateway-authority-domain",
-    "public-host-contract-kit",
-    "host-capability-manifest-kit",
-    "capability-id-kit",
-    "capability-revision-kit",
-    "capability-lease-kit",
-    "public-read-model-kit",
-    "host-observation-revision-kit",
-    "public-command-envelope-kit",
-    "public-command-allowlist-kit",
-    "command-payload-schema-kit",
-    "command-session-admission-kit",
-    "route-and-lifecycle-command-admission-kit",
-    "single-writer-step-lease-kit",
-    "manual-step-capability-kit",
-    "public-command-result-kit",
-    "host-frame-receipt-kit",
-    "duplicate-domain-registration-guard-kit",
-    "subscriber-lease-kit",
-    "host-revocation-kit",
-    "capability-journal-kit",
-    "public-host-observation-kit",
-    "public-host-capability-fixture-kit",
-    "browser-public-host-smoke-kit"
+  "proposedTransactionKits": [
+    "zombie-orchard-composite-command-transaction-authority-domain",
+    "command-envelope-kit",
+    "command-id-kit",
+    "transaction-id-kit",
+    "expected-revision-admission-kit",
+    "action-resolution-kit",
+    "command-participant-registry-kit",
+    "participant-prepare-kit",
+    "participant-commit-kit",
+    "participant-rollback-kit",
+    "transaction-idempotency-kit",
+    "aggregate-command-result-kit",
+    "transaction-event-buffer-kit",
+    "single-publication-barrier-kit",
+    "command-result-journal-kit",
+    "command-frame-receipt-kit",
+    "command-transaction-fixture-kit",
+    "browser-command-transaction-smoke-kit"
   ],
   "retainedAudits": {
     "seededRandomReplay": "2026-07-11T17-01-11-04-00",
     "runtimeSessionInstance": "2026-07-11T18-28-40-04-00",
     "versionedPersistence": "2026-07-11T20-03-22-04-00",
-    "routeScopedSimulationAdmission": "2026-07-11T21-40-49-04-00"
+    "routeScopedSimulationAdmission": "2026-07-11T21-40-49-04-00",
+    "publicCapabilityGateway": "2026-07-11T23-41-55-04-00"
   },
   "validation": {
     "runtimeSourceChangedThisPass": false,
@@ -125,7 +115,7 @@
     "npmBuildRun": false,
     "fixtureRun": false,
     "browserSmokeRun": false,
-    "centralLedgerSynchronized": true,
-    "centralChangeLogAdded": true
+    "centralLedgerSynchronized": false,
+    "centralChangeLogAdded": false
   }
 }
