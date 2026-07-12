@@ -1,20 +1,23 @@
 {
-  "schemaVersion": 78,
-  "generatedAt": "2026-07-12T10-00-00-04-00",
+  "schemaVersion": 79,
+  "generatedAt": "2026-07-12T10-09-07-04-00",
   "repository": "LuminaryLabs-Publish/ZombieOrchard",
   "branch": "main",
-  "status": "kit-graph-installation-authority-audited",
+  "status": "kit-graph-installation-central-sync-reconciled",
   "selection": {
     "inventoryCount": 10,
     "eligibleCount": 9,
-    "newOrCentralLedgerMissingCount": 0,
+    "newEligibleCount": 0,
+    "centralLedgerMissingCount": 0,
     "rootAgentMissingCount": 0,
-    "repoLocalNewerThanCentralCount": 0,
-    "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
+    "repoLocalNewerThanCentralCount": 1,
+    "excluded": [
+      "LuminaryLabs-Publish/TheCavalryOfRome"
+    ],
     "selectedRepository": "LuminaryLabs-Publish/ZombieOrchard",
-    "reason": "Oldest eligible synchronized central-ledger entry after new, missing-ledger, missing-root-agent and central-drift priorities were cleared.",
+    "reason": "Repo-local kit-graph audit at 2026-07-12T10-00-00-04-00 was newer than the central ledger at 2026-07-12T07-51-04-04-00.",
     "ledgerOrder": [
-      "ZombieOrchard:2026-07-12T07-51-04-04-00:selected",
+      "ZombieOrchard:central=2026-07-12T07-51-04-04-00:local=2026-07-12T10-00-00-04-00:selected",
       "MyCozyIsland:2026-07-12T08-00-16-04-00",
       "TheUnmappedHouse:2026-07-12T08-10-36-04-00",
       "AetherVale:2026-07-12T08-31-49-04-00",
@@ -26,17 +29,50 @@
     ]
   },
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-12T10-00-00-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-12T10-00-00-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-12T10-00-00-04-00-kit-graph-installation-authority-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-12T10-00-00-04-00-graph-revision-visible-frame-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T10-00-00-04-00-install-order-domain-behavior-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-12T10-00-00-04-00-kit-install-command-result-map.md",
-    "kitGraphAudit": ".agent/kit-graph-audit/2026-07-12T10-00-00-04-00-manifest-dependency-atomic-commit-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-12T10-00-00-04-00-kit-graph-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-12T10-09-07-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-12T10-09-07-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-12T10-09-07-04-00-kit-graph-census-central-sync-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-12T10-09-07-04-00-graph-revision-canvas-html-proof-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T10-09-07-04-00-install-order-service-failure-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-12T10-09-07-04-00-add-kit-command-replacement-result-map.md",
+    "kitGraphAudit": ".agent/kit-graph-audit/2026-07-12T10-09-07-04-00-engine-installed-census-contract.md",
+    "centralSyncAudit": ".agent/central-sync-audit/2026-07-12T10-09-07-04-00-local-central-ledger-reconciliation.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-12T10-09-07-04-00-kit-graph-browser-pages-fixture-gate.md"
   },
-  "implementedKitCount": 27,
-  "engineInstalledKitCount": 21,
+  "implementedKitSurfaceCount": 27,
+  "engineInstalledKitCount": 19,
+  "hostSupportKitCount": 8,
+  "engineInstalledKitIds": [
+    "resource-ledger-kit",
+    "pressure-field-kit",
+    "orchard-world-kit",
+    "construction-runtime-kit",
+    "roster-runtime-kit",
+    "inventory-runtime-kit",
+    "entry-domain-kit",
+    "session-select-domain-kit",
+    "run-setup-domain-kit",
+    "interrupt-domain-kit",
+    "construction-domain-kit",
+    "exchange-domain-kit",
+    "roster-domain-kit",
+    "inventory-domain-kit",
+    "knowledge-domain-kit",
+    "preferences-domain-kit",
+    "outcome-domain-kit",
+    "active-session-domain-kit",
+    "interface-composition-kit"
+  ],
+  "hostSupportKitIds": [
+    "kit-runtime",
+    "scoped-interface-domain-kit",
+    "world-canvas-render-kit",
+    "html-interface-render-kit",
+    "game-host-diagnostics-kit",
+    "smoke-fixture-kit",
+    "static-build-copy-kit",
+    "pages-deploy-kit"
+  ],
   "implementedKits": [
     "kit-runtime",
     "scoped-interface-domain-kit",
@@ -67,32 +103,81 @@
     "pages-deploy-kit"
   ],
   "services": {
-    "kit-runtime": ["registration", "domain creation", "commands", "delta clamp", "ticks", "events", "snapshots", "subscriptions", "synchronous publication"],
-    "interface-kits": ["screen state", "actions", "activation", "routing", "nested dispatch", "automatic Outcome routing"],
-    "game-kits": ["resources", "pressure", "trees and apples", "collection refill", "construction", "hiring", "equipment", "movement", "phases", "pests", "damage", "score", "failure"],
-    "render-kits": ["canvas world drawing", "HUD", "route HTML", "card projection", "delegated click handling"],
-    "diagnostics-proof-deploy": ["raw engine publication", "snapshot readback", "unrestricted manual tick", "Node smoke", "static copy", "Pages deployment"]
+    "kit-runtime": [
+      "registration",
+      "live domain creation",
+      "commands",
+      "delta clamp",
+      "ticks",
+      "events",
+      "snapshots",
+      "subscriptions",
+      "synchronous publication"
+    ],
+    "scoped-interface": [
+      "screen state",
+      "field mutation",
+      "selection",
+      "actions",
+      "activation results"
+    ],
+    "interface-composition": [
+      "route transitions",
+      "nested action dispatch",
+      "automatic Outcome routing"
+    ],
+    "gameplay": [
+      "resource accounting",
+      "pressure channels",
+      "trees and apples",
+      "collection refill",
+      "construction",
+      "hiring",
+      "equipment",
+      "movement",
+      "phases",
+      "pest spawn and pursuit",
+      "damage",
+      "score",
+      "failure"
+    ],
+    "rendering": [
+      "canvas world drawing",
+      "HTML route and HUD projection",
+      "delegated action handling"
+    ],
+    "diagnostics-proof-deploy": [
+      "raw engine publication",
+      "snapshot readback",
+      "manual tick",
+      "Node smoke",
+      "static build copy",
+      "Pages deployment"
+    ]
   },
   "interactionLoop": [
-    "createOrchardGame assembles an ordered kit array",
+    "createOrchardGame assembles 19 engine-installed kit descriptors",
     "createKitRuntime creates one mutable domains object and shared context",
     "engine.addKit calls kit.create against the live context",
     "returned domain ID is assigned directly into the live map",
-    "frame tick iterates Object.values(domains) in property order",
-    "GameHost exposes addKit for post-start graph mutation",
-    "renderers receive domain snapshots with no graph identity"
+    "frame tick iterates Object.values(domains) in insertion order",
+    "GameHost exposes raw engine and post-start addKit mutation",
+    "canvas and HTML render domain-only snapshots without graph provenance"
   ],
   "domainsInUse": [
     "browser document canvas DOM and shell",
     "module boot recursive RAF and public GameHost",
-    "kit manifest dependency service version and installation authority",
+    "kit manifest identity version and compatibility authority",
+    "provided and required service contracts",
+    "dependency resolution and deterministic phase ordering",
     "candidate graph validation commit rollback and disposal",
     "graph identity revision fingerprint observation and frame correlation",
     "runtime registration commands ticks events snapshots subscriptions and publication",
-    "12 interface domains and composition",
+    "11 scoped interface domains plus gameplay active-session",
+    "interface composition and outcome routing",
     "resource pressure orchard construction roster inventory and active session",
     "canvas and HTML rendering",
-    "validation build deployment and central tracking"
+    "validation build Pages deployment and central tracking"
   ],
   "kitGraphFindings": {
     "manifestSchema": "missing",
@@ -117,7 +202,9 @@
     "visibleGraphFrameAck": "missing",
     "rawGameHostAddKit": true,
     "tickOrderUsesObjectPropertyOrder": true,
-    "duplicateDomainOverwrites": true
+    "duplicateDomainOverwrites": true,
+    "priorEngineInstalledCount": 21,
+    "correctedEngineInstalledCount": 19
   },
   "plannedParentDomain": "zombie-orchard-kit-graph-installation-authority-domain",
   "plannedKits": [
@@ -152,13 +239,7 @@
     "kit-installation-receipt-kit",
     "kit-graph-observation-kit",
     "kit-graph-journal-kit",
-    "first-kit-graph-frame-ack-kit",
-    "kit-order-fixture-kit",
-    "duplicate-domain-fixture-kit",
-    "missing-service-fixture-kit",
-    "failed-create-rollback-fixture-kit",
-    "runtime-replacement-fixture-kit",
-    "pages-kit-graph-smoke-kit"
+    "first-kit-graph-frame-ack-kit"
   ],
   "retainedAudits": {
     "seededRandomReplay": "2026-07-11T17-01-11-04-00",
@@ -171,7 +252,9 @@
     "fixedStepClockAuthority": "2026-07-12T03-11-51-04-00",
     "framePublicationFaultContainment": "2026-07-12T04-38-12-04-00",
     "canvasRenderSurface": "2026-07-12T06-19-56-04-00",
-    "htmlInterfaceProjection": "2026-07-12T07-51-04-04-00"
+    "htmlInterfaceProjection": "2026-07-12T07-51-04-04-00",
+    "kitGraphInstallation": "2026-07-12T10-00-00-04-00",
+    "kitGraphCentralReconciliation": "2026-07-12T10-09-07-04-00"
   },
   "validation": {
     "runtimeSourceChanged": false,
