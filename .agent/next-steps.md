@@ -2,18 +2,22 @@
 
 ## Plan ledger
 
-**Goal:** turn each orchard run into one identified, cadence-independent session whose simulation advances only under an explicit lifecycle and route policy.
+**Goal:** turn the browser-global host into a bounded, revocable capability gateway after runtime-session, clock and route-admission authority are established.
 
 - [ ] Implement runtime-session instance authority first.
 - [ ] Add a fresh graph factory, staged commit, rollback and predecessor retirement.
-- [ ] Implement a monotonic fixed-step clock owned by the committed session.
-- [ ] Add route-scoped simulation admission before exposing more gameplay commands.
-- [ ] Classify every domain tick as simulation, presentation or lifecycle work.
-- [ ] Freeze Entry, Run Setup, Save Select, Preferences, Pause and Outcome mutation.
-- [ ] Choose and fixture-test an explicit policy for management screens.
-- [ ] Make manual stepping use a privileged typed capability rather than bypassing policy.
-- [ ] Correlate route revision, simulation phase, tick ID and render frame ID.
-- [ ] Add capability, transaction, replay and persistence authorities after this gate.
+- [ ] Implement a monotonic fixed-step clock with one step-writer lease.
+- [ ] Implement route-scoped simulation admission.
+- [ ] Replace `window.GameHost.engine` with a versioned public contract.
+- [ ] Keep raw engine, context, domains, APIs, registration and tick unreachable.
+- [ ] Add a capability manifest and revocable leases.
+- [ ] Add clone-safe, session/tick/route/frame-correlated observations.
+- [ ] Add allowlisted public command envelopes and payload schemas.
+- [ ] Reject duplicate domain registration.
+- [ ] Permit manual stepping only under a fixture capability after RAF relinquishes the writer lease.
+- [ ] Retire subscriptions and revoke the predecessor host during session replacement or disposal.
+- [ ] Implement composite command transactions after the gateway.
+- [ ] Add replay and persistence after command/session authority is stable.
 
 ## Ordered implementation queue
 
@@ -27,110 +31,137 @@
 6. Versioned Save / Load Authority
 ```
 
-## Route-scoped simulation admission design
+## Public capability gateway design
 
-### 1. Add canonical simulation phases
+### 1. Publish a minimal contract
 
 ```txt
-NO_RUN
-RUNNING
-PAUSED
-TERMINAL
-SUSPENDED
-DISPOSED
+window.GameHost = {
+  apiVersion,
+  hostGeneration,
+  capabilityRevision,
+  capabilities,
+  observe,
+  command,
+  subscribe,
+  revoke
+}
 ```
 
-The interface route is an input to policy, not the phase itself.
-
-### 2. Classify domain work
+Do not expose:
 
 ```txt
-simulation
-  pressure-field
-  active-session
-  future AI, combat, economy and world mutation
-
-presentation
-  interface composition snapshot
-  canvas projection
-  HTML projection
-
-lifecycle
-  startup, reset, load, dispose and authority transfer
+engine
+ctx
+domains
+addKit
+raw tick
+domain command/api/tick functions
+renderer or DOM objects
 ```
 
-### 3. Add a route policy table
+### 2. Add capability classes
 
 ```txt
-entry, session-select, run-setup, preferences -> NO_RUN or SUSPENDED
-active-session -> RUNNING
-interrupt -> PAUSED
-construction, exchange, roster, inventory, knowledge -> explicit product policy
-outcome -> TERMINAL
+observe
+  -> clone-safe read model only
+
+interact
+  -> allowlisted interface and gameplay commands
+  -> no clock ownership
+
+fixture-step
+  -> test-only bounded stepping
+  -> requires RAF writer lease to be released
+
+revoke
+  -> internal lifecycle owner only
 ```
 
-For the current prototype, suspend simulation on management routes until an intentional real-time policy is approved.
-
-### 4. Admit steps transactionally
+### 3. Add a typed public command envelope
 
 ```txt
-StepCommand
-  -> session/lifecycle admission
-  -> route revision admission
-  -> route policy resolution
-  -> fixed-step budget
-  -> selected domain tick plan
-  -> committed simulation receipt
-  -> route/tick/frame acknowledgement
+commandId
+capabilityId
+hostGeneration
+runtimeId
+runId
+sessionEpoch
+lifecycleRevision
+routeRevision
+expectedStateRevision
+commandType
+payload
 ```
 
-### 5. Define pause and resume semantics
+### 4. Validate before mutation
 
 ```txt
-pause
-  -> finish or reject the current admitted step
-  -> commit PAUSED
-  -> admit presentation frames only
-
-resume
-  -> commit RUNNING
-  -> reset wall-time baseline
-  -> do not replay hidden paused duration
+host active
+  -> generation match
+  -> capability lease active
+  -> capability permits command
+  -> session/lifecycle/route revisions match
+  -> command allowlisted
+  -> payload schema valid
+  -> step writer available when needed
+  -> transaction prepare
+  -> commit or stable rejection
 ```
 
-### 6. Fence manual stepping
-
-`GameHost.tick(dt)` must be replaced or wrapped by a typed test capability carrying runtime, run, session, lifecycle, route and expected tick identity. It must obey the same route policy unless an explicit fixture-only override is admitted and journaled.
-
-### 7. Add observation
-
-Expose clone-safe read models only:
+### 5. Add a committed public read model
 
 ```txt
-simulationPhase
+apiVersion
+hostGeneration
+runtimeId
+runId
+sessionEpoch
+lifecycleState
 routeId
 routeRevision
-routePolicyId
-latestStepAdmissionResult
 simulationTickId
-renderFrameId
-suspendedSince
-bounded admission journal
+stateRevision
+canvasFrameId
+htmlFrameId
+latestCommandResult
+bounded journal
+clone-safe domain projections
 ```
 
-## Required fixtures
+### 6. Add duplicate-domain protection
+
+Current runtime registration overwrites by domain ID. Change registration to reject a duplicate ID and retain the predecessor unless an internal replacement transaction is explicitly invoked.
+
+### 7. Add revocation
+
+Revoke the host and all leases on:
 
 ```txt
-Entry idle does not change pressure, pests, score or player state
-Run Setup idle does not age the hidden run
-Active Session advances exactly admitted fixed steps
-Pause preserves simulation state across many presentation frames
-Resume does not catch up paused wall time
-management routes follow their declared policy
-Settings and Title do not mutate the run
-Outcome remains terminal and pressure does not continue
-manual step cannot bypass route policy
-route transition and first frame cite the same route revision
+runtime dispose
+new session authority transfer
+pagehide/unload
+fatal failure
+fixture teardown
+contract version replacement
+```
+
+### 8. Add fixtures
+
+```txt
+raw engine unreachable
+ctx and domains unreachable
+direct domain APIs unreachable
+duplicate domain rejected
+unknown command rejected
+invalid payload rejected
+stale generation/session rejected
+manual step rejected while RAF owns writer
+fixture step admitted after writer transfer
+observation clone-safe
+observation/frame receipt coherent
+subscriber lease retired
+host revoked on replacement/dispose
 ```
 
 ## Next safe ledge
@@ -139,5 +170,6 @@ route transition and first frame cite the same route revision
 ZombieOrchard Runtime Session Instance Authority
 + Fixed-Step Clock Authority
 + Route-Scoped Simulation Admission Authority
-+ Menu/Pause/Management/Outcome Suspension Fixture Gate
++ Public Capability Gateway and Host Revocation
++ Reachability/Single-Writer/Frame-Receipt Fixture Gate
 ```
