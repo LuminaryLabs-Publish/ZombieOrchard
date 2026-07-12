@@ -2,22 +2,22 @@
 
 ## Plan ledger
 
-**Goal:** implement a single admitted command path that resolves every participant before mutation, commits once, returns one truthful result and correlates that result to the first visible canvas and HTML frame.
+**Goal:** make orchard movement product-reachable through one lifecycle-safe control path before expanding gameplay or claiming an explorable run.
 
 - [ ] Implement runtime-session instance authority first.
 - [ ] Implement a monotonic fixed-step clock with one step-writer lease.
 - [ ] Implement route-scoped simulation admission.
-- [ ] Replace the raw public engine with the versioned capability gateway.
-- [ ] Add a canonical command envelope and expected revision.
-- [ ] Resolve parent and child action commands before any mutation.
-- [ ] Register all transaction participants and their prepare/commit/rollback services.
-- [ ] Reject the entire transaction if any participant cannot prepare.
-- [ ] Buffer events and subscriber publication until aggregate commit.
-- [ ] Publish exactly one aggregate command result.
-- [ ] Return the prior receipt for accepted duplicate command IDs.
-- [ ] Correlate the result to the first canvas and HTML frame that presents it.
-- [ ] Add failure injection and duplicate-submission fixtures.
-- [ ] Implement seeded replay and versioned persistence only after transaction identity is stable.
+- [ ] Add a canonical control-binding manifest for WASD and arrow keys.
+- [ ] Add browser keydown, keyup, blur and visibility adapters.
+- [ ] Store held bindings behind a runtime/run/session control lease.
+- [ ] Normalize opposed and diagonal direction vectors.
+- [ ] Consume held movement only during admitted fixed simulation steps.
+- [ ] Route movement through the canonical gameplay command path.
+- [ ] Return typed movement results with state/tick/frame provenance.
+- [ ] Retire held input on pause, route exit, outcome, reset and disposal.
+- [ ] Add concise control instructions and unavailable-control reasons to the HUD.
+- [ ] Add DOM-free, built-artifact browser and Pages fixtures.
+- [ ] Preserve public host quarantine and composite transaction requirements.
 
 ## Ordered implementation queue
 
@@ -25,160 +25,91 @@
 1. Runtime Session Instance Authority
 2. Fixed-Step Clock Authority
 2a. Route-Scoped Simulation Admission Authority
+2b. Player-Control Reachability Authority
 3. Public Capability Gateway and Reachability
 4. Composite Command Transaction Authority
 5. Seeded Random and Replay Authority
 6. Versioned Save / Load Authority
 ```
 
-## Composite transaction design
+## Control implementation
 
-### 1. Canonical envelope
+### 1. Binding manifest
 
 ```txt
-commandId
-transactionId
-capabilityId
-hostGeneration
-runtimeId
-runId
-sessionEpoch
-lifecycleRevision
-routeRevision
-expectedStateRevision
-commandType
-payload
+move-up:    KeyW, ArrowUp
+move-left:  KeyA, ArrowLeft
+move-down:  KeyS, ArrowDown
+move-right: KeyD, ArrowRight
 ```
 
-### 2. Resolve the full command graph
+### 2. Held-state rules
 
-Before mutation, expand the intent into one ordered plan:
+- Ignore repeated keydown events when the binding is already held.
+- Opposed directions cancel.
+- Normalize diagonal vectors.
+- Do not use DOM repeat cadence as simulation cadence.
+- Do not accept movement from editable controls.
+
+### 3. Admission
 
 ```txt
-interface activation
-  -> selected action descriptor
-  -> optional child gameplay command
-  -> optional route transition
-  -> required participant set
+runtime active
+run/session current
+route == active-session
+window/document focused
+run not ended
+control lease current
+input sequence fresh
+vector finite and bounded
 ```
 
-A child rejection must become the aggregate rejection. Parent success cannot conceal it.
+Rejected input must not mutate position.
 
-### 3. Participant contract
+### 4. Consumption
+
+At each admitted fixed step:
 
 ```txt
-prepare(command, snapshot)
-  -> PreparedParticipant | RejectedParticipant
-
-commit(prepared)
-  -> ParticipantCommitReceipt
-
-rollback(prepared, committedReceipt?)
-  -> ParticipantRollbackReceipt
+read held-control snapshot
+  -> normalize movement intent
+  -> submit active-session movement command
+  -> commit player position once
+  -> publish MovementCommandResult
+  -> acknowledge first canvas/HTML frame
 ```
 
-Initial participants:
+### 5. Retirement
+
+Clear all held state and pending intent on:
 
 ```txt
-interface-composition
-resource-ledger
-pressure-field
-orchard-world
-construction-runtime
-roster-runtime
-inventory-runtime
-active-session
+keyup
+blur
+visibility hidden
+pause
+route exit
+outcome
+new run/reset
+runtime stop/dispose
 ```
 
-### 4. Atomic gameplay plans
+### 6. Required fixtures
 
 ```txt
-collect apple
-  -> prepare target apple
-  -> prepare reward delta
-  -> prepare pressure delta
-  -> prepare score/message delta
-  -> commit all or none
-
-clear pest
-  -> prepare target and resulting condition
-  -> prepare optional retirement
-  -> prepare score and scrap delta
-  -> commit all or none
-
-build or hire
-  -> prepare catalog/actor descriptor
-  -> prepare affordability and debit
-  -> prepare resulting entity
-  -> commit debit and entity together
-```
-
-### 5. One publication barrier
-
-During a transaction:
-
-```txt
-ctx.emit
-subscriber notification
-public observation
-render invalidation
-```
-
-must be buffered. Release one ordered event batch and one subscriber notification after aggregate commit.
-
-### 6. Aggregate result
-
-```txt
-AggregateCommandResult {
-  commandId,
-  transactionId,
-  status,
-  reason,
-  beforeRevision,
-  afterRevision,
-  participantResults,
-  emittedEvents,
-  idempotencyStatus,
-  canvasFrameId,
-  htmlFrameId
-}
-```
-
-### 7. Idempotency
-
-A repeated accepted `commandId` must return the original result without repeating payment, collection, reward, score, route or entity creation.
-
-A repeated rejected command may return the stable rejection while its expected revision still matches. A changed revision requires a new command ID.
-
-### 8. Fixtures
-
-```txt
-shed-insufficient-resources
-  -> aggregate rejected
-  -> resources and built list unchanged
-  -> one result and one publication
-
-shed-success
-  -> one debit and one built entity
-  -> duplicate returns prior receipt
-
-collect-participant-failure
-  -> apple, rewards, pressure and score all unchanged
-
-clear-participant-failure
-  -> pest, score and scrap all unchanged
-
-nested-command-result
-  -> child rejection is visible to caller
-
-publication-count
-  -> no intermediate subscriber snapshot
-
-stale-revision
-  -> rejected before participant preparation
-
-result-frame-correlation
-  -> canvas and HTML frame cite committed transaction revision
+binding-manifest-parity
+cardinal-movement
+diagonal-normalization
+opposed-direction-cancellation
+boundary-clamp
+route-rejection
+ended-run-rejection
+blur-retirement
+pause-retirement
+stale-sequence-rejection
+movement-to-collectible-reachability
+movement-result-frame-correlation
+single-listener-and-single-control-owner
 ```
 
 ## Next safe ledge
@@ -187,7 +118,6 @@ result-frame-correlation
 ZombieOrchard Runtime Session Instance Authority
 + Fixed-Step Clock Authority
 + Route-Scoped Simulation Admission Authority
-+ Public Capability Gateway and Host Revocation
-+ Composite Command Transaction Authority
-+ Command Atomicity/Idempotency/Frame-Receipt Fixture Gate
++ Player-Control Reachability Authority
++ Player-Control Browser/Pages Fixture Gate
 ```
