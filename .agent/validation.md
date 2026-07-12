@@ -2,134 +2,99 @@
 
 ## Scope
 
-Documentation-only versioned save/load authority audit. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
+Documentation-only route-scoped simulation admission audit. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record the exact source-backed persistence gap and the proof required before save slots, resumable continuation, migration, corruption recovery or atomic load claims are made.
+**Goal:** record the exact hidden-mutation gap and the proof required before Pause, menu idleness, management-screen safety or terminal freeze claims are made.
 
-- [x] Read module boot and graph construction.
-- [x] Read interface-domain creation, preset routing and Save Select projection.
-- [x] Confirm Entry has no route to `session-select`.
-- [x] Confirm Save Select has no slot data or load actions.
-- [x] Confirm no storage, save, load, delete, migration or hydration service exists.
-- [x] Confirm `engine.snapshot()` has no inverse restore path.
-- [x] Confirm runtime clock and global random continuation are absent from snapshots.
-- [x] Confirm no schema, checksum, candidate graph, load epoch, rollback or restored-frame contract exists.
+- [x] Read module boot and RAF scheduling.
+- [x] Read runtime all-domain tick behavior.
+- [x] Read interface routing and composition.
+- [x] Read pressure and active-session tick behavior.
+- [x] Read preset routes and visible actions.
+- [x] Read canvas and HTML projection.
+- [x] Confirm no route-scoped simulation admission policy exists.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
-- [x] Synchronize the central ledger and internal change log.
-- [ ] Implement prerequisite authorities and persistence fixtures.
+- [ ] Implement and run route suspension fixtures.
 
 ## Source-backed findings
 
 ```txt
 src/start.js
-  -> creates one graph before player action
-  -> recursively ticks it forever
-  -> exposes raw snapshot and manual tick
-
-src/game.js
-  -> constructs every mutable domain once
-  -> no persistence domain or hydration factory
+  -> starts RAF immediately
+  -> submits engine.tick(1 / 60) every callback
+  -> exposes raw manual tick
 
 src/kits/runtime.js
-  -> snapshot gathers domain projections
-  -> no restore/import operation
-  -> ctx frame and elapsed are not included in snapshot
+  -> clamps delta
+  -> increments elapsed/frame
+  -> ticks every registered domain
+  -> does not consult lifecycle, route or pause state
 
-src/kits/scoped-interface-domains.js
-  -> session-select is a generic interface domain
-  -> meta comes only from preset configuration
-  -> no slot-specific commands
-
-src/presets/orchard-preset.js
-  -> Entry exposes Play, New Game and Settings
-  -> no route to session-select
-  -> session-select exposes Back only
-  -> no slot metadata
+src/kits/composition.js
+  -> tracks active and previous route
+  -> moves routes
+  -> does not own simulation phase or tick policy
 
 src/kits/game-domains.js
-  -> mutable state remains in closures
-  -> orchard and pest generation use Math.random()
-  -> no hydrate/reset/import service
+  -> pressure-field always grows
+  -> active-session stops only when ended
+  -> pests, pursuit and damage do not inspect route
 
-src/renderer/html-interface-renderer.js
-  -> can render current.meta.slots
-  -> does not own a slot index or command results
+src/presets/orchard-preset.js
+  -> Pause routes to interrupt
+  -> management screens are routes only
+  -> no policy distinguishes real-time from suspended screens
 
 src/renderer/world-canvas.js
-  -> renders current orchard/session projection
-  -> no save/load/frame provenance
+  -> renders orchard/session state on every route
+  -> no route/phase/tick/frame provenance
 ```
-
-## Current proof surface
-
-```txt
-npm test
-  -> tests/smoke.mjs
-  -> verifies initial Entry to Play
-  -> verifies apples exist
-
-npm run build
-  -> copies static application into dist
-```
-
-This does not prove Save Select reachability, slot indexing, save durability, schema migration, random continuation, atomic load, rollback, corruption recovery or first-restored-frame parity.
 
 ## Required DOM-free fixtures
 
 ```txt
-slot save roundtrip
-  -> saved durable fingerprint equals current committed fingerprint
+entry-idle
+  -> many admitted presentation frames
+  -> pressure, pests, score and player unchanged
 
-slot load roundtrip
-  -> restored durable fingerprint equals saved fingerprint
+run-setup-idle
+  -> no hidden run mutation before Start
 
-random continuation
-  -> next apple and pest decisions match uninterrupted continuation
+active-session-advance
+  -> exact admitted fixed steps mutate expected domains
 
-slot conflict
-  -> stale expected revision receives typed conflict
-  -> prior valid envelope remains unchanged
+pause-suspension
+  -> many presentation frames
+  -> simulation fingerprint unchanged
 
-atomic write failure
-  -> prior valid slot and slot index remain intact
+resume-baseline
+  -> no catch-up burst from paused wall time
 
-schema migration
-  -> each supported old version migrates deterministically to current
+management-policy
+  -> each route follows declared real-time or suspended policy
 
-unknown future schema
-  -> typed incompatibility rejection
-  -> no live mutation
+terminal-freeze
+  -> Outcome preserves terminal simulation and pressure state
 
-checksum corruption
-  -> candidate quarantined
-  -> original bytes retained
-  -> current run unchanged
-
-candidate hydration failure
-  -> no partial authority transfer
-  -> current graph remains committed
-
-duplicate save/load command
-  -> cached idempotent result
-  -> no duplicate revision or graph swap
+manual-step-admission
+  -> raw or stale manual step rejected
+  -> fixture-only override is explicit and journaled
 ```
 
 ## Required browser fixtures
 
 ```txt
-Entry exposes authoritative Continue or Save Select capability
-Save Select projects current slot index
-slot actions surface typed results
-save acknowledgement cites committed tick and slot revision
-load acknowledgement cites load epoch and restored fingerprint
-first restored canvas, HTML and GameHost frame agree
-no predecessor frame after load epoch commit
-failed load leaves current visible run unchanged
-repeated save/load retains one RAF chain and one delegated listener
-storage/quota failure remains recoverable
+Entry remains visually responsive while simulation is idle
+Pause overlay stays visible and gameplay state remains frozen
+Resume continues from the same committed tick
+Build/Market/Roster/Inventory/Codex follow declared policy
+Title and Settings do not mutate the retained run
+Outcome frame remains terminal
+canvas, HTML and GameHost agree on route, phase, tick and frame
+one RAF chain and one delegated listener remain after transitions
 ```
 
 ## Validation result
@@ -146,18 +111,16 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-save/load roundtrip fixture: unavailable / not run
-random continuation fixture: unavailable / not run
-slot conflict fixture: unavailable / not run
-migration fixture: unavailable / not run
-corruption quarantine fixture: unavailable / not run
-load rollback fixture: unavailable / not run
-first restored frame fixture: unavailable / not run
-repeated load lifecycle fixture: unavailable / not run
+menu-idle fixture: unavailable / not run
+pause fixture: unavailable / not run
+management-route fixture: unavailable / not run
+terminal-freeze fixture: unavailable / not run
+manual-step admission fixture: unavailable / not run
+route/tick/frame parity fixture: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: complete
-central internal change log: complete
+central ledger update: pending until central commit
+central internal change log: pending until central commit
 ```
 
-No reachable Save Select, durable slot, schema compatibility, deterministic continuation, atomic load, corruption recovery or restored-frame coherence claim is made.
+No authoritative pause, menu idleness, management-route safety, terminal freeze or route/frame coherence claim is made.
