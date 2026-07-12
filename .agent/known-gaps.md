@@ -5,37 +5,43 @@
 ```txt
 runtime session identity
   -> lifecycle state
-  -> fixed-step clock
-  -> committed interface route and revision
-  -> route simulation policy
-  -> admitted domain tick plan
-  -> committed simulation tick receipt
-  -> rendered canvas/HTML frame
-  -> command, replay and persistence continuation
+  -> fixed-step clock and single-writer lease
+  -> committed interface route and simulation policy
+  -> public capability gateway
+  -> admitted composite command transaction
+  -> committed simulation/state revision
+  -> canvas and HTML frame receipt
+  -> replay and persistence continuation
 ```
 
-## Route-scoped simulation admission gaps
+## Public capability and reachability gaps
 
-1. The graph begins ticking at module boot before Play or New Game.
-2. `kit-runtime.tick()` invokes every domain tick on every admitted call.
-3. No domain tick is classified as simulation, presentation or lifecycle work.
-4. `interface-composition` owns only `active` and `previous` route fields.
-5. No canonical `NO_RUN`, `RUNNING`, `PAUSED`, `TERMINAL`, `SUSPENDED` or `DISPOSED` phase exists.
-6. No route revision or route-policy revision exists.
-7. `pressure-field.tick()` advances on Entry, Run Setup, Save Select, Settings, Pause, management routes and Outcome.
-8. `active-session.tick()` advances whenever `ended` is false, regardless visible route.
-9. Pause is only a route to `interrupt`; it is not a simulation barrier.
-10. Build, Market, Roster, Inventory and Codex have no explicit real-time or suspended-time policy.
-11. Entry and Run Setup can age the retained graph before the player starts.
-12. Title and Settings can hide a still-mutating run.
-13. Outcome freezes active-session mutation through `ended`, but pressure continues.
-14. `GameHost.tick(dt)` can bypass visible-route expectations.
-15. No step admission result explains whether work ran, was suspended or was rejected.
-16. No simulation receipt identifies which domains mutated.
-17. No journal records route/phase decisions.
-18. Canvas, HTML and GameHost frames carry no shared route, phase, tick or frame identity.
-19. Resume has no wall-time baseline reset or catch-up policy.
-20. No menu-idle, pause, management-route, terminal-freeze or manual-step fixture exists.
+1. `window.GameHost` exposes the complete mutable engine object.
+2. Public callers can reach `engine.ctx`.
+3. Public callers can mutate frame, elapsed, delta, events and the domain table.
+4. Public callers can reach `engine.domains` and every domain object.
+5. Public callers can call domain `api` methods directly.
+6. Direct API calls bypass runtime command publication.
+7. Public callers can call domain `command()` directly.
+8. Direct domain commands bypass the runtime gateway and notify path.
+9. Public callers can call one domain's `tick()` independently.
+10. Public callers can call full `engine.tick()` beside the active RAF.
+11. No single-writer lease coordinates production and fixture stepping.
+12. Public callers can invoke `addKit()`.
+13. Duplicate domain IDs overwrite the existing domain entry.
+14. No capability manifest or capability revision exists.
+15. No capability lease, expiry or owner exists.
+16. No public command allowlist exists.
+17. No payload schema validation exists.
+18. Public commands carry no host generation, runtime, run, session, lifecycle or route identity.
+19. No expected-state or expected-tick revision is required.
+20. No public command journal exists.
+21. `getState()` omits clock, session, route and render-frame provenance.
+22. No committed frame-correlated public read model exists.
+23. Public subscriptions have no lease ID or forced retirement.
+24. The host has no revocation state.
+25. A predecessor host cannot be distinguished from a successor session host.
+26. The smoke test does not instantiate or inspect the browser global.
 
 ## Runtime-session and fresh-run gaps
 
@@ -44,7 +50,7 @@ runtime session identity
 - No runtime ID, run ID, session epoch, graph revision or lifecycle revision exists.
 - New Game does not create fresh resources, pressure, apples, construction, roster, inventory or active-session state.
 - Outcome -> Title -> Play reuses terminal state.
-- RAF, listener, renderer and `GameHost` resources have no leases or ordered disposal.
+- RAF, listener, renderer and public host resources have no leases or ordered disposal.
 
 ## Fixed-step clock gaps
 
@@ -54,14 +60,24 @@ runtime session identity
 - No monotonic simulation tick ID, render frame ID or clock revision exists.
 - Automatic and manual steps have no exclusion lease.
 
-## Capability and transaction gaps
+## Route-scoped simulation admission gaps
 
-- Browser actions call raw `engine.command()` and generally discard typed results.
-- Commands carry no session, lifecycle, route or tick identity.
-- Nested composition commands publish intermediate state.
+- The graph begins ticking before Play or New Game.
+- Every registered domain tick is invoked on each runtime step.
+- No canonical simulation phase exists.
+- Pause and management screens are routes, not simulation barriers.
+- Pressure can grow on inactive and terminal routes.
+- Active-session mutation checks only `ended`.
+- No route-policy revision, step admission result or domain mutation receipt exists.
+
+## Composite command transaction gaps
+
+- Browser actions call raw `engine.command()` and discard most result detail.
+- Commands carry no command or transaction ID.
+- Nested composition commands can publish intermediate state.
 - Child rejection can be concealed by parent success.
 - Resource and gameplay mutations have no rollback boundary.
-- No command ID, transaction ID, idempotency cache or result-to-frame acknowledgement exists.
+- No result-to-frame acknowledgement exists.
 
 ## Randomness and replay gaps
 
@@ -80,10 +96,11 @@ runtime session identity
 
 ## Render and observation gaps
 
-- The world canvas renders retained orchard/session state on every route.
+- Canvas and HTML render after the state snapshot but publish no typed render result.
+- Public observation can advance ahead of visible pixels after a manual tick.
+- No runtime/run/session/route/tick/state/frame correlation exists.
+- No explicit first-frame, failed-frame or pending-frame state exists.
 - Menus and Outcome can show predecessor-run pixels.
-- Renderers expose no route, phase, tick, run or frame provenance.
-- `GameHost` exposes live mutable state rather than a committed read model.
 
 ## Proof and deployment gaps
 
@@ -91,12 +108,16 @@ runtime session identity
 runtime-session fixture: absent
 fixed-step cadence fixture: absent
 route suspension fixture: absent
-management-route policy fixture: absent
-manual-step admission fixture: absent
+public-host reachability fixture: absent
+capability admission fixture: absent
+single-writer step fixture: absent
+host revocation fixture: absent
+subscriber lease fixture: absent
+frame-receipt fixture: absent
 command transaction fixture: absent
 replay fixture: absent
 save/load roundtrip fixture: absent
-browser frame-parity fixture: absent
+browser host smoke: absent
 Pages gate for these contracts: absent
 ```
 
@@ -106,7 +127,7 @@ Pages gate for these contracts: absent
 runtime session instance authority
   -> fixed-step clock authority
   -> route-scoped simulation admission authority
-  -> public capability gateway
+  -> public capability gateway and reachability
   -> composite command transaction authority
   -> seeded random and replay authority
   -> versioned save/load authority
@@ -115,4 +136,4 @@ runtime session instance authority
 
 ## Do not claim
 
-Do not claim authoritative Pause, menu idleness, management-screen safety, cadence-independent simulation, deterministic replay, fresh New Game state, resumable persistence, frame coherence or lifecycle cleanup until the corresponding fixtures pass on `main`.
+Do not claim the public host is read-only, immutable, session-scoped, revocable, clock-safe, command-safe or frame-coherent until the corresponding fixtures pass on `main`.
