@@ -2,116 +2,133 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Updated:** `2026-07-12T04-38-12-04-00`
+**Updated:** `2026-07-12T06-11-18-04-00`
 
 ## Summary
 
-`ZombieOrchard` is a dependency-free orchard survival/economy shell built from a mutable kit runtime, 12 interface domains, gameplay services, canvas and HTML projection, diagnostics, Node smoke proof, static build, and Pages deployment.
+`ZombieOrchard` is a dependency-free orchard survival/economy shell built from a mutable kit runtime, 12 interface domains, gameplay services, canvas and HTML projection, diagnostics, Node smoke proof, static build and Pages deployment.
 
-The current audit isolates frame-publication fault containment. Runtime commands and ticks mutate durable owners before synchronously notifying subscribers. A throwing subscriber can therefore make an accepted command throw after mutation, or abort a browser frame before either renderer runs. Because `draw()` schedules the next RAF only after tick and both renderers complete, one subscriber or renderer exception can permanently stop the game loop.
+The current audit isolates canvas render-surface authority. The world canvas is styled to fill the viewport, but every frame rewrites `canvas.width` and `canvas.height` from CSS dimensions, ignores device pixel ratio, applies no physical-pixel budget, and projects the fixed `720 x 560` world without fit or camera policy. Small viewports can hide valid gameplay positions, while high-DPI displays receive a low-resolution buffer.
 
 ## Plan ledger
 
-**Goal:** preserve committed command results and browser-loop liveness when a subscriber or renderer fails, while producing typed delivery, render, recovery, and frame receipts.
+**Goal:** make CSS viewport state, physical canvas resolution, world projection and the visible frame one bounded and revisioned transaction.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
-- [x] Detect newer unsynchronized repo-local work in `HorrorCorridor` and `PhantomCommand` and avoid overwriting it.
-- [x] Select only `ZombieOrchard` as the next-oldest stable eligible repository.
-- [x] Trace command mutation, tick mutation, snapshot creation, subscriber delivery, canvas rendering, HTML rendering, RAF scheduling, public host access, and smoke proof.
-- [x] Identify the interaction loop, all domains, all 27 implemented kits, and offered services.
-- [x] Confirm subscriber exceptions escape after mutation.
-- [x] Confirm tick, notification, or renderer exceptions prevent the next RAF from being scheduled.
-- [x] Define publication, observer, render-stage, scheduling, recovery, observation, and fixture contracts.
+- [x] Select only `ZombieOrchard` as the oldest eligible synchronized repository.
+- [x] Trace page/CSS ownership, browser boot, per-frame canvas sizing, world projection, HTML projection and smoke proof.
+- [x] Identify the interaction loop, all domains, all 27 implemented kits and offered services.
+- [x] Confirm drawing-buffer dimensions are assigned every rendered frame.
+- [x] Confirm DPR, pixel-budget, resize-generation and surface-revision authority are absent.
+- [x] Confirm fixed world coordinates can exceed a small viewport.
+- [x] Define canvas surface, allocation, projection, commit and visible-frame contracts.
 - [x] Refresh required root `.agent` documents and kit registry.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation directly to `main`; create no branch or pull request.
-- [ ] Runtime implementation and executable fault-containment fixtures remain future work.
+- [ ] Implement and execute render-surface fixtures.
 
 ## Current interaction loop
 
 ```txt
 module boot
   -> create mutable engine graph
-  -> create world and HTML renderers
+  -> create #world canvas renderer and HTML renderer
   -> expose raw engine through window.GameHost
   -> start draw()
 
-public observer
-  -> GameHost.engine.subscribe(listener)
-
-command
-  -> domain.command mutates state
-  -> notify() snapshots and invokes listeners synchronously
-  -> listener may throw
-  -> mutation remains, typed command result never returns
-
 browser frame
-  -> engine.tick mutates clock and domains
-  -> notify() invokes listeners synchronously
-  -> world.render(snapshot)
-  -> ui.render(snapshot)
-  -> requestAnimationFrame(draw)
+  -> engine.tick(1 / 60)
+  -> read canvas CSS width/height
+  -> fall back to window dimensions when zero
+  -> assign canvas.width and canvas.height
+  -> draw raw orchard coordinates around canvas center
+  -> replace HTML UI
+  -> schedule next RAF
 
-failure
-  -> any tick, listener, world-render, or UI-render exception escapes
-  -> next RAF is not scheduled
-  -> visible frame and public state can remain behind committed simulation
+viewport/DPR change
+  -> no explicit observation command or generation
+  -> next frame samples ambient CSS dimensions
+  -> DPR is ignored
+  -> drawing buffer resets without a typed result
+```
+
+## Main findings
+
+```txt
+canvas drawing buffer resets every rendered frame
+unchanged frames have no resize short-circuit
+CSS pixels are treated as physical pixels
+window.devicePixelRatio is not observed
+no maximum pixel count or fallback tier exists
+no explicit resize generation or stale-result rejection exists
+world coordinates are centered but not fitted to the viewport
+valid player and pest positions can be outside small canvases
+surface dimensions and projection are absent from GameHost snapshots
+Node smoke does not instantiate, resize or inspect a canvas
 ```
 
 ## Current ledge
 
 ```txt
-ZombieOrchard Frame Publication Fault Containment Authority
-+ Observer Delivery Isolation
-+ Command Result Preservation
-+ Render-Stage Results
-+ RAF Liveness and Recovery
-+ Browser Fault Fixture Gate
+ZombieOrchard Canvas Render Surface Authority
++ Bounded DPR and Pixel Budget
++ Resize Generation and Commit Result
++ World Fit / Membership Policy
++ Unchanged-Frame No-Resize Proof
++ Browser and Pages Viewport Matrix
 ```
 
 ## Domains and services
 
 ```txt
-browser module boot, DOM ownership, recursive RAF, and global host
-runtime registration, commands, ticks, events, snapshots, subscriptions, and publication
+browser page shell, CSS viewport and recursive RAF
+runtime registration, commands, ticks, snapshots, subscriptions and publication
 12 interface-screen domains and interface composition
-resources, pressure, orchard, construction, roster, inventory, and active-session gameplay
-canvas world projection and per-frame HTML projection
-observer delivery, render-stage classification, scheduling, recovery, and bounded fault observation
-Node smoke, static build, Pages deployment, and central audit tracking
+resources, pressure, orchard, construction, roster, inventory and active gameplay
+canvas CSS rectangle and viewport observation
+2D drawing-buffer allocation and context-state lifecycle
+DPR, capability and physical-pixel policy
+world projection, fit and viewport membership
+resize generation, coalescing, commit, rollback and observation
+canvas world rendering and HTML UI projection
+surface/state/frame diagnostics
+Node smoke, static build, Pages deployment and central tracking
 ```
 
-Implemented services remain provided by 27 kits covering runtime composition, interface routing, orchard/economy/survival state, canvas/HTML rendering, diagnostics, smoke proof, static build, and Pages deployment.
+Implemented services remain provided by 27 kits covering runtime composition, interface routing, orchard/economy/survival state, canvas/HTML rendering, diagnostics, smoke proof, static build and Pages deployment.
 
 ## Read this pass first
 
 ```txt
-.agent/trackers/2026-07-12T04-38-12-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-12T04-38-12-04-00.md
+.agent/trackers/2026-07-12T06-11-18-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-12T06-11-18-04-00.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/architecture-audit/2026-07-12T04-38-12-04-00-frame-publication-fault-containment-dsk-map.md
-.agent/render-audit/2026-07-12T04-38-12-04-00-simulation-publication-render-liveness-gap.md
-.agent/gameplay-audit/2026-07-12T04-38-12-04-00-subscriber-render-exception-stalls-game-loop.md
-.agent/interaction-audit/2026-07-12T04-38-12-04-00-command-notify-result-fault-map.md
-.agent/frame-cycle-audit/2026-07-12T04-38-12-04-00-observer-render-schedule-failure-contract.md
-.agent/deploy-audit/2026-07-12T04-38-12-04-00-frame-loop-fault-fixture-gate.md
+.agent/architecture-audit/2026-07-12T06-11-18-04-00-canvas-render-surface-authority-dsk-map.md
+.agent/render-audit/2026-07-12T06-11-18-04-00-css-dpr-drawing-buffer-parity-gap.md
+.agent/gameplay-audit/2026-07-12T06-11-18-04-00-fixed-world-small-viewport-visibility-loop.md
+.agent/interaction-audit/2026-07-12T06-11-18-04-00-viewport-observation-surface-result-map.md
+.agent/render-surface-audit/2026-07-12T06-11-18-04-00-pixel-budget-projection-revision-contract.md
+.agent/deploy-audit/2026-07-12T06-11-18-04-00-canvas-surface-fixture-gate.md
 ```
 
 ## Retained prerequisite audits
 
 ```txt
-runtime session instance:        2026-07-11T18-28-40-04-00
-route-scoped simulation:         2026-07-11T21-40-49-04-00
-public capability gateway:       2026-07-11T23-41-55-04-00
-composite command transaction:   2026-07-11T23-48-14-04-00
-player-control reachability:     2026-07-12T01-30-07-04-00
-fixed-step clock authority:      2026-07-12T03-11-51-04-00
+seeded random and replay:          2026-07-11T17-01-11-04-00
+runtime session instance:          2026-07-11T18-28-40-04-00
+versioned persistence:             2026-07-11T20-03-22-04-00
+route-scoped simulation:           2026-07-11T21-40-49-04-00
+public capability gateway:         2026-07-11T23-41-55-04-00
+composite command transaction:     2026-07-11T23-48-14-04-00
+player-control reachability:       2026-07-12T01-30-07-04-00
+fixed-step clock authority:        2026-07-12T03-11-51-04-00
+frame publication fault handling:  2026-07-12T04-38-12-04-00
 ```
 
 ## Guardrails
@@ -120,8 +137,9 @@ fixed-step clock authority:      2026-07-12T03-11-51-04-00
 Push only to main.
 Create no branch or pull request.
 Do not work on TheCavalryOfRome.
-Do not allow observer failure to rewrite an already committed command result.
-Do not treat a scheduled callback as proof that a visible frame committed.
-Do not silently continue after a critical simulation-stage failure without an explicit recovery policy.
-Do not claim frame-loop liveness until subscriber and renderer fault fixtures pass.
+Do not multiply by DPR without a bounded pixel budget.
+Do not mutate canvas dimensions on every unchanged frame.
+Do not let world projection depend on unrecorded ambient viewport state.
+Do not claim a visible surface from allocation or RAF scheduling alone.
+Do not claim viewport-safe gameplay until the browser matrix passes.
 ```
