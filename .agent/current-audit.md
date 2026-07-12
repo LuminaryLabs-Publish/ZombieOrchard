@@ -1,213 +1,158 @@
 # Current audit: ZombieOrchard
 
-**Timestamp:** `2026-07-12T10-00-00-04-00`  
-**Status:** `kit-graph-installation-authority-audited`  
+**Timestamp:** `2026-07-12T12-39-25-04-00`  
+**Status:** `economy-command-admission-authority-audited`  
 **Branch:** `main`
 
 ## Summary
 
-The runtime composes the shipped product from 27 implemented kits, but the composition itself is not an authority. `createOrchardGame()` supplies one manually ordered kit array. `createKitRuntime()` calls `kit.create(ctx)` against the live context, checks only for a returned domain ID, and writes the result directly into the mutable domain map.
+The current economy command surfaces are structurally reachable but semantically ungoverned. `engine.command()` checks only whether a target domain exists. Resource, construction, roster and inventory handlers then accept raw payloads and mutate live state without one command schema, capability check, resource registry, catalog revision, price authority, expected predecessor revision, idempotency key or conservation receipt.
 
-There is no manifest, version, provided-service declaration, required-service declaration, dependency resolver, deterministic phase plan, duplicate-domain rejection, candidate graph, rollback, predecessor disposal, graph revision or visible-frame receipt. The raw engine is also exposed through `window.GameHost`, so runtime callers can invoke `addKit()` after startup and silently replace a live domain by ID.
+The most direct defect is negative-cost minting. `resource-ledger.pay()` considers a negative amount payable and then subtracts that negative value, increasing the balance. `roster-runtime.hire()` trusts `payload.cost`, so a public caller can hire an actor with a negative cost and gain money in the same accepted command.
 
 ## Plan ledger
 
-**Goal:** define a deterministic kit-graph installation transaction that validates compatibility before mutation, commits the complete graph atomically and proves which graph produced the visible frame.
+**Goal:** define a semantic economy command transaction that rejects malformed, stale, unauthorized and non-conserving operations before any participant mutates.
 
-- [x] Compare the complete Publish inventory against central ledgers.
-- [x] Verify root `.agent` coverage and central synchronization for all nine eligible repositories.
+- [x] Compare the complete Publish inventory against central tracking.
+- [x] Verify eligible central-ledger and root `.agent` coverage.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only `ZombieOrchard` under the oldest synchronized fallback rule.
-- [x] Read browser boot, game construction, runtime registration, interface composition, gameplay domains and public host exposure.
-- [x] Reconcile the interaction loop, all domains, all 27 kits and their services.
-- [x] Trace initial and post-start kit installation.
-- [x] Confirm duplicate domain IDs overwrite live owners.
-- [x] Confirm domain tick order depends on mutable object insertion order.
-- [x] Confirm service dependencies and versions are implicit.
-- [x] Confirm no atomic install, rollback, uninstall or graph-frame proof exists.
-- [x] Define the parent DSK and fixture boundary.
-- [ ] Implement the authority and run source/browser/Pages graph fixtures.
+- [x] Select only `ZombieOrchard` under the oldest eligible fallback rule.
+- [x] Read runtime command dispatch and browser host exposure.
+- [x] Read resource, construction, roster, inventory and collection mutation paths.
+- [x] Reconcile the full interaction loop, domains, 27 implemented kit surfaces and services.
+- [x] Confirm negative-cost resource minting.
+- [x] Confirm arbitrary resource-key creation through negative payment.
+- [x] Confirm unknown construction IDs fall back to the first item.
+- [x] Confirm unknown inventory IDs are accepted.
+- [x] Define parent DSK, transaction and fixture boundary.
+- [ ] Implement and execute semantic economy fixtures.
 
 ## Selection audit
 
 ```txt
-ZombieOrchard      2026-07-12T07-51-04-04-00 selected oldest synchronized
-MyCozyIsland       2026-07-12T08-00-16-04-00
-TheUnmappedHouse   2026-07-12T08-10-36-04-00
-AetherVale         2026-07-12T08-31-49-04-00
-PrehistoricRush    2026-07-12T09-01-44-04-00
-TheOpenAbove       2026-07-12T09-02-10-04-00
-IntoTheMeadow      2026-07-12T09-21-40-04-00
-PhantomCommand     2026-07-12T09-28-05-04-00
-HorrorCorridor     2026-07-12T09-48-15-04-00
+ZombieOrchard      2026-07-12T10-09-07-04-00 selected
+MyCozyIsland       2026-07-12T10-20-02-04-00
+TheUnmappedHouse   2026-07-12T10-30-00-04-00
+AetherVale         2026-07-12T10-48-19-04-00
+TheOpenAbove       2026-07-12T11-15-16-04-00
+IntoTheMeadow      2026-07-12T11-29-40-04-00
+PhantomCommand     2026-07-12T11-48-43-04-00
+PrehistoricRush    2026-07-12T12-08-05-04-00
+HorrorCorridor     2026-07-12T12-21-38-04-00
 TheCavalryOfRome   excluded
 ```
 
 ## Complete interaction loop
 
 ```txt
-browser module evaluation
+browser module boot
   -> createOrchardGame()
-  -> create interface and gameplay kit descriptors
-  -> createKitRuntime({ kits })
+  -> install 19 engine kits
+  -> create world and HTML renderers
+  -> expose raw engine through window.GameHost
+  -> start recursive RAF
 
-initial graph installation
-  -> create mutable domains object and shared ctx
-  -> for each kit call engine.addKit(kit)
-  -> kit.create(ctx) executes against the live predecessor graph
-  -> require only domain.id
-  -> assign domains[domain.id] = domain
-  -> continue without dependency, version or duplicate checks
+UI economy action
+  -> delegated click
+  -> interface-composition.activate
+  -> active interface action
+  -> optional nested engine.command(participant, type, payload)
+  -> participant mutates live state
+  -> nested participant API may mutate resource or pressure state
+  -> synchronous notification
 
-runtime host setup
-  -> create world canvas and HTML renderer
-  -> attach delegated UI listener
-  -> publish raw engine through window.GameHost
-  -> begin RAF
+public economy action
+  -> GameHost.engine.command(domainId, type, payload)
+  -> participant mutates directly
+  -> synchronous notification
 
 frame
-  -> clamp one supplied delta
-  -> increment ambient frame and elapsed counters
-  -> clear events
-  -> iterate Object.values(domains)
-  -> call each domain tick in mutable property order
-  -> synchronously notify subscribers
-  -> snapshot domains
-  -> render canvas and HTML
-
-post-start graph mutation
-  -> external code calls GameHost.engine.addKit(candidate)
-  -> candidate creates against the live ctx
-  -> matching domain ID replaces predecessor immediately
-  -> no graph revision, migration, disposal or render acknowledgement occurs
+  -> engine.tick(1 / 60)
+  -> participant ticks
+  -> snapshot
+  -> canvas render
+  -> HTML render
 ```
 
 ## Source-backed findings
 
-### Installation validates only the returned domain ID
+### Negative payment mints resources
 
-`src/kits/runtime.js` implements installation as:
-
-```js
-addKit(kit) {
-  const domain = kit.create(ctx);
-  if (!domain?.id) throw new Error("Kit returned a domain without an id.");
-  domains[domain.id] = domain;
-  return domain;
-}
-```
-
-The runtime does not inspect a kit manifest, dependencies, provided services, version, lifecycle hooks or phase. It also does not reject an existing `domain.id`.
-
-### Duplicate IDs silently replace live ownership
-
-A second kit returning `id: "active-session"` overwrites the existing domain in place. The predecessor receives no stop or dispose call. Existing state disappears, while renderers and public callers continue reading the same map key. No replacement command, migration result, graph revision or first-frame acknowledgement identifies the ownership change.
-
-### Tick order is an installation-history side effect
-
-`tick()` uses:
-
-```js
-for (const domain of Object.values(domains)) domain.tick?.(ctx.delta);
-```
-
-Current behavior therefore depends on object property order created by the manually ordered array in `createOrchardGame()`. The interface-composition domain is installed last and routes to Outcome after active-session ticks. A future insertion, replacement or refactor can change whether a consumer observes predecessor or current-tick state without any explicit phase contract.
-
-### Dependencies are implicit and weakly admitted
-
-Gameplay domains find collaborators through `ctx.domains[domainId]?.api`. Examples include construction using `resource-ledger`, roster hiring using the ledger, and active-session collection using orchard, ledger and pressure services. No required-service declaration proves those providers exist or that their API shape and version match.
-
-Optional chaining avoids immediate crashes but converts graph errors into product behavior. A missing ledger can look like insufficient resources. A missing orchard can look like no nearby apple. A missing pressure service silently drops pressure mutation.
-
-### Initial installation is not transactional
-
-The initial loop installs domains one at a time into the live candidate object. If a later `kit.create()` throws, previously created domains and any side effects they acquired have no rollback or disposal path. The current kits are mostly in-memory, but the runtime contract permits future listeners, timers, transports or renderer resources without an acquisition ledger.
-
-### Public runtime mutation bypasses composition policy
-
-`src/start.js` exposes the raw engine as `window.GameHost.engine`. That surface includes `addKit()`. A browser diagnostic, editor or third-party script can mutate the graph after startup without an installation command, capability check, replacement policy or graph lock.
-
-### Graph provenance is absent
-
-Snapshots contain domain projections only. They do not include:
+`src/kits/game-domains.js` implements payment as a comparison against the caller-supplied value followed by subtraction. Negative values pass the comparison and subtraction increases the balance.
 
 ```txt
-graphId
-graphRevision
-graphFingerprint
-kit manifest fingerprints
-resolved dependency order
-service binding receipts
-installation results
-replacement lineage
+money = 40
+pay({ money: -10 })
+canPay: 40 >= -10 -> true
+commit: 40 - (-10) -> 50
+result: accepted
 ```
 
-Canvas and HTML renderers therefore cannot prove which kit graph produced a visible frame.
+An unknown resource key follows the same path because missing balances normalize to zero.
+
+### Caller controls roster price
+
+`roster-runtime.command("hire")` passes `payload.cost || 25` to the resource ledger. A negative number is truthy, so it becomes the effective price. The command then adds an actor after the minting payment succeeds.
+
+### Unknown construction ID builds another item
+
+Construction resolves `find(id) || catalog[0]`. A missing requested ID therefore does not reject; it buys and builds the first catalog entry.
+
+### Inventory accepts unknown item IDs
+
+Inventory equip assigns `state.equipped = payload.id` and returns accepted without proving that the item exists or is owned.
+
+### Resource namespace and numeric policy are implicit
+
+`add()` and `pay()` accept arbitrary object keys. Amounts are normalized numerically, but no registered-key, sign, precision, minimum, maximum or administrative-delta policy exists.
+
+### Command and revision evidence are absent
+
+Commands contain no stable command ID, session identity, actor capability, route revision, expected economy revision or expected catalog revision. Results expose only generic acceptance and carry no before/delta/after balance receipts.
+
+### Public reachability
+
+`src/start.js` publishes the raw engine through `window.GameHost`, including direct access to `engine.command()`, domain APIs and graph mutation. The semantic defects are therefore not limited to authored UI buttons.
 
 ## Concrete failure paths
 
-### Silent active-session replacement
-
 ```txt
-run is active
-  -> external code adds a kit returning domain ID active-session
-  -> predecessor state is overwritten
-  -> player, pests, day and score reset or change shape
-  -> interface-composition and renderers read the new owner
-  -> no lifecycle transition, migration or replacement result exists
-```
+negative direct payment
+  -> accepted
+  -> balance increases
 
-### Order-sensitive outcome routing
+negative roster hire
+  -> money increases
+  -> actor count increases
 
-```txt
-active-session tick commits ended = true
-  -> interface-composition tick currently runs later and moves to outcome
+unknown negative resource key
+  -> new balance key materializes
 
-composition is installed before active-session in a future graph
-  -> composition observes predecessor ended = false
-  -> outcome routing is delayed by one tick
-  -> no phase descriptor or graph validation reports the behavior change
-```
+unknown construction ID
+  -> first catalog item is purchased and built
 
-### Missing service disguised as gameplay rejection
-
-```txt
-construction-runtime installs without resource-ledger
-  -> build command resolves no ledger API
-  -> pay result is false-like
-  -> player receives Missing resources
-  -> graph misconfiguration is presented as economy state
-```
-
-### Failed creation with leaked acquisition
-
-```txt
-kit A creates a listener or timer
-  -> kit B creation throws
-  -> createKitRuntime aborts
-  -> no reverse cleanup stack runs
-  -> acquired work can survive a failed graph
+unknown inventory ID
+  -> equipped state points to nonexistent item
 ```
 
 ## Domains in use
 
 ```txt
-browser document, canvas, DOM and full-window CSS
+browser document, canvas, DOM and full-window shell
 module boot, recursive RAF and public GameHost
-kit manifest and graph-installation authority gap
-kit identity, domain identity, versions and compatibility
-provided and required service contracts
-dependency resolution and deterministic phase ordering
-candidate graph construction, validation, commit, rollback and disposal
-graph identity, revision, fingerprint, observation and visible-frame correlation
 runtime registration, commands, ticks, events, snapshots, subscriptions and publication
-12 interface-screen domains and interface composition
-resource ledger and pressure field
-orchard trees, apples and refill
-construction, roster and inventory
+11 scoped interface domains plus gameplay active-session
+interface composition and nested command dispatch
+resource namespace, balances, prices and conservation
+pressure field
+orchard population, collection and refill
+construction catalog and build state
+roster offers and actor state
+inventory catalog, ownership and equipped state
 active-session movement, phases, pests, damage, score and failure
-canvas world rendering and HTML projection
-Node smoke, static build, Pages deployment and central audit tracking
+canvas world rendering and HTML route/HUD projection
+Node smoke, static build, Pages deployment and central tracking
 ```
 
 ## Implemented kits
@@ -246,98 +191,36 @@ pages-deploy-kit
 
 | Kit group | Services |
 |---|---|
-| runtime | Kit registration, domain creation, commands, delta clamp, ticks, events, snapshots, subscriptions and synchronous publication |
-| interface | Screen state, actions, activation, route transitions, nested dispatch and Outcome routing |
-| game | Resource accounting, pressure, orchard population, collection, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
-| render | Canvas world drawing, HUD and route HTML, card projection and delegated clicks |
-| diagnostics/proof/deploy | Raw engine publication, state readback, unrestricted manual tick, Node smoke, static build copy and Pages deployment |
+| runtime | Registration, live domain creation, commands, delta clamp, ticks, events, snapshots, subscriptions and synchronous publication |
+| interface | Screen state, fields, selection, action activation, routing, nested dispatch and Outcome routing |
+| gameplay/economy | Resource accounting, pressure, orchard collection, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
+| render | Canvas world drawing, HTML route/HUD projection and delegated actions |
+| diagnostics/proof/deploy | Raw engine publication, snapshot readback, manual tick, Node smoke, static copy and Pages deployment |
 
 ## Required composed domain
 
 ```txt
-zombie-orchard-kit-graph-installation-authority-domain
-```
-
-Candidate kits:
-
-```txt
-kit-manifest-schema-kit
-kit-id-kit
-kit-version-kit
-kit-compatibility-range-kit
-domain-id-ownership-kit
-provided-service-contract-kit
-required-service-contract-kit
-service-version-kit
-kit-dependency-graph-kit
-kit-cycle-detection-kit
-kit-phase-descriptor-kit
-deterministic-kit-order-kit
-kit-graph-predecessor-kit
-kit-graph-candidate-kit
-isolated-kit-context-kit
-kit-create-result-kit
-kit-graph-validation-kit
-duplicate-kit-rejection-kit
-duplicate-domain-rejection-kit
-missing-service-rejection-kit
-incompatible-service-rejection-kit
-kit-graph-commit-kit
-kit-graph-rollback-kit
-kit-predecessor-retirement-kit
-kit-disposal-result-kit
-kit-graph-id-kit
-kit-graph-revision-kit
-kit-graph-fingerprint-kit
-kit-installation-receipt-kit
-kit-graph-observation-kit
-kit-graph-journal-kit
-first-kit-graph-frame-ack-kit
-kit-order-fixture-kit
-duplicate-domain-fixture-kit
-missing-service-fixture-kit
-failed-create-rollback-fixture-kit
-runtime-replacement-fixture-kit
-pages-kit-graph-smoke-kit
+zombie-orchard-economy-command-admission-authority-domain
 ```
 
 ## Required transaction
 
 ```txt
-KitGraphInstallCommand
-  -> admit against expected runtime session and graph predecessor
-  -> normalize and freeze all kit manifests
-  -> validate unique kit and domain ownership
-  -> resolve required services to compatible providers
-  -> reject missing, cyclic or incompatible graphs
-  -> calculate deterministic lifecycle and tick phase order
-  -> create domains inside an isolated candidate context
-  -> collect acquisition and disposal leases
-  -> validate candidate APIs, snapshots and service bindings
-  -> atomically replace the graph under one revision
-  -> migrate or retire explicitly replaced predecessors
-  -> rollback candidate acquisition on any failure
-  -> publish graph fingerprint and per-kit receipts
-  -> acknowledge first canvas and HTML frame citing that graph revision
+EconomyCommand
+  -> bind command ID, runtime session, route and actor capability
+  -> validate command and payload schema
+  -> canonicalize registered resource keys and finite amounts
+  -> reject negative costs and unauthorized signed deltas
+  -> validate catalog, offer and inventory references
+  -> validate expected participant revisions
+  -> build immutable mutation plan
+  -> prove balance floors and conservation policy
+  -> atomically commit every participant
+  -> publish typed result and before/delta/after receipts
+  -> reject duplicate and stale commands
+  -> acknowledge first visible canvas and HTML frame
 ```
 
-## Ordered implementation queue
+## Runtime non-claims
 
-```txt
-0. Kit Graph Installation Authority
-1. Runtime Session Instance Authority
-2. Fixed-Step Clock Authority
-2a. Route-Scoped Simulation Admission Authority
-2b. Player-Control Reachability Authority
-3. Public Capability Gateway and Reachability
-4. Composite Command Transaction Authority
-4a. Frame Publication Fault Containment Authority
-4b. Canvas Render Surface Authority
-4c. HTML Interface Projection and Focus Authority
-5. Seeded Random and Replay Authority
-6. Versioned Save / Load Authority
-```
-
-## Proof boundary
-
-Do not claim deterministic composition, dependency safety, compatible services, duplicate-owner protection, atomic replacement, resource-safe failed installation or graph-to-frame provenance until source, candidate-graph, browser, built-artifact and Pages fixtures pass on `main`.
+No runtime source, economy behavior, rendering, package scripts or deployment configuration changed. No economic-conservation, catalog-integrity, idempotency or visible-frame claim is made.
