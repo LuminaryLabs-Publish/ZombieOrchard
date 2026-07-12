@@ -3,94 +3,115 @@
 ## Status
 
 ```txt
-last aligned: 2026-07-12T01-30-07-04-00
-status: player-control-reachability-authority-audited
+last aligned: 2026-07-12T03-11-51-04-00
+status: fixed-step-clock-authority-audited
 runtime source changed: no
 branch: main
 root .agent state: refreshed
-central ledger sync: complete
+central ledger sync: pending until repo-local completion
 ```
 
 ## Summary
 
-The browser product does not expose the movement service already implemented by `active-session`. `start.js` creates the game, renderers, public host and RAF without keyboard or touch input. The HTML renderer binds only click actions and exposes Collect, Clear, Next Phase and route buttons. `world-canvas.js` is render-only.
+`src/start.js` calls `engine.tick(1 / 60)` exactly once per `requestAnimationFrame`. The browser display cadence is therefore the simulation clock. A 30 Hz client advances about half a simulation second per wall second, while a 120 Hz client advances about two simulation seconds.
 
-The player starts at `{ x: 0, y: 180 }`. Since collection requires an apple within 42 units, random apple placement can produce a normal run in which the player cannot reach any collectible and has no action capable of changing that condition.
+The same mutable graph is also reachable through `window.GameHost.tick(dt)`. Automatic and manual stepping have no exclusive writer lease, simulation epoch, step ID, catch-up policy, visibility barrier, publication batch, or visible-frame receipt.
 
 ## Plan ledger
 
-**Goal:** establish one browser-to-gameplay movement path with route/focus admission, held-input retirement, typed results and visible-frame proof.
+**Goal:** establish one wall-time-driven fixed-step authority that owns automatic/manual step admission, exact step execution, bounded catch-up, suspension, publication, observation, and frame proof.
 
 - [x] Compare the full Publish inventory with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Select only `ZombieOrchard` as the oldest eligible entry.
-- [x] Read boot, runtime composition, preset actions, HTML controls, active-session movement and canvas projection.
-- [x] Identify the interaction loop, domains, all 27 implemented kits and services.
-- [x] Confirm the movement command has no shipped product binding.
-- [x] Define control binding, route/focus admission, retirement, result and fixture contracts.
-- [x] Add architecture, render, gameplay, interaction, player-control and deploy audits.
-- [x] Synchronize the central ledger and internal change log.
-- [ ] Implement and run player-control fixtures.
+- [x] Read browser boot, runtime tick, active-session timing, renderers, package scripts, smoke proof, and current audit state.
+- [x] Identify the interaction loop, domains, all 27 implemented kits, and services.
+- [x] Confirm simulation speed changes with display cadence.
+- [x] Confirm public manual stepping can overlap automatic RAF ownership.
+- [x] Define clock, writer, accumulator, catch-up, visibility, result, publication, observation, and fixture contracts.
+- [x] Add architecture, render, gameplay, interaction, clock-system, and deploy audits.
+- [ ] Implement and run fixed-step clock fixtures.
 
 ## Interaction loop
 
 ```txt
-Play
-  -> route becomes active-session
-  -> RAF ticks every domain and renders the world
+module boot
+  -> create game graph
+  -> create canvas and HTML renderers
+  -> publish GameHost.engine and GameHost.tick
+  -> start draw()
 
-browser controls
-  -> route buttons
-  -> Collect
-  -> Clear
-  -> Next Phase
+browser frame
+  -> engine.tick(1 / 60)
+  -> runtime clamps the literal delta
+  -> runtime increments elapsed and frame
+  -> every domain.tick receives the literal delta
+  -> runtime publishes a snapshot
+  -> canvas and HTML render
+  -> schedule next RAF
 
-movement
-  -> active-session.command("move", { x, y }) exists
-  -> no keyboard/pointer/touch adapter calls it
-  -> player position remains unchanged in normal product use
+manual/public
+  -> GameHost.tick(dt)
+  -> same mutation and publication path
+  -> no exclusion from browser-frame stepping
 ```
 
 ## Source-backed findings
 
-1. `src/start.js` installs no movement input listener.
-2. `html-interface-renderer.js` installs one delegated click listener only.
-3. Active-session buttons are Collect, Clear and Next Phase.
-4. `world-canvas.js` has no pointer or touch input path.
-5. `active-session.command("move")` adds `22 * x/y` and clamps to orchard bounds.
-6. The player starts at `{ x: 0, y: 180 }`.
-7. Collection requires an apple within 42 units.
-8. Apples are randomly seeded around the orchard, so initial reachability is not guaranteed.
-9. No binding manifest, held-key state, focus lease, route admission, input sequence or retirement service exists.
-10. No movement result is correlated to a canvas/HTML frame.
-11. Existing smoke proof checks route transition and apple presence only.
+1. `src/start.js` ignores the RAF timestamp and submits `1 / 60` for every display callback.
+2. `src/kits/runtime.js` increments `ctx.elapsed` and `ctx.frame` on every call, ticks every domain, and publishes immediately.
+3. Runtime delta clamping prevents very large individual deltas but does not create a fixed-step accumulator.
+4. `window.GameHost.tick(dt)` exposes a second unrestricted writer to the same runtime.
+5. `pressure-field.tick(dt)` adds `dt * 0.8` row pressure and `dt * 0.2` curse.
+6. Night pest spawning performs one `Math.random() < dt * 0.55` trial per tick.
+7. Pests move `dt * 36` units and contact damage applies `dt * 7` condition per tick.
+8. At 30/60/120 Hz, source-level simulation advances at approximately 0.5x/1x/2x wall time.
+9. One tick always triggers snapshot publication, so catch-up through repeated calls would also multiply public publications.
+10. No simulation epoch, step ID, writer lease, accumulator, catch-up budget, lag-drop result, visibility generation, or simulation/frame receipt exists.
+11. Current smoke proof verifies route transition and apple presence only.
+
+## Quantified cadence divergence
+
+| Display cadence | Sim seconds / wall second | Row pressure / second | Pest movement / second | Condition loss / second |
+|---:|---:|---:|---:|---:|
+| 30 Hz | 0.5 | 0.4 | 18 | 3.5 |
+| 60 Hz | 1.0 | 0.8 | 36 | 7 |
+| 120 Hz | 2.0 | 1.6 | 72 | 14 |
+
+Approximate night pest-spawn probability per wall second:
+
+```txt
+30 Hz: 24.1%
+60 Hz: 42.5%
+120 Hz: 66.9%
+```
 
 ## Domains in use
 
 ```txt
-browser boot, DOM and recursive RAF
-runtime graph, commands, ticks, events, snapshots and subscriptions
-runtime/session lifecycle authority: missing
-fixed-step and single-writer authority: missing
-route-scoped simulation admission authority: missing
-player-control reachability authority: missing
-public capability and composite transaction authorities: missing
-12 interface-screen domains and composition
-resources, pressure, orchard world, construction, roster and inventory
-active-session movement, collection, phases, pests, damage and failure
+browser module boot, DOM ownership, RAF, and global host
+runtime graph, domain registration, commands, ticks, events, snapshots, and subscriptions
+simulation elapsed time, frame count, and delta clamp
+automatic/manual step admission: missing
+fixed-step clock, accumulator, writer, catch-up, lag, and visibility authority: missing
+12 interface-screen domains and interface composition
+resource ledger and pressure field
+orchard world and random apple lifecycle
+construction, roster, and inventory
+active-session movement, collection, phases, pests, damage, and failure
 canvas and HTML rendering
-Node smoke, static build and Pages deployment
+public diagnostics, Node smoke, static build, Pages deployment, and audit tracking
 ```
 
 ## Implemented kits and services
 
 | Group | Services |
 |---|---|
-| `kit-runtime` | registration, domain creation, command dispatch, clamped ticks, events, snapshots, subscriptions and publication |
-| interface kits | screen state, actions, activation, routing, nested dispatch and Outcome routing |
-| game kits | resources, pressure, apples, collection, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
-| render kits | orchard canvas, HUD, route screens, cards, delegated click bindings and per-frame DOM replacement |
-| proof/deploy | raw host, snapshot, manual tick, Node smoke, static build and Pages |
+| `kit-runtime` | registration, domain creation, commands, delta clamp, ticks, events, snapshots, subscriptions, publication |
+| interface kits | screen state, actions, activation, routing, nested dispatch, automatic Outcome routing |
+| game kits | resources, pressure, trees, apples, collection, construction, hiring, equipment, movement, phases, pests, damage, score, failure |
+| render kits | orchard canvas, HUD, route screens, cards, delegated click bindings, per-frame DOM replacement |
+| proof/deploy | raw engine, snapshot, unrestricted manual tick, smoke proof, static build, Pages |
 
 ## Complete implemented kit inventory
 
@@ -127,19 +148,29 @@ pages-deploy-kit
 ## Required composed domain
 
 ```txt
-zombie-orchard-player-control-reachability-authority-domain
-  -> control-binding-manifest-kit
-  -> browser-keyboard-input-adapter-kit
-  -> held-control-state-kit
-  -> movement-intent-kit
-  -> movement-vector-normalization-kit
-  -> route-focus-control-lease-kit
-  -> movement-command-admission-kit
-  -> input-retirement-kit
-  -> movement-command-result-kit
-  -> control-observation-kit
-  -> movement-frame-receipt-kit
-  -> player-control-fixture-kit
+zombie-orchard-fixed-step-clock-authority-domain
+  -> runtime-clock-source-kit
+  -> frame-time-observation-kit
+  -> simulation-epoch-kit
+  -> simulation-step-id-kit
+  -> step-writer-lease-kit
+  -> fixed-step-policy-kit
+  -> simulation-accumulator-kit
+  -> catch-up-budget-kit
+  -> lag-drop-policy-kit
+  -> visibility-suspension-kit
+  -> manual-step-capability-kit
+  -> simulation-step-command-kit
+  -> simulation-step-admission-kit
+  -> simulation-step-result-kit
+  -> tick-publication-barrier-kit
+  -> simulation-clock-observation-kit
+  -> simulation-clock-journal-kit
+  -> simulation-frame-receipt-kit
+  -> cadence-parity-fixture-kit
+  -> manual-auto-exclusion-fixture-kit
+  -> hidden-tab-resume-fixture-kit
+  -> browser-clock-smoke-kit
 ```
 
 ## Ordered safe ledges
@@ -154,3 +185,7 @@ zombie-orchard-player-control-reachability-authority-domain
 5. Seeded Random and Replay Authority
 6. Versioned Save / Load Authority
 ```
+
+## Proof boundary
+
+Do not claim cadence-independent gameplay, fixed-step determinism, automatic/manual writer safety, bounded resume, single-publication batches, or simulation-to-frame correlation until the documented fixtures pass.
