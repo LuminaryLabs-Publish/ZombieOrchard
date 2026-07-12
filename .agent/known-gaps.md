@@ -1,14 +1,14 @@
 # Known gaps — ZombieOrchard
 
-**Timestamp:** `2026-07-12T06-11-18-04-00`
+**Timestamp:** `2026-07-12T07-51-04-04-00`
 
 ## Summary
 
-The newest gap is canvas render-surface authority. The renderer resets the drawing buffer from CSS dimensions every frame, ignores DPR and pixel budgets, and applies no fit or camera policy to the fixed orchard world. Rendering can therefore be blurry, needlessly reset, or visually exclude valid gameplay positions without a typed mismatch result.
+The newest documented gap is HTML interface projection and focus authority. The renderer replaces `#ui-root` on every frame, including unchanged menus and HUDs. This creates continuous DOM churn, can replace the currently focused control, has no safe encoding contract and emits no typed projection or visible-interface result.
 
 ## Plan ledger
 
-**Goal:** keep unresolved risks dependency ordered and fixture bounded.
+**Goal:** keep unresolved risks dependency ordered and tied to executable fixtures.
 
 - [ ] Runtime session identity, lifecycle and callback generation fencing.
 - [ ] Fixed-step clock and single-writer admission.
@@ -18,110 +18,67 @@ The newest gap is canvas render-surface authority. The renderer resets the drawi
 - [ ] Composite command transaction authority.
 - [ ] Frame-publication fault containment and loop liveness.
 - [ ] Canvas render-surface and world-projection authority.
+- [ ] HTML interface projection, focus and encoding authority.
 - [ ] Seeded random/replay continuation.
 - [ ] Versioned save/load authority.
 
-## Canvas render-surface gaps
+## HTML interface projection gaps
 
 ```txt
-canvas.width and canvas.height are assigned every rendered frame
-unchanged dimensions do not short-circuit allocation/reset
-CSS dimensions are treated as physical drawing-buffer dimensions
-window.devicePixelRatio is ignored
-no product maximum DPR exists
-no physical-pixel budget exists
-no canvas capability admission exists
-no resize command, generation or coalescing exists
-no actual drawing-buffer readback exists
-no surface ID or revision exists
-no fallback tier or rollback result exists
-world coordinates are centered without fit or camera policy
-small viewports can hide valid player, pest and collectable positions
-zero-size canvas fallback can disagree with the CSS rectangle
-GameHost exposes no surface state
-no visible frame cites a surface revision
-no canvas/DPR/resize/browser fixture exists
+ui.render runs every RAF callback
+root.innerHTML is assigned in every route/HUD render
+unchanged state has no no-op result
+all descendant nodes are replaced
+focused buttons have no stable node identity
+no focusedActionId capture or restoration exists
+no selection/caret continuity exists
+no route-transition focus policy exists
+no DOM mutation budget exists
+no semantic-change fingerprint exists
+no accessibility announcement deduplication exists
+text conversion does not escape HTML
+data-action interpolation has no attribute encoding
+no projection ID or revision exists
+no stale projection rejection exists
+no projection/frame correlation exists
+no DOM, focus, escaping or accessibility fixture exists
 ```
 
-## Runtime-session gaps
+## Retained unresolved gaps
 
-- One mutable graph is constructed at module boot.
-- RAF ownership is ambient and has no retained request ID.
-- Renderer and HTML listener ownership have no ordered stop/dispose result.
-- Stale callbacks have no session/generation fence.
-- Outcome -> Title -> Play can reuse predecessor runtime state.
+### Runtime and clock
 
-## Fixed-step clock gaps
+- Module boot creates one graph and starts one ambient RAF loop.
+- RAF ownership has no retained ID or callback generation.
+- One literal `1 / 60` tick runs per display callback.
+- Visibility and display cadence alter simulation progress and random trials.
 
-- One literal `1 / 60` step is executed per display callback.
-- RAF timestamps are ignored.
-- Display cadence changes pressure, pest movement, damage and spawn-trial count.
-- Automatic and manual writers have no exclusive lease.
-- No accumulator, catch-up budget, visibility suspension, lag result, step range or frame receipt exists.
+### Route and control
 
-## Route-admission gaps
+- Domains tick before Play and while menus are active.
+- `active-session.command("move")` has no shipped browser binding.
+- No keyboard/touch movement lease or retirement path exists.
 
-- The graph begins ticking before Play.
-- Every domain ticks on every route.
-- Pause and management screens are not simulation barriers.
-- Pressure can grow outside active gameplay.
-- No route policy revision or step-admission result exists.
+### Public capability and transaction
 
-## Player-control reachability gaps
+- `window.GameHost` exposes the mutable engine, domains, ticks and kit registration.
+- Nested interface commands can conceal child failure.
+- Multi-domain operations lack prepare/commit/rollback and idempotency.
 
-- `active-session.command("move")` is implemented but not bound to the shipped browser UI.
-- No keyboard, directional pointer or touch movement adapter exists.
-- No held-key state, route/focus lease, input sequence or retirement path exists.
-- Random apple placement does not guarantee a collectible within the initial radius.
-- Even after input is bound, small viewports can hide valid controlled positions without projection authority.
+### Frame and canvas
 
-## Composite command transaction gaps
+- Subscriber or renderer exceptions can terminate the frame loop.
+- Canvas dimensions are rewritten from CSS dimensions every frame.
+- DPR, pixel budgets, world fit, surface revisions and canvas-frame proof are absent.
+- Canvas and HTML consumers have no shared committed frame receipt.
 
-- Browser actions discard returned results.
-- Interface activation can invoke nested child commands and ignore its result.
-- Child rejection can be concealed by parent success.
-- Nested dispatch can publish intermediate state and publish again.
-- No prepare/commit/rollback boundary, command ID, idempotency receipt or transaction/frame acknowledgement exists.
-
-## Frame-publication fault gaps
-
-- Commands and ticks mutate before synchronous subscriber publication.
-- One subscriber exception can hide a committed result and skip later observers.
-- World and HTML renderers return no typed stage results.
-- Successor RAF scheduling occurs after tick and both renderers.
-- Any subscriber or renderer exception can silently stop the loop.
-- No observer leases, stage results, recovery generation or visible-frame receipt exists.
-
-## Public capability gaps
-
-- `window.GameHost` exposes the complete mutable engine.
-- Public callers can reach context, domains, commands, ticks, subscriptions and kit registration.
-- No capability manifest, lease, allowlist, schema or revocation state exists.
-- Public snapshots omit runtime, route, tick, state, publication, surface and frame provenance.
-
-## Randomness and replay gaps
+### Replay and persistence
 
 - Apples and pests use process-global `Math.random()`.
-- No run seed, named stream, cursor, draw receipt or checkpoint exists.
-- Callback cadence changes pest trials and random advancement.
-- Random string entity IDs prevent stable replay identity.
+- No run seed, stream cursor, replay journal or deterministic IDs exist.
+- Save Select has no storage, schema, migration, checksum or restore authority.
 
-## Persistence gaps
-
-- Save Select is unreachable and has no slot authority.
-- No storage adapter, schema, migration, checksum or slot revision exists.
-- Snapshot has no restore inverse and omits clock/random continuation.
-- No load epoch, rollback or first-restored-frame acknowledgement exists.
-
-## Render and observation gaps
-
-- Canvas and HTML publish no typed render result.
-- Public observation can advance ahead of visible pixels.
-- Menus and Outcome can show predecessor-run pixels.
-- Canvas pixels have no CSS/DPR/surface provenance.
-- No runtime/session/route/step/state/transaction/publication/surface/frame correlation exists.
-
-## Proof and deployment gaps
+## Proof gaps
 
 ```txt
 runtime-session fixture: absent
@@ -130,33 +87,35 @@ route-suspension fixture: absent
 player-control fixture: absent
 public-host fixture: absent
 command-transaction fixture: absent
-subscriber/renderer fault fixtures: absent
+subscriber/renderer fault fixture: absent
 canvas viewport/DPR fixture: absent
-pixel-budget fallback fixture: absent
-unchanged-frame no-resize fixture: absent
-world-fit membership fixture: absent
-browser/Pages resize matrix: absent
+unchanged-DOM no-mutation fixture: absent
+keyboard-focus retention fixture: absent
+HTML text/attribute escaping fixture: absent
+route-transition focus fixture: absent
+screen-reader announcement fixture: absent
+canvas/HTML frame parity fixture: absent
 replay fixture: absent
 save/load fixture: absent
-built-artifact browser proof: absent
+built-artifact and Pages interface smoke: absent
 ```
 
 ## Dependency order
 
 ```txt
-runtime session instance authority
-  -> fixed-step clock authority
-  -> route-scoped simulation admission authority
-  -> player-control reachability authority
+runtime session
+  -> fixed-step clock
+  -> route and input admission
   -> public capability gateway
-  -> composite command transaction authority
-  -> frame-publication fault containment authority
-  -> canvas render-surface authority
-  -> seeded replay authority
-  -> versioned persistence authority
+  -> composite command transaction
+  -> frame fault containment
+  -> canvas surface authority
+  -> HTML interface projection authority
+  -> replay authority
+  -> persistence authority
   -> deployment proof
 ```
 
 ## Do not claim
 
-Do not claim timing parity, command atomicity, observer isolation, frame-loop liveness, high-DPI clarity, viewport-safe gameplay, render-surface correctness, replay fidelity, save continuity or visible-frame correlation until the corresponding fixtures pass on `main`.
+Do not claim stable keyboard operation, assistive-technology continuity, minimal DOM mutation, safe external-content rendering or visible canvas/HTML parity until the relevant fixtures pass on `main`.
