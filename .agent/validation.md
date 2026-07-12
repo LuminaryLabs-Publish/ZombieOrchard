@@ -1,90 +1,117 @@
 # Validation — ZombieOrchard
 
+**Timestamp:** `2026-07-12T04-38-12-04-00`
+
 ## Scope
 
-Documentation-only audit of simulation-clock authority. Runtime source, dependencies, package scripts, rendering, gameplay behavior, and deployment configuration were not changed.
+Documentation-only audit of frame-publication fault containment. Runtime source, dependencies, package scripts, rendering behavior, gameplay behavior, and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record the refresh-rate-dependent simulation defect and the proof required before the orchard is treated as cadence-stable or fixed-step deterministic.
+**Goal:** record the source-backed observer/render failure path and the executable proof required before command-result preservation or frame-loop liveness is claimed.
 
-- [x] Read browser boot, recursive RAF, and public host ownership.
-- [x] Read runtime delta clamping, frame/elapsed mutation, domain ticking, and publication.
-- [x] Read pressure, pest spawning, movement, damage, route composition, and render projection.
-- [x] Read package scripts and smoke proof.
-- [x] Confirm one literal `1 / 60` step occurs per display callback.
-- [x] Confirm unrestricted manual stepping reaches the same mutable graph.
-- [x] Quantify 30/60/120 Hz source-level gameplay divergence.
+- [x] Read browser boot and recursive RAF scheduling.
+- [x] Read command mutation, tick mutation, snapshots, subscriptions, and synchronous notification.
+- [x] Read world-canvas and HTML-interface render stages.
+- [x] Confirm raw public access to `engine.subscribe()` through `window.GameHost.engine`.
+- [x] Confirm observer invocation has no per-listener isolation.
+- [x] Confirm command mutation occurs before notification and result return.
+- [x] Confirm tick mutation occurs before notification and snapshot return.
+- [x] Confirm next-frame scheduling occurs after tick and both renderers.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
 - [x] Synchronize the central ledger and internal change log.
-- [ ] Implement and run clock fixtures.
+- [ ] Implement and run fault-containment fixtures.
 
 ## Source-backed findings
 
 ```txt
-src/start.js
-  -> engine.tick(1 / 60) once per RAF
-  -> ignores RAF timestamp
-  -> exposes GameHost.tick(dt)
-
 src/kits/runtime.js
-  -> clamps each supplied delta to 0..0.1
-  -> increments elapsed and frame on every call
-  -> ticks every domain on every call
-  -> snapshots and notifies after every call
+  -> engine.command() calls domain.command() before notify()
+  -> engine.command() returns only after notify() completes
+  -> engine.tick() mutates clock and domains before notify()
+  -> notify() invokes listeners synchronously without try/catch
+  -> one listener exception skips later listeners
+  -> subscribe() accepts an untyped function and returns only a deletion closure
 
-pressure-field
-  -> rowPressure += dt * 0.8
-  -> curse += dt * 0.2
+src/start.js
+  -> exposes the raw engine through window.GameHost
+  -> draw() calls tick, world.render, ui.render, then requestAnimationFrame
+  -> no try/catch/finally wraps the frame cycle
+  -> any stage exception prevents successor scheduling
 
-active-session
-  -> night spawn trial: Math.random() < dt * 0.55
-  -> pest movement: dt * 36
-  -> contact damage: dt * 7
+src/renderer/world-canvas.js
+  -> mutates one canvas directly
+  -> returns no typed render result
+
+src/renderer/html-interface-renderer.js
+  -> replaces root.innerHTML directly
+  -> returns no typed render result
+  -> delegated click commands do not catch publication failures
 ```
 
-## Quantified source behavior
+## Deterministic failure sequences
 
-| Display cadence | Sim seconds / wall second | Row pressure / second | Pest movement / second | Contact damage / second |
-|---:|---:|---:|---:|---:|
-| 30 Hz | 0.5 | 0.4 | 18 | 3.5 |
-| 60 Hz | 1.0 | 0.8 | 36 | 7 |
-| 120 Hz | 2.0 | 1.6 | 72 | 14 |
-
-Approximate night pest-spawn probability per wall second:
+### Command path
 
 ```txt
-30 Hz: 24.1%
-60 Hz: 42.5%
-120 Hz: 66.9%
+observer = () => { throw Error("boom") }
+engine.subscribe(observer)
+engine.command("resource-ledger", "add", { values: { money: 1 } })
+
+result:
+  resource mutation persists
+  notify throws
+  command result does not return
+  later observers are skipped
+```
+
+### RAF path
+
+```txt
+draw()
+  -> engine.tick commits clock/domain mutation
+  -> notify invokes throwing observer
+  -> exception escapes
+  -> world.render not called
+  -> ui.render not called
+  -> requestAnimationFrame(draw) not called
+```
+
+### Renderer path
+
+```txt
+draw()
+  -> tick and publication complete
+  -> renderer throws
+  -> remaining surface may not render
+  -> next RAF is not scheduled
+  -> public state can remain ahead of visible pixels
 ```
 
 ## Required fixtures
 
 ```txt
-fixed-step-policy-shape
-monotonic-simulation-step-id
-simulation-epoch-reset
-30hz-60hz-120hz-equal-wall-time-parity
-variable-cadence-parity
-pressure/pest/damage/spawn-cadence-parity
-long-frame-catch-up-limit
-lag-drop-result
-hidden-tab-suspension
-resume-new-baseline
-manual-step-equivalence
-manual-auto-writer-exclusion
-single-publication-per-batch
-stale-epoch-rejection
-step-range-visible-frame-receipt
+command-result-preserved-after-observer-fault
+observer-delivery-continues-after-predecessor-fault
+observer-delivery-result-identifies-failed-lease
+observer-quarantine-and-revocation-policy
+subscriber-throw-does-not-silently-stop-loop
+world-render-fault-stage-result
+html-render-fault-stage-result
+partial-frame-classification
+failed-frame-has-no-visible-frame-receipt
+successor-schedule-finalization
+critical-tick-fault-explicit-stop
+recovery-generation-stale-callback-rejection
+publication/state/frame-receipt-correlation
 built-artifact-browser-smoke
-Pages-cadence-smoke
+Pages-frame-fault-recovery-smoke
 ```
 
-## Existing smoke boundary
+## Existing proof boundary
 
-Current `npm test` verifies only entry route, Play transition, and apple presence. It does not execute browser cadence, fixed-step accumulation, visibility, manual/automatic exclusion, catch-up, lag dropping, or frame correlation.
+Current `npm test` verifies only the Entry route, Play transition, and apple presence. It does not register throwing subscribers, force renderer exceptions, inspect command result preservation, verify later-observer delivery, test successor scheduling, or validate a recovery generation.
 
 ## Validation result
 
@@ -101,15 +128,15 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-clock fixtures: unavailable / not run
-hidden-tab fixture: unavailable / not run
-writer-exclusion fixture: unavailable / not run
-step/frame fixture: unavailable / not run
-Pages cadence smoke: unavailable / not run
+observer fault fixtures: unavailable / not run
+renderer fault fixtures: unavailable / not run
+frame-cycle liveness fixture: unavailable / not run
+recovery-generation fixture: unavailable / not run
+Pages fault smoke: unavailable / not run
 
 repo-local docs pushed to main: yes
 central ledger update: complete
 central internal change log: complete
 ```
 
-No cadence parity, fixed-step determinism, automatic/manual writer safety, hidden-tab safety, bounded catch-up, or simulation-to-frame claim is made.
+No observer isolation, command-result preservation, render-stage recovery, frame-loop liveness, or visible-frame correlation claim is made.
