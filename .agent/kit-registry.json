@@ -9,7 +9,7 @@
     "eligibleRepositoryCount": 9,
     "newOrCentralLedgerMissingCount": 0,
     "rootAgentMissingCount": 0,
-    "reason": "oldest eligible central ledger entry with a newer repo-local audit awaiting central synchronization"
+    "reason": "oldest eligible central ledger entry with newer repo-local audit state requiring central reconciliation"
   },
   "safeLedges": [
     "Runtime Session Instance Authority",
@@ -115,7 +115,7 @@
     "npmBuildRun": false,
     "fixtureRun": false,
     "browserSmokeRun": false,
-    "centralLedgerSynchronized": false,
-    "centralChangeLogAdded": false
+    "centralLedgerSynchronized": true,
+    "centralChangeLogAdded": true
   }
 }
