@@ -1,13 +1,15 @@
 {
   "repo": "LuminaryLabs-Publish/ZombieOrchard",
-  "updatedAt": "2026-07-11T21-40-49-04-00",
-  "status": "route-scoped-simulation-admission-authority-audited",
+  "updatedAt": "2026-07-11T23-41-55-04-00",
+  "status": "public-capability-gateway-and-host-revocation-authority-audited",
   "selection": {
     "selectedRepo": "LuminaryLabs-Publish/ZombieOrchard",
     "excludedRepo": "LuminaryLabs-Publish/TheCavalryOfRome",
     "accessibleRepositoryCount": 10,
     "eligibleRepositoryCount": 9,
-    "reason": "oldest stable eligible repository after active same-window PhantomCommand writes were detected"
+    "newOrCentralLedgerMissingCount": 0,
+    "rootAgentMissingCount": 0,
+    "reason": "oldest eligible repository in the central Publish ledger"
   },
   "safeLedges": [
     "Runtime Session Instance Authority",
@@ -19,14 +21,14 @@
     "Versioned Save / Load Authority"
   ],
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-11T21-40-49-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-11T21-40-49-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-11T21-40-49-04-00-route-scoped-simulation-admission-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-11T21-40-49-04-00-route-simulation-frame-correlation-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T21-40-49-04-00-hidden-route-simulation-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-11T21-40-49-04-00-route-phase-command-admission-map.md",
-    "simulationAdmissionAudit": ".agent/simulation-admission-audit/2026-07-11T21-40-49-04-00-route-policy-tick-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-11T21-40-49-04-00-route-suspension-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-11T23-41-55-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-11T23-41-55-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-11T23-41-55-04-00-public-capability-gateway-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-11T23-41-55-04-00-host-read-model-frame-provenance-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-11T23-41-55-04-00-raw-host-bypass-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-11T23-41-55-04-00-public-command-capability-admission-map.md",
+    "capabilityAudit": ".agent/capability-audit/2026-07-11T23-41-55-04-00-raw-engine-graph-exposure-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-11T23-41-55-04-00-public-host-capability-fixture-gate.md"
   },
   "implementedKits": [
     "kit-runtime",
@@ -61,42 +63,56 @@
     "kit-runtime": ["registration", "domain creation", "commands", "ticks", "events", "snapshots", "subscriptions", "publication"],
     "interface-kits": ["screen state", "actions", "selection", "fields", "activation", "routing", "nested dispatch", "automatic Outcome routing"],
     "game-kits": ["resources", "pressure", "trees and apples", "collection refill", "construction", "hiring", "equipment", "movement", "phases", "pests", "damage", "score", "failure"],
-    "render-kits": ["orchard canvas", "HUD", "generic screen HTML", "slot-card projection", "delegated bindings", "per-frame DOM replacement"],
-    "diagnostics-proof-deploy": ["raw engine", "snapshot readback", "manual tick", "smoke proof", "static copy", "Pages chain"]
+    "render-kits": ["orchard canvas", "HUD", "route-screen HTML", "card projection", "delegated bindings", "per-frame DOM replacement"],
+    "diagnostics-proof-deploy": ["raw engine publication", "snapshot readback", "manual tick", "smoke proof", "static copy", "Pages chain"]
   },
-  "routeSimulationSurface": {
-    "runtimeTicksEveryDomain": true,
-    "routePolicyAuthority": "missing",
-    "simulationPhaseAuthority": "missing",
-    "pressureAdvancesOnInactiveRoutes": true,
-    "activeSessionChecksRoute": false,
-    "pauseIsSimulationBarrier": false,
-    "managementRoutePolicy": "missing",
-    "manualStepAdmission": "missing",
-    "routeTickFrameCorrelation": "missing"
+  "publicHostSurface": {
+    "rawEngineExposed": true,
+    "contextExposed": true,
+    "domainTableExposed": true,
+    "registrationExposed": true,
+    "directDomainApisReachable": true,
+    "rawTickExposed": true,
+    "duplicateDomainGuard": "missing",
+    "capabilityManifest": "missing",
+    "capabilityLeases": "missing",
+    "commandAllowlist": "missing",
+    "payloadSchemas": "missing",
+    "singleWriterStepLease": "missing",
+    "hostRevocation": "missing",
+    "frameCorrelatedReadModel": "missing"
   },
-  "proposedSimulationAdmissionKits": [
-    "zombie-orchard-route-scoped-simulation-admission-authority-domain",
-    "simulation-phase-state-kit",
-    "route-simulation-policy-kit",
-    "domain-tick-classification-kit",
-    "simulation-step-admission-kit",
-    "simulation-step-plan-kit",
-    "inactive-run-suspension-kit",
-    "pause-resume-admission-kit",
-    "management-route-time-policy-kit",
-    "terminal-freeze-policy-kit",
+  "proposedCapabilityKits": [
+    "zombie-orchard-public-capability-gateway-authority-domain",
+    "public-host-contract-kit",
+    "host-capability-manifest-kit",
+    "capability-id-kit",
+    "capability-revision-kit",
+    "capability-lease-kit",
+    "public-read-model-kit",
+    "host-observation-revision-kit",
+    "public-command-envelope-kit",
+    "public-command-allowlist-kit",
+    "command-payload-schema-kit",
+    "command-session-admission-kit",
+    "route-and-lifecycle-command-admission-kit",
+    "single-writer-step-lease-kit",
     "manual-step-capability-kit",
-    "simulation-step-receipt-kit",
-    "route-tick-frame-correlation-kit",
-    "simulation-admission-journal-kit",
-    "route-suspension-fixture-kit",
-    "hidden-mutation-fixture-kit"
+    "public-command-result-kit",
+    "host-frame-receipt-kit",
+    "duplicate-domain-registration-guard-kit",
+    "subscriber-lease-kit",
+    "host-revocation-kit",
+    "capability-journal-kit",
+    "public-host-observation-kit",
+    "public-host-capability-fixture-kit",
+    "browser-public-host-smoke-kit"
   ],
   "retainedAudits": {
     "seededRandomReplay": "2026-07-11T17-01-11-04-00",
     "runtimeSessionInstance": "2026-07-11T18-28-40-04-00",
-    "versionedPersistence": "2026-07-11T20-03-22-04-00"
+    "versionedPersistence": "2026-07-11T20-03-22-04-00",
+    "routeScopedSimulationAdmission": "2026-07-11T21-40-49-04-00"
   },
   "validation": {
     "runtimeSourceChangedThisPass": false,
