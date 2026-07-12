@@ -2,77 +2,107 @@
 
 ## Scope
 
-Documentation-only audit of player-control reachability. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
+Documentation-only audit of simulation-clock authority. Runtime source, dependencies, package scripts, rendering, gameplay behavior, and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record the missing browser-to-movement path and the proof required before the orchard is treated as product-explorable.
+**Goal:** record the refresh-rate-dependent simulation defect and the proof required before the orchard is treated as cadence-stable or fixed-step deterministic.
 
-- [x] Read browser boot and RAF ownership.
-- [x] Read delegated HTML bindings and active-session controls.
-- [x] Read active-session movement, collection radii and start position.
-- [x] Read world-canvas projection and smoke proof.
-- [x] Confirm movement is implemented but unreachable from the shipped UI.
+- [x] Read browser boot, recursive RAF, and public host ownership.
+- [x] Read runtime delta clamping, frame/elapsed mutation, domain ticking, and publication.
+- [x] Read pressure, pest spawning, movement, damage, route composition, and render projection.
+- [x] Read package scripts and smoke proof.
+- [x] Confirm one literal `1 / 60` step occurs per display callback.
+- [x] Confirm unrestricted manual stepping reaches the same mutable graph.
+- [x] Quantify 30/60/120 Hz source-level gameplay divergence.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
-- [x] Synchronize the central ledger and internal change log.
-- [ ] Implement and run control fixtures.
+- [ ] Implement and run clock fixtures.
 
 ## Source-backed findings
 
 ```txt
 src/start.js
-  -> creates engine, canvas renderer and HTML renderer
-  -> starts RAF
-  -> installs no movement input listener
+  -> engine.tick(1 / 60) once per RAF
+  -> ignores RAF timestamp
+  -> exposes GameHost.tick(dt)
 
-html-interface-renderer.js
-  -> one delegated click listener
-  -> data-action and data-command only
-  -> active-session buttons: Collect, Clear, Next Phase
+src/kits/runtime.js
+  -> clamps each supplied delta to 0..0.1
+  -> increments elapsed and frame on every call
+  -> ticks every domain on every call
+  -> snapshots and notifies after every call
 
-world-canvas.js
-  -> reads and draws player position
-  -> no input adapter
+pressure-field
+  -> rowPressure += dt * 0.8
+  -> curse += dt * 0.2
 
-active-session-domain-kit
-  -> starts player at x=0, y=180
-  -> move adds 22 * x/y and clamps bounds
-  -> collect requires apple within 42 units
+active-session
+  -> night spawn trial: Math.random() < dt * 0.55
+  -> pest movement: dt * 36
+  -> contact damage: dt * 7
+```
 
-orchard-world-kit
-  -> randomly seeds apples around the orchard
-  -> does not guarantee an apple inside the start collection radius
+## Quantified source behavior
+
+| Display cadence | Sim seconds / wall second | Row pressure / second | Pest movement / second | Contact damage / second |
+|---:|---:|---:|---:|---:|
+| 30 Hz | 0.5 | 0.4 | 18 | 3.5 |
+| 60 Hz | 1.0 | 0.8 | 36 | 7 |
+| 120 Hz | 2.0 | 1.6 | 72 | 14 |
+
+Approximate night pest-spawn probability per wall second:
+
+```txt
+30 Hz: 24.1%
+60 Hz: 42.5%
+120 Hz: 66.9%
 ```
 
 ## Required DOM-free fixtures
 
 ```txt
-binding-manifest-parity
-opposed-direction-cancellation
-diagonal-normalization
-finite-vector-admission
-route-rejection
-ended-run-rejection
-boundary-clamp
-stale-input-sequence-rejection
-control-lease-retirement
-movement-result-shape
+fixed-step-policy-shape
+monotonic-simulation-step-id
+simulation-epoch-reset
+30hz-60hz-120hz-equal-wall-time-parity
+variable-cadence-parity
+pressure-cadence-parity
+pest-movement-cadence-parity
+contact-damage-cadence-parity
+spawn-trial-count-parity
+long-frame-catch-up-limit
+lag-drop-result
+manual-step-equivalence
+manual-auto-writer-exclusion
+single-publication-per-batch
+stale-epoch-rejection
 ```
 
 ## Required browser fixtures
 
 ```txt
-Play -> W changes player position
-Arrow keys and WASD share canonical bindings
-key repeat does not multiply simulation cadence
-diagonal speed is normalized
-blur retires held input
-pause and route exit reject movement
-outcome/reset/disposal retire predecessor input
-canvas frame presents the committed movement result
-one listener set and one control owner remain
+RAF timestamp drives accumulator
+callback count does not define elapsed simulation time
+hidden document suspends automatic accumulation
+resume establishes a new timestamp baseline
+manual stepping cannot overlap automatic ownership
+one runtime owns one RAF writer
+accepted batch publishes once
+canvas and HTML frame cite committed step range
 ```
+
+## Existing smoke boundary
+
+Current `npm test` verifies:
+
+```txt
+entry screen exists
+Play reaches active-session
+orchard contains apples
+```
+
+It does not execute browser cadence, fixed-step accumulation, hidden-tab behavior, manual/automatic exclusion, catch-up, lag dropping, or frame correlation.
 
 ## Validation result
 
@@ -81,6 +111,7 @@ runtime source changed: no
 dependencies changed: no
 package scripts changed: no
 render behavior changed: no
+gameplay behavior changed: no
 deploy configuration changed: no
 branch created: no
 pull request created: no
@@ -88,14 +119,15 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-player-control fixture: unavailable / not run
-input-retirement fixture: unavailable / not run
-movement-frame fixture: unavailable / not run
-Pages control smoke: unavailable / not run
+clock fixtures: unavailable / not run
+hidden-tab fixture: unavailable / not run
+writer-exclusion fixture: unavailable / not run
+step/frame fixture: unavailable / not run
+Pages cadence smoke: unavailable / not run
 
 repo-local docs pushed to main: yes
-central ledger update: complete
-central internal change log: complete
+central ledger update: pending until repo-local completion
+central internal change log: pending until repo-local completion
 ```
 
-No movement reachability, focus safety, held-input retirement, fixed-step control or movement-to-frame claim is made.
+No cadence parity, fixed-step determinism, automatic/manual writer safety, hidden-tab safety, bounded catch-up, or simulation-to-frame claim is made.
