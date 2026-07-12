@@ -1,180 +1,118 @@
 # Known gaps — ZombieOrchard
 
-## Primary architecture chain
-
-There is no authoritative chain joining run lifecycle, clock, commands, random decisions, rendering, replay and persistence.
+## Primary authority chain
 
 ```txt
-lifecycle command
-  -> runtime/run/session identity
-  -> admitted callback generation
-  -> bounded fixed-step plan
-  -> committed simulation tick
-  -> admitted public command and transaction
-  -> staged random decisions
-  -> committed random receipts
-  -> durable-state fingerprint
-  -> versioned save envelope
-  -> atomic slot result
-  -> staged load candidate
-  -> load epoch and authority transfer
-  -> first restored frame acknowledgement
+runtime session identity
+  -> lifecycle state
+  -> fixed-step clock
+  -> committed interface route and revision
+  -> route simulation policy
+  -> admitted domain tick plan
+  -> committed simulation tick receipt
+  -> rendered canvas/HTML frame
+  -> command, replay and persistence continuation
 ```
+
+## Route-scoped simulation admission gaps
+
+1. The graph begins ticking at module boot before Play or New Game.
+2. `kit-runtime.tick()` invokes every domain tick on every admitted call.
+3. No domain tick is classified as simulation, presentation or lifecycle work.
+4. `interface-composition` owns only `active` and `previous` route fields.
+5. No canonical `NO_RUN`, `RUNNING`, `PAUSED`, `TERMINAL`, `SUSPENDED` or `DISPOSED` phase exists.
+6. No route revision or route-policy revision exists.
+7. `pressure-field.tick()` advances on Entry, Run Setup, Save Select, Settings, Pause, management routes and Outcome.
+8. `active-session.tick()` advances whenever `ended` is false, regardless visible route.
+9. Pause is only a route to `interrupt`; it is not a simulation barrier.
+10. Build, Market, Roster, Inventory and Codex have no explicit real-time or suspended-time policy.
+11. Entry and Run Setup can age the retained graph before the player starts.
+12. Title and Settings can hide a still-mutating run.
+13. Outcome freezes active-session mutation through `ended`, but pressure continues.
+14. `GameHost.tick(dt)` can bypass visible-route expectations.
+15. No step admission result explains whether work ran, was suspended or was rejected.
+16. No simulation receipt identifies which domains mutated.
+17. No journal records route/phase decisions.
+18. Canvas, HTML and GameHost frames carry no shared route, phase, tick or frame identity.
+19. Resume has no wall-time baseline reset or catch-up policy.
+20. No menu-idle, pause, management-route, terminal-freeze or manual-step fixture exists.
 
 ## Runtime-session and fresh-run gaps
 
-1. The mutable graph is constructed at module boot before Play.
-2. No `runtimeId`, `runtimeGeneration`, `runId`, `sessionEpoch`, `graphRevision` or `lifecycleRevision` exists.
-3. Play, New Game and Start route into the same graph.
-4. New Game does not create fresh resource, pressure, orchard, construction, roster, inventory or active-session state.
-5. Pause, Title and Outcome are routes, not lifecycle barriers.
-6. Active-session terminal `ended` state is retained after Title.
-7. Outcome -> Title -> Play reuses the ended run.
-8. Composition automatically routes that reused run back to Outcome on the next tick.
-9. No canonical fresh-run state factory exists.
-10. No staged graph validation exists.
-11. No atomic run authority transfer or rollback exists.
-12. No stale predecessor command or callback rejection exists.
-13. No route-to-run binding exists.
-14. No first fresh-run frame acknowledgement exists.
-15. The RAF request ID and callback generation are not retained.
-16. The delegated HTML listener has no removal lease.
-17. Renderers expose no disposal service.
-18. `window.GameHost` is permanent, raw and not revocable.
-19. No ordered idempotent disposal result exists.
-20. Snapshots carry no runtime/session provenance.
+- One mutable graph is constructed at module boot.
+- Play, New Game and Start reuse the same graph.
+- No runtime ID, run ID, session epoch, graph revision or lifecycle revision exists.
+- New Game does not create fresh resources, pressure, apples, construction, roster, inventory or active-session state.
+- Outcome -> Title -> Play reuses terminal state.
+- RAF, listener, renderer and `GameHost` resources have no leases or ordered disposal.
 
 ## Fixed-step clock gaps
 
-21. `draw()` submits one hard-coded `1 / 60` step per RAF callback.
-22. The RAF timestamp is ignored.
-23. Simulation speed follows callback cadence rather than wall time.
-24. Long stalls have no catch-up, defer or drop policy.
-25. No wall-time baseline, accumulator, fixed-step descriptor or catch-up budget exists.
-26. No monotonic `simulationTickId`, independent `renderFrameId` or `clockRevision` exists.
-27. Pause and inactive routes do not stop simulation mutation.
-28. `GameHost.tick(dt)` can mutate between RAF callbacks.
-29. Automatic and manual mutation have no exclusion lease.
-30. Stale callbacks have no session/epoch/generation rejection.
-31. Canvas, HTML and GameHost do not acknowledge a committed tick.
+- RAF submits a hard-coded `1 / 60` step and ignores the RAF timestamp.
+- Simulation speed follows callback cadence.
+- Stalls have no catch-up budget or drop/defer policy.
+- No monotonic simulation tick ID, render frame ID or clock revision exists.
+- Automatic and manual steps have no exclusion lease.
 
 ## Capability and transaction gaps
 
-32. No canonical public capability gateway exists.
-33. Browser actions call `engine.command()` directly and discard results.
-34. Commands carry no runtime/session/epoch, lifecycle or tick identity.
-35. Parent actions can publish child mutations before parent completion.
-36. Child rejection can be concealed by parent success.
-37. Resource and gameplay mutations have no shared rollback boundary.
-38. No command/transaction ID, idempotency cache or result-to-frame acknowledgement exists.
+- Browser actions call raw `engine.command()` and generally discard typed results.
+- Commands carry no session, lifecycle, route or tick identity.
+- Nested composition commands publish intermediate state.
+- Child rejection can be concealed by parent success.
+- Resource and gameplay mutations have no rollback boundary.
+- No command ID, transaction ID, idempotency cache or result-to-frame acknowledgement exists.
 
-## Seeded randomness and replay gaps
+## Randomness and replay gaps
 
-39. Apple generation and pest generation use process-global `Math.random()`.
-40. Startup, collection refill and night callbacks advance one invisible shared source.
-41. Display cadence changes pest trial count and random cursor advancement.
-42. No run seed, policy version, named stream, cursor or typed draw result exists.
-43. Random string IDs prevent stable entity identity across replay.
-44. Rejected, duplicate and rolled-back cursor behavior is undefined.
-45. No replay event sequence, verifier or first-divergence result exists.
-46. No canonical durable-state fingerprint exists.
-47. Canvas and HTML output are not correlated with random receipt ranges.
+- Apples and pests use process-global `Math.random()`.
+- No run seed, policy version, named stream, cursor or draw receipt exists.
+- Callback cadence changes pest trial count and random advancement.
+- Random string entity IDs prevent stable replay identity.
+- No deterministic replay verifier or first-divergence result exists.
 
-## Save Select and slot gaps
+## Persistence gaps
 
-48. `session-select-domain-kit` exists but Entry never routes to it.
-49. The preset gives Save Select only a Back action.
-50. No slot metadata is supplied to `current.meta.slots`.
-51. No slot index domain owns available, compatible, corrupt or conflicted saves.
-52. No Save, Load, Delete, Rename, Import or Export capability exists.
-53. The renderer cannot project a typed slot command result.
-54. No active slot or save identity is bound to the run.
-
-## Persistence envelope gaps
-
-55. No `saveId`, `slotId` or monotonic `slotRevision` exists.
-56. No schema ID or schema version exists.
-57. No preset ID or preset fingerprint is stored.
-58. No runtime, random or entity policy version is stored.
-59. No created/updated timestamp policy exists.
-60. No durable-domain allowlist separates continuation state from transient presentation resources.
-61. No committed `simulationTickId`, command sequence or lifecycle revision is captured.
-62. No random stream state, cursor or deterministic entity sequence is captured.
-63. No canonical state fingerprint or checksum exists.
-64. No envelope validation or read-after-write validation exists.
-
-## Save transaction gaps
-
-65. No save command envelope or typed save result exists.
-66. No expected slot revision or compare-and-swap conflict check exists.
-67. No atomic slot write and index update boundary exists.
-68. Storage quota, serialization and backend failures are not represented.
-69. Duplicate or stale save behavior is undefined.
-70. A failed save has no guarantee that the prior valid envelope remains intact.
-71. No persistence journal records admitted and rejected attempts.
-
-## Migration and corruption gaps
-
-72. No ordered migration registry exists.
-73. No pure version-to-version migration contract exists.
-74. Unknown future schemas cannot be distinguished from malformed data.
-75. No corruption quarantine preserves original bytes for diagnostics or export.
-76. No compatibility result explains preset or policy mismatch.
-77. No migration fingerprint proves deterministic output.
-
-## Load transaction gaps
-
-78. `engine.snapshot()` is a one-way projection with no restore inverse.
-79. Mutable domain state lives inside closures with no hydrate service.
-80. Runtime `ctx.frame` and `ctx.elapsed` are absent from snapshots.
-81. Future `Math.random()` continuation cannot be reconstructed.
-82. No candidate graph is staged from loaded state.
-83. No domain-by-domain hydration validation exists.
-84. No `loadEpoch` fences predecessor callbacks, commands or render work.
-85. No atomic authority swap or rollback exists.
-86. No first-restored-frame acknowledgement exists.
-87. A failed load has no explicit guarantee that the current live run remains unchanged.
-88. No load result correlates the slot envelope, restored fingerprint and frame ID.
+- Save Select is unreachable and has no authoritative slots or actions.
+- No storage adapter, save/load commands, schema, migration, checksum or slot revision exists.
+- `engine.snapshot()` has no restore inverse and omits clock/random continuation.
+- No candidate graph, load epoch, rollback, corruption quarantine or first restored frame acknowledgement exists.
 
 ## Render and observation gaps
 
-89. The world canvas renders orchard/session state on every route.
-90. Entry, Run Setup, Pause, Save Select and Outcome can show predecessor-run world pixels.
-91. Canvas and HTML publish no run, save, load or frame identity.
-92. GameHost samples live mutable state rather than a committed frame record.
-93. No first-run-frame or first-restored-frame acknowledgement exists.
-94. The Save Select renderer reads static interface metadata rather than authoritative slot-index state.
+- The world canvas renders retained orchard/session state on every route.
+- Menus and Outcome can show predecessor-run pixels.
+- Renderers expose no route, phase, tick, run or frame provenance.
+- `GameHost` exposes live mutable state rather than a committed read model.
 
 ## Proof and deployment gaps
 
-95. The smoke test proves only initial Entry-to-Play and apple presence.
-96. No runtime-session identity or fresh-run fixture exists.
-97. No cadence, pause, stall or manual-step fixture exists.
-98. No capability or transaction fixture exists.
-99. No same-seed, stream-isolation or replay parity fixture exists.
-100. No save/load roundtrip fixture exists.
-101. No random-continuation-after-load fixture exists.
-102. No slot conflict or atomic-write fixture exists.
-103. No migration fixture exists.
-104. No corrupt-save quarantine fixture exists.
-105. No failed-load rollback fixture exists.
-106. No first-restored-frame fixture exists.
-107. No repeated save/load RAF or listener leak fixture exists.
-108. Pages deployment is not gated on these authority contracts.
+```txt
+runtime-session fixture: absent
+fixed-step cadence fixture: absent
+route suspension fixture: absent
+management-route policy fixture: absent
+manual-step admission fixture: absent
+command transaction fixture: absent
+replay fixture: absent
+save/load roundtrip fixture: absent
+browser frame-parity fixture: absent
+Pages gate for these contracts: absent
+```
 
 ## Dependency order
 
 ```txt
 runtime session instance authority
   -> fixed-step clock authority
+  -> route-scoped simulation admission authority
   -> public capability gateway
   -> composite command transaction authority
   -> seeded random and replay authority
-  -> committed durable-state fingerprint
   -> versioned save/load authority
   -> deployment proof
 ```
 
 ## Do not claim
 
-Do not claim fresh New Game state, authoritative pause, cadence-independent simulation, deterministic replay, reachable Save Select, resumable continuation, schema compatibility, atomic persistence, random continuation after load, corrupt-save recovery, first-restored-frame coherence, lifecycle safety or resource retirement until the corresponding fixtures pass on `main`.
+Do not claim authoritative Pause, menu idleness, management-screen safety, cadence-independent simulation, deterministic replay, fresh New Game state, resumable persistence, frame coherence or lifecycle cleanup until the corresponding fixtures pass on `main`.
