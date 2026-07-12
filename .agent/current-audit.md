@@ -1,45 +1,44 @@
 # Current audit: ZombieOrchard
 
-**Timestamp:** `2026-07-12T12-39-25-04-00`  
-**Status:** `economy-command-admission-authority-audited`  
+**Timestamp:** `2026-07-12T14-38-35-04-00`  
+**Status:** `run-reset-generation-authority-audited`  
 **Branch:** `main`
 
 ## Summary
 
-The current economy command surfaces are structurally reachable but semantically ungoverned. `engine.command()` checks only whether a target domain exists. Resource, construction, roster and inventory handlers then accept raw payloads and mutate live state without one command schema, capability check, resource registry, catalog revision, price authority, expected predecessor revision, idempotency key or conservation receipt.
+ZombieOrchard has route navigation but no authoritative run lifecycle. `createOrchardGame()` creates one mutable gameplay graph at module boot. The Play, New Game, Start, Resume and Title actions only call interface-composition route transitions. They do not allocate a run ID, construct initial participant state, reset the existing graph, retire the predecessor or return a lifecycle result.
 
-The most direct defect is negative-cost minting. `resource-ledger.pay()` considers a negative amount payable and then subtracts that negative value, increasing the balance. `roster-runtime.hire()` trusts `payload.cost`, so a public caller can hire an actor with a negative cost and gain money in the same accepted command.
+The most visible defect occurs after failure. `active-session` sets `ended=true`; Outcome Title returns to Entry without clearing it. A later Play or New Game -> Start re-enters that same ended session, and `interface-composition.tick()` immediately routes back to Outcome.
 
 ## Plan ledger
 
-**Goal:** define a semantic economy command transaction that rejects malformed, stale, unauthorized and non-conserving operations before any participant mutates.
+**Goal:** define a clean, atomic and observable run-reset generation transaction across every mutable participant.
 
 - [x] Compare the complete Publish inventory against central tracking.
 - [x] Verify eligible central-ledger and root `.agent` coverage.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Select only `ZombieOrchard` under the oldest eligible fallback rule.
-- [x] Read runtime command dispatch and browser host exposure.
-- [x] Read resource, construction, roster, inventory and collection mutation paths.
-- [x] Reconcile the full interaction loop, domains, 27 implemented kit surfaces and services.
-- [x] Confirm negative-cost resource minting.
-- [x] Confirm arbitrary resource-key creation through negative payment.
-- [x] Confirm unknown construction IDs fall back to the first item.
-- [x] Confirm unknown inventory IDs are accepted.
-- [x] Define parent DSK, transaction and fixture boundary.
-- [ ] Implement and execute semantic economy fixtures.
+- [x] Read boot, kit runtime, interface actions, composition, gameplay domains, preset, renderer and smoke proof.
+- [x] Identify the complete interaction loop, all domains, all 27 implemented kit surfaces and their services.
+- [x] Confirm all gameplay domains are created once.
+- [x] Confirm Play/New Game/Start do not create or reset a run.
+- [x] Confirm Title does not reset terminal or partial state.
+- [x] Confirm failed-run restart returns to Outcome on the next tick.
+- [x] Define run identity, generation, participant reset, atomic commit, rollback, retirement and frame-proof contracts.
+- [ ] Implement and execute reset/restart fixtures.
 
 ## Selection audit
 
 ```txt
-ZombieOrchard      2026-07-12T10-09-07-04-00 selected
-MyCozyIsland       2026-07-12T10-20-02-04-00
-TheUnmappedHouse   2026-07-12T10-30-00-04-00
-AetherVale         2026-07-12T10-48-19-04-00
-TheOpenAbove       2026-07-12T11-15-16-04-00
-IntoTheMeadow      2026-07-12T11-29-40-04-00
-PhantomCommand     2026-07-12T11-48-43-04-00
-PrehistoricRush    2026-07-12T12-08-05-04-00
-HorrorCorridor     2026-07-12T12-21-38-04-00
+ZombieOrchard      2026-07-12T12-39-25-04-00 selected
+MyCozyIsland       2026-07-12T12-58-08-04-00
+TheUnmappedHouse   2026-07-12T13-08-15-04-00
+AetherVale         2026-07-12T13-20-00-04-00
+TheOpenAbove       2026-07-12T13-29-56-04-00
+IntoTheMeadow      2026-07-12T13-54-00-04-00
+PhantomCommand     2026-07-12T13-59-50-04-00
+PrehistoricRush    2026-07-12T14-10-22-04-00
+HorrorCorridor     2026-07-12T14-22-01-04-00
 TheCavalryOfRome   excluded
 ```
 
@@ -48,110 +47,98 @@ TheCavalryOfRome   excluded
 ```txt
 browser module boot
   -> createOrchardGame()
-  -> install 19 engine kits
+  -> install 19 engine kits once
   -> create world and HTML renderers
   -> expose raw engine through window.GameHost
   -> start recursive RAF
 
-UI economy action
-  -> delegated click
-  -> interface-composition.activate
-  -> active interface action
-  -> optional nested engine.command(participant, type, payload)
-  -> participant mutates live state
-  -> nested participant API may mutate resource or pressure state
-  -> synchronous notification
+run entry
+  -> Entry Play moves directly to active-session
+  -> Entry New Game moves to run-setup
+  -> Run Setup Start moves to active-session
+  -> none creates or resets gameplay state
 
-public economy action
-  -> GameHost.engine.command(domainId, type, payload)
-  -> participant mutates directly
-  -> synchronous notification
+run mutation
+  -> commands mutate resource, pressure, orchard, construction, roster, inventory and active-session objects
+  -> recursive ticks advance pressure and active-session
+  -> canvas and HTML project the same retained domain graph
 
-frame
-  -> engine.tick(1 / 60)
-  -> participant ticks
-  -> snapshot
-  -> canvas render
-  -> HTML render
+return to title
+  -> Pause Title or Outcome Title moves interface route to entry
+  -> predecessor gameplay objects remain installed
+  -> later Play or Start reuses them
+
+terminal restart
+  -> active-session ended=true
+  -> composition moves to outcome
+  -> Title -> entry
+  -> Play/Start -> same active-session
+  -> next composition tick sees ended=true
+  -> route returns immediately to outcome
 ```
 
 ## Source-backed findings
 
-### Negative payment mints resources
+### One graph for the page lifetime
 
-`src/kits/game-domains.js` implements payment as a comparison against the caller-supplied value followed by subtraction. Negative values pass the comparison and subtraction increases the balance.
+`src/start.js` creates one engine at module evaluation. `src/game.js` installs all gameplay and interface kits into that engine once. No replacement or reset operation is called by menu actions.
+
+### Route actions are not lifecycle commands
+
+`src/presets/orchard-preset.js` defines Play, New Game, Start, Resume and Title using only `to` destinations. `src/kits/composition.js` resolves those actions through `move(next)`.
+
+### Terminal state is sticky
+
+`src/kits/game-domains.js` initializes `ended=false` once and sets it true when condition reaches zero. It exposes activate, move, collect, clear and next-phase commands, but no reset command.
+
+`src/kits/composition.js` automatically moves to Outcome whenever the active-session snapshot reports `ended` and the current route is not Outcome.
+
+### Every participant survives supposed New Game
 
 ```txt
-money = 40
-pay({ money: -10 })
-canPay: 40 >= -10 -> true
-commit: 40 - (-10) -> 50
-result: accepted
+resource-ledger.values and last
+pressure-field.channels
+orchard-world apples and generated IDs
+construction-runtime built items and message
+roster-runtime actors and message
+inventory-runtime items and equipped item
+active-session day, phase, player, pests, score, message and ended
+scoped-interface fields and selection
+interface-composition previous route
 ```
 
-An unknown resource key follows the same path because missing balances normalize to zero.
+### Proof is absent
 
-### Caller controls roster price
-
-`roster-runtime.command("hire")` passes `payload.cost || 25` to the resource ledger. A negative number is truthy, so it becomes the effective price. The command then adds an actor after the minting payment succeeds.
-
-### Unknown construction ID builds another item
-
-Construction resolves `find(id) || catalog[0]`. A missing requested ID therefore does not reject; it buys and builds the first catalog entry.
-
-### Inventory accepts unknown item IDs
-
-Inventory equip assigns `state.equipped = payload.id` and returns accepted without proving that the item exists or is owned.
-
-### Resource namespace and numeric policy are implicit
-
-`add()` and `pay()` accept arbitrary object keys. Amounts are normalized numerically, but no registered-key, sign, precision, minimum, maximum or administrative-delta policy exists.
-
-### Command and revision evidence are absent
-
-Commands contain no stable command ID, session identity, actor capability, route revision, expected economy revision or expected catalog revision. Results expose only generic acceptance and carry no before/delta/after balance receipts.
-
-### Public reachability
-
-`src/start.js` publishes the raw engine through `window.GameHost`, including direct access to `engine.command()`, domain APIs and graph mutation. The semantic defects are therefore not limited to authored UI buttons.
+`tests/smoke.mjs` validates Entry, one Play transition and apple presence. It does not mutate a run, use New Game, return to Title, fail, restart or inspect clean participant state.
 
 ## Concrete failure paths
 
 ```txt
-negative direct payment
-  -> accepted
-  -> balance increases
+failed run -> Title -> Play
+  -> Play is accepted
+  -> active route briefly becomes active-session
+  -> next tick returns to outcome
 
-negative roster hire
-  -> money increases
-  -> actor count increases
+partial run -> Pause -> Title -> New Game -> Start
+  -> old balances, pressure, apples, builds, roster, equipment, score and player condition survive
 
-unknown negative resource key
-  -> new balance key materializes
-
-unknown construction ID
-  -> first catalog item is purchased and built
-
-unknown inventory ID
-  -> equipped state points to nonexistent item
+terminal run -> Title -> New Game -> Start
+  -> ended remains true
+  -> no new playable run becomes durable
 ```
 
 ## Domains in use
 
 ```txt
-browser document, canvas, DOM and full-window shell
-module boot, recursive RAF and public GameHost
+browser document, canvas, DOM, RAF and public GameHost
 runtime registration, commands, ticks, events, snapshots, subscriptions and publication
-11 scoped interface domains plus gameplay active-session
-interface composition and nested command dispatch
-resource namespace, balances, prices and conservation
-pressure field
-orchard population, collection and refill
-construction catalog and build state
-roster offers and actor state
-inventory catalog, ownership and equipped state
-active-session movement, phases, pests, damage, score and failure
-canvas world rendering and HTML route/HUD projection
+11 scoped interface domains plus active-session
+interface composition and automatic Outcome routing
+resource ledger and pressure field
+orchard world and collection
+construction, roster and inventory
+movement, phase, pests, damage, score and failure
+canvas world and HTML interface projection
 Node smoke, static build, Pages deployment and central tracking
 ```
 
@@ -192,35 +179,33 @@ pages-deploy-kit
 | Kit group | Services |
 |---|---|
 | runtime | Registration, live domain creation, commands, delta clamp, ticks, events, snapshots, subscriptions and synchronous publication |
-| interface | Screen state, fields, selection, action activation, routing, nested dispatch and Outcome routing |
-| gameplay/economy | Resource accounting, pressure, orchard collection, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
+| interface | Screen state, fields, selection, activation, routing, back navigation, nested dispatch and Outcome routing |
+| gameplay | Resources, pressure, orchard collection/refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
 | render | Canvas world drawing, HTML route/HUD projection and delegated actions |
-| diagnostics/proof/deploy | Raw engine publication, snapshot readback, manual tick, Node smoke, static copy and Pages deployment |
+| diagnostics/proof/deploy | Raw engine publication, state readback, manual tick, Node smoke, static copy and Pages deployment |
 
 ## Required composed domain
 
 ```txt
-zombie-orchard-economy-command-admission-authority-domain
+zombie-orchard-run-reset-generation-authority-domain
 ```
 
 ## Required transaction
 
 ```txt
-EconomyCommand
-  -> bind command ID, runtime session, route and actor capability
-  -> validate command and payload schema
-  -> canonicalize registered resource keys and finite amounts
-  -> reject negative costs and unauthorized signed deltas
-  -> validate catalog, offer and inventory references
-  -> validate expected participant revisions
-  -> build immutable mutation plan
-  -> prove balance floors and conservation policy
-  -> atomically commit every participant
-  -> publish typed result and before/delta/after receipts
-  -> reject duplicate and stale commands
-  -> acknowledge first visible canvas and HTML frame
+StartRunCommand or ResetRunCommand
+  -> bind command ID, runtime session, route and predecessor run revision
+  -> resolve authored preset and reset policy
+  -> allocate run ID, generation and deterministic seed
+  -> construct all participant candidates away from live state
+  -> validate participant and cross-domain invariants
+  -> atomically commit the complete successor generation
+  -> rollback fully on candidate or commit failure
+  -> retire predecessor state and fence stale commands/callbacks
+  -> publish typed result and participant reset receipts
+  -> acknowledge first canvas and HTML frame citing the successor generation
 ```
 
 ## Runtime non-claims
 
-No runtime source, economy behavior, rendering, package scripts or deployment configuration changed. No economic-conservation, catalog-integrity, idempotency or visible-frame claim is made.
+No runtime source, reset behavior, gameplay, rendering, package scripts or deployment configuration changed. No clean-restart, atomic-reset, stale-command fencing, deterministic new-run or visible reset-frame claim is made.
