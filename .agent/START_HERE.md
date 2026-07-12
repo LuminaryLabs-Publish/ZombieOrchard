@@ -2,110 +2,100 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Aligned:** `2026-07-12T10-09-07-04-00`  
-**Status:** `kit-graph-installation-central-sync-reconciled`
+**Aligned:** `2026-07-12T12-39-25-04-00`  
+**Status:** `economy-command-admission-authority-audited`
 
 ## Summary
 
-`ZombieOrchard` is a dependency-free orchard survival and economy shell built from a mutable kit runtime, 12 interface-domain definitions, gameplay services, canvas and HTML projection, diagnostics, Node smoke proof, static build and Pages deployment.
+ZombieOrchard is a dependency-free orchard survival and economy shell built from a mutable kit runtime, 12 interface definitions, gameplay services, canvas/HTML projection, diagnostics, Node smoke proof, static build and Pages deployment.
 
-The current audit isolates kit-graph installation authority. Source composition installs **19 runtime kits**, while the repository contains **27 implemented kit surfaces** after host, factory, rendering, proof and deployment surfaces are included. Installation still has no manifest, version, service contract, dependency resolver, duplicate-domain rejection, detached candidate graph, atomic commit, rollback, predecessor disposal, graph revision or visible-frame proof.
-
-This alignment also repairs central drift: the repo-local audit had advanced to kit-graph authority at `2026-07-12T10-00-00-04-00`, while the central ledger still described the earlier HTML interface projection audit. The machine census was corrected from 21 to 19 engine-installed kits.
+The newest audit isolates semantic economy command admission. Resource, construction, roster and inventory handlers accept raw caller payloads without one resource schema, catalog revision, price authority, expected state revision or conservation result. Negative payments mint resources, negative roster prices can mint money while adding an actor, unknown construction IDs fall back to the first catalog item and inventory equip accepts unknown IDs.
 
 ## Plan ledger
 
-**Goal:** keep repo-local and central documentation synchronized on one source-backed kit graph, then implement a deterministic and atomic installation authority.
+**Goal:** require every resource, build, hire, collect and equip operation to pass one versioned semantic admission and conservation transaction before participant state changes.
 
-- [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
+- [x] Compare all ten accessible Publish repositories.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories have central ledgers and root `.agent` state.
-- [x] Select only `ZombieOrchard` because its repo-local audit was newer than central tracking.
-- [x] Trace startup, kit composition, installation, ticking, rendering and public mutation.
-- [x] Identify the complete interaction loop, domains, 27 implemented kit surfaces and all offered services.
-- [x] Correct the engine-installed kit count to 19.
-- [x] Reconfirm duplicate-domain replacement, implicit dependencies and insertion-order ticking.
-- [x] Add a new timestamped tracker, turn ledger and system audits.
-- [x] Refresh machine-readable audit state.
-- [x] Synchronize `LuminaryLabs-Dev/LuminaryLabs`.
+- [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
+- [x] Select only ZombieOrchard as the oldest eligible synchronized entry.
+- [x] Trace browser/public command entry and participant mutations.
+- [x] Identify all domains, all 27 implemented kit surfaces and offered services.
+- [x] Document negative-cost and arbitrary-resource minting.
+- [x] Document invalid catalog and inventory reference behavior.
+- [x] Add timestamped architecture and system audits.
+- [x] Refresh required root documents and machine registry.
+- [x] Synchronize central ledger and change log.
 - [x] Push only to `main`; create no branch or pull request.
-- [ ] Implement graph authority and run Node/browser/Pages fixtures.
+- [ ] Implement and run semantic economy fixtures.
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-12T10-09-07-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-12T10-09-07-04-00.md
+.agent/trackers/2026-07-12T12-39-25-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-12T12-39-25-04-00.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/architecture-audit/2026-07-12T10-09-07-04-00-kit-graph-census-central-sync-dsk-map.md
-.agent/render-audit/2026-07-12T10-09-07-04-00-graph-revision-canvas-html-proof-gap.md
-.agent/gameplay-audit/2026-07-12T10-09-07-04-00-install-order-service-failure-loop.md
-.agent/interaction-audit/2026-07-12T10-09-07-04-00-add-kit-command-replacement-result-map.md
-.agent/kit-graph-audit/2026-07-12T10-09-07-04-00-engine-installed-census-contract.md
-.agent/central-sync-audit/2026-07-12T10-09-07-04-00-local-central-ledger-reconciliation.md
-.agent/deploy-audit/2026-07-12T10-09-07-04-00-kit-graph-browser-pages-fixture-gate.md
+.agent/architecture-audit/2026-07-12T12-39-25-04-00-economy-command-admission-dsk-map.md
+.agent/render-audit/2026-07-12T12-39-25-04-00-economy-result-visible-frame-gap.md
+.agent/gameplay-audit/2026-07-12T12-39-25-04-00-negative-cost-resource-minting-loop.md
+.agent/interaction-audit/2026-07-12T12-39-25-04-00-economy-command-admission-map.md
+.agent/economy-audit/2026-07-12T12-39-25-04-00-resource-catalog-conservation-contract.md
+.agent/deploy-audit/2026-07-12T12-39-25-04-00-economy-admission-fixture-gate.md
 ```
 
 ## Interaction loop
 
 ```txt
-createOrchardGame()
-  -> assemble 19 engine-installed kits
-  -> createKitRuntime({ kits })
-  -> call kit.create(ctx) against the live graph
-  -> assign domains[domain.id] directly
-  -> expose raw engine through GameHost
-  -> tick domains in object insertion order
-  -> render canvas and HTML from domain-only snapshots
+browser action or public GameHost caller
+  -> engine.command(domainId, type, payload)
+  -> participant domain interprets raw payload
+  -> resource/catalog/roster/inventory state mutates immediately
+  -> nested participant APIs may mutate more domains
+  -> synchronous publication
+  -> canvas and HTML render successor snapshots
 ```
 
 ## Main findings
 
 ```txt
-implemented kit surfaces: 27
-engine-installed kits: 19
-host/tooling/support kits: 8
-
-kit manifests: absent
-kit/service versions: absent
-provided/required service declarations: absent
-dependency resolution and cycle checks: absent
-explicit lifecycle/tick phases: absent
-duplicate kit/domain rejection: absent
-detached candidate graph: absent
-atomic commit and rollback: absent
-predecessor retirement/disposal: absent
-graph ID/revision/fingerprint: absent
-installation receipts: absent
-first visible graph-frame acknowledgement: absent
-raw post-start GameHost.engine.addKit: exposed
+resource-ledger pay accepts negative costs
+negative payment subtracts a negative value and mints resources
+unknown negative-cost keys can create arbitrary balances
+roster hire trusts caller-supplied signed cost
+unknown construction ID falls back to catalog[0]
+inventory equip accepts unknown item ID
+command schema and capability admission: absent
+expected resource/catalog revision: absent
+idempotency and duplicate-command rejection: absent
+balance and participant commit receipts: absent
+first visible economy-frame acknowledgement: absent
 ```
 
 ## Required parent domain
 
 ```txt
-zombie-orchard-kit-graph-installation-authority-domain
+zombie-orchard-economy-command-admission-authority-domain
 ```
 
-## Required transaction
+## Required flow
 
 ```txt
-KitGraphInstallCommand
-  -> validate session and predecessor revision
-  -> normalize immutable manifests
-  -> validate unique identities and service compatibility
-  -> resolve deterministic dependency and phase order
-  -> construct a detached candidate graph
-  -> validate APIs, snapshots and resource leases
-  -> atomically commit one graph revision
-  -> migrate or retire explicit predecessors
-  -> rollback all candidate acquisition on failure
-  -> publish graph fingerprint and installation receipts
-  -> acknowledge the first canvas and HTML frame using that revision
+EconomyCommand
+  -> session, route and capability admission
+  -> schema and finite-number validation
+  -> registered resource and catalog reference validation
+  -> nonnegative cost and signed-delta policy
+  -> predecessor revision checks
+  -> immutable mutation plan
+  -> conservation and balance-floor checks
+  -> atomic participant commit
+  -> typed result and delta receipts
+  -> duplicate/stale rejection
+  -> first visible matching frame acknowledgement
 ```
 
 ## Guardrails
@@ -114,8 +104,8 @@ KitGraphInstallCommand
 Push only to main.
 Create no branch or pull request.
 Do not work on TheCavalryOfRome.
-Do not use object insertion history as an implicit phase contract.
-Do not silently replace a domain owner.
-Do not expose raw graph mutation through GameHost.
-Do not claim graph safety until executable fixtures pass.
+Do not accept caller-authored prices.
+Do not implicitly create resource keys.
+Do not fall back from an unknown catalog ID.
+Do not claim conservation or semantic command safety until fixtures pass.
 ```
