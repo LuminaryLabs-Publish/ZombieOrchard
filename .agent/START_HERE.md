@@ -2,30 +2,33 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Updated:** `2026-07-12T06-11-18-04-00`
+**Updated:** `2026-07-12T06-19-56-04-00`
 
 ## Summary
 
 `ZombieOrchard` is a dependency-free orchard survival/economy shell built from a mutable kit runtime, 12 interface domains, gameplay services, canvas and HTML projection, diagnostics, Node smoke proof, static build and Pages deployment.
 
-The current audit isolates canvas render-surface authority. The world canvas is styled to fill the viewport, but every frame rewrites `canvas.width` and `canvas.height` from CSS dimensions, ignores device pixel ratio, applies no physical-pixel budget, and projects the fixed `720 x 560` world without fit or camera policy. Small viewports can hide valid gameplay positions, while high-DPI displays receive a low-resolution buffer.
+The current audit isolates canvas render-surface authority. The world canvas fills the viewport, but every frame rewrites `canvas.width` and `canvas.height` from CSS dimensions, ignores device pixel ratio, applies no physical-pixel budget and projects the fixed `720 x 560` world without a fit or camera policy. Small viewports can hide valid gameplay positions, while high-DPI displays receive a low-resolution buffer.
+
+This run selected the repository because the `2026-07-12T06-11-18-04-00` source audit was newer than central tracking. It adds a fresh timestamped breakdown, aligns the machine registry and closes the repo-local/central documentation gap without changing runtime code.
 
 ## Plan ledger
 
-**Goal:** make CSS viewport state, physical canvas resolution, world projection and the visible frame one bounded and revisioned transaction.
+**Goal:** make CSS viewport state, physical canvas resolution, world projection and the visible frame one bounded and revisioned transaction, while keeping repo-local and central audit state synchronized.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
-- [x] Select only `ZombieOrchard` as the oldest eligible synchronized repository.
+- [x] Detect the newer repo-local ZombieOrchard canvas audit.
+- [x] Select and modify only `ZombieOrchard`.
 - [x] Trace page/CSS ownership, browser boot, per-frame canvas sizing, world projection, HTML projection and smoke proof.
 - [x] Identify the interaction loop, all domains, all 27 implemented kits and offered services.
 - [x] Confirm drawing-buffer dimensions are assigned every rendered frame.
 - [x] Confirm DPR, pixel-budget, resize-generation and surface-revision authority are absent.
 - [x] Confirm fixed world coordinates can exceed a small viewport.
 - [x] Define canvas surface, allocation, projection, commit and visible-frame contracts.
-- [x] Refresh required root `.agent` documents and kit registry.
-- [x] Add timestamped architecture and system audits.
+- [x] Add a new timestamped architecture and system audit family.
+- [x] Refresh the kit registry and route this entrypoint to the current run.
 - [x] Push documentation directly to `main`; create no branch or pull request.
 - [ ] Implement and execute render-surface fixtures.
 
@@ -58,13 +61,13 @@ viewport/DPR change
 
 ```txt
 canvas drawing buffer resets every rendered frame
-unchanged frames have no resize short-circuit
+unchanged frames have no resize short circuit
 CSS pixels are treated as physical pixels
 window.devicePixelRatio is not observed
-no maximum pixel count or fallback tier exists
-no explicit resize generation or stale-result rejection exists
+no maximum physical-pixel count or fallback tier exists
+no resize generation or stale-result rejection exists
 world coordinates are centered but not fitted to the viewport
-valid player and pest positions can be outside small canvases
+valid player, pest and apple positions can be outside small canvases
 surface dimensions and projection are absent from GameHost snapshots
 Node smoke does not instantiate, resize or inspect a canvas
 ```
@@ -99,22 +102,22 @@ Node smoke, static build, Pages deployment and central tracking
 
 Implemented services remain provided by 27 kits covering runtime composition, interface routing, orchard/economy/survival state, canvas/HTML rendering, diagnostics, smoke proof, static build and Pages deployment.
 
-## Read this pass first
+## Read this run first
 
 ```txt
-.agent/trackers/2026-07-12T06-11-18-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-12T06-11-18-04-00.md
+.agent/trackers/2026-07-12T06-19-56-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-12T06-19-56-04-00.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/architecture-audit/2026-07-12T06-11-18-04-00-canvas-render-surface-authority-dsk-map.md
-.agent/render-audit/2026-07-12T06-11-18-04-00-css-dpr-drawing-buffer-parity-gap.md
-.agent/gameplay-audit/2026-07-12T06-11-18-04-00-fixed-world-small-viewport-visibility-loop.md
-.agent/interaction-audit/2026-07-12T06-11-18-04-00-viewport-observation-surface-result-map.md
-.agent/render-surface-audit/2026-07-12T06-11-18-04-00-pixel-budget-projection-revision-contract.md
-.agent/deploy-audit/2026-07-12T06-11-18-04-00-canvas-surface-fixture-gate.md
+.agent/architecture-audit/2026-07-12T06-19-56-04-00-canvas-render-surface-authority-sync-dsk-map.md
+.agent/render-audit/2026-07-12T06-19-56-04-00-drawing-buffer-world-projection-proof-gap.md
+.agent/gameplay-audit/2026-07-12T06-19-56-04-00-small-viewport-offscreen-gameplay-loop.md
+.agent/interaction-audit/2026-07-12T06-19-56-04-00-viewport-observation-surface-commit-map.md
+.agent/render-surface-audit/2026-07-12T06-19-56-04-00-dpr-budget-projection-frame-contract.md
+.agent/deploy-audit/2026-07-12T06-19-56-04-00-browser-viewport-matrix-gate.md
 ```
 
 ## Retained prerequisite audits
@@ -129,6 +132,7 @@ composite command transaction:     2026-07-11T23-48-14-04-00
 player-control reachability:       2026-07-12T01-30-07-04-00
 fixed-step clock authority:        2026-07-12T03-11-51-04-00
 frame publication fault handling:  2026-07-12T04-38-12-04-00
+canvas source audit:               2026-07-12T06-11-18-04-00
 ```
 
 ## Guardrails
