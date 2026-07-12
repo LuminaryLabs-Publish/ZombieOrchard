@@ -2,45 +2,52 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Updated:** `2026-07-12T07-51-04-04-00`
+**Updated:** `2026-07-12T10-00-00-04-00`
 
 ## Summary
 
-`ZombieOrchard` is a dependency-free orchard survival/economy shell built from a mutable kit runtime, 12 interface domains, gameplay services, canvas and HTML projection, diagnostics, Node smoke proof, static build and Pages deployment.
+`ZombieOrchard` is a dependency-free orchard survival and economy shell built from a mutable kit runtime, 12 interface domains, gameplay services, canvas and HTML projection, diagnostics, Node smoke proof, static build and Pages deployment.
 
-The current audit isolates HTML interface projection and focus authority. `src/start.js` invokes the HTML renderer every animation frame, and `src/renderer/html-interface-renderer.js` replaces the complete `#ui-root` subtree with `innerHTML` even when the route and values are unchanged. This can destroy keyboard focus every frame, cause continuous DOM and accessibility-tree churn, and provides no projection revision or visible-interface receipt.
+The current audit isolates kit-graph installation authority. `createOrchardGame()` supplies an ordered array of kits, while `createKitRuntime()` creates each domain imperatively and assigns it into one mutable `domains` object. Installation has no manifest, dependency declaration, service contract, version, duplicate-domain rejection, candidate graph, rollback, graph revision or graph fingerprint. The public `GameHost.engine.addKit()` surface can also replace a live domain by ID after startup without retiring the predecessor or proving a coherent visible frame.
 
 ## Plan ledger
 
-**Goal:** make HTML projection a revisioned transaction that preserves focus and accessibility state, performs no mutation when the view is unchanged, encodes content safely and proves the first visible DOM revision.
+**Goal:** make kit installation a validated, atomic and observable graph transaction so every runtime starts from one compatible service graph and cannot silently replace live domain ownership.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
-- [x] Select only `ZombieOrchard` as the oldest eligible repository.
-- [x] Trace browser boot, RAF ownership, snapshots, route state, HTML string construction, click delegation and DOM replacement.
+- [x] Confirm no repo-local audit is newer than its central ledger.
+- [x] Select only `ZombieOrchard` as the oldest eligible synchronized repository.
+- [x] Trace `createOrchardGame()`, kit installation, domain registration, tick order, interface composition and public host mutation.
 - [x] Identify the complete interaction loop, all domains, all 27 implemented kits and offered services.
-- [x] Confirm the entire UI subtree is replaced on every animation frame.
-- [x] Confirm no projection fingerprint, no-op path, focus lease or accessibility continuity policy exists.
-- [x] Confirm `text()` converts values to strings but does not escape HTML or attribute syntax.
-- [x] Define view-model, escaping, diff, commit, focus-restoration and visible-interface contracts.
-- [x] Add timestamped architecture, render, gameplay, interaction, HTML-interface and deployment audits.
+- [x] Confirm duplicate domain IDs overwrite live owners without a typed result.
+- [x] Confirm tick order is inherited from mutable object insertion order.
+- [x] Confirm dependencies and service versions are undeclared and unvalidated.
+- [x] Define graph manifests, candidate construction, dependency resolution, atomic commit, predecessor retirement and graph-frame proof.
+- [x] Add timestamped architecture, render, gameplay, interaction, kit-graph and deployment audits.
 - [x] Refresh required root `.agent` files and the machine registry.
 - [x] Push documentation directly to `main`; create no branch or pull request.
-- [ ] Runtime implementation and executable browser fixtures remain future work.
+- [ ] Runtime implementation and executable kit-graph fixtures remain future work.
 
 ## Selection
 
 ```txt
-ZombieOrchard      2026-07-12T06-19-56-04-00 selected oldest
-TheUnmappedHouse   2026-07-12T06-30-34-04-00
-AetherVale         2026-07-12T06-41-32-04-00
-MyCozyIsland       2026-07-12T06-51-27-04-00
-TheOpenAbove       2026-07-12T07-00-48-04-00
-PrehistoricRush    2026-07-12T07-09-49-04-00
-IntoTheMeadow      2026-07-12T07-19-47-04-00
-PhantomCommand     2026-07-12T07-29-32-04-00
-HorrorCorridor     2026-07-12T07-41-06-04-00
+accessible Publish repositories: 10
+eligible non-Cavalry repositories: 9
+new or central-ledger-missing eligible repositories: 0
+root-.agent-missing eligible repositories: 0
+repo-local newer than central: 0
+
+ZombieOrchard      2026-07-12T07-51-04-04-00 selected oldest
+MyCozyIsland       2026-07-12T08-00-16-04-00
+TheUnmappedHouse   2026-07-12T08-10-36-04-00
+AetherVale         2026-07-12T08-31-49-04-00
+PrehistoricRush    2026-07-12T09-01-44-04-00
+TheOpenAbove       2026-07-12T09-02-10-04-00
+IntoTheMeadow      2026-07-12T09-21-40-04-00
+PhantomCommand     2026-07-12T09-28-05-04-00
+HorrorCorridor     2026-07-12T09-48-15-04-00
 TheCavalryOfRome   excluded
 ```
 
@@ -50,90 +57,91 @@ Only `LuminaryLabs-Publish/ZombieOrchard` is in scope for Publish changes.
 
 ```txt
 module boot
-  -> create the mutable engine graph
-  -> create the world canvas and HTML interface renderer
-  -> install one delegated click listener on #ui-root
-  -> expose window.GameHost
-  -> call draw()
+  -> createOrchardGame()
+  -> construct an ordered kit array
+  -> createKitRuntime({ kits })
+  -> for each kit call engine.addKit(kit)
+  -> call kit.create(ctx)
+  -> require only domain.id
+  -> assign domains[domain.id] = domain
+  -> create renderers and delegated click handling
+  -> expose raw engine through window.GameHost
+  -> start recursive RAF
 
-every RAF callback
+frame
   -> engine.tick(1 / 60)
-  -> produce a fresh deep-cloned snapshot
-  -> redraw the world canvas
-  -> call ui.render(snapshot)
-  -> build a complete HTML string for the active route
-  -> assign root.innerHTML
-  -> discard every predecessor DOM node
-  -> schedule the next RAF
+  -> iterate Object.values(domains) in current property order
+  -> tick each available domain
+  -> notify subscribers synchronously
+  -> return a domain snapshot
+  -> draw canvas and HTML
 
-keyboard-focus path
-  -> user focuses a button
-  -> next RAF replaces the focused button node
-  -> browser focus falls back or becomes unstable
-  -> no focus token, keyed node, restoration result or typed failure exists
-
-content path
-  -> preset/runtime values are converted with String(...)
-  -> values are interpolated into HTML and attributes
-  -> no HTML or attribute escaping policy is applied
+runtime graph mutation
+  -> external caller reaches GameHost.engine.addKit(kit)
+  -> candidate creates against the live context
+  -> matching domain ID silently replaces the live owner
+  -> no dependency check, lifecycle result, rollback or visible-frame receipt occurs
 ```
 
 ## Main findings
 
 ```txt
-root.innerHTML is assigned on every UI render
-ui.render executes on every RAF callback
-unchanged menu/HUD state has no no-op projection path
-all predecessor button/card nodes are discarded every frame
-focused controls can be replaced before the next keyboard action
-no stable action-node key or focus restoration result exists
-no DOM surface ID, projection revision or mutation receipt exists
-no accessibility-tree update policy exists
-no HTML text escaping exists
-no HTML attribute escaping exists
-no projection result is correlated with the world frame
-Node smoke does not instantiate a DOM or test focus/mutation behavior
+kit manifest: absent
+kit version and compatibility range: absent
+provided-service declaration: absent
+required-service declaration: absent
+dependency graph validation: absent
+deterministic topological order: absent
+duplicate kit ID rejection: absent
+duplicate domain ID rejection: absent
+candidate graph: absent
+atomic graph commit: absent
+installation rollback: absent
+uninstall or predecessor disposal: absent
+graph ID, revision and fingerprint: absent
+service-resolution receipt: absent
+first visible graph-frame acknowledgement: absent
 ```
+
+`engine.addKit()` validates only that `kit.create(ctx)` returned a domain with an `id`. It then writes that domain into the live object. A second domain with the same ID replaces the first without warning. `tick()` later iterates the mutable domain object directly, so installation history determines execution order.
 
 ## Current authority boundary
 
 ```txt
-zombie-orchard-html-interface-projection-authority-domain
+zombie-orchard-kit-graph-installation-authority-domain
 ```
 
 Required flow:
 
 ```txt
-committed state snapshot
-  -> derive immutable InterfaceViewModel
-  -> encode all text and attribute values
-  -> fingerprint route, actions, cards and HUD values
-  -> return a typed no-op when the fingerprint is unchanged
-  -> capture focus/selection lease
-  -> prepare keyed DOM changes
-  -> commit one interface projection revision
-  -> restore or intentionally move focus under a named policy
-  -> publish projection and accessibility results
-  -> acknowledge the first visible frame using the new revision
+KitGraphInstallCommand
+  -> validate graph predecessor and requested policy
+  -> normalize immutable kit manifests
+  -> verify kit IDs, domain IDs, versions and service contracts
+  -> resolve dependencies into a deterministic phase order
+  -> reject missing, cyclic, duplicate or incompatible candidates
+  -> create every domain inside an isolated candidate context
+  -> validate candidate snapshots, services and lifecycle hooks
+  -> commit one KitGraphRevision atomically
+  -> retire and dispose explicitly replaced predecessors
+  -> publish graph fingerprint and per-kit installation receipts
+  -> acknowledge the first visible frame using that graph revision
 ```
 
 ## Domains in use
 
 ```txt
-browser document, DOM surface and full-window CSS ownership
+browser document, canvas, DOM and full-window shell
 module boot, recursive RAF and public GameHost
-runtime registration, commands, ticks, events, snapshots, subscriptions and publication
+kit manifest, dependency, service, version and installation authority gap
+runtime registration, domains, commands, ticks, events, snapshots, subscriptions and publication
+runtime session, clock, route and public-capability boundaries
 12 interface-screen domains and interface composition
 resource ledger and pressure field
 orchard trees, apples and refill
 construction, roster and inventory
 active-session movement, phases, pests, damage, score and failure
-canvas world rendering and canvas-surface authority
-HTML view-model construction and DOM projection
-HTML text and attribute encoding
-DOM mutation planning, no-op detection, commit and rollback
-focus, selection and accessibility continuity
-interface projection identity, revision, observation and frame correlation
+canvas world and HTML interface projection
 Node smoke, static build, Pages deployment and central audit tracking
 ```
 
@@ -173,31 +181,31 @@ pages-deploy-kit
 
 | Kit group | Services |
 |---|---|
-| runtime | registration, domain creation, command dispatch, delta clamp, ticks, events, snapshots, subscriptions and synchronous publication |
-| interface | screen state, action descriptors, activation, route movement, nested dispatch and automatic Outcome routing |
-| game | resources, pressure, trees, apples, collection refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
-| render | canvas world drawing, HUD and route HTML, card projection, delegated click handling and full-subtree `innerHTML` replacement |
-| diagnostics/proof/deploy | raw engine publication, snapshot readback, unrestricted manual tick, Node smoke, static copy and Pages deployment |
+| runtime | Registration, domain construction, commands, delta clamp, ticks, events, snapshots, subscriptions and synchronous publication |
+| interface | Screen state, actions, activation, routing, nested dispatch and automatic Outcome routing |
+| game | Resources, pressure, trees, apples, collection refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
+| render | Canvas world drawing, HUD and route HTML, cards and delegated click handling |
+| diagnostics/proof/deploy | Raw engine publication, snapshot readback, unrestricted manual tick, Node smoke, static copy and Pages deployment |
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-12T07-51-04-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-12T07-51-04-04-00.md
+.agent/trackers/2026-07-12T10-00-00-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-12T10-00-00-04-00.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/architecture-audit/2026-07-12T07-51-04-04-00-html-interface-projection-authority-dsk-map.md
-.agent/render-audit/2026-07-12T07-51-04-04-00-per-frame-dom-replacement-visible-interface-gap.md
-.agent/gameplay-audit/2026-07-12T07-51-04-04-00-hud-route-projection-loop.md
-.agent/interaction-audit/2026-07-12T07-51-04-04-00-focus-preserving-interface-commit-map.md
-.agent/html-interface-audit/2026-07-12T07-51-04-04-00-escaping-diff-focus-contract.md
-.agent/deploy-audit/2026-07-12T07-51-04-04-00-dom-focus-accessibility-fixture-gate.md
+.agent/architecture-audit/2026-07-12T10-00-00-04-00-kit-graph-installation-authority-dsk-map.md
+.agent/render-audit/2026-07-12T10-00-00-04-00-graph-revision-visible-frame-gap.md
+.agent/gameplay-audit/2026-07-12T10-00-00-04-00-install-order-domain-behavior-loop.md
+.agent/interaction-audit/2026-07-12T10-00-00-04-00-kit-install-command-result-map.md
+.agent/kit-graph-audit/2026-07-12T10-00-00-04-00-manifest-dependency-atomic-commit-contract.md
+.agent/deploy-audit/2026-07-12T10-00-00-04-00-kit-graph-fixture-gate.md
 ```
 
-## Retained prerequisite audits
+## Retained audits
 
 ```txt
 seeded random and replay:          2026-07-11T17-01-11-04-00
@@ -210,6 +218,7 @@ player-control reachability:       2026-07-12T01-30-07-04-00
 fixed-step clock authority:        2026-07-12T03-11-51-04-00
 frame publication fault handling:  2026-07-12T04-38-12-04-00
 canvas render surface:             2026-07-12T06-19-56-04-00
+HTML interface projection:         2026-07-12T07-51-04-04-00
 ```
 
 ## Guardrails
@@ -218,8 +227,8 @@ canvas render surface:             2026-07-12T06-19-56-04-00
 Push only to main.
 Create no branch or pull request.
 Do not work on TheCavalryOfRome.
-Do not replace focused DOM nodes on an unchanged frame.
-Do not interpolate unencoded values into HTML or attributes.
-Do not treat a string build or innerHTML assignment as visible-frame proof.
-Do not claim keyboard or screen-reader continuity until browser fixtures pass.
+Do not mutate the live domain map during candidate construction.
+Do not use object insertion history as an implicit simulation phase contract.
+Do not silently replace a domain owner.
+Do not claim graph compatibility or first-frame parity until fixtures pass.
 ```
