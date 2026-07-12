@@ -14,34 +14,43 @@ runtime session identity
   -> replay and persistence continuation
 ```
 
+## Composite command transaction gaps
+
+1. Browser actions call `engine.command()` and discard the returned result.
+2. Interface activation can invoke a nested child `engine.command()`.
+3. The composition domain ignores the child result.
+4. A rejected child can be concealed by a successful parent activation result.
+5. Nested dispatch can notify subscribers before the parent finishes.
+6. The outer command notifies again, so one intent can publish more than once.
+7. No command ID or transaction ID exists.
+8. No expected state revision is required.
+9. No participant registry exists.
+10. No prepare phase proves every participant can commit.
+11. No event or publication buffer exists.
+12. No aggregate commit boundary exists.
+13. No rollback service exists.
+14. No idempotency receipt exists.
+15. No stable aggregate result includes every participant outcome.
+16. No result identifies the first canvas and HTML frame that presents it.
+17. The Storage Shed parent can report success when the child rejects for insufficient resources.
+18. Apple collection removes and reseeds the apple before reward and pressure settlement completes.
+19. Missing reward or pressure participants do not reject collection because optional chaining is used.
+20. Pest clearing can retire a pest and add score before optional scrap credit.
+21. Construction and hiring debit resources before appending the resulting entity.
+22. Equipment accepts an arbitrary item ID without inventory admission.
+23. Tests do not inject participant failure or verify rollback.
+24. Tests do not verify duplicate-submission behavior.
+25. Tests do not verify one-publication or result-to-frame correlation.
+
 ## Public capability and reachability gaps
 
-1. `window.GameHost` exposes the complete mutable engine object.
-2. Public callers can reach `engine.ctx`.
-3. Public callers can mutate frame, elapsed, delta, events and the domain table.
-4. Public callers can reach `engine.domains` and every domain object.
-5. Public callers can call domain `api` methods directly.
-6. Direct API calls bypass runtime command publication.
-7. Public callers can call domain `command()` directly.
-8. Direct domain commands bypass the runtime gateway and notify path.
-9. Public callers can call one domain's `tick()` independently.
-10. Public callers can call full `engine.tick()` beside the active RAF.
-11. No single-writer lease coordinates production and fixture stepping.
-12. Public callers can invoke `addKit()`.
-13. Duplicate domain IDs overwrite the existing domain entry.
-14. No capability manifest or capability revision exists.
-15. No capability lease, expiry or owner exists.
-16. No public command allowlist exists.
-17. No payload schema validation exists.
-18. Public commands carry no host generation, runtime, run, session, lifecycle or route identity.
-19. No expected-state or expected-tick revision is required.
-20. No public command journal exists.
-21. `getState()` omits clock, session, route and render-frame provenance.
-22. No committed frame-correlated public read model exists.
-23. Public subscriptions have no lease ID or forced retirement.
-24. The host has no revocation state.
-25. A predecessor host cannot be distinguished from a successor session host.
-26. The smoke test does not instantiate or inspect the browser global.
+- `window.GameHost` still exposes the complete mutable engine object.
+- Public callers can reach and mutate `ctx`, `domains`, registration, APIs, commands and ticks.
+- Duplicate domain IDs overwrite the existing domain entry.
+- No capability manifest, lease, allowlist, payload schema or revocation state exists.
+- Public full-graph ticks can run beside the production RAF.
+- Public snapshots omit runtime, session, route, tick and frame provenance.
+- Public subscriptions have no lease identity or forced retirement.
 
 ## Runtime-session and fresh-run gaps
 
@@ -70,15 +79,6 @@ runtime session identity
 - Active-session mutation checks only `ended`.
 - No route-policy revision, step admission result or domain mutation receipt exists.
 
-## Composite command transaction gaps
-
-- Browser actions call raw `engine.command()` and discard most result detail.
-- Commands carry no command or transaction ID.
-- Nested composition commands can publish intermediate state.
-- Child rejection can be concealed by parent success.
-- Resource and gameplay mutations have no rollback boundary.
-- No result-to-frame acknowledgement exists.
-
 ## Randomness and replay gaps
 
 - Apples and pests use process-global `Math.random()`.
@@ -96,9 +96,11 @@ runtime session identity
 
 ## Render and observation gaps
 
-- Canvas and HTML render after the state snapshot but publish no typed render result.
+- Canvas and HTML render after the RAF snapshot but publish no typed render result.
+- Command callers receive no frame acknowledgement.
+- Nested command notifications can expose an intermediate state to subscribers.
 - Public observation can advance ahead of visible pixels after a manual tick.
-- No runtime/run/session/route/tick/state/frame correlation exists.
+- No runtime/run/session/route/tick/state/transaction/frame correlation exists.
 - No explicit first-frame, failed-frame or pending-frame state exists.
 - Menus and Outcome can show predecessor-run pixels.
 
@@ -112,9 +114,11 @@ public-host reachability fixture: absent
 capability admission fixture: absent
 single-writer step fixture: absent
 host revocation fixture: absent
-subscriber lease fixture: absent
-frame-receipt fixture: absent
 command transaction fixture: absent
+participant failure/rollback fixture: absent
+idempotency fixture: absent
+single-publication fixture: absent
+result-frame correlation fixture: absent
 replay fixture: absent
 save/load roundtrip fixture: absent
 browser host smoke: absent
@@ -136,4 +140,4 @@ runtime session instance authority
 
 ## Do not claim
 
-Do not claim the public host is read-only, immutable, session-scoped, revocable, clock-safe, command-safe or frame-coherent until the corresponding fixtures pass on `main`.
+Do not claim browser commands are atomic, child-result truthful, rollback-safe, idempotent, single-publication or frame-correlated until the corresponding fixtures pass on `main`.
