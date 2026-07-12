@@ -1,15 +1,16 @@
-# Known gaps — ZombieOrchard
+# Known gaps - ZombieOrchard
 
-**Timestamp:** `2026-07-12T07-51-04-04-00`
+**Timestamp:** `2026-07-12T10-00-00-04-00`
 
 ## Summary
 
-The newest documented gap is HTML interface projection and focus authority. The renderer replaces `#ui-root` on every frame, including unchanged menus and HUDs. This creates continuous DOM churn, can replace the currently focused control, has no safe encoding contract and emits no typed projection or visible-interface result.
+The newest documented gap is kit-graph installation authority. The shipped runtime builds and mutates one live domain map without manifests, dependency checks, service compatibility, duplicate-owner protection, atomic commit, rollback, disposal or graph-to-frame provenance.
 
 ## Plan ledger
 
-**Goal:** keep unresolved risks dependency ordered and tied to executable fixtures.
+**Goal:** keep unresolved risks dependency ordered and tied to executable proof.
 
+- [ ] Kit graph identity, manifests, compatibility and atomic installation.
 - [ ] Runtime session identity, lifecycle and callback generation fencing.
 - [ ] Fixed-step clock and single-writer admission.
 - [ ] Route-scoped simulation admission.
@@ -19,30 +20,45 @@ The newest documented gap is HTML interface projection and focus authority. The 
 - [ ] Frame-publication fault containment and loop liveness.
 - [ ] Canvas render-surface and world-projection authority.
 - [ ] HTML interface projection, focus and encoding authority.
-- [ ] Seeded random/replay continuation.
+- [ ] Seeded random and replay continuation.
 - [ ] Versioned save/load authority.
 
-## HTML interface projection gaps
+## Kit-graph installation gaps
 
 ```txt
-ui.render runs every RAF callback
-root.innerHTML is assigned in every route/HUD render
-unchanged state has no no-op result
-all descendant nodes are replaced
-focused buttons have no stable node identity
-no focusedActionId capture or restoration exists
-no selection/caret continuity exists
-no route-transition focus policy exists
-no DOM mutation budget exists
-no semantic-change fingerprint exists
-no accessibility announcement deduplication exists
-text conversion does not escape HTML
-data-action interpolation has no attribute encoding
-no projection ID or revision exists
-no stale projection rejection exists
-no projection/frame correlation exists
-no DOM, focus, escaping or accessibility fixture exists
+kit manifest: absent
+kit ID uniqueness: absent
+kit version and compatibility range: absent
+domain ownership declaration: absent
+provided-service declaration: absent
+required-service declaration: absent
+service version validation: absent
+dependency graph: absent
+cycle detection: absent
+named create/tick/dispose phases: absent
+deterministic topological order: absent
+duplicate domain rejection: absent
+candidate graph isolation: absent
+atomic commit: absent
+rollback and reverse cleanup: absent
+predecessor migration or disposal: absent
+graph ID, revision and fingerprint: absent
+installation receipt: absent
+stale replacement rejection: absent
+first visible graph-frame receipt: absent
 ```
+
+## Source consequences
+
+- `engine.addKit()` writes directly into the live `domains` object.
+- A matching domain ID silently replaces the predecessor.
+- `tick()` inherits execution order from object insertion history.
+- `createOrchardGame()` manually orders kits without a machine-checked phase contract.
+- Gameplay domains discover collaborators through optional `ctx.domains[id]?.api` lookups.
+- Missing providers can appear as ordinary gameplay rejection rather than graph failure.
+- Failed candidate creation has no reverse cleanup ledger.
+- `window.GameHost.engine.addKit()` permits post-start graph mutation.
+- Snapshots contain no graph provenance.
 
 ## Retained unresolved gaps
 
@@ -65,11 +81,12 @@ no DOM, focus, escaping or accessibility fixture exists
 - Nested interface commands can conceal child failure.
 - Multi-domain operations lack prepare/commit/rollback and idempotency.
 
-### Frame and canvas
+### Frame and render surfaces
 
 - Subscriber or renderer exceptions can terminate the frame loop.
 - Canvas dimensions are rewritten from CSS dimensions every frame.
 - DPR, pixel budgets, world fit, surface revisions and canvas-frame proof are absent.
+- HTML projection replaces the complete subtree every frame.
 - Canvas and HTML consumers have no shared committed frame receipt.
 
 ### Replay and persistence
@@ -81,6 +98,13 @@ no DOM, focus, escaping or accessibility fixture exists
 ## Proof gaps
 
 ```txt
+kit manifest fixture: absent
+kit order fixture: absent
+duplicate domain fixture: absent
+missing/incompatible service fixture: absent
+candidate rollback fixture: absent
+runtime replacement fixture: absent
+graph-to-frame fixture: absent
 runtime-session fixture: absent
 fixed-step cadence fixture: absent
 route-suspension fixture: absent
@@ -89,28 +113,24 @@ public-host fixture: absent
 command-transaction fixture: absent
 subscriber/renderer fault fixture: absent
 canvas viewport/DPR fixture: absent
-unchanged-DOM no-mutation fixture: absent
-keyboard-focus retention fixture: absent
-HTML text/attribute escaping fixture: absent
-route-transition focus fixture: absent
-screen-reader announcement fixture: absent
+DOM/focus/encoding fixtures: absent
 canvas/HTML frame parity fixture: absent
 replay fixture: absent
 save/load fixture: absent
-built-artifact and Pages interface smoke: absent
+built-artifact and Pages graph smoke: absent
 ```
 
 ## Dependency order
 
 ```txt
-runtime session
+kit graph installation
+  -> runtime session
   -> fixed-step clock
   -> route and input admission
   -> public capability gateway
   -> composite command transaction
   -> frame fault containment
-  -> canvas surface authority
-  -> HTML interface projection authority
+  -> canvas and HTML projection
   -> replay authority
   -> persistence authority
   -> deployment proof
@@ -118,4 +138,4 @@ runtime session
 
 ## Do not claim
 
-Do not claim stable keyboard operation, assistive-technology continuity, minimal DOM mutation, safe external-content rendering or visible canvas/HTML parity until the relevant fixtures pass on `main`.
+Do not claim compatible kit composition, stable tick order, duplicate-owner protection, atomic installation, safe replacement or graph-to-frame parity until the relevant fixtures pass on `main`.
