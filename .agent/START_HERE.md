@@ -3,47 +3,46 @@
 ## Last aligned
 
 ```txt
-2026-07-11T23-41-55-04-00
+2026-07-11T23-48-14-04-00
 ```
 
 ## Summary
 
 `ZombieOrchard` is a dependency-free static orchard survival and economy shell built from a small mutable kit runtime, 12 interface domains, gameplay services, canvas and HTML projection, diagnostics, Node smoke proof, static build and Pages deployment.
 
-The current audit isolates the missing public capability gateway. `src/start.js` publishes the complete runtime as `window.GameHost.engine`, plus unrestricted snapshot and manual-tick helpers. The exposed engine includes mutable `ctx`, mutable `domains`, registration, commands, ticking and subscriptions. External diagnostics can therefore replace domain authority, call domain APIs directly, advance isolated domains or submit extra full-graph steps beside the browser RAF.
+The current audit isolates composite command atomicity. Interface activation can dispatch a nested gameplay command, ignore the child result, continue with a parent success result and publish more than one observation. Gameplay commands also mutate several domains in sequence without a prepare/commit/rollback boundary. The shipped Storage Shed action can therefore report parent success when the construction child rejects for missing resources, while collection and pest-clear operations can partially commit world, reward, pressure and score state if one participant is missing or fails.
 
 ## Plan ledger
 
-**Goal:** replace raw engine publication with one versioned, revocable gateway that exposes clone-safe observation and explicitly admitted commands without exposing runtime implementation, graph registration or uncoordinated clock mutation.
+**Goal:** define one transaction from browser intent through action resolution, participant preparation, atomic multi-domain commit, one typed result and one frame-correlated publication.
 
 - [x] Compare all ten accessible `LuminaryLabs-Publish` repositories.
 - [x] Exclude `LuminaryLabs-Publish/TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central ledger and root `.agent` coverage.
-- [x] Select only `ZombieOrchard` as the oldest eligible central entry.
+- [x] Select only `ZombieOrchard` because its central ledger remained the oldest eligible entry and its newer repo-local audit had not yet been reflected centrally.
 - [x] Identify the product interaction loop, domains, all 27 implemented kits and their services.
-- [x] Trace `GameHost`, engine, context, domain, API, registration, command, tick and subscription reachability.
-- [x] Define capability manifests, leases, allowlists, schemas, single-writer stepping, read models, frame receipts and revocation.
+- [x] Trace delegated UI activation, nested command dispatch, child-result handling, domain mutations, publication and render observation.
+- [x] Define command envelopes, participant plans, prepare/commit/rollback, idempotency, aggregate results, journals and frame receipts.
 - [x] Add timestamped architecture and system audits.
 - [x] Refresh the required root `.agent` files and kit registry.
 - [x] Push documentation only to `main`; create no branch or pull request.
-- [x] Synchronize the central repo ledger and internal change log.
-- [ ] Implement the gateway and run executable fixtures.
+- [ ] Implement the transaction boundary and run executable fixtures.
 
 ## Read this first
 
 ```txt
-.agent/trackers/2026-07-11T23-41-55-04-00/project-breakdown.md
+.agent/trackers/2026-07-11T23-48-14-04-00/project-breakdown.md
 .agent/current-audit.md
 .agent/next-steps.md
 .agent/known-gaps.md
 .agent/validation.md
-.agent/architecture-audit/2026-07-11T23-41-55-04-00-public-capability-gateway-dsk-map.md
-.agent/render-audit/2026-07-11T23-41-55-04-00-host-read-model-frame-provenance-gap.md
-.agent/gameplay-audit/2026-07-11T23-41-55-04-00-raw-host-bypass-loop.md
-.agent/interaction-audit/2026-07-11T23-41-55-04-00-public-command-capability-admission-map.md
-.agent/capability-audit/2026-07-11T23-41-55-04-00-raw-engine-graph-exposure-contract.md
-.agent/deploy-audit/2026-07-11T23-41-55-04-00-public-host-capability-fixture-gate.md
-.agent/turn-ledger/2026-07-11T23-41-55-04-00.md
+.agent/architecture-audit/2026-07-11T23-48-14-04-00-composite-command-transaction-dsk-map.md
+.agent/render-audit/2026-07-11T23-48-14-04-00-intermediate-command-publication-frame-gap.md
+.agent/gameplay-audit/2026-07-11T23-48-14-04-00-activate-child-command-commit-loop.md
+.agent/interaction-audit/2026-07-11T23-48-14-04-00-nested-command-result-admission-map.md
+.agent/command-transaction-audit/2026-07-11T23-48-14-04-00-prepare-commit-rollback-contract.md
+.agent/deploy-audit/2026-07-11T23-48-14-04-00-command-transaction-fixture-gate.md
+.agent/turn-ledger/2026-07-11T23-48-14-04-00.md
 .agent/kit-registry.json
 ```
 
@@ -54,6 +53,7 @@ seeded random and replay: 2026-07-11T17-01-11-04-00
 runtime session instance: 2026-07-11T18-28-40-04-00
 versioned save/load: 2026-07-11T20-03-22-04-00
 route-scoped simulation admission: 2026-07-11T21-40-49-04-00
+public capability gateway: 2026-07-11T23-41-55-04-00
 ```
 
 ## Selection
@@ -94,40 +94,59 @@ RAF
   -> world canvas render
   -> active-route HTML render
 
-UI click
-  -> delegated action/command lookup
-  -> raw engine.command(...)
-  -> optional nested command and route move
-  -> subscriber publication
+UI action
+  -> delegated data-action lookup
+  -> engine.command(interface-composition, activate)
+  -> active interface resolves an action
+  -> optional nested engine.command(child)
+  -> child notifies subscribers
+  -> parent ignores the child result
+  -> optional route move
+  -> parent returns and notifies subscribers again
 
-external host caller
-  -> GameHost.engine
-  -> ctx, domains, addKit, command, tick, snapshot or subscribe
-  -> optional direct domain api/command/tick
-  -> mutation outside the intended public boundary
+Direct gameplay command
+  -> mutate one or more participant domains immediately
+  -> no participant preparation
+  -> no rollback if a later participant fails
+  -> return a local result without aggregate receipts
 ```
 
-## Main finding
+## Main findings
 
 ```txt
-public diagnostic surface
-  ==
-complete mutable runtime surface
+Storage Shed with insufficient resources
+  -> construction child returns accepted=false
+  -> parent activation ignores child result
+  -> parent returns accepted=true
+  -> caller discards both results
+
+Collect apple
+  -> remove apple and reseed world first
+  -> optionally add rewards
+  -> optionally adjust pressure
+  -> increment score and message
+  -> no rollback boundary
+
+Clear pest
+  -> damage/remove pest
+  -> increment score
+  -> optionally add scrap
+  -> no rollback boundary
 ```
 
-Current reachability permits:
+Additional defects:
 
 ```txt
-addKit with duplicate ID -> overwrite existing domain entry
-domain.api.* -> direct unnotified gameplay mutation
-domain.command(...) -> bypass runtime publication
-domain.tick(...) -> partial-domain simulation
-ctx mutation -> alter frame/time/events/domain table
-GameHost.tick(dt) -> extra steps beside active RAF
-subscribe(...) -> unmanaged listener lifetime
+commandId: absent
+transactionId: absent
+expected state revision: absent
+participant prepare result: absent
+aggregate commit result: absent
+rollback receipt: absent
+idempotency receipt: absent
+one-publication barrier: absent
+result-to-frame acknowledgement: absent
 ```
-
-`getState()` returns detached domain snapshots for the current implementations, but it omits runtime/session identity, lifecycle, route revision, simulation tick, render frame and capability revision. It is not a committed frame-correlated read model.
 
 ## Domains in use
 
@@ -139,6 +158,7 @@ runtime/session lifecycle authority: missing
 fixed-step clock and single-writer authority: missing
 route-scoped simulation admission authority: missing
 public capability gateway and host revocation authority: missing
+composite command transaction authority: missing
 12 scoped interface-screen domains
 interface composition and nested dispatch
 resource ledger and pressure field
@@ -195,26 +215,39 @@ pages-deploy-kit
 ## Required authority
 
 ```txt
-zombie-orchard-public-capability-gateway-authority-domain
-  -> public-host-contract-kit
-  -> host-capability-manifest-kit
-  -> capability-id-kit
-  -> capability-lease-kit
-  -> public-read-model-kit
-  -> host-observation-revision-kit
-  -> public-command-envelope-kit
-  -> public-command-allowlist-kit
-  -> command-payload-schema-kit
-  -> command-session-admission-kit
-  -> single-writer-step-lease-kit
-  -> manual-step-capability-kit
-  -> public-command-result-kit
-  -> host-frame-receipt-kit
-  -> duplicate-domain-registration-guard-kit
-  -> host-revocation-kit
-  -> capability-journal-kit
-  -> public-host-observation-kit
-  -> public-host-capability-fixture-kit
+zombie-orchard-composite-command-transaction-authority-domain
+  -> command-envelope-kit
+  -> command-id-kit
+  -> transaction-id-kit
+  -> expected-revision-admission-kit
+  -> action-resolution-kit
+  -> command-participant-registry-kit
+  -> participant-prepare-kit
+  -> participant-commit-kit
+  -> participant-rollback-kit
+  -> transaction-idempotency-kit
+  -> aggregate-command-result-kit
+  -> transaction-event-buffer-kit
+  -> single-publication-barrier-kit
+  -> command-result-journal-kit
+  -> command-frame-receipt-kit
+  -> command-transaction-fixture-kit
+```
+
+## Required transaction
+
+```txt
+CommandEnvelope
+  -> session/lifecycle/route/capability admission
+  -> resolve the action and all participant commands
+  -> verify expected state revision
+  -> prepare every participant without mutation
+  -> reject with no mutation if any participant rejects
+  -> commit every prepared participant once
+  -> buffer events and observations until aggregate commit
+  -> publish one AggregateCommandResult
+  -> render and acknowledge one correlated canvas/HTML frame
+  -> return the same receipt for an accepted duplicate
 ```
 
 ## Ordered implementation queue
@@ -236,5 +269,6 @@ ZombieOrchard Runtime Session Instance Authority
 + Fixed-Step Clock Authority
 + Route-Scoped Simulation Admission Authority
 + Public Capability Gateway and Host Revocation
-+ Reachability/Single-Writer/Frame-Receipt Fixture Gate
++ Composite Command Transaction Authority
++ Command Atomicity/Idempotency/Frame-Receipt Fixture Gate
 ```
