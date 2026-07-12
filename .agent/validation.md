@@ -2,78 +2,76 @@
 
 ## Scope
 
-Documentation-only audit of composite command execution. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
+Documentation-only audit of player-control reachability. Runtime source, dependencies, package scripts, rendering and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record the nested-result, partial-commit and duplicate-publication gaps and the proof required before browser commands are treated as atomic or frame-coherent.
+**Goal:** record the missing browser-to-movement path and the proof required before the orchard is treated as product-explorable.
 
-- [x] Read browser boot and delegated HTML bindings.
-- [x] Read runtime command dispatch and publication.
-- [x] Read scoped action resolution and composition.
-- [x] Read construction, roster, inventory and active-session mutations.
-- [x] Confirm child results are ignored by the composition parent.
-- [x] Confirm nested dispatch can publish before parent completion.
-- [x] Confirm multi-domain gameplay effects have no prepare/rollback boundary.
+- [x] Read browser boot and RAF ownership.
+- [x] Read delegated HTML bindings and active-session controls.
+- [x] Read active-session movement, collection radii and start position.
+- [x] Read world-canvas projection and smoke proof.
+- [x] Confirm movement is implemented but unreachable from the shipped UI.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
 - [x] Synchronize the central ledger and internal change log.
-- [ ] Implement and run transaction fixtures.
+- [ ] Implement and run control fixtures.
 
 ## Source-backed findings
 
 ```txt
-html-interface-renderer
-  -> delegates data-action to interface-composition.activate
-  -> discards the returned result
+src/start.js
+  -> creates engine, canvas renderer and HTML renderer
+  -> starts RAF
+  -> installs no movement input listener
 
-interface-composition
-  -> resolves active action
-  -> invokes nested child command
-  -> ignores child result
-  -> may return parent accepted=true
+html-interface-renderer.js
+  -> one delegated click listener
+  -> data-action and data-command only
+  -> active-session buttons: Collect, Clear, Next Phase
 
-kit-runtime
-  -> every engine.command invokes notify()
-  -> child notifies before outer completion
-  -> outer command notifies again
+world-canvas.js
+  -> reads and draws player position
+  -> no input adapter
 
-game-domains
-  -> collect mutates apple world before full settlement
-  -> clear can retire pest before scrap settlement
-  -> build/hire debit before entity insertion
-  -> no prepare, rollback or idempotency services
+active-session-domain-kit
+  -> starts player at x=0, y=180
+  -> move adds 22 * x/y and clamps bounds
+  -> collect requires apple within 42 units
 
-orchard-preset
-  -> Storage Shed uses nested construction command
-  -> parent can report success after child rejection
+orchard-world-kit
+  -> randomly seeds apples around the orchard
+  -> does not guarantee an apple inside the start collection radius
 ```
 
 ## Required DOM-free fixtures
 
 ```txt
-child-rejection-propagation
-no-partial-build
-collect-rollback
-clear-rollback
-single-publication
-idempotent-success
-stale-revision
-aggregate-result
-frame-receipt
+binding-manifest-parity
+opposed-direction-cancellation
+diagonal-normalization
+finite-vector-admission
+route-rejection
+ended-run-rejection
+boundary-clamp
+stale-input-sequence-rejection
+control-lease-retirement
+movement-result-shape
 ```
 
 ## Required browser fixtures
 
 ```txt
-Storage Shed failure displays the rejected reason
-successful Storage Shed debits and constructs exactly once
-rapid double click creates one transaction effect
-Collect failure cannot consume an apple without complete settlement
-Clear failure cannot retire a pest without complete settlement
-no intermediate subscriber state is observable
-canvas, HTML and public observation agree on transaction revision
-one RAF chain and one delegated listener remain
+Play -> W changes player position
+Arrow keys and WASD share canonical bindings
+key repeat does not multiply simulation cadence
+diagonal speed is normalized
+blur retires held input
+pause and route exit reject movement
+outcome/reset/disposal retire predecessor input
+canvas frame presents the committed movement result
+one listener set and one control owner remain
 ```
 
 ## Validation result
@@ -90,16 +88,14 @@ pull request created: no
 npm test: not run
 npm run build: not run
 browser smoke: not run
-child-result fixture: unavailable / not run
-partial-commit fixture: unavailable / not run
-rollback fixture: unavailable / not run
-idempotency fixture: unavailable / not run
-single-publication fixture: unavailable / not run
-result-frame fixture: unavailable / not run
+player-control fixture: unavailable / not run
+input-retirement fixture: unavailable / not run
+movement-frame fixture: unavailable / not run
+Pages control smoke: unavailable / not run
 
 repo-local docs pushed to main: yes
 central ledger update: complete
 central internal change log: complete
 ```
 
-No atomic-command, rollback, idempotency, one-publication or result-to-frame claim is made.
+No movement reachability, focus safety, held-input retirement, fixed-step control or movement-to-frame claim is made.
