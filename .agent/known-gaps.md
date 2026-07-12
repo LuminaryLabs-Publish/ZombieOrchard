@@ -1,10 +1,10 @@
 # Known gaps - ZombieOrchard
 
-**Timestamp:** `2026-07-12T10-00-00-04-00`
+**Timestamp:** `2026-07-12T12-39-25-04-00`
 
 ## Summary
 
-The newest documented gap is kit-graph installation authority. The shipped runtime builds and mutates one live domain map without manifests, dependency checks, service compatibility, duplicate-owner protection, atomic commit, rollback, disposal or graph-to-frame provenance.
+The newest documented gap is semantic economy command admission. The runtime accepts raw resource, price and catalog payloads without one authoritative schema, capability boundary, expected revision, idempotency key or conservation receipt.
 
 ## Plan ledger
 
@@ -16,108 +16,107 @@ The newest documented gap is kit-graph installation authority. The shipped runti
 - [ ] Route-scoped simulation admission.
 - [ ] Player-control reachability and input retirement.
 - [ ] Public capability gateway and owner quarantine.
-- [ ] Composite command transaction authority.
+- [ ] Economy command semantic admission and conservation.
+- [ ] Composite multi-domain transaction authority.
 - [ ] Frame-publication fault containment and loop liveness.
 - [ ] Canvas render-surface and world-projection authority.
 - [ ] HTML interface projection, focus and encoding authority.
 - [ ] Seeded random and replay continuation.
 - [ ] Versioned save/load authority.
 
-## Kit-graph installation gaps
+## Economy command gaps
 
 ```txt
-kit manifest: absent
-kit ID uniqueness: absent
-kit version and compatibility range: absent
-domain ownership declaration: absent
-provided-service declaration: absent
-required-service declaration: absent
-service version validation: absent
-dependency graph: absent
-cycle detection: absent
-named create/tick/dispose phases: absent
-deterministic topological order: absent
-duplicate domain rejection: absent
-candidate graph isolation: absent
-atomic commit: absent
-rollback and reverse cleanup: absent
-predecessor migration or disposal: absent
-graph ID, revision and fingerprint: absent
-installation receipt: absent
-stale replacement rejection: absent
-first visible graph-frame receipt: absent
+economy command ID: absent
+command sequence and idempotency: absent
+runtime/session capability binding: absent
+route admission: absent
+resource key registry: absent
+finite amount schema: incomplete
+nonnegative cost policy: absent
+administrative signed-delta capability: absent
+balance floor policy: absent
+catalog and offer revisions: absent
+expected economy revision: absent
+unknown construction ID rejection: absent
+unknown inventory ID rejection: absent
+caller-authored roster price rejection: absent
+immutable mutation plan: absent
+conservation check: absent
+atomic participant commit: absent
+before/delta/after balance receipts: absent
+stable rejection codes: absent
+first visible economy-frame acknowledgement: absent
 ```
 
 ## Source consequences
 
-- `engine.addKit()` writes directly into the live `domains` object.
-- A matching domain ID silently replaces the predecessor.
-- `tick()` inherits execution order from object insertion history.
-- `createOrchardGame()` manually orders kits without a machine-checked phase contract.
-- Gameplay domains discover collaborators through optional `ctx.domains[id]?.api` lookups.
-- Missing providers can appear as ordinary gameplay rejection rather than graph failure.
-- Failed candidate creation has no reverse cleanup ledger.
-- `window.GameHost.engine.addKit()` permits post-start graph mutation.
-- Snapshots contain no graph provenance.
+- `resource-ledger.pay()` accepts negative values and subtracts them, increasing balances.
+- An unknown negative-cost resource key can materialize as a positive balance.
+- `roster-runtime.hire()` trusts `payload.cost`, so a negative cost can add both money and an actor.
+- `construction-runtime.build()` falls back to `catalog[0]` for an unknown ID.
+- `inventory-runtime.equip()` accepts an unknown item ID.
+- `resource-ledger.add()` accepts arbitrary resource keys and signed values.
+- Public `GameHost.engine.command()` makes these surfaces reachable outside authored UI actions.
+- Results contain no participant revisions, balance deltas or conservation receipts.
 
 ## Retained unresolved gaps
 
-### Runtime and clock
+### Runtime and composition
 
-- Module boot creates one graph and starts one ambient RAF loop.
-- RAF ownership has no retained ID or callback generation.
-- One literal `1 / 60` tick runs per display callback.
-- Visibility and display cadence alter simulation progress and random trials.
-
-### Route and control
-
+- Live kit installation has no manifest, dependency resolver, duplicate-owner rejection, rollback or graph revision.
+- Module boot creates one ambient RAF loop with no retained session generation.
+- Display cadence controls simulation speed and random trials.
 - Domains tick before Play and while menus are active.
-- `active-session.command("move")` has no shipped browser binding.
-- No keyboard/touch movement lease or retirement path exists.
 
-### Public capability and transaction
+### Input and public host
 
-- `window.GameHost` exposes the mutable engine, domains, ticks and kit registration.
-- Nested interface commands can conceal child failure.
-- Multi-domain operations lack prepare/commit/rollback and idempotency.
+- No shipped keyboard/touch movement binding exists.
+- Raw engine, domains, APIs, ticks and kit registration remain publicly exposed.
+- Commands lack one capability and lifecycle admission boundary.
 
-### Frame and render surfaces
+### Transactions and publication
 
+- Nested multi-domain operations lack prepare/commit/rollback.
 - Subscriber or renderer exceptions can terminate the frame loop.
+- Canvas and HTML have no shared committed frame receipt.
+
+### Rendering
+
 - Canvas dimensions are rewritten from CSS dimensions every frame.
-- DPR, pixel budgets, world fit, surface revisions and canvas-frame proof are absent.
+- DPR, pixel budgets, world-fit revisions and canvas-frame proof are absent.
 - HTML projection replaces the complete subtree every frame.
-- Canvas and HTML consumers have no shared committed frame receipt.
 
 ### Replay and persistence
 
 - Apples and pests use process-global `Math.random()`.
 - No run seed, stream cursor, replay journal or deterministic IDs exist.
-- Save Select has no storage, schema, migration, checksum or restore authority.
+- Save Select has no authoritative storage, migration, checksum or restore transaction.
 
 ## Proof gaps
 
 ```txt
-kit manifest fixture: absent
-kit order fixture: absent
-duplicate domain fixture: absent
-missing/incompatible service fixture: absent
-candidate rollback fixture: absent
-runtime replacement fixture: absent
-graph-to-frame fixture: absent
+negative-cost fixture: absent
+unknown-resource-key fixture: absent
+unknown-catalog-reference fixture: absent
+unknown-inventory-reference fixture: absent
+economy idempotency fixture: absent
+economy stale-revision fixture: absent
+economy rollback fixture: absent
+economy visible-frame fixture: absent
+kit graph fixtures: absent
 runtime-session fixture: absent
 fixed-step cadence fixture: absent
 route-suspension fixture: absent
 player-control fixture: absent
 public-host fixture: absent
-command-transaction fixture: absent
+composite transaction fixture: absent
 subscriber/renderer fault fixture: absent
 canvas viewport/DPR fixture: absent
 DOM/focus/encoding fixtures: absent
-canvas/HTML frame parity fixture: absent
 replay fixture: absent
 save/load fixture: absent
-built-artifact and Pages graph smoke: absent
+source/dist/Pages economy parity: absent
 ```
 
 ## Dependency order
@@ -125,17 +124,15 @@ built-artifact and Pages graph smoke: absent
 ```txt
 kit graph installation
   -> runtime session
-  -> fixed-step clock
-  -> route and input admission
+  -> clock, route and input admission
   -> public capability gateway
-  -> composite command transaction
-  -> frame fault containment
-  -> canvas and HTML projection
-  -> replay authority
-  -> persistence authority
+  -> economy command admission
+  -> composite participant transaction
+  -> frame publication and render authorities
+  -> replay and persistence
   -> deployment proof
 ```
 
 ## Do not claim
 
-Do not claim compatible kit composition, stable tick order, duplicate-owner protection, atomic installation, safe replacement or graph-to-frame parity until the relevant fixtures pass on `main`.
+Do not claim semantic economy safety, economic conservation, catalog integrity, idempotency, atomic participant commit or economy-to-frame parity until the required fixtures pass on `main`.
