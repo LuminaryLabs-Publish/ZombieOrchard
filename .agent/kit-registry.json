@@ -12,7 +12,7 @@
     "rootAgentMissingCount": 0,
     "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
     "selectedRepository": "LuminaryLabs-Publish/ZombieOrchard",
-    "reason": "Repo-local runtime-observer audit at 2026-07-12T22-48-25-04-00 was newer than the central ledger state at 2026-07-12T20-31-27-04-00.",
+    "reason": "Repo-local runtime-observer audit at 2026-07-12T22-48-25-04-00 was newer than the central ledger state and required reconciliation.",
     "ledgerOrder": [
       "ZombieOrchard:2026-07-12T20-31-27-04-00:selected-for-reconciliation",
       "MyCozyIsland:2026-07-12T20-40-56-04-00",
@@ -168,7 +168,7 @@
     "observerPublicationFixturesRun": false,
     "browserSmokeRun": false,
     "pagesSmokeRun": false,
-    "centralLedgerSynchronized": false,
-    "centralChangeLogAdded": false
+    "centralLedgerSynchronized": true,
+    "centralChangeLogAdded": true
   }
 }
