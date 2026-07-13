@@ -1,10 +1,10 @@
 # Known gaps - ZombieOrchard
 
-**Timestamp:** `2026-07-12T18-48-07-04-00`
+**Timestamp:** `2026-07-12T20-31-27-04-00`
 
 ## Summary
 
-The newest documented gap is terminal outcome sealing. Failure stops active-session ticking but does not revoke commands, seal participant state or create an immutable result. Outcome displays live score and day, so the final summary can change after the run has ended.
+The newest documented gap is pest-population lifecycle and budget ownership. Night simulation can grow the active pest array without capacity or despawn policy, and the same array directly controls movement cost, contact damage, snapshot size and canvas draw count.
 
 ## Plan ledger
 
@@ -15,138 +15,100 @@ The newest documented gap is terminal outcome sealing. Failure stops active-sess
 - [ ] Run reset identity, participant reset and atomic generation commit.
 - [ ] Fixed-step clock and single-writer admission.
 - [ ] Route-scoped simulation admission.
-- [ ] Player-control reachability and input retirement.
 - [ ] Public capability gateway and owner quarantine.
 - [ ] Interface action identity, availability and nested-result authority.
 - [ ] Economy command semantic admission and conservation.
 - [ ] Composite multi-domain transaction authority.
-- [ ] Terminal outcome seal, command revocation and immutable result authority.
+- [ ] Terminal outcome seal and immutable result authority.
+- [ ] Pest population lifecycle, capacity, damage and render budgets.
 - [ ] Frame-publication fault containment and loop liveness.
-- [ ] Canvas render-surface and world-projection authority.
-- [ ] HTML interface projection, focus and encoding authority.
+- [ ] Canvas/HTML shared frame authority.
 - [ ] Seeded random and replay continuation.
 - [ ] Versioned save/load authority.
 
-## Terminal outcome gaps
+## Pest population gaps
 
 ```txt
-terminal phase enum: absent
-terminal outcome ID: absent
-terminal cause contract: absent
-terminal result revision: absent
-terminal predicate evidence: absent
-immutable terminal snapshot: absent
-participant freeze receipt: absent
-post-terminal command rejection: absent
-gameplay capability revocation: absent
-economy capability revocation: absent
-terminal/route atomic commit: absent
-duplicate terminal admission: absent
-Outcome bound to terminal result: no
-first visible terminal frame acknowledgement: absent
+population ID and revision: absent
+maximum active count: absent
+spawn budget: absent
+deterministic unique pest ID: absent
+age and lifecycle state: absent
+despawn and retirement policy: absent
+simulation work budget: absent
+render work budget: absent
+contact-set result: absent
+damage ceiling/aggregation policy: absent
+stale clear rejection: absent
+exactly-once retirement receipt: absent
+population fingerprint: absent
+visible population-frame acknowledgement: absent
 ```
 
 ## Source consequences
 
-- `active-session.tick()` returns after `ended`, but `active-session.command()` has no terminal guard.
-- `move` can alter the final player position.
-- `collect` can change orchard membership, resources, pressure, score and message.
-- `clear` can change pests, scrap, score and message.
-- `next-phase` can change final phase and day.
-- `interface-composition.tick()` routes Outcome separately from failure commit.
-- `window.GameHost.engine` permits direct commands regardless of visible route.
-- Outcome cards read live `session.score` and `session.day`.
-- Existing smoke proof cannot detect terminal mutation or summary drift.
+- Night ticks can append pests indefinitely while the run survives.
+- Day phase does not retire or age the existing population.
+- Movement and distance work are O(N) in active pests.
+- Contact damage is additive across all contacting pests.
+- Deep snapshot cloning and canvas drawing are also O(N).
+- Only a successful nearby clear operation removes a pest.
+- Random string IDs have no uniqueness or run-generation guarantee.
+- Current smoke proof cannot detect capacity, lifecycle, damage or frame-budget failures.
 
 ## Retained unresolved gaps
 
-### Runtime and run lifecycle
+### Lifecycle and command authority
 
-- Live kit installation has no manifest, dependency resolver, duplicate-owner rejection, rollback or graph revision.
-- Module boot creates one ambient RAF loop with no retained session generation.
-- Display cadence controls simulation speed and random trials.
-- Domains tick before Play and while menus are active.
-- Play, New Game, Start and Title do not construct or retire run generations.
-- Terminal and partial predecessor state survives supposed restart flows.
+- Boot creates one ambient RAF with no stop authority.
+- Display cadence controls real-time simulation speed.
+- Menus do not suspend all gameplay domains.
+- New Game and Start do not build a clean run.
+- Raw GameHost access bypasses intended route boundaries.
+- Terminal state does not revoke all mutation.
 
-### Input, public host and transactions
+### Economy and transactions
 
-- No shipped keyboard/touch movement binding exists.
-- Raw engine, domains, APIs, ticks and kit registration remain publicly exposed.
-- Commands lack one capability and lifecycle admission boundary.
-- Nested multi-domain operations lack prepare/commit/rollback.
-- Subscriber or renderer exceptions can terminate the frame loop.
+- Negative payment values can mint resources.
+- Unknown catalog or inventory references are not consistently rejected.
+- Multi-domain operations lack prepare/commit/rollback and idempotency.
 
-### Economy
+### Rendering and persistence
 
-- Negative payment values mint resources.
-- Resource keys and prices are not governed by a versioned authority.
-- Unknown construction and inventory references can be accepted incorrectly.
-- Economy operations lack idempotency, conservation and atomic participant receipts.
-
-### Rendering
-
-- Canvas dimensions are rewritten from CSS dimensions every frame.
-- DPR, pixel budgets, world-fit revisions and canvas-frame proof are absent.
-- HTML projection replaces the complete subtree every frame.
+- Canvas dimensions are rewritten every frame.
 - Canvas and HTML have no shared committed frame receipt.
-- Outcome has no immutable result-backed read model.
+- HTML projection replaces the subtree every frame.
+- Math.random prevents replay continuation.
+- Save Select has no versioned storage or migration authority.
 
-### Replay and persistence
-
-- Apples and pests use process-global `Math.random()`.
-- No run seed, stream cursor, replay journal or deterministic IDs exist.
-- Save Select has no authoritative storage, migration, checksum or restore transaction.
-
-## Proof gaps
+## Required fixtures
 
 ```txt
-terminal threshold fixture: absent
-multiple-pest single-terminal fixture: absent
-post-terminal movement fixture: absent
-post-terminal collection fixture: absent
-post-terminal clearing fixture: absent
-post-terminal phase fixture: absent
-Outcome summary immutability fixture: absent
-terminal duplicate fixture: absent
-terminal route atomicity fixture: absent
-source/dist/Pages terminal parity: absent
-invalid action ID fixture: absent
-disabled action projection fixture: absent
-nested command rejection propagation fixture: absent
-action idempotency fixture: absent
-new-game clean-state fixture: absent
-failed-run restart fixture: absent
-kit graph fixtures: absent
-runtime-session fixture: absent
-fixed-step cadence fixture: absent
-route-suspension fixture: absent
-player-control fixture: absent
-public-host fixture: absent
-economy fixtures: absent
-composite transaction fixture: absent
-subscriber/renderer fault fixture: absent
-canvas viewport/DPR fixture: absent
-DOM/focus/encoding fixtures: absent
-replay fixture: absent
-save/load fixture: absent
+capacity boundary
+long-night bounded population
+deterministic unique IDs
+day-transition retention/retirement
+clear exactly-once reward
+duplicate and stale clear rejection
+age/TTL retirement
+bounded contact damage
+simulation and render budget
+population snapshot fingerprint
+source/dist/Pages parity
 ```
 
 ## Dependency order
 
 ```txt
-kit graph installation
-  -> runtime session
-  -> run reset generation
-  -> clock, route and input admission
-  -> interface action and public capability admission
-  -> economy and composite transaction commit
-  -> terminal outcome sealing and command revocation
-  -> frame publication and render authorities
-  -> replay and persistence
+runtime session and run generation
+  -> deterministic random and clock
+  -> pest population identity and spawn admission
+  -> simulation/contact/damage budget
+  -> retirement and reward transaction
+  -> snapshot/render frame correlation
   -> deployment proof
 ```
 
 ## Do not claim
 
-Do not claim immutable terminal results, post-terminal isolation, stable final score/day, atomic Outcome routing, idempotency or visible terminal-frame correlation until the required fixtures pass on `main`.
+Do not claim bounded pest populations, stable difficulty, predictable frame cost, exact retirement, replay-safe IDs or visible population parity until required fixtures pass on `main`.

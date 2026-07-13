@@ -1,54 +1,45 @@
 # Validation - ZombieOrchard
 
-**Timestamp:** `2026-07-12T18-48-07-04-00`
+**Timestamp:** `2026-07-12T20-31-27-04-00`
 
 ## Scope
 
-Documentation-only audit of failure detection, terminal outcome sealing, post-terminal command admission, Outcome routing, immutable result projection and visible-frame correlation. Runtime source, dependencies, package scripts, gameplay, rendering and deployment configuration were not changed.
+Documentation-only audit of pest spawning, capacity, identity, simulation, contact damage, clearing, retirement, snapshot cost, canvas draw cost and deployment proof. Runtime source, dependencies, gameplay, rendering and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record exact source evidence and executable proof required before terminal-outcome correctness claims are made.
+**Goal:** record exact source evidence and executable proof required before pest-population correctness claims are made.
 
-- [x] Read `src/start.js` and confirm raw engine publication.
-- [x] Read `src/game.js` and confirm all interface/gameplay kits install into one runtime.
-- [x] Read `src/kits/runtime.js` and confirm commands have no lifecycle or terminal admission.
-- [x] Read `src/kits/composition.js` and confirm Outcome routing follows a later snapshot observation.
-- [x] Read `src/kits/game-domains.js` and confirm tick-only terminal suspension and post-terminal command availability.
-- [x] Read `src/presets/orchard-preset.js` and confirm Outcome route actions and active-session command surfaces.
-- [x] Read `src/renderer/html-interface-renderer.js` and confirm Outcome reads live score/day.
-- [x] Read `src/renderer/world-canvas.js` and confirm no terminal result revision is consumed.
-- [x] Read `tests/smoke.mjs` and confirm terminal coverage is absent.
+- [x] Read `src/start.js` and confirm fixed recursive RAF plus world rendering on every route.
+- [x] Read `src/game.js` and confirm all kits share one runtime.
+- [x] Read `src/kits/runtime.js` and confirm full-domain tick and deep snapshots.
+- [x] Read `src/kits/game-domains.js` and confirm unbounded spawn, O(N) simulation/damage and clear-only retirement.
+- [x] Read `src/presets/orchard-preset.js` and confirm no pest capacity configuration.
+- [x] Read `src/renderer/world-canvas.js` and confirm one draw per pest with no budget/revision.
+- [x] Read `tests/smoke.mjs` and confirm pest lifecycle coverage is absent.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
-- [ ] Implement and run terminal-outcome fixtures.
+- [ ] Implement and run pest population fixtures.
 
 ## Source-backed findings
 
 ```txt
 src/kits/game-domains.js
-  -> tick returns early when ended
-  -> command handler does not reject when ended
-  -> move, collect, clear and next-phase can still mutate
-  -> failure creates no terminal result ID or revision
-
-src/kits/composition.js
-  -> Outcome route is committed in a separate domain tick
-  -> route commit has no shared terminal transaction
-
-src/start.js
-  -> window.GameHost exposes raw engine commands
-
-src/renderer/html-interface-renderer.js
-  -> Outcome cards read current active-session score and day
-  -> no immutable terminal result is projected
+  -> addPest directly pushes random-ID pest
+  -> no active-count capacity or spawn result
+  -> all pests simulate every tick
+  -> each contacting pest adds damage
+  -> clear is the only retirement path
 
 src/renderer/world-canvas.js
-  -> canvas consumes live world/session state
-  -> no terminal result or terminal frame revision is consumed
+  -> all pests draw every frame
+  -> no culling, render budget or population revision
+
+src/start.js
+  -> snapshot and world render occur every RAF regardless route
 
 tests/smoke.mjs
-  -> verifies Entry, Play and apples only
+  -> no night, spawn, capacity, clear, retirement or budget assertions
 ```
 
 ## Deterministic observations
@@ -56,31 +47,29 @@ tests/smoke.mjs
 ```txt
 implemented kit surfaces: 27
 engine-installed kits: 19
-terminal flags: 1 ended Boolean
-terminal result objects: 0
-terminal revisions: 0
-post-terminal command guards: 0
-commands still callable after ended: move, collect, clear, next-phase
-immutable Outcome read models: 0
-first visible terminal receipts: 0
-terminal fixtures: 0
+pest arrays: 1 mutable active-session array
+active-count limits: 0
+spawn admissions: 0
+despawn policies: 0
+simulation budgets: 0
+render budgets: 0
+contact-set results: 0
+population revisions: 0
+pest lifecycle fixtures: 0
 ```
 
 ## Required fixtures
 
 ```txt
-failure threshold -> exactly one terminal result
-multiple damaging pests -> one terminal commit
-terminal commit -> Outcome route from same result
-post-terminal move -> rejected with no state change
-post-terminal collect -> rejected with no world/economy/score change
-post-terminal clear -> rejected with no pest/economy/score change
-post-terminal next-phase -> rejected with no day/phase change
-raw GameHost post-terminal command -> rejected
-Outcome score/day -> immutable after terminal
-duplicate terminal candidate -> stable replay
-canvas/HTML -> matching terminal result revision
-source/dist/Pages -> equivalent terminal result and summary
+capacity boundary and long-night bound
+deterministic unique pest identity
+day/night population policy
+clear and duplicate-clear retirement
+stale generation rejection
+bounded multi-pest damage
+simulation and draw budget
+population fingerprint and visible frame
+source/dist/Pages parity
 ```
 
 ## Validation result
@@ -98,9 +87,9 @@ pull request created: no
 
 npm test: not run
 npm run build: not run
-terminal outcome fixtures: unavailable / not run
-browser terminal smoke: unavailable / not run
-Pages terminal smoke: unavailable / not run
+pest population fixtures: unavailable / not run
+browser pest smoke: unavailable / not run
+Pages pest smoke: unavailable / not run
 ```
 
-Source evidence was read through the connected repository. No terminal seal, immutable final summary, post-terminal command revocation, atomic route commit, idempotency or visible terminal-frame claim is made.
+No bounded-population, deterministic-ID, exact-retirement, damage-budget, frame-budget or visible population-frame claim is made.

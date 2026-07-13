@@ -1,107 +1,91 @@
 # Next steps - ZombieOrchard
 
-**Timestamp:** `2026-07-12T18-48-07-04-00`
+**Timestamp:** `2026-07-12T20-31-27-04-00`
 
 ## Summary
 
-Add a terminal-outcome authority before expanding combat, scoring or restart flows. Failure must create one immutable result, revoke gameplay capabilities and drive Outcome from that committed result rather than from mutable live session state.
+Add a pest-population authority before expanding waves, combat or visual density. Spawn, movement, contact damage, clearing, retirement and rendering must consume one run-scoped population revision.
 
 ## Plan ledger
 
-**Goal:** replace the loose `ended` Boolean and live Outcome projection with a revisioned, idempotent terminal transaction.
+**Goal:** replace the raw pest array with bounded lifecycle and budget transactions.
 
-- [ ] Define `TerminalOutcomeCandidate` and `TerminalOutcomeResult`.
-- [ ] Add terminal outcome ID, cause and revision.
-- [ ] Bind the candidate to runtime session and run generation.
-- [ ] Capture expected gameplay and participant revisions.
-- [ ] Move the failure predicate into explicit terminal admission.
-- [ ] Freeze score, day, phase, player, resources, pressure and relevant world summaries.
-- [ ] Commit terminal phase and result atomically.
-- [ ] Revoke movement, collection, clearing and phase-change commands.
-- [ ] Revoke construction, roster and other economy mutations after terminal.
-- [ ] Reject stale, duplicate and post-terminal commands with typed results.
-- [ ] Route Outcome only from a committed terminal result.
-- [ ] Render Outcome from the immutable terminal read model.
-- [ ] Add terminal result revision to canvas and HTML frame plans.
-- [ ] Acknowledge the first visible Outcome frame.
+- [ ] Define `PestPopulationId`, revision and configuration fingerprint.
+- [ ] Define deterministic `PestId` and pest generation.
+- [ ] Add maximum active count and per-step/per-phase spawn budgets.
+- [ ] Return typed spawn results.
+- [ ] Add age and lifecycle state.
+- [ ] Define clear, expiry, distance, terminal and run-reset retirement reasons.
+- [ ] Make retirement exactly once and reward exactly once.
+- [ ] Build one contact set per simulation step.
+- [ ] Bound or explicitly aggregate multi-pest damage.
+- [ ] Add simulation and render work budgets.
+- [ ] Publish population snapshot and fingerprint.
+- [ ] Bind canvas frames to population revision.
 - [ ] Add Node, browser, dist and Pages fixtures.
 
 ## Immediate safe ledge
 
-1. Add a terminal phase enum instead of relying only on `ended`.
-2. Add an early terminal admission check to every active-session command.
-3. Return `run-terminal` for post-terminal commands.
-4. Capture a frozen terminal summary exactly once.
-5. Make Outcome read the frozen summary.
-6. Add a terminal result ID and revision.
-7. Route Outcome only after terminal result commit.
-8. Remove or capability-gate raw direct command access.
-9. Add duplicate terminal and post-terminal fixtures.
-10. Add source/dist/Pages parity proof.
+1. Add `maxActivePests` to configuration.
+2. Reject spawn when capacity is reached.
+3. Replace random string IDs with run-scoped monotonic IDs.
+4. Add population revision increments on spawn and retirement.
+5. Add an explicit `retirePest(id, reason)` path.
+6. Return typed clear and retirement results.
+7. Add one population snapshot with count and fingerprint.
+8. Add a long-night capacity test.
+9. Add duplicate-clear reward protection.
+10. Add canvas draw-count and revision proof.
 
 ## Required runtime flow
 
 ```txt
-damage resolution
-  -> terminal predicate evidence
-  -> TerminalOutcomeCandidate
-  -> predecessor and duplicate admission
-  -> immutable participant summary
-  -> atomic terminal result and phase commit
-  -> gameplay/economy capability revocation
-  -> Outcome route commit
-  -> immutable result projection
-  -> first visible terminal frame acknowledgement
+night spawn request
+  -> capacity and budget admission
+  -> deterministic identity allocation
+  -> population revision commit
+  -> bounded simulation
+  -> contact-set and damage result
+  -> exact retirement and reward result
+  -> snapshot fingerprint
+  -> matching visible canvas frame
 ```
 
 ## Target files
 
 ```txt
 src/kits/game-domains.js
-src/kits/composition.js
+src/presets/orchard-preset.js
 src/kits/runtime.js
 src/game.js
 src/start.js
-src/renderer/html-interface-renderer.js
 src/renderer/world-canvas.js
-src/kits/terminal-outcome-authority.js
-src/kits/terminal-command-gateway.js
-src/kits/terminal-observation.js
-tests/terminal-failure.fixture.mjs
-tests/post-terminal-command.fixture.mjs
-tests/terminal-summary.fixture.mjs
-tests/terminal-idempotency.fixture.mjs
-scripts/smoke-terminal-outcome-browser.mjs
+src/kits/pest-population-authority.js
+src/kits/pest-contact-authority.js
+src/kits/pest-retirement-authority.js
+tests/pest-capacity.fixture.mjs
+tests/pest-retirement.fixture.mjs
+tests/pest-damage-budget.fixture.mjs
+scripts/smoke-pest-population-browser.mjs
 package.json
 ```
 
 ## Required fixtures
 
 ```txt
-condition crosses zero -> one terminal result
-multiple pests cross threshold in same step -> one result
-next tick after failure -> no new terminal result
-post-terminal move -> typed rejection and no position change
-post-terminal collect -> typed rejection and no world/resource/score change
-post-terminal clear -> typed rejection and no pest/resource/score change
-post-terminal next-phase -> typed rejection and no day/phase change
-direct GameHost command on Outcome -> rejected
-Outcome summary -> stable across later ticks and rejected commands
-duplicate terminal candidate -> stable replay
-source/dist/Pages -> equivalent result and visible summary
-```
-
-## Dependency order
-
-```txt
-runtime session and run generation
-  -> fixed-step damage resolution
-  -> terminal predicate and result authority
-  -> command/capability revocation
-  -> Outcome route and projection
-  -> restart and persistence
+spawn under capacity -> accepted
+spawn at capacity -> CapacityReached
+long night -> count remains bounded
+pest IDs -> unique and deterministic
+clear -> one retirement and one reward
+duplicate clear -> no duplicate reward
+stale generation clear -> rejected
+large contact set -> bounded deterministic damage
+population revision -> increments exactly once
+canvas -> matching revision and admitted draw count
+source/dist/Pages -> equivalent results
 ```
 
 ## Do not claim
 
-Do not claim terminal sealing, immutable final score, post-terminal isolation, atomic Outcome routing, idempotency or visible result proof until the fixtures pass on `main`.
+Do not claim population safety, difficulty stability, performance bounds, exact retirement or visible-frame parity until the fixture matrix passes on `main`.
