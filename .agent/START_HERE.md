@@ -2,92 +2,93 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Aligned:** `2026-07-13T07-41-11-04-00`  
-**Status:** `canvas-html-frame-coherence-authority-central-reconciled`  
-**Retained statuses:** `runtime-event-lifecycle-publication-authority-audited`, `runtime-observer-publication-authority-central-reconciled`
+**Aligned:** `2026-07-13T13-01-03-04-00`  
+**Status:** `browser-startup-readiness-failure-authority-central-reconciled`  
+**Retained statuses:** `canvas-html-frame-coherence-authority-central-reconciled`, `runtime-event-lifecycle-publication-authority-audited`, `runtime-observer-publication-authority-central-reconciled`
 
 ## Summary
 
 ZombieOrchard is a dependency-free orchard survival and economy shell built from a mutable kit runtime, 12 interface definitions, gameplay services, canvas and HTML projection, diagnostics, Node smoke proof, static build, and Pages deployment.
 
-The current reconciliation preserves the dual-surface presentation finding. `engine.tick()` publishes one snapshot and then returns a separately captured snapshot. The browser applies the returned snapshot to the canvas first and the HTML subtree second. No shared immutable frame envelope, surface receipts, terminal dual-surface result, partial-frame recovery, visible readback, or first coherent frame acknowledgement proves all consumers adopted the same state.
+The current audit isolates browser startup readiness and failure ownership. The page declares a hidden error panel, but boot is a bare side-effect import. Engine installation, DOM/context capture, listener installation, `GameHost` publication, first simulation tick, canvas projection, HTML projection, and RAF scheduling occur during module evaluation without a startup identity, participant receipts, probe, atomic adoption, cleanup, fallback, retry result, or first-visible-frame acknowledgement.
 
 ## Plan ledger
 
-**Goal:** keep the complete repository breakdown and central ledger aligned around one evidence chain from committed runtime state to both visible surfaces.
+**Goal:** make browser startup one typed transaction that adopts every live participant only after successful preparation and probe.
 
-- [x] Compare all ten accessible Publish repositories.
+- [x] Compare all ten current Publish repositories with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm all nine eligible repositories have central-ledger and root `.agent` coverage.
 - [x] Select only ZombieOrchard as the oldest eligible central entry.
-- [x] Preserve the full interaction loop, domain inventory, 27-kit census, and offered services.
-- [x] Add the timestamped frame-coherence reconciliation family.
+- [x] Preserve the complete interaction loop, domain inventory, 27-kit census, and services.
+- [x] Add the timestamped startup-readiness audit family.
 - [x] Refresh required root `.agent` documents.
 - [x] Keep writes on `main`; create no branch or pull request.
-- [ ] Implement and prove frame-envelope, surface-result, recovery, and visible-frame authority.
+- [ ] Implement and prove startup preparation, probe, adoption, failure projection, cleanup, retry, and first-frame readiness.
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-13T07-41-11-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-13T07-41-11-04-00.md
+.agent/trackers/2026-07-13T13-01-03-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-13T13-01-03-04-00.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/architecture-audit/2026-07-13T07-41-11-04-00-frame-coherence-central-reconciliation-dsk-map.md
-.agent/render-audit/2026-07-13T07-41-11-04-00-dual-surface-visible-frame-central-reconciliation-gap.md
-.agent/gameplay-audit/2026-07-13T07-41-11-04-00-runtime-dual-surface-central-reconciliation.md
-.agent/interaction-audit/2026-07-13T07-41-11-04-00-frame-envelope-projection-central-reconciliation-map.md
-.agent/frame-coherence-audit/2026-07-13T07-41-11-04-00-central-reconciliation-contract.md
-.agent/deploy-audit/2026-07-13T07-41-11-04-00-central-fixture-reconciliation-gate.md
-.agent/central-sync-audit/2026-07-13T07-41-11-04-00-repo-ledger-frame-coherence-reconciliation.md
+.agent/architecture-audit/2026-07-13T13-01-03-04-00-browser-startup-readiness-failure-dsk-map.md
+.agent/render-audit/2026-07-13T13-01-03-04-00-first-visible-frame-readiness-gap.md
+.agent/gameplay-audit/2026-07-13T13-01-03-04-00-first-tick-before-readiness-loop.md
+.agent/interaction-audit/2026-07-13T13-01-03-04-00-startup-participant-result-map.md
+.agent/startup-audit/2026-07-13T13-01-03-04-00-preparation-probe-adoption-failure-contract.md
+.agent/deploy-audit/2026-07-13T13-01-03-04-00-browser-startup-fixture-gate.md
 ```
 
 ## Complete interaction loop
 
 ```txt
-browser command
-  -> engine.command(...)
-  -> domain mutation
-  -> publication snapshot P
-  -> synchronous subscribers
+index.html
+  -> declares world canvas, UI root, and hidden error panel
+  -> imports boot.js
 
-RAF frame
-  -> engine.tick(1 / 60)
-  -> domain ticks
-  -> publication snapshot T1
-  -> separately captured return snapshot T2
-  -> canvas projection from T2
-  -> HTML projection from T2
-  -> successor RAF
+boot.js
+  -> side-effect imports start.js
 
-public diagnostics
-  -> GameHost.getState() captures fresh D
-  -> no result binds P, T1, T2, D, canvas, HTML, or the visible browser frame
+start.js
+  -> creates engine and installs 19 domains
+  -> captures DOM nodes and Canvas2D context
+  -> installs delegated UI listener
+  -> exposes raw GameHost
+  -> immediately ticks simulation
+  -> renders canvas then HTML
+  -> schedules successor RAF
+
+failure at any stage
+  -> exception escapes
+  -> no aggregate result, cleanup, fallback, retry, or readiness proof
 ```
 
 ## Required authority
 
 ```txt
-zombie-orchard-canvas-html-frame-coherence-authority-domain
+zombie-orchard-browser-startup-readiness-failure-authority-domain
 ```
 
 ## Required transaction
 
 ```txt
-runtime commit
-  -> one immutable fingerprinted FrameEnvelope
-  -> exact envelope publication
-  -> canvas and HTML preparation against that envelope
-  -> one FrameCommitId
-  -> complete, partial, failed, stale, or superseded result
-  -> last-complete-frame preservation or recovery
-  -> visible diagnostics readback
-  -> FirstDualSurfaceFrameAck
+BrowserStartupCommand
+  -> StartupAttemptId and StartupGeneration
+  -> document, DOM, capability, and kit-graph admission
+  -> detached engine, canvas, HTML, diagnostics, and scheduler candidates
+  -> participant preparation receipts
+  -> non-committing startup and projection probes
+  -> atomic adoption or complete candidate disposal
+  -> StartupReadyResult or StartupFailureResult
+  -> DOM-only error-panel fallback and bounded retry
+  -> GameHost publication from the accepted generation
+  -> FirstStartupFrameAck
 ```
 
 ## Validation boundary
 
-Documentation only. Runtime source, gameplay, rendering, dependencies, package scripts, and deployment were not changed. No atomicity, recovery, visible parity, or production-readiness claim is made until focused fixtures pass on `main`.
+Documentation only. Runtime source, HTML, CSS, gameplay, rendering, dependencies, package scripts, tests, workflows, and deployment were not changed. No startup atomicity, readiness, fallback, cleanup, retry, first-visible-frame, or production-readiness claim is made until focused fixtures pass on `main`.
