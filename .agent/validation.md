@@ -1,46 +1,55 @@
 # Validation - ZombieOrchard
 
-**Timestamp:** `2026-07-12T23-00-53-04-00`
+**Timestamp:** `2026-07-13T01-18-20-04-00`
 
 ## Scope
 
-Documentation-only reconciliation of runtime subscriptions, snapshot publication, shared delivery objects, reentrant mutation, observer exceptions, browser-frame liveness and central tracking. Runtime source, dependencies, gameplay, rendering and deployment configuration were not changed.
+Documentation-only audit of runtime event creation, mutable buffering, command accumulation, tick clearing, snapshot omission, subscriber omission, renderer omission, public readback and central tracking. Runtime source, dependencies, gameplay, rendering and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record exact source evidence and executable proof required before observer-publication correctness claims are made.
+**Goal:** record exact source evidence and executable proof required before event-lifecycle correctness claims are made.
 
-- [x] Read `src/start.js` and confirm `engine.tick()` precedes both renderers and successor RAF scheduling.
-- [x] Read `src/game.js` and confirm all kits share one runtime.
-- [x] Read `src/kits/runtime.js` and confirm synchronous shared-object listener delivery.
-- [x] Confirm command and tick mutation occurs before notification.
-- [x] Confirm listener errors are not isolated.
-- [x] Confirm listeners can re-enter public `command()` and `tick()`.
-- [x] Confirm the repo-local observer audit was newer than central tracking.
-- [x] Add timestamped reconciliation audits and root routing.
-- [x] Synchronize the central repo ledger and internal change log.
+- [x] Read `src/kits/runtime.js`.
+- [x] Confirm `ctx.emit()` writes mutable records into `ctx.events`.
+- [x] Confirm command does not clear or publish the event buffer.
+- [x] Confirm tick clears events before domain ticks.
+- [x] Confirm `engine.snapshot()` omits events.
+- [x] Read `src/kits/scoped-interface-domains.js` and confirm event emitters.
+- [x] Read `src/kits/composition.js` and confirm nested command potential.
+- [x] Read `src/start.js` and both renderers.
+- [x] Confirm browser rendering and `GameHost.getState()` consume event-free snapshots.
+- [x] Confirm raw engine context remains publicly mutable.
+- [x] Add timestamped audits and root routing.
+- [x] Update the central repo ledger and internal change log.
 - [x] Push documentation only to `main` without a branch or pull request.
-- [ ] Implement and run observer-publication fixtures.
+- [ ] Implement and run event-lifecycle fixtures.
 
 ## Source-backed findings
 
 ```txt
 src/kits/runtime.js
-  -> one Set stores untyped listeners
-  -> command mutates before notify
-  -> tick mutates all domains before notify
-  -> notify captures one snapshot object
-  -> every listener receives the same object
-  -> no try/catch, queue, sequence or reentrancy guard
+  -> one mutable ctx.events array
+  -> event shape has type, payload, frame and elapsed only
+  -> command events accumulate
+  -> tick clears the entire array before domain ticks
+  -> snapshot excludes ctx and events
 
-src/start.js
-  -> engine.tick occurs before canvas and HTML rendering
-  -> no error boundary protects draw
-  -> successor RAF is requested only after render
+src/kits/scoped-interface-domains.js
+  -> select emits <domain>.selected
+  -> set-field emits <domain>.fieldChanged
+  -> activate emits <domain>.actionRequested
 
-tests/smoke.mjs
-  -> no subscriber is registered
-  -> no order, mutation, throw, reentrancy or liveness assertion exists
+src/kits/composition.js
+  -> child activate may emit directly
+  -> nested engine.command may follow
+  -> no shared command/event causal envelope
+
+src/start.js and renderers
+  -> tick precedes rendering
+  -> renderers receive domain snapshots only
+  -> GameHost.getState returns domain snapshots only
+  -> raw engine remains exposed
 ```
 
 ## Deterministic observations
@@ -49,29 +58,28 @@ tests/smoke.mjs
 implemented kit surfaces: 27
 engine-installed kits: 19
 host/support kits: 8
-listener registries: 1 Set
-publication sequences: 0
-observer identities: 0
-immutable envelopes: 0
-delivery queues: 0
-reentrancy guards: 0
-fault-isolated listener calls: 0
-observer delivery fixtures: 0
+event buffers: 1 mutable array
+event IDs: 0
+event sequences: 0
+command/tick correlations: 0
+snapshot event ranges: 0
+consumer cursors: 0
+event acknowledgement fixtures: 0
 ```
 
 ## Required fixtures
 
 ```txt
-immutable per-observer delivery
-monotonic sequence and predecessor
-reentrant command queueing/rejection
-reentrant tick queueing/rejection
-throwing observer continuation
-committed-result preservation
-retry duplicate protection
-slow-observer budget
-unsubscribe during publication
-canvas/HTML frame correlation
+command event identity
+multi-command ordering before one tick
+command-event retention across tick admission
+tick-event publication
+payload immutability
+bounded retention and overflow
+consumer cursor and acknowledgement
+public readback isolation
+event-to-snapshot range
+event-to-visible-frame acknowledgement
 source/dist/Pages parity
 ```
 
@@ -87,14 +95,12 @@ HTML behavior changed: no
 deployment changed: no
 branch created: no
 pull request created: no
-central ledger synchronized: yes
-central change log added: yes
 
 npm test: not run
 npm run build: not run
-observer publication fixtures: unavailable / not run
-browser observer smoke: unavailable / not run
-Pages observer smoke: unavailable / not run
+event lifecycle fixtures: unavailable / not run
+browser event smoke: unavailable / not run
+Pages event smoke: unavailable / not run
 ```
 
-No immutable-delivery, monotonic-order, reentrancy-isolation, observer-fault-containment, retry-safety or visible-frame-liveness claim is made.
+No event-retention, ordering, immutability, acknowledgement, replay or visible-frame parity claim is made.
