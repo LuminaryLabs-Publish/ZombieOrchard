@@ -1,10 +1,10 @@
 # Next steps - ZombieOrchard
 
-**Timestamp:** `2026-07-12T22-48-25-04-00`
+**Timestamp:** `2026-07-12T23-00-53-04-00`
 
 ## Summary
 
-Add publication authority before using runtime subscriptions for UI, telemetry, editor tooling or persistence. A committed command or tick must produce one immutable, sequenced snapshot envelope whose delivery cannot be reordered or cancelled by observers.
+Add publication authority before using runtime subscriptions for UI, telemetry, editor tooling or persistence. A committed command or tick must produce one immutable, sequenced snapshot envelope whose delivery cannot be reordered or cancelled by observers. Central tracking is now synchronized with the repo-local `22-48-25` technical audit.
 
 ## Plan ledger
 
