@@ -1,89 +1,76 @@
 # Next steps - ZombieOrchard
 
-**Timestamp:** `2026-07-12T23-00-53-04-00`
+**Timestamp:** `2026-07-13T01-18-20-04-00`
 
 ## Summary
 
-Add publication authority before using runtime subscriptions for UI, telemetry, editor tooling or persistence. A committed command or tick must produce one immutable, sequenced snapshot envelope whose delivery cannot be reordered or cancelled by observers. Central tracking is now synchronized with the repo-local `22-48-25` technical audit.
+Add event lifecycle authority before events are used for UI effects, audio, persistence, telemetry, editor tooling or replay. Every event needs stable identity, causal provenance, an immutable payload, bounded retention and an explicit terminal delivery result.
 
 ## Plan ledger
 
-**Goal:** replace ambient synchronous notification with ordered, fault-isolated publication.
+**Goal:** replace the ambient mutable `ctx.events` array with a revisioned event journal and consumer contract.
 
-- [ ] Define `PublicationId`, monotonic sequence and predecessor sequence.
-- [ ] Add state, frame, elapsed, event-range and fingerprint metadata.
-- [ ] Freeze or structurally clone each published snapshot envelope.
-- [ ] Define `ObserverId`, generation and delivery cursor.
-- [ ] Queue publication after mutation completes.
-- [ ] Prevent nested delivery.
-- [ ] Define whether reentrant mutations are rejected or queued.
-- [ ] Continue delivery after observer exceptions.
-- [ ] Return typed per-observer delivery results.
-- [ ] Add duration and queue-depth budgets.
-- [ ] Make unsubscribe and retirement idempotent.
-- [ ] Separate committed mutation results from delivery results.
-- [ ] Correlate canvas/HTML rendering with publication sequence.
+- [ ] Define `EventId`, monotonic `EventSequence` and predecessor sequence.
+- [ ] Correlate every event with command ID, tick ID, runtime session and run generation.
+- [ ] Clone or freeze payloads at emission.
+- [ ] Define snapshot `eventRange` and journal fingerprint.
+- [ ] Add bounded retention and explicit overflow policy.
+- [ ] Define consumer IDs, generations and cursors.
+- [ ] Publish event ranges with immutable snapshot envelopes.
+- [ ] Add typed accepted, delivered, skipped, expired, overflowed and dead-letter results.
+- [ ] Keep committed command/tick results independent from event delivery.
+- [ ] Prevent raw public mutation of the live event journal.
+- [ ] Correlate event-driven presentation with first visible frame acknowledgement.
 - [ ] Add Node, browser, dist and Pages fixtures.
 
 ## Immediate safe ledge
 
-1. Add a runtime `publishing` guard and FIFO publication queue.
-2. Add a monotonic `publicationSequence`.
-3. Wrap each listener call in `try/catch`.
-4. Continue to later listeners after a failure.
-5. Return the committed command result even when one observer fails.
-6. Publish observer failures through a bounded diagnostic result.
-7. Freeze the top-level snapshot and nested domain snapshots in development proof.
-8. Reject or queue `command()`/`tick()` invoked during delivery.
-9. Expose a read-only subscription gateway instead of the raw engine.
-10. Add a two-observer reentrancy-order fixture.
-
-## Required runtime flow
-
-```txt
-mutation accepted
-  -> commit state and result
-  -> allocate publication sequence
-  -> create immutable envelope
-  -> enqueue envelope
-  -> drain only when not already delivering
-  -> deliver sequence N to every active observer generation
-  -> isolate and record observer failures
-  -> finish sequence N before N+1
-  -> render and acknowledge sequence N or a later coalesced sequence
-```
+1. Replace `ctx.events.length = 0` with a journal advancement operation.
+2. Add a monotonic sequence to `ctx.emit()`.
+3. Clone payloads before storing them.
+4. Include `{firstSequence, lastSequence}` in each published snapshot envelope.
+5. Expose read-only event readback instead of `engine.ctx.events`.
+6. Track one cursor for each consumer.
+7. Define retention until every required consumer advances or the event expires.
+8. Return explicit overflow results instead of silently dropping.
+9. Add a command-event fixture covering two commands before one RAF tick.
+10. Add source/dist/Pages parity proof.
 
 ## Target files
 
 ```txt
 src/kits/runtime.js
+src/kits/scoped-interface-domains.js
+src/kits/composition.js
 src/start.js
 src/game.js
 src/renderer/world-canvas.js
 src/renderer/html-interface-renderer.js
-src/kits/runtime-observer-publication.js
-tests/observer-order.fixture.mjs
-tests/observer-fault.fixture.mjs
-tests/observer-reentrancy.fixture.mjs
-scripts/smoke-observer-publication-browser.mjs
+src/kits/runtime-event-lifecycle.js
+tests/event-command.fixture.mjs
+tests/event-order.fixture.mjs
+tests/event-retention.fixture.mjs
+tests/event-overflow.fixture.mjs
+scripts/smoke-event-lifecycle-browser.mjs
 package.json
 ```
 
 ## Required fixtures
 
 ```txt
-two normal observers -> same immutable sequence
-observer mutates envelope -> later observer remains unaffected
-observer throws -> later observer still receives sequence
-throw after command commit -> caller receives committed result plus delivery report
-observer re-enters command -> successor publication queues after predecessor
-observer re-enters tick -> no nested delivery or stack growth
-unsubscribe during delivery -> explicit deterministic policy
-slow observer -> budget result without silent order loss
-browser frame -> matching publication sequence
+one command event -> stable ID, sequence and command correlation
+two commands before tick -> both retained in causal order
+next tick -> no silent command-event deletion
+tick-emitted event -> published in matching event range
+payload mutation after emit -> stored event remains unchanged
+unknown consumer -> rejected
+consumer cursor advancement -> deterministic retention
+retention overflow -> typed result and bounded memory
+public readback mutation attempt -> engine journal unaffected
+event-driven visual effect -> matching first visible frame acknowledgement
 source/dist/Pages -> equivalent results
 ```
 
 ## Do not claim
 
-Do not claim observer order, immutable snapshots, delivery fault isolation, command retry safety or frame-loop liveness until the fixture matrix passes on `main`.
+Do not claim event delivery, order, retention, replayability, consumer convergence or visible-effect parity until the fixture matrix passes on `main`.
