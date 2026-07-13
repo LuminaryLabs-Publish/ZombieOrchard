@@ -1,11 +1,12 @@
 # Central sync audit: ZombieOrchard frame-coherence reconciliation
 
 **Timestamp:** `2026-07-13T07-41-11-04-00`  
-**Central repository:** `LuminaryLabs-Dev/LuminaryLabs`
+**Central repository:** `LuminaryLabs-Dev/LuminaryLabs`  
+**Status:** `complete`
 
 ## Summary
 
-This run advances ZombieOrchard from an audited frame-coherence state to a centrally reconciled documentation state. The central ledger and internal change log must cite the final repo-local documentation head produced by this run.
+ZombieOrchard is centrally reconciled for the canvas/HTML frame-coherence audit. The central ledger and paired internal change log were updated on `main`; this records documentation alignment only.
 
 ## Plan ledger
 
@@ -17,8 +18,9 @@ This run advances ZombieOrchard from an audited frame-coherence state to a centr
 - [x] Add a new repo-local reconciliation family.
 - [x] Preserve interaction, domain, kit, service, and validation inventories.
 - [x] Keep writes on `main` only.
-- [ ] Record the final repo-local documentation head in the central ledger.
-- [ ] Add the paired central internal change-log entry.
+- [x] Record the final repo-local documentation head in the central ledger.
+- [x] Add the paired central internal change-log entry.
+- [x] Create no branch or pull request.
 
 ## Central files
 
