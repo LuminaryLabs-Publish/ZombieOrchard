@@ -1,110 +1,80 @@
 # Known gaps - ZombieOrchard
 
-**Timestamp:** `2026-07-13T13-01-03-04-00`
+**Timestamp:** `2026-07-13T18-00-38-04-00`
 
 ## Summary
 
-The current documented boundary is browser startup readiness and failure containment. Module evaluation owns engine installation, DOM/context acquisition, listener installation, public-host exposure, first tick, rendering, and RAF start without one startup generation, aggregate result, cleanup, fallback, retry, or first-visible-frame proof.
+The current documented boundary is HTML content safety and delegated-command admission. Dynamic values are interpolated into `innerHTML`, while the same subtree is searched for executable `data-action` and `data-command` controls.
 
 ## Plan ledger
 
 **Goal:** keep unresolved risks dependency ordered and tied to executable proof.
 
-- [ ] Browser startup identity, phases, dependency admission, and participant receipts.
-- [ ] Detached startup candidates, probe, atomic adoption, and complete disposal.
-- [ ] DOM-only failure projection and bounded retry.
-- [ ] Public-host readiness gating and first startup-frame acknowledgement.
-- [ ] Runtime event identity, provenance, retention, and consumer acknowledgement.
-- [ ] Observer publication order, immutability, and fault isolation.
-- [ ] Canvas/HTML shared frame envelope, surface results, recovery, and visible acknowledgement.
-- [ ] Kit graph identity, manifests, compatibility, and atomic installation.
-- [ ] Runtime session identity, lifecycle, and callback generation fencing.
-- [ ] Run reset identity, participant reset, and atomic generation commit.
-- [ ] Fixed-step clock and single-writer admission.
-- [ ] Route-scoped simulation admission.
-- [ ] Public capability gateway and owner quarantine.
-- [ ] Interface action identity, availability, and nested-result authority.
-- [ ] Economy command semantic admission and conservation.
-- [ ] Composite multi-domain transaction authority.
-- [ ] Terminal outcome seal and immutable result authority.
-- [ ] Pest population lifecycle, capacity, damage, and render budgets.
-- [ ] Seeded random and replay continuation.
-- [ ] Versioned save/load authority.
+- [ ] Content origin, revision, field schema, and trust classification.
+- [ ] Safe text and attribute construction.
+- [ ] Trusted-markup capability separated from gameplay data.
+- [ ] Detached fragment preparation and atomic adoption.
+- [ ] Authored delegated-control manifest and route admission.
+- [ ] Unsafe-content and unauthorized-control rejection results.
+- [ ] First visible HTML content-frame acknowledgement.
+- [ ] Browser, dist, and Pages content-injection fixtures.
+- [ ] Browser startup identity, preparation, probe, adoption, fallback, and retry.
+- [ ] Runtime event provenance and observer publication fault isolation.
+- [ ] Canvas/HTML shared frame envelope and partial-frame recovery.
+- [ ] Kit graph, session, reset, clock, route, capability, action, economy, transaction, outcome, pest, random, and persistence authorities.
 
-## Startup gaps
+## Content-safety gaps
 
 ```txt
-StartupAttemptId: absent
-StartupGeneration: absent
-startup phase/state machine: absent
-required DOM manifest: absent
-Canvas2D capability result: absent
-kit-graph preparation receipt: absent
-engine candidate: absent
-canvas/HTML candidate receipts: absent
-startup probe: absent
-atomic participant adoption: absent
-candidate disposal result: absent
-GameHost readiness gate: absent
-DOM-only failure projector: unused error panel
-retry policy and stale-generation rejection: absent
-first startup-frame acknowledgement: absent
-browser startup fixture matrix: absent
+content origin identity: absent
+content revision: absent
+field-context schema: absent
+text encoding or direct-node result: absent
+attribute-token validation: absent
+trusted raw-markup capability: absent
+detached-fragment validation: absent
+delegated-control manifest: absent
+route-valid control admission: absent
+unsafe-content rejection result: absent
+unauthorized-control rejection result: absent
+first visible content-frame acknowledgement: absent
+content-injection fixtures: absent
 ```
 
 ## Source consequences
 
-- `boot.js` cannot classify or recover from module/start failures.
-- Missing DOM nodes fail through incidental property access rather than typed admission.
-- A null Canvas2D context survives construction and fails during first render.
-- Kit installation can fail after earlier domains were created, with no aggregate rollback receipt.
-- `GameHost` becomes public before a successful visible frame.
-- The first tick mutates gameplay before presentation readiness.
-- Canvas failure prevents HTML projection and successor RAF scheduling.
-- The hidden error panel remains unused.
-- The Node smoke does not execute the browser startup path.
+- `String()` preserves HTML metacharacters.
+- Card, message, title, description, action-label, and action-ID values can affect markup.
+- Roster names are caller provided.
+- `GameHost` exposes arbitrary runtime command dispatch.
+- Injected descendants can match delegated selectors.
+- `data-command` dispatch is not checked against the active route.
+- Existing smoke proof never constructs the HTML renderer.
 
 ## Retained unresolved gaps
 
-### Lifecycle and command authority
+### Lifecycle and publication
 
-- Boot creates one ambient RAF with no stop authority.
-- Display cadence controls real-time simulation speed.
-- Menus do not suspend all gameplay domains.
+- Ambient browser startup has no accepted generation, fallback, or retry.
+- Display cadence controls simulation.
+- Runtime publication lacks immutable observer isolation.
+- Canvas and HTML lack one atomic frame result.
+
+### Gameplay and transactions
+
 - New Game and Start do not build a clean run.
-- Raw GameHost access bypasses intended route boundaries.
-- Terminal state does not revoke all mutation.
-
-### Economy and transactions
-
-- Negative payment values can mint resources.
-- Unknown catalog or inventory references are not consistently rejected.
+- Raw GameHost access bypasses intended boundaries.
+- Negative payments and unknown references remain unsafe.
 - Multi-domain operations lack prepare, commit, rollback, and idempotency.
+- Terminal mutation and pest capacity remain unresolved.
 
 ### Rendering and persistence
 
-- Runtime subscribers and browser renderers can receive different snapshots.
-- Canvas and HTML have no atomic frame result or partial-frame recovery.
 - Canvas dimensions are rewritten every frame.
-- HTML projection replaces the subtree every frame.
-- Focus and selection continuity are not preserved.
+- HTML replacement loses focus and selection continuity.
 - `Math.random()` prevents replay continuation.
-- Save Select has no versioned storage or migration authority.
-
-## Required proof order
-
-```txt
-startup generation and dependency admission
-  -> detached participant preparation
-  -> startup and projection probe
-  -> atomic adoption or disposal
-  -> public-host and scheduler readiness
-  -> first startup-frame acknowledgement
-  -> immutable runtime publication
-  -> dual-surface frame coherence
-  -> source/dist/Pages parity
-```
+- Save Select has no versioned persistence authority.
 
 ## Do not claim
 
-Do not claim reliable startup, cleanup, fallback, retry safety, presentation readiness, first-visible-frame proof, atomic presentation, or production readiness until required fixtures pass on `main`.
+Do not claim safe HTML projection, delegated-command isolation, startup reliability, atomic presentation, or production readiness until required fixtures pass on `main`.
