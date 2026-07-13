@@ -1,58 +1,60 @@
 # Known gaps - ZombieOrchard
 
-**Timestamp:** `2026-07-13T01-18-20-04-00`
+**Timestamp:** `2026-07-13T03-59-28-04-00`
 
 ## Summary
 
-The newest documented gap is runtime event lifecycle authority. Emitted events are stored in a mutable ambient array, omitted from snapshots and subscriber publication, mixed across commands, and silently cleared at the next tick before browser rendering.
+The newest documented gap is canvas/HTML frame coherence. Runtime publication, canvas projection, HTML projection, diagnostics, and RAF scheduling have no shared immutable frame envelope or terminal visible-frame result.
 
 ## Plan ledger
 
 **Goal:** keep unresolved risks dependency ordered and tied to executable proof.
 
-- [ ] Runtime event identity, causal provenance, retention and consumer acknowledgement.
-- [ ] Runtime observer publication order, immutability and fault isolation.
-- [ ] Kit graph identity, manifests, compatibility and atomic installation.
-- [ ] Runtime session identity, lifecycle and callback generation fencing.
-- [ ] Run reset identity, participant reset and atomic generation commit.
+- [ ] Runtime event identity, causal provenance, retention, and consumer acknowledgement.
+- [ ] Runtime observer publication order, immutability, and fault isolation.
+- [ ] Canvas/HTML shared frame envelope, surface results, and visible acknowledgement.
+- [ ] Kit graph identity, manifests, compatibility, and atomic installation.
+- [ ] Runtime session identity, lifecycle, and callback generation fencing.
+- [ ] Run reset identity, participant reset, and atomic generation commit.
 - [ ] Fixed-step clock and single-writer admission.
 - [ ] Route-scoped simulation admission.
 - [ ] Public capability gateway and owner quarantine.
-- [ ] Interface action identity, availability and nested-result authority.
+- [ ] Interface action identity, availability, and nested-result authority.
 - [ ] Economy command semantic admission and conservation.
 - [ ] Composite multi-domain transaction authority.
 - [ ] Terminal outcome seal and immutable result authority.
-- [ ] Pest population lifecycle, capacity, damage and render budgets.
-- [ ] Canvas/HTML shared frame authority.
+- [ ] Pest population lifecycle, capacity, damage, and render budgets.
 - [ ] Seeded random and replay continuation.
 - [ ] Versioned save/load authority.
 
-## Event lifecycle gaps
+## Frame-coherence gaps
 
 ```txt
-event ID and monotonic sequence: absent
-runtime/run/command/tick correlation: absent
-immutable payload copy: absent
-event range in published snapshots: absent
-bounded journal: absent
-retention and overflow policy: absent
-consumer identity, generation and cursor: absent
-delivery acknowledgement: absent
-expiry and dead-letter result: absent
-read-only public event gateway: absent
-first visible event-frame acknowledgement: absent
+state revision in snapshot: absent
+publication ID in snapshot: absent
+frame envelope ID and fingerprint: absent
+single capture shared by subscribers and renderers: absent
+canvas surface identity and revision: absent
+HTML surface identity and revision: absent
+canvas projection terminal result: absent
+HTML projection terminal result: absent
+dual-surface complete/partial/failure classification: absent
+route-to-world-canvas visibility policy: implicit
+recovery and last-complete-frame policy: absent
+GameHost visible-frame readback: absent
+first dual-surface frame acknowledgement: absent
 ```
 
 ## Source consequences
 
-- Selection, field-change and action-request events are not present in normal snapshots.
-- Multiple commands before the next tick share the same frame/elapsed values and one mutable array.
-- The next tick erases all command-originated events before rendering.
-- Subscribers receive state snapshots with no event range, so they cannot prove which events caused a state.
-- `GameHost.getState()` omits events.
-- Raw `GameHost.engine.ctx.events` can be mutated or cleared by external code.
-- Array position is the only local ordering signal.
-- Existing smoke proof cannot detect event loss, mutation, overflow or consumer divergence.
+- `notify()` publishes one snapshot, while `tick()` returns another snapshot captured afterward.
+- Reentrant subscriber mutation can make observers and browser rendering see different state in one logical tick.
+- The canvas mutates before the HTML, so a later HTML failure can leave a partial visible frame.
+- Neither renderer returns a typed result.
+- Canvas dimensions are rewritten each frame and the HTML subtree is replaced each frame without a shared projection revision.
+- The canvas always renders the orchard and active session even when the interface route is a menu or outcome screen.
+- `GameHost.getState()` returns a fresh snapshot and cannot prove what the user actually saw.
+- Existing smoke proof cannot detect canvas/HTML divergence or partial-frame failure.
 
 ## Retained unresolved gaps
 
@@ -69,29 +71,28 @@ first visible event-frame acknowledgement: absent
 
 - Negative payment values can mint resources.
 - Unknown catalog or inventory references are not consistently rejected.
-- Multi-domain operations lack prepare/commit/rollback and idempotency.
+- Multi-domain operations lack prepare, commit, rollback, and idempotency.
 
 ### Rendering and persistence
 
 - Canvas dimensions are rewritten every frame.
-- Canvas and HTML have no shared committed frame receipt.
 - HTML projection replaces the subtree every frame.
+- Focus and selection continuity are not preserved.
 - `Math.random()` prevents replay continuation.
 - Save Select has no versioned storage or migration authority.
 
 ## Required fixtures
 
 ```txt
-command event identity and causal correlation
-two-command pre-tick retention
-tick clear does not silently delete required events
-event payload mutation isolation
-journal bounds and overflow result
-consumer cursor and acknowledgement
-consumer retirement
-public readback isolation
-event range to snapshot correlation
-event-driven visible frame correlation
+publication snapshot and renderer envelope identity
+reentrant subscriber isolation
+canvas/HTML complete commit
+canvas-only partial failure
+HTML-only policy under canvas failure
+route-specific world visibility
+last-complete-frame recovery
+visible diagnostics readback
+first visible dual-surface frame acknowledgement
 source/dist/Pages parity
 ```
 
@@ -99,14 +100,14 @@ source/dist/Pages parity
 
 ```txt
 runtime session and command identity
-  -> event identity and immutable payload
-  -> bounded journal and retention
-  -> snapshot event-range publication
-  -> consumer cursor and acknowledgement
-  -> event-aware presentation
+  -> immutable publication
+  -> frame envelope identity
+  -> canvas and HTML projection receipts
+  -> dual-surface commit and recovery
+  -> visible diagnostics
   -> deployment proof
 ```
 
 ## Do not claim
 
-Do not claim event delivery, causal order, retention, consumer convergence or visible-frame parity until required fixtures pass on `main`.
+Do not claim atomic presentation, surface parity, route/world coherence, last-complete-frame recovery, or visible-frame proof until the required fixtures pass on `main`.

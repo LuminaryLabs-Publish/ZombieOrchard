@@ -2,97 +2,96 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Aligned:** `2026-07-13T01-18-20-04-00`  
-**Status:** `runtime-event-lifecycle-publication-authority-audited`  
-**Retained status:** `runtime-observer-publication-authority-central-reconciled`
+**Aligned:** `2026-07-13T03-59-28-04-00`  
+**Status:** `canvas-html-frame-coherence-authority-audited`  
+**Retained statuses:** `runtime-event-lifecycle-publication-authority-audited`, `runtime-observer-publication-authority-central-reconciled`
 
 ## Summary
 
-ZombieOrchard is a dependency-free orchard survival and economy shell built from a mutable kit runtime, 12 interface definitions, gameplay services, canvas/HTML projection, diagnostics, Node smoke proof, static build and Pages deployment.
+ZombieOrchard is a dependency-free orchard survival and economy shell built from a mutable kit runtime, 12 interface definitions, gameplay services, canvas and HTML projection, diagnostics, Node smoke proof, static build, and Pages deployment.
 
-The current audit isolates the runtime event lifecycle. Interface commands emit records into `ctx.events`, but snapshots, subscribers, renderers and `GameHost.getState()` never receive that buffer. Command events accumulate until the next tick, where `ctx.events.length = 0` erases them before rendering. The only direct readback is the mutable raw engine context exposed through `window.GameHost.engine`.
+The current audit isolates the browser presentation boundary. `engine.tick()` publishes one snapshot to subscribers and then captures a second snapshot for the host. `src/start.js` applies that second snapshot to the canvas first and the HTML subtree second. No shared frame identity, projection revision, commit barrier, partial-failure result, or first-visible-frame acknowledgement proves that observers, canvas, HTML, diagnostics, and successor scheduling adopted the same state.
 
 ## Plan ledger
 
-**Goal:** make emitted events immutable, ordered, causally linked, retained under an explicit policy and consumable through the same committed publication used by diagnostics and visible frames.
+**Goal:** make one committed runtime revision produce one immutable frame envelope and one terminal dual-surface presentation result.
 
 - [x] Compare all ten accessible Publish repositories.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central-ledger and root `.agent` coverage.
 - [x] Select only ZombieOrchard as the oldest eligible documented repository.
-- [x] Trace event creation, command publication, tick clearing, snapshots, subscribers, renderers and public diagnostics.
-- [x] Preserve all 27 implemented kit surfaces and their services.
-- [x] Add a timestamped tracker, turn ledger and event-lifecycle audit family.
-- [x] Refresh all required root `.agent` documents and machine registry.
-- [x] Push only to `main`; create no branch or pull request.
-- [ ] Runtime event authority and executable event-retention fixtures remain future work.
+- [x] Trace runtime publication, returned snapshots, canvas rendering, HTML rendering, diagnostics, and RAF scheduling.
+- [x] Preserve all 27 implemented kit surfaces and their offered services.
+- [x] Add a timestamped tracker, turn ledger, and frame-coherence audit family.
+- [x] Refresh all required root `.agent` documents and the machine registry.
+- [x] Push only to `main` and create no branch or pull request.
+- [ ] Runtime frame-envelope implementation and executable browser fixtures remain future work.
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-13T01-18-20-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-13T01-18-20-04-00.md
+.agent/trackers/2026-07-13T03-59-28-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-13T03-59-28-04-00.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/architecture-audit/2026-07-13T01-18-20-04-00-runtime-event-lifecycle-dsk-map.md
-.agent/render-audit/2026-07-13T01-18-20-04-00-command-event-visible-frame-gap.md
-.agent/gameplay-audit/2026-07-13T01-18-20-04-00-interface-event-loss-loop.md
-.agent/interaction-audit/2026-07-13T01-18-20-04-00-event-emit-publish-consume-map.md
-.agent/event-lifecycle-audit/2026-07-13T01-18-20-04-00-command-tick-event-retention-contract.md
-.agent/deploy-audit/2026-07-13T01-18-20-04-00-event-lifecycle-fixture-gate.md
+.agent/architecture-audit/2026-07-13T03-59-28-04-00-canvas-html-frame-coherence-dsk-map.md
+.agent/render-audit/2026-07-13T03-59-28-04-00-canvas-html-visible-frame-coherence-gap.md
+.agent/gameplay-audit/2026-07-13T03-59-28-04-00-runtime-state-dual-surface-loop.md
+.agent/interaction-audit/2026-07-13T03-59-28-04-00-command-frame-surface-result-map.md
+.agent/frame-coherence-audit/2026-07-13T03-59-28-04-00-publication-canvas-html-commit-contract.md
+.agent/deploy-audit/2026-07-13T03-59-28-04-00-dual-surface-frame-fixture-gate.md
 ```
 
-## Interaction loop
+## Complete interaction loop
 
 ```txt
 browser interaction
-  -> delegated click calls engine.command(...)
-  -> scoped interface domain may call ctx.emit(...)
-  -> command mutates domain state
-  -> runtime notify publishes only domain snapshots
+  -> engine.command(...)
+  -> domain mutation
+  -> notify captures publication snapshot P
+  -> synchronous subscribers receive P
 
-between commands
-  -> emitted records accumulate in mutable ctx.events
-  -> records share the current frame and elapsed values
-  -> no event ID, sequence, command ID or consumer cursor exists
-
-next RAF
+RAF frame
   -> engine.tick(1 / 60)
-  -> ctx.events.length = 0 before domain ticks
-  -> command-originated events are erased
-  -> renderers receive engine.snapshot(), which never contains ctx.events
+  -> runtime and domain mutation
+  -> notify captures publication snapshot T1
+  -> synchronous subscribers receive T1
+  -> tick captures and returns second snapshot T2
+  -> canvas mutates drawing buffer from T2
+  -> HTML renderer replaces #ui-root from T2
+  -> successor RAF is requested
 
 public diagnostics
-  -> GameHost.getState() returns only engine.snapshot()
-  -> raw GameHost.engine.ctx.events is the only direct event readback
-  -> external code can mutate or clear the live buffer
+  -> GameHost.getState() captures a third current snapshot
+  -> no result identifies P, T1, T2, canvas state, HTML state, or the visible browser frame
 ```
 
 ## Main findings
 
 ```txt
-event identity and sequence: absent
-command/tick correlation: absent
-immutable payload boundary: absent
-event range in snapshots: absent
-consumer identity and cursor: absent
-retention and overflow policy: absent
-acknowledgement or dead-letter result: absent
-event-aware public readback: absent
-first visible event-frame acknowledgement: absent
+shared FrameId and StateRevision: absent
+publication-to-render snapshot identity: absent
+immutable frame envelope: absent
+canvas projection result: absent
+HTML projection result: absent
+atomic dual-surface commit: absent
+partial-frame classification and recovery: absent
+route-to-world-surface policy: implicit
+visible frame fingerprint and acknowledgement: absent
+GameHost visible-state readback: absent
 ```
 
 ## Required parent domain
 
-`zombie-orchard-runtime-event-lifecycle-publication-authority-domain`
+`zombie-orchard-canvas-html-frame-coherence-authority-domain`
 
 ## Guardrails
 
-- Do not expose the mutable live event array as the event API.
-- Do not clear command events before every intended consumer has an explicit retention outcome.
-- Do not infer ordering only from array position, frame or elapsed time.
-- Keep command/tick results independent from event delivery failures.
-- Do not claim event delivery, retention or visible-effect parity until source, dist and Pages fixtures pass.
+- Keep gameplay, interface, canvas projection, and HTML projection as separate bounded owners.
+- Do not treat sequential renderer calls as an atomic presentation commit.
+- Do not infer visible state from a fresh `engine.snapshot()` call.
+- Do not reuse runtime frame counters as visible-frame proof without a presentation receipt.
+- Do not claim canvas/HTML parity until source, dist, and Pages fixtures verify the same frame envelope and result.
