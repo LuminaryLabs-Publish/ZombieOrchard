@@ -2,92 +2,97 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Aligned:** `2026-07-12T23-00-53-04-00`  
-**Status:** `runtime-observer-publication-authority-central-reconciled`
+**Aligned:** `2026-07-13T01-18-20-04-00`  
+**Status:** `runtime-event-lifecycle-publication-authority-audited`  
+**Retained status:** `runtime-observer-publication-authority-central-reconciled`
 
 ## Summary
 
 ZombieOrchard is a dependency-free orchard survival and economy shell built from a mutable kit runtime, 12 interface definitions, gameplay services, canvas/HTML projection, diagnostics, Node smoke proof, static build and Pages deployment.
 
-The current audit isolates runtime observer publication. `notify()` captures one mutable snapshot and synchronously invokes every subscriber. A subscriber can throw after state commits, mutate the snapshot seen by later subscribers, block the frame, or re-enter `command()`/`tick()` and make later subscribers observe a successor snapshot before its predecessor.
+The current audit isolates the runtime event lifecycle. Interface commands emit records into `ctx.events`, but snapshots, subscribers, renderers and `GameHost.getState()` never receive that buffer. Command events accumulate until the next tick, where `ctx.events.length = 0` erases them before rendering. The only direct readback is the mutable raw engine context exposed through `window.GameHost.engine`.
 
 ## Plan ledger
 
-**Goal:** make snapshot publication monotonic, immutable, fault-isolated and non-reentrant while keeping committed mutation results independent from observer delivery.
+**Goal:** make emitted events immutable, ordered, causally linked, retained under an explicit policy and consumable through the same committed publication used by diagnostics and visible frames.
 
 - [x] Compare all ten accessible Publish repositories.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central-ledger and root `.agent` coverage.
-- [x] Select only ZombieOrchard because repo-local observer documentation was newer than central state.
-- [x] Trace command, tick, snapshot, subscribe, notify, host and render-loop behavior.
+- [x] Select only ZombieOrchard as the oldest eligible documented repository.
+- [x] Trace event creation, command publication, tick clearing, snapshots, subscribers, renderers and public diagnostics.
 - [x] Preserve all 27 implemented kit surfaces and their services.
-- [x] Add timestamped reconciliation audits.
-- [x] Refresh required root documents and machine registry.
+- [x] Add a timestamped tracker, turn ledger and event-lifecycle audit family.
+- [x] Refresh all required root `.agent` documents and machine registry.
 - [x] Push only to `main`; create no branch or pull request.
-- [ ] Runtime isolation and executable observer-order fixtures remain future work.
+- [ ] Runtime event authority and executable event-retention fixtures remain future work.
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-12T23-00-53-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-12T23-00-53-04-00.md
+.agent/trackers/2026-07-13T01-18-20-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-13T01-18-20-04-00.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/architecture-audit/2026-07-12T23-00-53-04-00-runtime-observer-publication-central-reconciliation-dsk-map.md
-.agent/render-audit/2026-07-12T23-00-53-04-00-observer-publication-visible-frame-central-reconciliation.md
-.agent/gameplay-audit/2026-07-12T23-00-53-04-00-command-tick-publication-central-reconciliation.md
-.agent/interaction-audit/2026-07-12T23-00-53-04-00-commit-publication-delivery-result-map.md
-.agent/runtime-observer-audit/2026-07-12T23-00-53-04-00-central-ledger-reconciliation.md
-.agent/deploy-audit/2026-07-12T23-00-53-04-00-observer-publication-central-sync-gate.md
+.agent/architecture-audit/2026-07-13T01-18-20-04-00-runtime-event-lifecycle-dsk-map.md
+.agent/render-audit/2026-07-13T01-18-20-04-00-command-event-visible-frame-gap.md
+.agent/gameplay-audit/2026-07-13T01-18-20-04-00-interface-event-loss-loop.md
+.agent/interaction-audit/2026-07-13T01-18-20-04-00-event-emit-publish-consume-map.md
+.agent/event-lifecycle-audit/2026-07-13T01-18-20-04-00-command-tick-event-retention-contract.md
+.agent/deploy-audit/2026-07-13T01-18-20-04-00-event-lifecycle-fixture-gate.md
 ```
-
-The deeper technical audit remains under the `2026-07-12T22-48-25-04-00` audit family.
 
 ## Interaction loop
 
 ```txt
-command or tick
-  -> mutate one or more domains
-  -> capture one snapshot object
-  -> synchronously iterate listeners
+browser interaction
+  -> delegated click calls engine.command(...)
+  -> scoped interface domain may call ctx.emit(...)
+  -> command mutates domain state
+  -> runtime notify publishes only domain snapshots
 
-listener re-entry
-  -> invoke nested command or tick
-  -> publish successor snapshot to all listeners
-  -> return to predecessor notify
-  -> remaining listeners receive the older snapshot
+between commands
+  -> emitted records accumulate in mutable ctx.events
+  -> records share the current frame and elapsed values
+  -> no event ID, sequence, command ID or consumer cursor exists
 
-listener failure
-  -> committed state remains changed
-  -> later listeners are skipped
-  -> command or tick throws
-  -> browser draw can abort before render and successor RAF
+next RAF
+  -> engine.tick(1 / 60)
+  -> ctx.events.length = 0 before domain ticks
+  -> command-originated events are erased
+  -> renderers receive engine.snapshot(), which never contains ctx.events
+
+public diagnostics
+  -> GameHost.getState() returns only engine.snapshot()
+  -> raw GameHost.engine.ctx.events is the only direct event readback
+  -> external code can mutate or clear the live buffer
 ```
 
 ## Main findings
 
 ```txt
-publication ID and monotonic sequence: absent
-observer identity, generation and cursor: absent
-immutable per-delivery snapshot: absent
-reentrancy fence or delivery queue: absent
-fault isolation and typed delivery result: absent
-delivery time/backpressure budget: absent
-committed-result delivery receipt: absent
-first visible publication-frame acknowledgement: absent
+event identity and sequence: absent
+command/tick correlation: absent
+immutable payload boundary: absent
+event range in snapshots: absent
+consumer identity and cursor: absent
+retention and overflow policy: absent
+acknowledgement or dead-letter result: absent
+event-aware public readback: absent
+first visible event-frame acknowledgement: absent
 ```
 
 ## Required parent domain
 
-`zombie-orchard-runtime-observer-publication-authority-domain`
+`zombie-orchard-runtime-event-lifecycle-publication-authority-domain`
 
 ## Guardrails
 
-- Commit domain state before publication, but never let observer failure erase the committed result.
-- Deliver snapshot sequences monotonically and never nest publication.
-- Give observers read-only envelopes, not a shared mutable projection.
-- Continue delivery after one observer fails and journal the failure.
-- Do not claim frame-loop liveness or observation consistency until source, dist and Pages fixtures pass.
+- Do not expose the mutable live event array as the event API.
+- Do not clear command events before every intended consumer has an explicit retention outcome.
+- Do not infer ordering only from array position, frame or elapsed time.
+- Keep command/tick results independent from event delivery failures.
+- Do not claim event delivery, retention or visible-effect parity until source, dist and Pages fixtures pass.
