@@ -1,10 +1,10 @@
 # Known gaps - ZombieOrchard
 
-**Timestamp:** `2026-07-12T22-48-25-04-00`
+**Timestamp:** `2026-07-12T23-00-53-04-00`
 
 ## Summary
 
-The newest documented gap is runtime observer publication authority. Synchronous subscribers can mutate shared projections, re-enter runtime mutation, reorder observed snapshots, throw after commit, skip later subscribers and stop the visible frame loop.
+The newest documented gap remains runtime observer publication authority. Synchronous subscribers can mutate shared projections, re-enter runtime mutation, reorder observed snapshots, throw after commit, skip later subscribers and stop the visible frame loop. Central tracking now reflects the repo-local technical audit.
 
 ## Plan ledger
 
@@ -78,7 +78,7 @@ visible publication-frame acknowledgement: absent
 - Canvas dimensions are rewritten every frame.
 - Canvas and HTML have no shared committed frame receipt.
 - HTML projection replaces the subtree every frame.
-- Math.random prevents replay continuation.
+- `Math.random()` prevents replay continuation.
 - Save Select has no versioned storage or migration authority.
 
 ## Required fixtures
