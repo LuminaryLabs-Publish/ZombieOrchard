@@ -1,10 +1,10 @@
 # Known gaps - ZombieOrchard
 
-**Timestamp:** `2026-07-12T20-31-27-04-00`
+**Timestamp:** `2026-07-12T22-48-25-04-00`
 
 ## Summary
 
-The newest documented gap is pest-population lifecycle and budget ownership. Night simulation can grow the active pest array without capacity or despawn policy, and the same array directly controls movement cost, contact damage, snapshot size and canvas draw count.
+The newest documented gap is runtime observer publication authority. Synchronous subscribers can mutate shared projections, re-enter runtime mutation, reorder observed snapshots, throw after commit, skip later subscribers and stop the visible frame loop.
 
 ## Plan ledger
 
@@ -16,45 +16,45 @@ The newest documented gap is pest-population lifecycle and budget ownership. Nig
 - [ ] Fixed-step clock and single-writer admission.
 - [ ] Route-scoped simulation admission.
 - [ ] Public capability gateway and owner quarantine.
+- [ ] Runtime observer publication order, immutability and fault isolation.
 - [ ] Interface action identity, availability and nested-result authority.
 - [ ] Economy command semantic admission and conservation.
 - [ ] Composite multi-domain transaction authority.
 - [ ] Terminal outcome seal and immutable result authority.
 - [ ] Pest population lifecycle, capacity, damage and render budgets.
-- [ ] Frame-publication fault containment and loop liveness.
 - [ ] Canvas/HTML shared frame authority.
 - [ ] Seeded random and replay continuation.
 - [ ] Versioned save/load authority.
 
-## Pest population gaps
+## Observer publication gaps
 
 ```txt
-population ID and revision: absent
-maximum active count: absent
-spawn budget: absent
-deterministic unique pest ID: absent
-age and lifecycle state: absent
-despawn and retirement policy: absent
-simulation work budget: absent
-render work budget: absent
-contact-set result: absent
-damage ceiling/aggregation policy: absent
-stale clear rejection: absent
-exactly-once retirement receipt: absent
-population fingerprint: absent
-visible population-frame acknowledgement: absent
+publication identity and sequence: absent
+predecessor and state revision: absent
+observer identity and generation: absent
+per-observer cursor: absent
+immutable snapshot envelope: absent
+shared-object mutation protection: absent
+delivery queue: absent
+reentrancy guard: absent
+fault isolation: absent
+typed delivery result: absent
+duration and backpressure budget: absent
+idempotent observer retirement: absent
+publication journal: absent
+visible publication-frame acknowledgement: absent
 ```
 
 ## Source consequences
 
-- Night ticks can append pests indefinitely while the run survives.
-- Day phase does not retire or age the existing population.
-- Movement and distance work are O(N) in active pests.
-- Contact damage is additive across all contacting pests.
-- Deep snapshot cloning and canvas drawing are also O(N).
-- Only a successful nearby clear operation removes a pest.
-- Random string IDs have no uniqueness or run-generation guarantee.
-- Current smoke proof cannot detect capacity, lifecycle, damage or frame-budget failures.
+- A subscriber can mutate the snapshot object seen by later subscribers.
+- Reentrant mutation can make a later subscriber see successor S2 before predecessor S1.
+- A throwing subscriber prevents all later subscribers from receiving the publication.
+- State remains committed even though `command()` or `tick()` throws.
+- Caller retry can duplicate an already committed effect.
+- A slow subscriber blocks commands and animation frames.
+- A throwing subscriber can stop canvas/HTML rendering and future RAF scheduling.
+- Existing smoke proof cannot detect any observer failure mode.
 
 ## Retained unresolved gaps
 
@@ -84,31 +84,32 @@ visible population-frame acknowledgement: absent
 ## Required fixtures
 
 ```txt
-capacity boundary
-long-night bounded population
-deterministic unique IDs
-day-transition retention/retirement
-clear exactly-once reward
-duplicate and stale clear rejection
-age/TTL retirement
-bounded contact damage
-simulation and render budget
-population snapshot fingerprint
+shared snapshot mutation isolation
+monotonic publication sequence
+two-observer normal order
+reentrant command order
+reentrant tick order
+throwing first observer with successful second delivery
+committed command result despite observer failure
+retry duplicate prevention
+observer duration/backpressure budget
+unsubscribe and retirement policy
+visible frame publication correlation
 source/dist/Pages parity
 ```
 
 ## Dependency order
 
 ```txt
-runtime session and run generation
-  -> deterministic random and clock
-  -> pest population identity and spawn admission
-  -> simulation/contact/damage budget
-  -> retirement and reward transaction
-  -> snapshot/render frame correlation
+runtime session and command generation
+  -> committed mutation result
+  -> immutable sequenced publication
+  -> non-reentrant observer delivery
+  -> fault isolation and backpressure
+  -> canvas/HTML frame correlation
   -> deployment proof
 ```
 
 ## Do not claim
 
-Do not claim bounded pest populations, stable difficulty, predictable frame cost, exact retirement, replay-safe IDs or visible population parity until required fixtures pass on `main`.
+Do not claim monotonic observation, immutable publication, subscriber isolation, retry safety or frame-loop liveness until required fixtures pass on `main`.
