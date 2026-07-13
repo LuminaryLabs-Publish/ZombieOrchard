@@ -1,69 +1,58 @@
 # Validation - ZombieOrchard
 
-**Timestamp:** `2026-07-13T13-01-03-04-00`
+**Timestamp:** `2026-07-13T18-00-38-04-00`
 
 ## Scope
 
-Documentation-only audit of repository selection, browser page shell, module boot, engine and kit installation, DOM and Canvas2D acquisition, delegated listener installation, diagnostics exposure, first tick, canvas and HTML projection, scheduler start, error fallback, package proof, deployment gates, and central tracking. Runtime source, dependencies, gameplay, rendering, tests, and deployment configuration are unchanged.
+Documentation-only audit of organization selection, raw runtime command access, roster mutation, scoped interface actions, interface composition, HTML serialization, `innerHTML` adoption, delegated click handling, smoke proof, build, deployment gates, and central tracking.
 
 ## Plan ledger
 
-**Goal:** record exact source evidence and the proof required before startup-readiness claims are made.
+**Goal:** record exact source evidence and the proof required before content-safety claims are made.
 
 - [x] Read the current Publish organization inventory.
 - [x] Compare all nine eligible repositories with central tracking.
 - [x] Select ZombieOrchard as the oldest eligible central entry.
-- [x] Read `index.html`.
-- [x] Read `src/boot.js` and `src/start.js`.
-- [x] Read `src/game.js` and `src/kits/runtime.js`.
-- [x] Read `src/kits/game-domains.js` and `src/kits/composition.js`.
-- [x] Read both browser renderers.
+- [x] Read `src/start.js`.
+- [x] Read `src/kits/runtime.js`.
+- [x] Read `src/kits/scoped-interface-domains.js`.
+- [x] Read `src/kits/composition.js`.
+- [x] Read `src/kits/game-domains.js`.
+- [x] Read `src/presets/orchard-preset.js`.
+- [x] Read `src/renderer/html-interface-renderer.js`.
 - [x] Read `tests/smoke.mjs` and `package.json`.
-- [x] Confirm the error panel is declared but unused.
-- [x] Confirm startup occurs during module evaluation with no aggregate result.
-- [x] Confirm the first live tick precedes visible-frame readiness.
-- [x] Preserve all 27 kit surfaces and offered services.
+- [x] Confirm dynamic values enter `innerHTML` without context-aware encoding.
+- [x] Confirm caller-provided roster names are reachable from the public raw engine.
+- [x] Confirm injected matching descendants are accepted by delegated selectors.
+- [x] Preserve all 27 kit surfaces and services.
 - [x] Add timestamped audits and root routing.
 - [x] Keep documentation writes on `main` with no branch or pull request.
-- [ ] Implement and run startup fixtures.
+- [ ] Implement and run content-safety fixtures.
 
 ## Source-backed findings
 
 ```txt
-index.html
-  -> #world, #ui-root, and hidden #error-panel exist
-  -> error panel has no current JavaScript owner
-
-src/boot.js
-  -> bare import of start.js
-  -> no catch, phase, result, retry, or fallback
-
 src/start.js
-  -> creates engine and renderers during module evaluation
-  -> publishes GameHost before first-frame readiness
-  -> calls draw() immediately
-  -> tick occurs before canvas and HTML projection
-  -> successor RAF is requested only after both renderers return
+  -> exposes window.GameHost.engine
 
 src/kits/runtime.js
-  -> kit installation is sequential
-  -> invalid domain throws
-  -> no aggregate manifest, preparation receipt, or rollback result
+  -> command(domainId, type, payload) accepts arbitrary identifiers and payload
+  -> notifies after command mutation
 
-world-canvas.js
-  -> canvas node and 2D context are not validated
+src/kits/game-domains.js
+  -> roster hire stores payload.name
 
-html-interface-renderer.js
-  -> UI root is used immediately for listener installation
-  -> no listener-install or disposal receipt
+src/renderer/html-interface-renderer.js
+  -> text() calls String() only
+  -> button() interpolates action ID and label
+  -> cards() interpolates label/name/id and summary/role/type
+  -> messages, titles, and descriptions are interpolated
+  -> root.innerHTML adopts the generated markup
+  -> delegated listener accepts matching descendants
 
 tests/smoke.mjs
-  -> imports game.js only
-  -> does not evaluate browser boot, DOM, canvas, fallback, or first frame
-
-package.json
-  -> build is a static copy
-  -> no browser startup fixture is declared
+  -> never constructs the HTML renderer
+  -> contains no malicious-content or delegated-control fixture
 ```
 
 ## Deterministic observations
@@ -74,36 +63,31 @@ eligible repositories: 9
 implemented kit surfaces: 27
 engine-installed kits: 19
 host/support kits: 8
-browser startup command types: 0
-startup attempt identities: 0
-startup generations: 0
-participant preparation receipt types: 0
-startup probe result types: 0
-startup terminal result types: 0
-fallback projector owners: 0
-first startup-frame acknowledgements: 0
-browser startup fixtures: 0
+innerHTML assignment sites in renderer: 2
+delegated command selector classes: 2
+content-origin identity types: 0
+content revisions: 0
+safe field-context result types: 0
+delegated-control manifests: 0
+unsafe-content result types: 0
+content-injection fixtures: 0
 ```
 
 ## Required fixture matrix
 
 ```txt
-successful source startup
-successful dist startup
-successful Pages startup
-missing canvas node
-missing UI root
-Canvas2D unavailable
-kit creation failure
-canvas probe failure
-HTML probe failure
-zero live ticks before Ready
-candidate listener and scheduler disposal
-visible error-panel fallback
-retry generation fencing
-GameHost readiness gate
-first accepted visible-frame acknowledgement
-source/dist/Pages result parity
+script markup remains literal
+event attributes remain literal
+closing tags cannot alter DOM structure
+injected data-action cannot dispatch
+injected data-command cannot dispatch
+action labels and IDs remain safe
+messages/titles/descriptions remain safe
+controls require active-route manifest membership
+stale controls are rejected
+failed candidate preserves predecessor subtree
+source/dist/Pages parity
+first visible content revision acknowledgement
 ```
 
 ## Validation result
@@ -123,9 +107,9 @@ pull request created: no
 
 npm test: not run
 npm run build: not run
-browser startup fixtures: unavailable / not run
-fallback and retry fixtures: unavailable / not run
-Pages startup smoke: unavailable / not run
+browser content-safety fixtures: unavailable / not run
+delegated-control fixtures: unavailable / not run
+Pages content-safety smoke: unavailable / not run
 ```
 
-No startup identity, atomic adoption, cleanup, fallback, retry safety, public-host readiness, first-visible-frame, or production-readiness claim is made.
+No safe HTML, command-origin, injection-resistance, visible-content, or production-readiness claim is made.
