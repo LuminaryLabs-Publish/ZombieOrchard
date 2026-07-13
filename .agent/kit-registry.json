@@ -153,7 +153,7 @@
     "eventLifecycleFixturesRun": false,
     "browserSmokeRun": false,
     "pagesSmokeRun": false,
-    "centralLedgerSynchronized": false,
-    "centralChangeLogAdded": false
+    "centralLedgerSynchronized": true,
+    "centralChangeLogAdded": true
   }
 }
