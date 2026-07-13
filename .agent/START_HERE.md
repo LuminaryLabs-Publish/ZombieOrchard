@@ -2,96 +2,92 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Aligned:** `2026-07-13T03-59-28-04-00`  
-**Status:** `canvas-html-frame-coherence-authority-audited`  
+**Aligned:** `2026-07-13T07-41-11-04-00`  
+**Status:** `canvas-html-frame-coherence-authority-central-reconciled`  
 **Retained statuses:** `runtime-event-lifecycle-publication-authority-audited`, `runtime-observer-publication-authority-central-reconciled`
 
 ## Summary
 
 ZombieOrchard is a dependency-free orchard survival and economy shell built from a mutable kit runtime, 12 interface definitions, gameplay services, canvas and HTML projection, diagnostics, Node smoke proof, static build, and Pages deployment.
 
-The current audit isolates the browser presentation boundary. `engine.tick()` publishes one snapshot to subscribers and then captures a second snapshot for the host. `src/start.js` applies that second snapshot to the canvas first and the HTML subtree second. No shared frame identity, projection revision, commit barrier, partial-failure result, or first-visible-frame acknowledgement proves that observers, canvas, HTML, diagnostics, and successor scheduling adopted the same state.
+The current reconciliation preserves the dual-surface presentation finding. `engine.tick()` publishes one snapshot and then returns a separately captured snapshot. The browser applies the returned snapshot to the canvas first and the HTML subtree second. No shared immutable frame envelope, surface receipts, terminal dual-surface result, partial-frame recovery, visible readback, or first coherent frame acknowledgement proves all consumers adopted the same state.
 
 ## Plan ledger
 
-**Goal:** make one committed runtime revision produce one immutable frame envelope and one terminal dual-surface presentation result.
+**Goal:** keep the complete repository breakdown and central ledger aligned around one evidence chain from committed runtime state to both visible surfaces.
 
 - [x] Compare all ten accessible Publish repositories.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm all nine eligible repositories have central-ledger and root `.agent` coverage.
-- [x] Select only ZombieOrchard as the oldest eligible documented repository.
-- [x] Trace runtime publication, returned snapshots, canvas rendering, HTML rendering, diagnostics, and RAF scheduling.
-- [x] Preserve all 27 implemented kit surfaces and their offered services.
-- [x] Add a timestamped tracker, turn ledger, and frame-coherence audit family.
-- [x] Refresh all required root `.agent` documents and the machine registry.
-- [x] Push only to `main` and create no branch or pull request.
-- [ ] Runtime frame-envelope implementation and executable browser fixtures remain future work.
+- [x] Select only ZombieOrchard as the oldest eligible central entry.
+- [x] Preserve the full interaction loop, domain inventory, 27-kit census, and offered services.
+- [x] Add the timestamped frame-coherence reconciliation family.
+- [x] Refresh required root `.agent` documents.
+- [x] Keep writes on `main`; create no branch or pull request.
+- [ ] Implement and prove frame-envelope, surface-result, recovery, and visible-frame authority.
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-13T03-59-28-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-13T03-59-28-04-00.md
+.agent/trackers/2026-07-13T07-41-11-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-13T07-41-11-04-00.md
 .agent/current-audit.md
 .agent/known-gaps.md
 .agent/next-steps.md
 .agent/validation.md
 .agent/kit-registry.json
-.agent/architecture-audit/2026-07-13T03-59-28-04-00-canvas-html-frame-coherence-dsk-map.md
-.agent/render-audit/2026-07-13T03-59-28-04-00-canvas-html-visible-frame-coherence-gap.md
-.agent/gameplay-audit/2026-07-13T03-59-28-04-00-runtime-state-dual-surface-loop.md
-.agent/interaction-audit/2026-07-13T03-59-28-04-00-command-frame-surface-result-map.md
-.agent/frame-coherence-audit/2026-07-13T03-59-28-04-00-publication-canvas-html-commit-contract.md
-.agent/deploy-audit/2026-07-13T03-59-28-04-00-dual-surface-frame-fixture-gate.md
+.agent/architecture-audit/2026-07-13T07-41-11-04-00-frame-coherence-central-reconciliation-dsk-map.md
+.agent/render-audit/2026-07-13T07-41-11-04-00-dual-surface-visible-frame-central-reconciliation-gap.md
+.agent/gameplay-audit/2026-07-13T07-41-11-04-00-runtime-dual-surface-central-reconciliation.md
+.agent/interaction-audit/2026-07-13T07-41-11-04-00-frame-envelope-projection-central-reconciliation-map.md
+.agent/frame-coherence-audit/2026-07-13T07-41-11-04-00-central-reconciliation-contract.md
+.agent/deploy-audit/2026-07-13T07-41-11-04-00-central-fixture-reconciliation-gate.md
+.agent/central-sync-audit/2026-07-13T07-41-11-04-00-repo-ledger-frame-coherence-reconciliation.md
 ```
 
 ## Complete interaction loop
 
 ```txt
-browser interaction
+browser command
   -> engine.command(...)
   -> domain mutation
-  -> notify captures publication snapshot P
-  -> synchronous subscribers receive P
+  -> publication snapshot P
+  -> synchronous subscribers
 
 RAF frame
   -> engine.tick(1 / 60)
-  -> runtime and domain mutation
-  -> notify captures publication snapshot T1
-  -> synchronous subscribers receive T1
-  -> tick captures and returns second snapshot T2
-  -> canvas mutates drawing buffer from T2
-  -> HTML renderer replaces #ui-root from T2
-  -> successor RAF is requested
+  -> domain ticks
+  -> publication snapshot T1
+  -> separately captured return snapshot T2
+  -> canvas projection from T2
+  -> HTML projection from T2
+  -> successor RAF
 
 public diagnostics
-  -> GameHost.getState() captures a third current snapshot
-  -> no result identifies P, T1, T2, canvas state, HTML state, or the visible browser frame
+  -> GameHost.getState() captures fresh D
+  -> no result binds P, T1, T2, D, canvas, HTML, or the visible browser frame
 ```
 
-## Main findings
+## Required authority
 
 ```txt
-shared FrameId and StateRevision: absent
-publication-to-render snapshot identity: absent
-immutable frame envelope: absent
-canvas projection result: absent
-HTML projection result: absent
-atomic dual-surface commit: absent
-partial-frame classification and recovery: absent
-route-to-world-surface policy: implicit
-visible frame fingerprint and acknowledgement: absent
-GameHost visible-state readback: absent
+zombie-orchard-canvas-html-frame-coherence-authority-domain
 ```
 
-## Required parent domain
+## Required transaction
 
-`zombie-orchard-canvas-html-frame-coherence-authority-domain`
+```txt
+runtime commit
+  -> one immutable fingerprinted FrameEnvelope
+  -> exact envelope publication
+  -> canvas and HTML preparation against that envelope
+  -> one FrameCommitId
+  -> complete, partial, failed, stale, or superseded result
+  -> last-complete-frame preservation or recovery
+  -> visible diagnostics readback
+  -> FirstDualSurfaceFrameAck
+```
 
-## Guardrails
+## Validation boundary
 
-- Keep gameplay, interface, canvas projection, and HTML projection as separate bounded owners.
-- Do not treat sequential renderer calls as an atomic presentation commit.
-- Do not infer visible state from a fresh `engine.snapshot()` call.
-- Do not reuse runtime frame counters as visible-frame proof without a presentation receipt.
-- Do not claim canvas/HTML parity until source, dist, and Pages fixtures verify the same frame envelope and result.
+Documentation only. Runtime source, gameplay, rendering, dependencies, package scripts, and deployment were not changed. No atomicity, recovery, visible parity, or production-readiness claim is made until focused fixtures pass on `main`.
