@@ -1,45 +1,45 @@
 # Validation - ZombieOrchard
 
-**Timestamp:** `2026-07-12T20-31-27-04-00`
+**Timestamp:** `2026-07-12T22-48-25-04-00`
 
 ## Scope
 
-Documentation-only audit of pest spawning, capacity, identity, simulation, contact damage, clearing, retirement, snapshot cost, canvas draw cost and deployment proof. Runtime source, dependencies, gameplay, rendering and deployment configuration were not changed.
+Documentation-only audit of runtime subscriptions, snapshot publication, shared delivery objects, reentrant mutation, observer exceptions, browser frame liveness and deployment proof. Runtime source, dependencies, gameplay, rendering and deployment configuration were not changed.
 
 ## Plan ledger
 
-**Goal:** record exact source evidence and executable proof required before pest-population correctness claims are made.
+**Goal:** record exact source evidence and executable proof required before observer-publication correctness claims are made.
 
-- [x] Read `src/start.js` and confirm fixed recursive RAF plus world rendering on every route.
+- [x] Read `src/start.js` and confirm `engine.tick()` precedes both renderers and successor RAF scheduling.
 - [x] Read `src/game.js` and confirm all kits share one runtime.
-- [x] Read `src/kits/runtime.js` and confirm full-domain tick and deep snapshots.
-- [x] Read `src/kits/game-domains.js` and confirm unbounded spawn, O(N) simulation/damage and clear-only retirement.
-- [x] Read `src/presets/orchard-preset.js` and confirm no pest capacity configuration.
-- [x] Read `src/renderer/world-canvas.js` and confirm one draw per pest with no budget/revision.
-- [x] Read `tests/smoke.mjs` and confirm pest lifecycle coverage is absent.
+- [x] Read `src/kits/runtime.js` and confirm synchronous shared-object listener delivery.
+- [x] Confirm command and tick mutation occurs before notification.
+- [x] Confirm listener errors are not isolated.
+- [x] Confirm listeners can re-enter public `command()` and `tick()`.
+- [x] Read `tests/smoke.mjs` and confirm subscription coverage is absent.
 - [x] Add timestamped architecture and system audits.
 - [x] Push documentation only to `main` without a branch or pull request.
-- [ ] Implement and run pest population fixtures.
+- [ ] Implement and run observer publication fixtures.
 
 ## Source-backed findings
 
 ```txt
-src/kits/game-domains.js
-  -> addPest directly pushes random-ID pest
-  -> no active-count capacity or spawn result
-  -> all pests simulate every tick
-  -> each contacting pest adds damage
-  -> clear is the only retirement path
-
-src/renderer/world-canvas.js
-  -> all pests draw every frame
-  -> no culling, render budget or population revision
+src/kits/runtime.js
+  -> one Set stores untyped listeners
+  -> command mutates before notify
+  -> tick mutates all domains before notify
+  -> notify captures one snapshot object
+  -> every listener receives the same object
+  -> no try/catch, queue, sequence or reentrancy guard
 
 src/start.js
-  -> snapshot and world render occur every RAF regardless route
+  -> engine.tick occurs before canvas and HTML rendering
+  -> no error boundary protects draw
+  -> successor RAF is requested only after render
 
 tests/smoke.mjs
-  -> no night, spawn, capacity, clear, retirement or budget assertions
+  -> no subscriber is registered
+  -> no order, mutation, throw, reentrancy or liveness assertion exists
 ```
 
 ## Deterministic observations
@@ -47,28 +47,29 @@ tests/smoke.mjs
 ```txt
 implemented kit surfaces: 27
 engine-installed kits: 19
-pest arrays: 1 mutable active-session array
-active-count limits: 0
-spawn admissions: 0
-despawn policies: 0
-simulation budgets: 0
-render budgets: 0
-contact-set results: 0
-population revisions: 0
-pest lifecycle fixtures: 0
+listener registries: 1 Set
+publication sequences: 0
+observer identities: 0
+immutable envelopes: 0
+delivery queues: 0
+reentrancy guards: 0
+fault-isolated listener calls: 0
+observer delivery fixtures: 0
 ```
 
 ## Required fixtures
 
 ```txt
-capacity boundary and long-night bound
-deterministic unique pest identity
-day/night population policy
-clear and duplicate-clear retirement
-stale generation rejection
-bounded multi-pest damage
-simulation and draw budget
-population fingerprint and visible frame
+immutable per-observer delivery
+monotonic sequence and predecessor
+reentrant command queueing/rejection
+reentrant tick queueing/rejection
+throwing observer continuation
+committed-result preservation
+retry duplicate protection
+slow-observer budget
+unsubscribe during publication
+canvas/HTML frame correlation
 source/dist/Pages parity
 ```
 
@@ -87,9 +88,9 @@ pull request created: no
 
 npm test: not run
 npm run build: not run
-pest population fixtures: unavailable / not run
-browser pest smoke: unavailable / not run
-Pages pest smoke: unavailable / not run
+observer publication fixtures: unavailable / not run
+browser observer smoke: unavailable / not run
+Pages observer smoke: unavailable / not run
 ```
 
-No bounded-population, deterministic-ID, exact-retirement, damage-budget, frame-budget or visible population-frame claim is made.
+No immutable-delivery, monotonic-order, reentrancy-isolation, observer-fault-containment, retry-safety or visible-frame-liveness claim is made.
