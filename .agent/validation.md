@@ -1,92 +1,94 @@
 # Validation - ZombieOrchard
 
-**Timestamp:** `2026-07-13T03-59-28-04-00`
+**Timestamp:** `2026-07-13T07-41-11-04-00`
 
 ## Scope
 
-Documentation-only audit of runtime snapshot capture, subscriber publication, canvas projection, HTML projection, public diagnostics, RAF scheduling, and central tracking. Runtime source, dependencies, gameplay, rendering, and deployment configuration are unchanged.
+Documentation-only reconciliation of repository selection, runtime publication, browser host sequencing, canvas projection, HTML projection, diagnostics, package proof, deployment gates, and central tracking. Runtime source, dependencies, gameplay, rendering, tests, and deployment configuration are unchanged.
 
 ## Plan ledger
 
-**Goal:** record exact source evidence and executable proof required before canvas/HTML frame-coherence claims are made.
+**Goal:** record exact source evidence and the proof required before canvas/HTML frame-coherence claims are made.
 
+- [x] Read the current Publish organization inventory.
+- [x] Compare all nine eligible repositories with central tracking.
+- [x] Select ZombieOrchard as the oldest eligible central entry.
+- [x] Read `src/start.js`.
 - [x] Read `src/kits/runtime.js`.
-- [x] Confirm `notify()` captures a publication snapshot.
-- [x] Confirm `engine.tick()` captures a second return snapshot after publication.
-- [x] Read `src/start.js` and confirm canvas then HTML sequencing.
-- [x] Read `src/renderer/world-canvas.js`.
-- [x] Confirm the canvas resets its drawing buffer and paints every frame.
-- [x] Confirm world projection does not consult the active interface route.
-- [x] Read `src/renderer/html-interface-renderer.js`.
-- [x] Confirm the HTML subtree is replaced every frame.
-- [x] Confirm neither renderer returns a typed result.
-- [x] Confirm `GameHost.getState()` captures a fresh snapshot rather than visible-frame state.
-- [x] Preserve all 27 kit surfaces and services.
+- [x] Read `src/game.js`.
+- [x] Read `src/kits/game-domains.js`.
+- [x] Read `src/kits/composition.js`.
+- [x] Read `package.json`.
+- [x] Confirm publication and returned browser snapshots are separately captured.
+- [x] Confirm canvas then HTML sequencing.
+- [x] Confirm neither renderer returns a typed stage result.
+- [x] Confirm public diagnostics expose fresh state rather than visible state.
+- [x] Preserve all 27 kit surfaces and offered services.
 - [x] Add timestamped audits and root routing.
-- [x] Update the central repo ledger and internal change log.
-- [x] Push documentation only to `main` without a branch or pull request.
-- [ ] Implement and run dual-surface frame fixtures.
+- [x] Keep documentation writes on `main` with no branch or pull request.
+- [ ] Implement and run dual-surface fixtures.
 
 ## Source-backed findings
 
 ```txt
 src/kits/runtime.js
-  -> snapshot contains domain snapshots only
-  -> ctx.frame and ctx.elapsed are omitted
-  -> notify captures snapshot T1
+  -> ctx tracks frame, elapsed, delta, events, and domains
+  -> engine.snapshot() returns only domain snapshots
+  -> notify captures publication snapshot T1
   -> tick returns separately captured snapshot T2
-  -> no publication or frame-envelope identity
+  -> no publication, state, or frame-envelope identity
 
 src/start.js
-  -> tick precedes both renderers
+  -> recursive RAF calls engine.tick(1 / 60)
   -> world.render(T2) runs before ui.render(T2)
-  -> successor RAF is requested only after both return
-  -> no stage result or partial-frame classification
+  -> successor RAF is requested after both calls
+  -> GameHost exposes raw engine, fresh getState(), and manual tick
 
-src/renderer/world-canvas.js
-  -> drawing-buffer dimensions are assigned every render
-  -> world and active-session are always projected
-  -> no route, surface, projection, or frame revision
+src/kits/game-domains.js
+  -> pressure, pest admission, pursuit, damage, score, and failure mutate during ticks
+  -> no committed state revision is published
 
-src/renderer/html-interface-renderer.js
-  -> interface route selects HUD or full-screen panel
-  -> #ui-root is replaced through innerHTML every render
-  -> no projection result, focus receipt, or frame revision
+src/kits/composition.js
+  -> active route is independent state
+  -> Outcome routing runs during ticks
+  -> no shared route/frame revision exists
 
-src/start.js diagnostics
-  -> GameHost.getState() returns a fresh engine.snapshot()
-  -> no visible-frame readback exists
+package.json
+  -> npm test runs one Node smoke
+  -> npm run build performs a static copy
+  -> no browser frame-coherence fixture is declared
 ```
 
 ## Deterministic observations
 
 ```txt
+accessible Publish repositories: 10
+eligible repositories: 9
 implemented kit surfaces: 27
 engine-installed kits: 19
 host/support kits: 8
-runtime snapshots per normal tick path: at least 2
+runtime snapshot captures in normal tick path: at least 2
 visible surfaces: 2
 surface projection result types: 0
 shared frame envelope IDs: 0
-shared frame fingerprints: 0
 dual-surface commit results: 0
 visible-frame acknowledgements: 0
-browser parity fixtures: 0
+browser frame-coherence fixtures: 0
 ```
 
-## Required fixtures
+## Required fixture matrix
 
 ```txt
-single envelope per tick
+single envelope per transition
 subscriber/render envelope identity
-reentrant subscriber does not split observer and visible state
+reentrant subscriber isolation
 canvas and HTML cite identical state revision
 canvas failure result
 HTML failure result
-partial-frame recovery and successor RAF
-route-to-world visibility policy
+partial-frame recovery and continued scheduler
+route-specific world visibility
 GameHost visible-frame readback
-first dual-surface frame acknowledgement
+first complete visible-frame acknowledgement
 source/dist/Pages parity
 ```
 
@@ -110,4 +112,4 @@ browser frame-coherence smoke: unavailable / not run
 Pages frame-coherence smoke: unavailable / not run
 ```
 
-No snapshot identity, dual-surface atomicity, route/world visibility, partial-frame recovery, visible diagnostics parity, or first-visible-frame claim is made.
+No snapshot identity, dual-surface atomicity, route/world visibility, partial-frame recovery, visible diagnostics parity, first-visible-frame, or production-readiness claim is made.
