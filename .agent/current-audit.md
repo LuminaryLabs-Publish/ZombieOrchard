@@ -1,7 +1,7 @@
 # Current audit: ZombieOrchard
 
-**Timestamp:** `2026-07-12T22-48-25-04-00`  
-**Status:** `runtime-observer-publication-authority-audited`  
+**Timestamp:** `2026-07-12T23-00-53-04-00`  
+**Status:** `runtime-observer-publication-authority-central-reconciled`  
 **Branch:** `main`
 
 ## Summary
@@ -14,33 +14,31 @@ A listener can call `engine.command()` or `engine.tick()` while a predecessor pu
 
 **Goal:** define one ordered publication transaction from committed state through immutable snapshot delivery, observer results and visible-frame proof.
 
-- [x] Compare current Publish inventory against central tracking.
+- [x] Compare the current Publish inventory against central tracking.
 - [x] Exclude `TheCavalryOfRome`.
-- [x] Select only ZombieOrchard under the oldest eligible fallback.
+- [x] Select only ZombieOrchard because its repo-local observer audit was newer than central state.
 - [x] Read boot, runtime, game composition, gameplay domains, renderers, preset and smoke proof.
 - [x] Identify the complete interaction loop, active domains, 27 implemented kits and services.
 - [x] Confirm snapshot delivery is synchronous and shares one object.
 - [x] Confirm observer exceptions propagate after state mutation.
 - [x] Confirm reentrant command/tick can invert observation order.
 - [x] Confirm browser draw has no containment around `engine.tick()`.
+- [x] Add and route the central reconciliation family.
 - [ ] Implement and execute observer publication fixtures.
 
 ## Selection audit
 
 ```txt
-ZombieOrchard      2026-07-12T20-31-27-04-00 selected
-MyCozyIsland       2026-07-12T20-40-56-04-00
-TheUnmappedHouse   2026-07-12T20-51-16-04-00
-AetherVale         2026-07-12T21-15-06-04-00
-TheOpenAbove       2026-07-12T21-31-40-04-00
-IntoTheMeadow      2026-07-12T21-40-09-04-00
-PhantomCommand     2026-07-12T22-15-00-04-00
-PrehistoricRush    2026-07-12T22-18-39-04-00
-HorrorCorridor     2026-07-12T22-29-30-04-00
-TheCavalryOfRome   excluded
-```
+accessible Publish repositories: 10
+eligible non-Cavalry repositories: 9
+new eligible repositories: 0
+central-ledger-missing eligible repositories: 0
+root-.agent-missing eligible repositories: 0
 
-No new, ledger-missing or root-`.agent`-missing eligible repository was found.
+ZombieOrchard central: 2026-07-12T20-31-27-04-00
+ZombieOrchard repo-local observer audit: 2026-07-12T22-48-25-04-00
+selected for reconciliation: yes
+```
 
 ## Complete interaction loop
 
@@ -61,17 +59,15 @@ command path
 
 tick path
   -> clamp delta and advance frame/elapsed
-  -> clear events
-  -> tick every domain
-  -> capture snapshot
-  -> synchronously invoke listeners
-  -> return a second snapshot to browser draw
+  -> clear events and tick every domain
+  -> capture snapshot and invoke listeners
+  -> return a second snapshot
   -> render canvas and HTML
   -> request successor RAF
 
 reentrant observer path
   -> outer publication captures S1
-  -> observer A invokes nested command
+  -> observer A invokes nested command/tick
   -> nested publication captures S2 and delivers A then B
   -> outer publication resumes and delivers S1 to B
   -> B observes S2 before S1
@@ -79,35 +75,16 @@ reentrant observer path
 
 ## Source-backed findings
 
-### Shared mutable delivery object
-
-`notify()` computes `const snap = engine.snapshot()` once and passes that same object reference to every listener. It is not frozen, fingerprinted or cloned per observer. One listener can alter the projection received by later listeners.
-
-### Reentrant delivery can regress observer order
-
-Listeners run inside the mutation call stack. A listener can invoke `command()` or `tick()`, which immediately calls `notify()` again. The nested publication completes before the predecessor loop resumes, allowing later listeners to observe a successor snapshot before its predecessor.
-
-### Observer failure hides a committed result
-
-State mutation occurs before `notify()`. If a listener throws, the exception escapes `notify()`, `command()` or `tick()`. Later listeners do not run, yet the state remains mutated. A caller that retries can duplicate a command whose first commit actually succeeded.
-
-### A subscriber can stop the visible loop
-
-`draw()` calls `engine.tick()` before canvas and HTML rendering and has no error boundary. A throwing subscriber therefore aborts the frame after simulation committed, skips both renderers and prevents the successor RAF from being requested.
-
-### Synchronous delivery has no work budget
-
-A slow listener blocks command completion and the browser frame. There is no observer duration, queue depth, coalescing policy, backpressure result or retirement policy.
-
-### Existing proof is absent
-
-`tests/smoke.mjs` does not subscribe listeners. It cannot detect mutation of delivered snapshots, throwing observers, skipped observers, reentrant ordering, duplicate retry hazards or frame-loop termination.
+- `src/kits/runtime.js` stores listeners in one untyped `Set`, mutates before notification, captures one snapshot and passes it to every listener without `try/catch`, sequencing or a reentrancy fence.
+- `src/start.js` calls `engine.tick()` before canvas and HTML rendering and schedules the successor RAF only after both renderers.
+- A thrown observer can therefore hide an already committed result, skip later observers, skip both renderers and stop future RAF scheduling.
+- `tests/smoke.mjs` does not register subscribers and cannot detect mutation, throw, reentrancy, ordering or liveness failures.
 
 ## Domains in use
 
 ```txt
 browser document, canvas, DOM, RAF and public GameHost
-runtime registration, commands, ticks, events, snapshots, subscriptions and synchronous publication
+runtime registration, commands, ticks, events, snapshots, subscriptions and publication
 11 generic scoped interface domains plus custom active-session
 interface composition, nested dispatch, routing and automatic Outcome routing
 runtime session, command/tick admission and observer publication
@@ -156,9 +133,9 @@ pages-deploy-kit
 | Kit group | Services |
 |---|---|
 | runtime | Registration, domain creation, commands, delta clamp, ticks, events, snapshots, subscriptions and synchronous publication |
-| interface | Screen state, fields, selection, actions, routing, back navigation, nested dispatch and Outcome routing |
+| interface | Screen state, fields, selection, actions, routing, Back, nested dispatch and Outcome routing |
 | gameplay | Resources, pressure, orchard collection/refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
-| render | Canvas trees, apples, player and pests; HTML route, HUD, cards and Outcome |
+| render | Canvas trees, apples, player, pests and built objects; HTML route, HUD, cards and Outcome |
 | diagnostics/proof/deploy | Raw engine publication, state readback, manual tick, Node smoke, static copy and Pages deployment |
 
 ## Required composed domain
@@ -177,39 +154,9 @@ committed command or simulation step
   -> deliver in sequence to identified observer generations
   -> isolate exceptions and continue to remaining observers
   -> record duration, fault and backpressure results
-  -> retire stale observers exactly once
+  -> preserve committed command/tick result independently
   -> render one admitted publication
   -> acknowledge the first matching visible frame
-```
-
-## Candidate kits
-
-```txt
-runtime-publication-id-kit
-runtime-publication-sequence-kit
-snapshot-envelope-kit
-snapshot-fingerprint-kit
-snapshot-immutability-kit
-observer-id-kit
-observer-generation-kit
-observer-subscription-kit
-observer-cursor-kit
-observer-delivery-queue-kit
-observer-reentrancy-guard-kit
-observer-mutation-admission-kit
-observer-fault-isolation-kit
-observer-delivery-result-kit
-observer-backpressure-budget-kit
-observer-retirement-kit
-publication-journal-kit
-publication-observation-kit
-committed-command-result-kit
-committed-tick-result-kit
-first-publication-frame-ack-kit
-observer-order-fixture-kit
-observer-fault-fixture-kit
-observer-reentrancy-fixture-kit
-observer-source-dist-pages-parity-fixture-kit
 ```
 
 ## Runtime non-claims
