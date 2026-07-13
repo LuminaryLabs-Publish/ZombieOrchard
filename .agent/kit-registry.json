@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 85,
-  "generatedAt": "2026-07-12T22-48-25-04-00",
+  "schemaVersion": 86,
+  "generatedAt": "2026-07-12T23-00-53-04-00",
   "repository": "LuminaryLabs-Publish/ZombieOrchard",
   "branch": "main",
-  "status": "runtime-observer-publication-authority-audited",
+  "status": "runtime-observer-publication-authority-central-reconciled",
   "selection": {
     "inventoryCount": 10,
     "eligibleCount": 9,
@@ -12,9 +12,9 @@
     "rootAgentMissingCount": 0,
     "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
     "selectedRepository": "LuminaryLabs-Publish/ZombieOrchard",
-    "reason": "Oldest eligible central-ledger entry after new, missing-ledger and missing-root-agent priorities were cleared.",
+    "reason": "Repo-local runtime-observer audit at 2026-07-12T22-48-25-04-00 was newer than the central ledger state at 2026-07-12T20-31-27-04-00.",
     "ledgerOrder": [
-      "ZombieOrchard:2026-07-12T20-31-27-04-00:selected",
+      "ZombieOrchard:2026-07-12T20-31-27-04-00:selected-for-reconciliation",
       "MyCozyIsland:2026-07-12T20-40-56-04-00",
       "TheUnmappedHouse:2026-07-12T20-51-16-04-00",
       "AetherVale:2026-07-12T21-15-06-04-00",
@@ -22,18 +22,18 @@
       "IntoTheMeadow:2026-07-12T21-40-09-04-00",
       "PhantomCommand:2026-07-12T22-15-00-04-00",
       "PrehistoricRush:2026-07-12T22-18-39-04-00",
-      "HorrorCorridor:2026-07-12T22-29-30-04-00"
+      "HorrorCorridor:2026-07-12T22-44-30-04-00"
     ]
   },
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-12T22-48-25-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-12T22-48-25-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-12T22-48-25-04-00-runtime-observer-publication-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-12T22-48-25-04-00-observer-fault-visible-frame-liveness-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T22-48-25-04-00-command-tick-notify-order-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-12T22-48-25-04-00-subscribe-notify-reentrancy-map.md",
-    "runtimeObserverAudit": ".agent/runtime-observer-audit/2026-07-12T22-48-25-04-00-delivery-order-fault-isolation-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-12T22-48-25-04-00-observer-publication-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-12T23-00-53-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-12T23-00-53-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-12T23-00-53-04-00-runtime-observer-publication-central-reconciliation-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-12T23-00-53-04-00-observer-publication-visible-frame-central-reconciliation.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-12T23-00-53-04-00-command-tick-publication-central-reconciliation.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-12T23-00-53-04-00-commit-publication-delivery-result-map.md",
+    "runtimeObserverAudit": ".agent/runtime-observer-audit/2026-07-12T23-00-53-04-00-central-ledger-reconciliation.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-12T23-00-53-04-00-observer-publication-central-sync-gate.md"
   },
   "implementedKitSurfaceCount": 27,
   "engineInstalledKitCount": 19,
@@ -146,13 +146,13 @@
     "canvasRenderSurface": "2026-07-12T06-19-56-04-00",
     "htmlInterfaceProjection": "2026-07-12T07-51-04-04-00",
     "kitGraphInstallation": "2026-07-12T10-00-00-04-00",
-    "kitGraphCentralReconciliation": "2026-07-12T10-09-07-04-00",
     "economyCommandAdmission": "2026-07-12T12-39-25-04-00",
     "runResetGeneration": "2026-07-12T14-38-35-04-00",
     "interfaceActionAdmission": "2026-07-12T16-51-47-04-00",
     "terminalOutcomeSeal": "2026-07-12T18-48-07-04-00",
     "pestPopulationLifecycleBudget": "2026-07-12T20-31-27-04-00",
-    "runtimeObserverPublication": "2026-07-12T22-48-25-04-00"
+    "runtimeObserverPublication": "2026-07-12T22-48-25-04-00",
+    "runtimeObserverCentralReconciliation": "2026-07-12T23-00-53-04-00"
   },
   "validation": {
     "runtimeSourceChanged": false,
@@ -168,7 +168,7 @@
     "observerPublicationFixturesRun": false,
     "browserSmokeRun": false,
     "pagesSmokeRun": false,
-    "centralLedgerSynchronized": true,
-    "centralChangeLogAdded": true
+    "centralLedgerSynchronized": false,
+    "centralChangeLogAdded": false
   }
 }
