@@ -1,22 +1,23 @@
 # Known gaps - ZombieOrchard
 
-**Timestamp:** `2026-07-12T23-00-53-04-00`
+**Timestamp:** `2026-07-13T01-18-20-04-00`
 
 ## Summary
 
-The newest documented gap remains runtime observer publication authority. Synchronous subscribers can mutate shared projections, re-enter runtime mutation, reorder observed snapshots, throw after commit, skip later subscribers and stop the visible frame loop. Central tracking now reflects the repo-local technical audit.
+The newest documented gap is runtime event lifecycle authority. Emitted events are stored in a mutable ambient array, omitted from snapshots and subscriber publication, mixed across commands, and silently cleared at the next tick before browser rendering.
 
 ## Plan ledger
 
 **Goal:** keep unresolved risks dependency ordered and tied to executable proof.
 
+- [ ] Runtime event identity, causal provenance, retention and consumer acknowledgement.
+- [ ] Runtime observer publication order, immutability and fault isolation.
 - [ ] Kit graph identity, manifests, compatibility and atomic installation.
 - [ ] Runtime session identity, lifecycle and callback generation fencing.
 - [ ] Run reset identity, participant reset and atomic generation commit.
 - [ ] Fixed-step clock and single-writer admission.
 - [ ] Route-scoped simulation admission.
 - [ ] Public capability gateway and owner quarantine.
-- [ ] Runtime observer publication order, immutability and fault isolation.
 - [ ] Interface action identity, availability and nested-result authority.
 - [ ] Economy command semantic admission and conservation.
 - [ ] Composite multi-domain transaction authority.
@@ -26,35 +27,32 @@ The newest documented gap remains runtime observer publication authority. Synchr
 - [ ] Seeded random and replay continuation.
 - [ ] Versioned save/load authority.
 
-## Observer publication gaps
+## Event lifecycle gaps
 
 ```txt
-publication identity and sequence: absent
-predecessor and state revision: absent
-observer identity and generation: absent
-per-observer cursor: absent
-immutable snapshot envelope: absent
-shared-object mutation protection: absent
-delivery queue: absent
-reentrancy guard: absent
-fault isolation: absent
-typed delivery result: absent
-duration and backpressure budget: absent
-idempotent observer retirement: absent
-publication journal: absent
-visible publication-frame acknowledgement: absent
+event ID and monotonic sequence: absent
+runtime/run/command/tick correlation: absent
+immutable payload copy: absent
+event range in published snapshots: absent
+bounded journal: absent
+retention and overflow policy: absent
+consumer identity, generation and cursor: absent
+delivery acknowledgement: absent
+expiry and dead-letter result: absent
+read-only public event gateway: absent
+first visible event-frame acknowledgement: absent
 ```
 
 ## Source consequences
 
-- A subscriber can mutate the snapshot object seen by later subscribers.
-- Reentrant mutation can make a later subscriber see successor S2 before predecessor S1.
-- A throwing subscriber prevents all later subscribers from receiving the publication.
-- State remains committed even though `command()` or `tick()` throws.
-- Caller retry can duplicate an already committed effect.
-- A slow subscriber blocks commands and animation frames.
-- A throwing subscriber can stop canvas/HTML rendering and future RAF scheduling.
-- Existing smoke proof cannot detect any observer failure mode.
+- Selection, field-change and action-request events are not present in normal snapshots.
+- Multiple commands before the next tick share the same frame/elapsed values and one mutable array.
+- The next tick erases all command-originated events before rendering.
+- Subscribers receive state snapshots with no event range, so they cannot prove which events caused a state.
+- `GameHost.getState()` omits events.
+- Raw `GameHost.engine.ctx.events` can be mutated or cleared by external code.
+- Array position is the only local ordering signal.
+- Existing smoke proof cannot detect event loss, mutation, overflow or consumer divergence.
 
 ## Retained unresolved gaps
 
@@ -84,32 +82,31 @@ visible publication-frame acknowledgement: absent
 ## Required fixtures
 
 ```txt
-shared snapshot mutation isolation
-monotonic publication sequence
-two-observer normal order
-reentrant command order
-reentrant tick order
-throwing first observer with successful second delivery
-committed command result despite observer failure
-retry duplicate prevention
-observer duration/backpressure budget
-unsubscribe and retirement policy
-visible frame publication correlation
+command event identity and causal correlation
+two-command pre-tick retention
+tick clear does not silently delete required events
+event payload mutation isolation
+journal bounds and overflow result
+consumer cursor and acknowledgement
+consumer retirement
+public readback isolation
+event range to snapshot correlation
+event-driven visible frame correlation
 source/dist/Pages parity
 ```
 
 ## Dependency order
 
 ```txt
-runtime session and command generation
-  -> committed mutation result
-  -> immutable sequenced publication
-  -> non-reentrant observer delivery
-  -> fault isolation and backpressure
-  -> canvas/HTML frame correlation
+runtime session and command identity
+  -> event identity and immutable payload
+  -> bounded journal and retention
+  -> snapshot event-range publication
+  -> consumer cursor and acknowledgement
+  -> event-aware presentation
   -> deployment proof
 ```
 
 ## Do not claim
 
-Do not claim monotonic observation, immutable publication, subscriber isolation, retry safety or frame-loop liveness until required fixtures pass on `main`.
+Do not claim event delivery, causal order, retention, consumer convergence or visible-frame parity until required fixtures pass on `main`.
