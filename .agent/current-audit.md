@@ -1,42 +1,42 @@
 # Current audit: ZombieOrchard
 
-**Timestamp:** `2026-07-12T20-31-27-04-00`  
-**Status:** `pest-population-lifecycle-budget-authority-audited`  
+**Timestamp:** `2026-07-12T22-48-25-04-00`  
+**Status:** `runtime-observer-publication-authority-audited`  
 **Branch:** `main`
 
 ## Summary
 
-The active-session domain owns a mutable `pests` array and appends a random pest during night ticks when `Math.random() < dt * 0.55`. There is no active-count cap, encounter budget, age, TTL, despawn policy, population identity, generation or admission result.
+The kit runtime commits domain mutation before calling `notify()`. `notify()` captures one snapshot and synchronously passes the same object to every listener. There is no publication sequence, observer identity, delivery queue, reentrancy guard, fault isolation, timeout budget or typed delivery result.
 
-Every tick iterates the full array for movement and contact damage. Every snapshot deep-clones it, and every canvas frame draws it. Each contacting pest subtracts damage independently, coupling population growth to CPU, allocation, draw work and lethality.
+A listener can call `engine.command()` or `engine.tick()` while a predecessor publication is still being delivered. The nested mutation publishes a newer snapshot to all listeners, after which the predecessor loop resumes and can deliver its older snapshot to listeners that have not yet run. A listener can also throw after state committed, preventing later listeners and causing the caller to receive an exception instead of the committed command result.
 
 ## Plan ledger
 
-**Goal:** define a bounded pest-population lifecycle whose accepted revision is shared by simulation, damage, snapshots and rendering.
+**Goal:** define one ordered publication transaction from committed state through immutable snapshot delivery, observer results and visible-frame proof.
 
 - [x] Compare current Publish inventory against central tracking.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Select only ZombieOrchard under the oldest eligible fallback.
-- [x] Read boot, runtime, composition, active-session, preset, renderers and smoke proof.
+- [x] Read boot, runtime, game composition, gameplay domains, renderers, preset and smoke proof.
 - [x] Identify the complete interaction loop, active domains, 27 implemented kits and services.
-- [x] Confirm spawn has no capacity or generation authority.
-- [x] Confirm only successful `clear` retires a pest.
-- [x] Confirm day transition retains the entire population.
-- [x] Confirm tick, snapshot and render costs scale with pest count.
-- [ ] Implement and execute population lifecycle and budget fixtures.
+- [x] Confirm snapshot delivery is synchronous and shares one object.
+- [x] Confirm observer exceptions propagate after state mutation.
+- [x] Confirm reentrant command/tick can invert observation order.
+- [x] Confirm browser draw has no containment around `engine.tick()`.
+- [ ] Implement and execute observer publication fixtures.
 
 ## Selection audit
 
 ```txt
-ZombieOrchard      2026-07-12T18-48-07-04-00 selected
-MyCozyIsland       2026-07-12T19-00-22-04-00
-TheUnmappedHouse   2026-07-12T19-11-01-04-00
-AetherVale         2026-07-12T19-21-29-04-00
-TheOpenAbove       2026-07-12T19-31-06-04-00
-IntoTheMeadow      2026-07-12T19-49-41-04-00
-PhantomCommand     2026-07-12T19-58-07-04-00
-PrehistoricRush    2026-07-12T20-10-25-04-00
-HorrorCorridor     2026-07-12T20-20-02-04-00
+ZombieOrchard      2026-07-12T20-31-27-04-00 selected
+MyCozyIsland       2026-07-12T20-40-56-04-00
+TheUnmappedHouse   2026-07-12T20-51-16-04-00
+AetherVale         2026-07-12T21-15-06-04-00
+TheOpenAbove       2026-07-12T21-31-40-04-00
+IntoTheMeadow      2026-07-12T21-40-09-04-00
+PhantomCommand     2026-07-12T22-15-00-04-00
+PrehistoricRush    2026-07-12T22-18-39-04-00
+HorrorCorridor     2026-07-12T22-29-30-04-00
 TheCavalryOfRome   excluded
 ```
 
@@ -52,62 +52,69 @@ browser module boot
   -> expose raw engine through window.GameHost
   -> start recursive RAF
 
-night simulation
-  -> active-session tick evaluates one spawn probability
-  -> addPest() pushes random ID and edge position
-  -> all pests move toward player
-  -> each contacting pest subtracts dt * 7 condition
+command path
+  -> engine.command(domain, type, payload)
+  -> domain mutates state
+  -> runtime captures snapshot
+  -> runtime synchronously invokes listeners
+  -> caller receives result only after all listeners return
 
-publication
-  -> active-session snapshot deep-clones full pest array
-  -> world canvas draws every pest
-  -> HTML projects route and HUD
+tick path
+  -> clamp delta and advance frame/elapsed
+  -> clear events
+  -> tick every domain
+  -> capture snapshot
+  -> synchronously invoke listeners
+  -> return a second snapshot to browser draw
+  -> render canvas and HTML
+  -> request successor RAF
 
-retirement
-  -> clear finds one nearby pest
-  -> two successful hits remove it
-  -> reward scrap and score
-  -> no other retirement path exists
+reentrant observer path
+  -> outer publication captures S1
+  -> observer A invokes nested command
+  -> nested publication captures S2 and delivers A then B
+  -> outer publication resumes and delivers S1 to B
+  -> B observes S2 before S1
 ```
 
 ## Source-backed findings
 
-### Spawn is direct and unadmitted
+### Shared mutable delivery object
 
-`addPest()` creates an ID with `Math.random().toString(36)` and pushes directly into `state.pests`. There is no capacity check, duplicate check, run generation, spawn reason, policy revision or typed result.
+`notify()` computes `const snap = engine.snapshot()` once and passes that same object reference to every listener. It is not frozen, fingerprinted or cloned per observer. One listener can alter the projection received by later listeners.
 
-### Population survives phase transitions
+### Reentrant delivery can regress observer order
 
-`next-phase` toggles day/night and increments day when returning to day. It does not retire, age or reclassify pests.
+Listeners run inside the mutation call stack. A listener can invoke `command()` or `tick()`, which immediately calls `notify()` again. The nested publication completes before the predecessor loop resumes, allowing later listeners to observe a successor snapshot before its predecessor.
 
-### Simulation and damage are population-linear
+### Observer failure hides a committed result
 
-The active-session tick loops every pest. Movement, distance calculation and contact damage occur in the same loop. A contact group of size N applies N damage contributions during one step.
+State mutation occurs before `notify()`. If a listener throws, the exception escapes `notify()`, `command()` or `tick()`. Later listeners do not run, yet the state remains mutated. A caller that retries can duplicate a command whose first commit actually succeeded.
 
-### Retirement is player-only
+### A subscriber can stop the visible loop
 
-The `clear` command targets the first nearby pest, decrements condition, splices it when condition reaches zero and grants reward. No timeout, distance, terminal, route or budget retirement exists.
+`draw()` calls `engine.tick()` before canvas and HTML rendering and has no error boundary. A throwing subscriber therefore aborts the frame after simulation committed, skips both renderers and prevents the successor RAF from being requested.
 
-### Snapshot and render are population-linear
+### Synchronous delivery has no work budget
 
-The active-session snapshot deep-clones `state`, including all pests. The canvas then loops every pest and draws one rectangle. No population revision, culling result or render budget is consumed.
+A slow listener blocks command completion and the browser frame. There is no observer duration, queue depth, coalescing policy, backpressure result or retirement policy.
 
 ### Existing proof is absent
 
-`tests/smoke.mjs` validates Entry, Play and apple population only. It cannot detect unbounded growth, duplicate IDs, stale clear operations, damage spikes, retirement errors or render-budget drift.
+`tests/smoke.mjs` does not subscribe listeners. It cannot detect mutation of delivered snapshots, throwing observers, skipped observers, reentrant ordering, duplicate retry hazards or frame-loop termination.
 
 ## Domains in use
 
 ```txt
 browser document, canvas, DOM, RAF and public GameHost
-runtime registration, commands, ticks, events, snapshots, subscriptions and publication
+runtime registration, commands, ticks, events, snapshots, subscriptions and synchronous publication
 11 generic scoped interface domains plus custom active-session
 interface composition, nested dispatch, routing and automatic Outcome routing
-runtime session, run generation, route and terminal admission
+runtime session, command/tick admission and observer publication
 resource ledger and pressure field
 orchard world, collection and refill
 construction, roster and inventory
-movement, phases, pest spawning, population, contact damage, clearing, score and failure
+movement, phases, pest spawning, contact damage, clearing, score and failure
 canvas world and HTML interface projection
 Node smoke, static build, Pages deployment and central tracking
 ```
@@ -150,60 +157,61 @@ pages-deploy-kit
 |---|---|
 | runtime | Registration, domain creation, commands, delta clamp, ticks, events, snapshots, subscriptions and synchronous publication |
 | interface | Screen state, fields, selection, actions, routing, back navigation, nested dispatch and Outcome routing |
-| gameplay | Resources, pressure, orchard collection/refill, construction, hiring, equipment, movement, phases, pest spawn/movement/contact/clearing, score and failure |
-| render | Canvas trees, apples, player, pests and built objects; HTML route, HUD, cards and Outcome |
+| gameplay | Resources, pressure, orchard collection/refill, construction, hiring, equipment, movement, phases, pests, damage, score and failure |
+| render | Canvas trees, apples, player and pests; HTML route, HUD, cards and Outcome |
 | diagnostics/proof/deploy | Raw engine publication, state readback, manual tick, Node smoke, static copy and Pages deployment |
 
 ## Required composed domain
 
-`zombie-orchard-pest-population-lifecycle-budget-authority-domain`
+`zombie-orchard-runtime-observer-publication-authority-domain`
 
 ## Required transaction
 
 ```txt
-PestSpawnRequest
-  -> bind runtime session, run generation and expected population revision
-  -> evaluate phase, capacity and spawn budget
-  -> allocate deterministic unique pest identity
-  -> commit typed spawn result
-  -> advance admitted population under simulation budget
-  -> derive one bounded contact and damage result
-  -> retire cleared, expired or invalid pests exactly once
-  -> publish population revision and fingerprint
-  -> render an admitted visible subset
-  -> acknowledge first matching visible frame
+committed command or simulation step
+  -> allocate publication ID and monotonic sequence
+  -> capture state revision, frame, elapsed and event range
+  -> build immutable SnapshotEnvelope and fingerprint
+  -> enqueue delivery after the mutation stack unwinds
+  -> prevent nested publication and classify reentrant mutations
+  -> deliver in sequence to identified observer generations
+  -> isolate exceptions and continue to remaining observers
+  -> record duration, fault and backpressure results
+  -> retire stale observers exactly once
+  -> render one admitted publication
+  -> acknowledge the first matching visible frame
 ```
 
 ## Candidate kits
 
 ```txt
-pest-population-id-kit
-pest-id-kit
-pest-generation-kit
-pest-spawn-policy-kit
-pest-spawn-budget-kit
-pest-capacity-kit
-pest-spawn-admission-kit
-pest-spawn-result-kit
-pest-lifecycle-state-kit
-pest-age-kit
-pest-despawn-policy-kit
-pest-retirement-kit
-pest-contact-set-kit
-pest-damage-budget-kit
-pest-simulation-budget-kit
-pest-render-budget-kit
-pest-population-snapshot-kit
-pest-population-fingerprint-kit
-pest-population-observation-kit
-pest-population-journal-kit
-first-pest-population-frame-ack-kit
-pest-capacity-fixture-kit
-pest-retirement-fixture-kit
-pest-damage-budget-fixture-kit
-pest-source-dist-pages-parity-fixture-kit
+runtime-publication-id-kit
+runtime-publication-sequence-kit
+snapshot-envelope-kit
+snapshot-fingerprint-kit
+snapshot-immutability-kit
+observer-id-kit
+observer-generation-kit
+observer-subscription-kit
+observer-cursor-kit
+observer-delivery-queue-kit
+observer-reentrancy-guard-kit
+observer-mutation-admission-kit
+observer-fault-isolation-kit
+observer-delivery-result-kit
+observer-backpressure-budget-kit
+observer-retirement-kit
+publication-journal-kit
+publication-observation-kit
+committed-command-result-kit
+committed-tick-result-kit
+first-publication-frame-ack-kit
+observer-order-fixture-kit
+observer-fault-fixture-kit
+observer-reentrancy-fixture-kit
+observer-source-dist-pages-parity-fixture-kit
 ```
 
 ## Runtime non-claims
 
-No runtime source, gameplay behavior, rendering, package scripts or deployment configuration changed. No bounded population, deterministic pest identity, exact retirement, damage ceiling, stable frame cost or visible population-frame claim is made.
+No runtime source, gameplay behavior, rendering, package scripts or deployment configuration changed. No immutable delivery, monotonic observer order, reentrancy isolation, observer fault containment, retry safety or frame-loop liveness claim is made.
