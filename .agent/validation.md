@@ -1,10 +1,10 @@
 # Validation - ZombieOrchard
 
-**Timestamp:** `2026-07-12T22-48-25-04-00`
+**Timestamp:** `2026-07-12T23-00-53-04-00`
 
 ## Scope
 
-Documentation-only audit of runtime subscriptions, snapshot publication, shared delivery objects, reentrant mutation, observer exceptions, browser frame liveness and deployment proof. Runtime source, dependencies, gameplay, rendering and deployment configuration were not changed.
+Documentation-only reconciliation of runtime subscriptions, snapshot publication, shared delivery objects, reentrant mutation, observer exceptions, browser-frame liveness and central tracking. Runtime source, dependencies, gameplay, rendering and deployment configuration were not changed.
 
 ## Plan ledger
 
@@ -16,10 +16,10 @@ Documentation-only audit of runtime subscriptions, snapshot publication, shared 
 - [x] Confirm command and tick mutation occurs before notification.
 - [x] Confirm listener errors are not isolated.
 - [x] Confirm listeners can re-enter public `command()` and `tick()`.
-- [x] Read `tests/smoke.mjs` and confirm subscription coverage is absent.
-- [x] Add timestamped architecture and system audits.
+- [x] Confirm the repo-local observer audit was newer than central tracking.
+- [x] Add timestamped reconciliation audits and root routing.
 - [x] Push documentation only to `main` without a branch or pull request.
-- [ ] Implement and run observer publication fixtures.
+- [ ] Implement and run observer-publication fixtures.
 
 ## Source-backed findings
 
@@ -47,6 +47,7 @@ tests/smoke.mjs
 ```txt
 implemented kit surfaces: 27
 engine-installed kits: 19
+host/support kits: 8
 listener registries: 1 Set
 publication sequences: 0
 observer identities: 0
@@ -91,6 +92,7 @@ npm run build: not run
 observer publication fixtures: unavailable / not run
 browser observer smoke: unavailable / not run
 Pages observer smoke: unavailable / not run
+central ledger synchronization: pending until paired central commit
 ```
 
 No immutable-delivery, monotonic-order, reentrancy-isolation, observer-fault-containment, retry-safety or visible-frame-liveness claim is made.
