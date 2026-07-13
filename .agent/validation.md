@@ -18,6 +18,7 @@ Documentation-only reconciliation of runtime subscriptions, snapshot publication
 - [x] Confirm listeners can re-enter public `command()` and `tick()`.
 - [x] Confirm the repo-local observer audit was newer than central tracking.
 - [x] Add timestamped reconciliation audits and root routing.
+- [x] Synchronize the central repo ledger and internal change log.
 - [x] Push documentation only to `main` without a branch or pull request.
 - [ ] Implement and run observer-publication fixtures.
 
@@ -86,13 +87,14 @@ HTML behavior changed: no
 deployment changed: no
 branch created: no
 pull request created: no
+central ledger synchronized: yes
+central change log added: yes
 
 npm test: not run
 npm run build: not run
 observer publication fixtures: unavailable / not run
 browser observer smoke: unavailable / not run
 Pages observer smoke: unavailable / not run
-central ledger synchronization: pending until paired central commit
 ```
 
 No immutable-delivery, monotonic-order, reentrancy-isolation, observer-fault-containment, retry-safety or visible-frame-liveness claim is made.
