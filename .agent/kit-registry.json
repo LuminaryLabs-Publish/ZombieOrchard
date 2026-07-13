@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 88,
-  "generatedAt": "2026-07-13T03-59-28-04-00",
+  "schemaVersion": 89,
+  "generatedAt": "2026-07-13T07-41-11-04-00",
   "repository": "LuminaryLabs-Publish/ZombieOrchard",
   "branch": "main",
-  "status": "canvas-html-frame-coherence-authority-audited",
+  "status": "canvas-html-frame-coherence-authority-central-reconciled",
   "retainedStatuses": [
     "runtime-event-lifecycle-publication-authority-audited",
     "runtime-observer-publication-authority-central-reconciled"
@@ -14,30 +14,32 @@
     "newEligibleCount": 0,
     "centralLedgerMissingCount": 0,
     "rootAgentMissingCount": 0,
+    "repoLocalNewerThanCentralCount": 0,
     "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
     "selectedRepository": "LuminaryLabs-Publish/ZombieOrchard",
-    "reason": "Oldest eligible documented repository in the current central-ledger ordering.",
+    "reason": "Oldest eligible central-ledger entry after all higher-priority selection classes were empty.",
     "ledgerOrder": [
-      "ZombieOrchard:2026-07-13T01-18-20-04-00:selected",
-      "MyCozyIsland:2026-07-13T01-40-00-04-00",
-      "TheUnmappedHouse:2026-07-13T01-49-49-04-00",
-      "AetherVale:2026-07-13T02-15-51-04-00",
-      "TheOpenAbove:2026-07-13T02-18-03-04-00",
-      "IntoTheMeadow:2026-07-13T02-39-44-04-00",
-      "PhantomCommand:2026-07-13T02-49-07-04-00",
-      "PrehistoricRush:2026-07-13T03-20-58-04-00",
-      "HorrorCorridor:2026-07-13T03-38-31-04-00"
+      "ZombieOrchard:2026-07-13T03-59-28-04-00:selected",
+      "MyCozyIsland:2026-07-13T04-21-10-04-00",
+      "TheUnmappedHouse:2026-07-13T04-47-00-04-00",
+      "AetherVale:2026-07-13T05-00-02-04-00",
+      "TheOpenAbove:2026-07-13T05-19-21-04-00",
+      "IntoTheMeadow:2026-07-13T05-40-11-04-00",
+      "PhantomCommand:2026-07-13T05-59-03-04-00",
+      "PrehistoricRush:2026-07-13T06-39-10-04-00",
+      "HorrorCorridor:2026-07-13T07-00-29-04-00"
     ]
   },
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-13T03-59-28-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-13T03-59-28-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-13T03-59-28-04-00-canvas-html-frame-coherence-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-13T03-59-28-04-00-canvas-html-visible-frame-coherence-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-13T03-59-28-04-00-runtime-state-dual-surface-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-13T03-59-28-04-00-command-frame-surface-result-map.md",
-    "frameCoherenceAudit": ".agent/frame-coherence-audit/2026-07-13T03-59-28-04-00-publication-canvas-html-commit-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-13T03-59-28-04-00-dual-surface-frame-fixture-gate.md"
+    "tracker": ".agent/trackers/2026-07-13T07-41-11-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-13T07-41-11-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-13T07-41-11-04-00-frame-coherence-central-reconciliation-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-13T07-41-11-04-00-dual-surface-visible-frame-central-reconciliation-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-13T07-41-11-04-00-runtime-dual-surface-central-reconciliation.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-13T07-41-11-04-00-frame-envelope-projection-central-reconciliation-map.md",
+    "frameCoherenceAudit": ".agent/frame-coherence-audit/2026-07-13T07-41-11-04-00-central-reconciliation-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-13T07-41-11-04-00-central-fixture-reconciliation-gate.md",
+    "centralSyncAudit": ".agent/central-sync-audit/2026-07-13T07-41-11-04-00-repo-ledger-frame-coherence-reconciliation.md"
   },
   "implementedKitSurfaceCount": 27,
   "engineInstalledKitCount": 19,
@@ -114,7 +116,7 @@
     "movement phases pest lifecycle score damage and failure",
     "canvas drawing-buffer allocation and world projection",
     "HTML route HUD cards controls and delegated interaction projection",
-    "dual-surface frame identity admission commit recovery and acknowledgement",
+    "dual-surface frame identity admission commit recovery diagnostics and acknowledgement",
     "validation static build Pages deployment and central tracking"
   ],
   "frameCoherenceFindings": {
@@ -185,7 +187,8 @@
     "runtimeObserverPublication": "2026-07-12T22-48-25-04-00",
     "runtimeObserverCentralReconciliation": "2026-07-12T23-00-53-04-00",
     "runtimeEventLifecyclePublication": "2026-07-13T01-18-20-04-00",
-    "canvasHtmlFrameCoherence": "2026-07-13T03-59-28-04-00"
+    "canvasHtmlFrameCoherence": "2026-07-13T03-59-28-04-00",
+    "canvasHtmlFrameCoherenceCentralReconciliation": "2026-07-13T07-41-11-04-00"
   },
   "validation": {
     "runtimeSourceChanged": false,
