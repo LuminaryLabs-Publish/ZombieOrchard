@@ -1,10 +1,10 @@
 # Known gaps - ZombieOrchard
 
-**Timestamp:** `2026-07-13T03-59-28-04-00`
+**Timestamp:** `2026-07-13T07-41-11-04-00`
 
 ## Summary
 
-The newest documented gap is canvas/HTML frame coherence. Runtime publication, canvas projection, HTML projection, diagnostics, and RAF scheduling have no shared immutable frame envelope or terminal visible-frame result.
+The current documented boundary remains canvas/HTML frame coherence. Runtime publication, canvas projection, HTML projection, diagnostics, and scheduling have no shared immutable frame envelope or terminal visible-frame result.
 
 ## Plan ledger
 
@@ -12,7 +12,7 @@ The newest documented gap is canvas/HTML frame coherence. Runtime publication, c
 
 - [ ] Runtime event identity, causal provenance, retention, and consumer acknowledgement.
 - [ ] Runtime observer publication order, immutability, and fault isolation.
-- [ ] Canvas/HTML shared frame envelope, surface results, and visible acknowledgement.
+- [ ] Canvas/HTML shared frame envelope, surface results, recovery, and visible acknowledgement.
 - [ ] Kit graph identity, manifests, compatibility, and atomic installation.
 - [ ] Runtime session identity, lifecycle, and callback generation fencing.
 - [ ] Run reset identity, participant reset, and atomic generation commit.
@@ -40,7 +40,7 @@ canvas projection terminal result: absent
 HTML projection terminal result: absent
 dual-surface complete/partial/failure classification: absent
 route-to-world-canvas visibility policy: implicit
-recovery and last-complete-frame policy: absent
+last-complete-frame and recovery policy: absent
 GameHost visible-frame readback: absent
 first dual-surface frame acknowledgement: absent
 ```
@@ -48,13 +48,14 @@ first dual-surface frame acknowledgement: absent
 ## Source consequences
 
 - `notify()` publishes one snapshot, while `tick()` returns another snapshot captured afterward.
-- Reentrant subscriber mutation can make observers and browser rendering see different state in one logical tick.
+- Reentrant subscriber mutation can split observer and browser-render state.
 - The canvas mutates before the HTML, so a later HTML failure can leave a partial visible frame.
 - Neither renderer returns a typed result.
-- Canvas dimensions are rewritten each frame and the HTML subtree is replaced each frame without a shared projection revision.
-- The canvas always renders the orchard and active session even when the interface route is a menu or outcome screen.
-- `GameHost.getState()` returns a fresh snapshot and cannot prove what the user actually saw.
-- Existing smoke proof cannot detect canvas/HTML divergence or partial-frame failure.
+- Canvas dimensions and the HTML subtree are replaced without shared projection revisions.
+- The canvas projects orchard/session state without consulting the active route.
+- `GameHost.getState()` returns fresh state and cannot prove what the user saw.
+- `GameHost.tick(dt)` can mutate state outside the ambient RAF path.
+- Existing smoke proof cannot detect surface divergence or recovery failure.
 
 ## Retained unresolved gaps
 
@@ -81,33 +82,18 @@ first dual-surface frame acknowledgement: absent
 - `Math.random()` prevents replay continuation.
 - Save Select has no versioned storage or migration authority.
 
-## Required fixtures
+## Required proof order
 
 ```txt
-publication snapshot and renderer envelope identity
-reentrant subscriber isolation
-canvas/HTML complete commit
-canvas-only partial failure
-HTML-only policy under canvas failure
-route-specific world visibility
-last-complete-frame recovery
-visible diagnostics readback
-first visible dual-surface frame acknowledgement
-source/dist/Pages parity
-```
-
-## Dependency order
-
-```txt
-runtime session and command identity
+runtime session identity
   -> immutable publication
   -> frame envelope identity
-  -> canvas and HTML projection receipts
+  -> canvas and HTML preparation receipts
   -> dual-surface commit and recovery
-  -> visible diagnostics
-  -> deployment proof
+  -> visible diagnostics and acknowledgement
+  -> source/dist/Pages parity
 ```
 
 ## Do not claim
 
-Do not claim atomic presentation, surface parity, route/world coherence, last-complete-frame recovery, or visible-frame proof until the required fixtures pass on `main`.
+Do not claim atomic presentation, surface parity, route/world coherence, last-complete-frame recovery, visible diagnostics parity, or production readiness until the required fixtures pass on `main`.
