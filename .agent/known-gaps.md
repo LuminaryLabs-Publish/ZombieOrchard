@@ -1,17 +1,21 @@
 # Known gaps - ZombieOrchard
 
-**Timestamp:** `2026-07-13T07-41-11-04-00`
+**Timestamp:** `2026-07-13T13-01-03-04-00`
 
 ## Summary
 
-The current documented boundary remains canvas/HTML frame coherence. Runtime publication, canvas projection, HTML projection, diagnostics, and scheduling have no shared immutable frame envelope or terminal visible-frame result.
+The current documented boundary is browser startup readiness and failure containment. Module evaluation owns engine installation, DOM/context acquisition, listener installation, public-host exposure, first tick, rendering, and RAF start without one startup generation, aggregate result, cleanup, fallback, retry, or first-visible-frame proof.
 
 ## Plan ledger
 
 **Goal:** keep unresolved risks dependency ordered and tied to executable proof.
 
-- [ ] Runtime event identity, causal provenance, retention, and consumer acknowledgement.
-- [ ] Runtime observer publication order, immutability, and fault isolation.
+- [ ] Browser startup identity, phases, dependency admission, and participant receipts.
+- [ ] Detached startup candidates, probe, atomic adoption, and complete disposal.
+- [ ] DOM-only failure projection and bounded retry.
+- [ ] Public-host readiness gating and first startup-frame acknowledgement.
+- [ ] Runtime event identity, provenance, retention, and consumer acknowledgement.
+- [ ] Observer publication order, immutability, and fault isolation.
 - [ ] Canvas/HTML shared frame envelope, surface results, recovery, and visible acknowledgement.
 - [ ] Kit graph identity, manifests, compatibility, and atomic installation.
 - [ ] Runtime session identity, lifecycle, and callback generation fencing.
@@ -27,35 +31,38 @@ The current documented boundary remains canvas/HTML frame coherence. Runtime pub
 - [ ] Seeded random and replay continuation.
 - [ ] Versioned save/load authority.
 
-## Frame-coherence gaps
+## Startup gaps
 
 ```txt
-state revision in snapshot: absent
-publication ID in snapshot: absent
-frame envelope ID and fingerprint: absent
-single capture shared by subscribers and renderers: absent
-canvas surface identity and revision: absent
-HTML surface identity and revision: absent
-canvas projection terminal result: absent
-HTML projection terminal result: absent
-dual-surface complete/partial/failure classification: absent
-route-to-world-canvas visibility policy: implicit
-last-complete-frame and recovery policy: absent
-GameHost visible-frame readback: absent
-first dual-surface frame acknowledgement: absent
+StartupAttemptId: absent
+StartupGeneration: absent
+startup phase/state machine: absent
+required DOM manifest: absent
+Canvas2D capability result: absent
+kit-graph preparation receipt: absent
+engine candidate: absent
+canvas/HTML candidate receipts: absent
+startup probe: absent
+atomic participant adoption: absent
+candidate disposal result: absent
+GameHost readiness gate: absent
+DOM-only failure projector: unused error panel
+retry policy and stale-generation rejection: absent
+first startup-frame acknowledgement: absent
+browser startup fixture matrix: absent
 ```
 
 ## Source consequences
 
-- `notify()` publishes one snapshot, while `tick()` returns another snapshot captured afterward.
-- Reentrant subscriber mutation can split observer and browser-render state.
-- The canvas mutates before the HTML, so a later HTML failure can leave a partial visible frame.
-- Neither renderer returns a typed result.
-- Canvas dimensions and the HTML subtree are replaced without shared projection revisions.
-- The canvas projects orchard/session state without consulting the active route.
-- `GameHost.getState()` returns fresh state and cannot prove what the user saw.
-- `GameHost.tick(dt)` can mutate state outside the ambient RAF path.
-- Existing smoke proof cannot detect surface divergence or recovery failure.
+- `boot.js` cannot classify or recover from module/start failures.
+- Missing DOM nodes fail through incidental property access rather than typed admission.
+- A null Canvas2D context survives construction and fails during first render.
+- Kit installation can fail after earlier domains were created, with no aggregate rollback receipt.
+- `GameHost` becomes public before a successful visible frame.
+- The first tick mutates gameplay before presentation readiness.
+- Canvas failure prevents HTML projection and successor RAF scheduling.
+- The hidden error panel remains unused.
+- The Node smoke does not execute the browser startup path.
 
 ## Retained unresolved gaps
 
@@ -76,6 +83,8 @@ first dual-surface frame acknowledgement: absent
 
 ### Rendering and persistence
 
+- Runtime subscribers and browser renderers can receive different snapshots.
+- Canvas and HTML have no atomic frame result or partial-frame recovery.
 - Canvas dimensions are rewritten every frame.
 - HTML projection replaces the subtree every frame.
 - Focus and selection continuity are not preserved.
@@ -85,15 +94,17 @@ first dual-surface frame acknowledgement: absent
 ## Required proof order
 
 ```txt
-runtime session identity
-  -> immutable publication
-  -> frame envelope identity
-  -> canvas and HTML preparation receipts
-  -> dual-surface commit and recovery
-  -> visible diagnostics and acknowledgement
+startup generation and dependency admission
+  -> detached participant preparation
+  -> startup and projection probe
+  -> atomic adoption or disposal
+  -> public-host and scheduler readiness
+  -> first startup-frame acknowledgement
+  -> immutable runtime publication
+  -> dual-surface frame coherence
   -> source/dist/Pages parity
 ```
 
 ## Do not claim
 
-Do not claim atomic presentation, surface parity, route/world coherence, last-complete-frame recovery, visible diagnostics parity, or production readiness until the required fixtures pass on `main`.
+Do not claim reliable startup, cleanup, fallback, retry safety, presentation readiness, first-visible-frame proof, atomic presentation, or production readiness until required fixtures pass on `main`.
