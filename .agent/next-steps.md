@@ -1,88 +1,88 @@
 # Next steps - ZombieOrchard
 
-**Timestamp:** `2026-07-13T07-41-11-04-00`
+**Timestamp:** `2026-07-13T13-01-03-04-00`
 
 ## Summary
 
-Implement one immutable frame envelope and one dual-surface commit authority before relying on the canvas and HTML as a coherent presentation. Runtime publication, both renderers, diagnostics, and scheduler recovery need stable identities and typed terminal results.
+Implement one browser startup authority before relying on module evaluation as a safe boot path. Engine installation, DOM/context acquisition, listener ownership, diagnostics exposure, first simulation tick, rendering, failure fallback, retry, and scheduler adoption need stable identities and typed terminal results.
 
 ## Plan ledger
 
-**Goal:** replace sequential ambient rendering with one revisioned presentation transaction covering observers, canvas, HTML, recovery, diagnostics, and visible acknowledgement.
+**Goal:** replace ambient startup side effects with one prepared, probed, atomically adopted generation.
 
-- [ ] Define `RuntimeSessionId`, `RunGeneration`, `StateRevision`, and `PublicationId`.
-- [ ] Capture one detached immutable `FrameEnvelope` per accepted runtime transition.
-- [ ] Stop re-snapshotting between subscriber publication and browser rendering.
-- [ ] Add `FrameEnvelopeId` and canonical `FrameFingerprint`.
-- [ ] Add canvas surface, viewport, and projection revisions.
-- [ ] Add HTML surface, route, and projection revisions.
-- [ ] Define route-specific world-canvas visibility policy.
-- [ ] Prepare both surface candidates against the same frame envelope.
-- [ ] Return typed canvas and HTML projection results.
-- [ ] Add `DualSurfaceFrameCommitResult` classifications.
-- [ ] Preserve or recover the last complete frame after partial failure.
-- [ ] Keep successor RAF scheduling and error recovery explicit.
-- [ ] Replace fresh-state diagnostics with last-complete-visible-frame readback.
-- [ ] Publish `FirstDualSurfaceFrameAck`.
-- [ ] Add Node model, source-browser, dist-browser, and Pages fixtures.
+- [ ] Define `StartupAttemptId`, `StartupGeneration`, and startup phases.
+- [ ] Add a required DOM/capability manifest for `#world`, `#ui-root`, `#error-panel`, and Canvas2D.
+- [ ] Prepare the engine and complete kit graph as a detached candidate.
+- [ ] Return per-participant preparation receipts.
+- [ ] Prepare canvas, HTML, diagnostics, and scheduler candidates without live publication.
+- [ ] Run a non-committing engine and projection probe.
+- [ ] Adopt every participant together or dispose every candidate.
+- [ ] Publish `GameHost` only after accepted adoption.
+- [ ] Keep gameplay ticks disabled until the accepted startup generation owns the scheduler.
+- [ ] Add `StartupReadyResult`, `StartupFailureResult`, and `StartupRetirementResult`.
+- [ ] Project failures through the DOM-only `#error-panel` path.
+- [ ] Add bounded retry with stale-generation rejection.
+- [ ] Publish `FirstStartupFrameAck`.
+- [ ] Add source, dist, and Pages browser fixtures.
 
 ## Immediate safe ledge
 
-1. Add runtime metadata to a detached frame envelope rather than every domain snapshot.
-2. Capture the envelope once after domain mutation and ticking.
-3. Pass that exact envelope to subscribers and both renderers.
-4. Make each renderer return `{ accepted, applied, surfaceRevision, frameEnvelopeId, reason }`.
-5. Add explicit route-to-canvas visibility policy.
-6. Record both surface results before scheduling the next frame.
-7. Retain the previous complete frame when either projection fails.
-8. Add `GameHost.getVisibleFrame()` using detached frame evidence.
-9. Add a reentrant-subscriber fixture.
-10. Add partial-render and scheduler-recovery fixtures.
+1. Move startup orchestration into an explicit `startBrowserGame()` function.
+2. Validate all required DOM nodes before engine or renderer adoption.
+3. Treat `canvas.getContext("2d") === null` as a typed capability failure.
+4. Prepare the engine and renderers before publishing globals or starting RAF.
+5. Render one probe frame without advancing live gameplay.
+6. Adopt the accepted generation and then publish `GameHost`.
+7. Keep a minimal DOM-only failure projector independent of canvas and runtime state.
+8. Ensure every candidate exposes disposal for listeners, callbacks, and references.
+9. Gate the first live tick on accepted startup readiness.
+10. Add fault injection for every startup participant.
 
 ## Target files
 
 ```txt
-src/kits/runtime.js
+src/boot.js
 src/start.js
+src/game.js
+src/kits/runtime.js
 src/renderer/world-canvas.js
 src/renderer/html-interface-renderer.js
-src/kits/frame-envelope.js
-src/kits/dual-surface-frame-authority.js
-tests/frame-envelope.fixture.mjs
-tests/dual-surface-parity.fixture.mjs
-tests/partial-frame-recovery.fixture.mjs
-scripts/smoke-dual-surface-browser.mjs
+src/startup/browser-startup-authority.js
+src/startup/startup-results.js
+tests/browser-startup.fixture.mjs
+scripts/smoke-startup-browser.mjs
 package.json
 ```
 
 ## Required fixtures
 
 ```txt
-one transition -> one immutable frame envelope
-subscriber and renderers -> same envelope ID/fingerprint
-reentrant subscriber -> no publication/render divergence
-canvas + HTML success -> complete result
-canvas success + HTML failure -> typed partial result and continued scheduler
-canvas failure -> explicit HTML degradation result
-stale route/viewport/surface -> zero-mutation rejection
-menu and outcome routes -> declared world visibility
-GameHost visible readback -> last complete frame
-source/dist/Pages -> equivalent envelope and receipts
+successful startup -> one accepted generation
+missing canvas -> visible typed failure
+missing UI root -> visible typed failure
+Canvas2D unavailable -> visible typed failure
+kit creation throws -> all candidates disposed
+canvas probe throws -> no live tick or GameHost
+HTML probe throws -> no live tick or GameHost
+retry -> new generation; predecessor remains retired
+successful adoption -> one scheduler owner
+first visible frame -> matching StartupGeneration acknowledgement
+source/dist/Pages -> equivalent terminal results
 ```
 
 ## Dependency order
 
 ```txt
-runtime session and command identity
-  -> immutable state publication
-  -> frame envelope identity and fingerprint
-  -> route, viewport, and surface revisions
-  -> per-surface preparation results
-  -> dual-surface commit and recovery
-  -> visible diagnostics and acknowledgement
+startup identity and phases
+  -> DOM/capability admission
+  -> kit-graph and participant preparation
+  -> projection probe
+  -> atomic adoption or disposal
+  -> diagnostics and scheduler publication
+  -> first-frame acknowledgement
   -> source/dist/Pages proof
 ```
 
 ## Do not claim
 
-Do not claim canvas/HTML parity, atomic presentation, partial-frame recovery, route/world coherence, visible diagnostics correctness, or production readiness until the fixture matrix passes on `main`.
+Do not claim reliable startup, visible failure handling, cleanup, retry safety, first-frame readiness, or production readiness until the fixture matrix passes on `main`.
