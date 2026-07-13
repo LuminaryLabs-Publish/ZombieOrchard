@@ -1,88 +1,70 @@
 # Next steps - ZombieOrchard
 
-**Timestamp:** `2026-07-13T13-01-03-04-00`
+**Timestamp:** `2026-07-13T18-00-38-04-00`
 
 ## Summary
 
-Implement one browser startup authority before relying on module evaluation as a safe boot path. Engine installation, DOM/context acquisition, listener ownership, diagnostics exposure, first simulation tick, rendering, failure fallback, retry, and scheduler adoption need stable identities and typed terminal results.
+Replace dynamic `innerHTML` interpolation with safe DOM construction and bind delegated controls to an authored, route-specific manifest. Keep startup, frame-coherence, event, and observer work as retained dependencies.
 
 ## Plan ledger
 
-**Goal:** replace ambient startup side effects with one prepared, probed, atomically adopted generation.
+**Goal:** make projected content inert and executable controls explicit.
 
-- [ ] Define `StartupAttemptId`, `StartupGeneration`, and startup phases.
-- [ ] Add a required DOM/capability manifest for `#world`, `#ui-root`, `#error-panel`, and Canvas2D.
-- [ ] Prepare the engine and complete kit graph as a detached candidate.
-- [ ] Return per-participant preparation receipts.
-- [ ] Prepare canvas, HTML, diagnostics, and scheduler candidates without live publication.
-- [ ] Run a non-committing engine and projection probe.
-- [ ] Adopt every participant together or dispose every candidate.
-- [ ] Publish `GameHost` only after accepted adoption.
-- [ ] Keep gameplay ticks disabled until the accepted startup generation owns the scheduler.
-- [ ] Add `StartupReadyResult`, `StartupFailureResult`, and `StartupRetirementResult`.
-- [ ] Project failures through the DOM-only `#error-panel` path.
-- [ ] Add bounded retry with stale-generation rejection.
-- [ ] Publish `FirstStartupFrameAck`.
-- [ ] Add source, dist, and Pages browser fixtures.
+- [ ] Define `ContentOriginId`, `ContentRevision`, and `HtmlProjectionCommandId`.
+- [ ] Define a projection field schema for text, attribute tokens, and trusted markup.
+- [ ] Default every gameplay and interface value to inert text.
+- [ ] Build buttons and cards with DOM APIs and `textContent`.
+- [ ] Validate action IDs before setting `data-action`.
+- [ ] Build a route-specific delegated-control manifest.
+- [ ] Reject controls not present in the active manifest.
+- [ ] Reject stale controls from predecessor content revisions.
+- [ ] Gate raw engine command access through a capability.
+- [ ] Prepare HTML in a detached fragment before live adoption.
+- [ ] Publish `HtmlContentSafetyResult` and `FirstVisibleHtmlContentFrameAck`.
+- [ ] Add malicious roster-name, action-label, action-ID, message, title, and description fixtures.
+- [ ] Run source, dist, and Pages parity fixtures.
 
 ## Immediate safe ledge
 
-1. Move startup orchestration into an explicit `startBrowserGame()` function.
-2. Validate all required DOM nodes before engine or renderer adoption.
-3. Treat `canvas.getContext("2d") === null` as a typed capability failure.
-4. Prepare the engine and renderers before publishing globals or starting RAF.
-5. Render one probe frame without advancing live gameplay.
-6. Adopt the accepted generation and then publish `GameHost`.
-7. Keep a minimal DOM-only failure projector independent of canvas and runtime state.
-8. Ensure every candidate exposes disposal for listeners, callbacks, and references.
-9. Gate the first live tick on accepted startup readiness.
-10. Add fault injection for every startup participant.
+1. Replace `text()` with DOM text-node construction rather than an escape helper.
+2. Replace `button()` and `cards()` string templates with element builders.
+3. Set attributes through DOM APIs after token validation.
+4. Store an authored control manifest per active route and content revision.
+5. Reject delegated clicks that do not map to the manifest.
+6. Add a browser fixture proving markup remains literal and cannot dispatch commands.
+7. Preserve the prior visible subtree when candidate construction fails.
 
 ## Target files
 
 ```txt
-src/boot.js
-src/start.js
-src/game.js
-src/kits/runtime.js
-src/renderer/world-canvas.js
 src/renderer/html-interface-renderer.js
-src/startup/browser-startup-authority.js
-src/startup/startup-results.js
-tests/browser-startup.fixture.mjs
-scripts/smoke-startup-browser.mjs
+src/start.js
+src/kits/runtime.js
+src/kits/composition.js
+src/kits/game-domains.js
+src/security/html-content-authority.js
+src/security/delegated-control-manifest.js
+tests/html-content-safety.fixture.mjs
+scripts/smoke-html-content-browser.mjs
 package.json
 ```
 
 ## Required fixtures
 
 ```txt
-successful startup -> one accepted generation
-missing canvas -> visible typed failure
-missing UI root -> visible typed failure
-Canvas2D unavailable -> visible typed failure
-kit creation throws -> all candidates disposed
-canvas probe throws -> no live tick or GameHost
-HTML probe throws -> no live tick or GameHost
-retry -> new generation; predecessor remains retired
-successful adoption -> one scheduler owner
-first visible frame -> matching StartupGeneration acknowledgement
-source/dist/Pages -> equivalent terminal results
-```
-
-## Dependency order
-
-```txt
-startup identity and phases
-  -> DOM/capability admission
-  -> kit-graph and participant preparation
-  -> projection probe
-  -> atomic adoption or disposal
-  -> diagnostics and scheduler publication
-  -> first-frame acknowledgement
-  -> source/dist/Pages proof
+script markup remains literal text
+event-handler attributes remain literal text
+closing tags cannot alter structure
+data-command text cannot create a control
+data-action text cannot create a control
+quoted action IDs cannot alter attributes
+inactive-route controls are rejected
+stale control generations are rejected
+failed candidate preserves predecessor DOM
+source/dist/Pages results match
+first visible content revision is acknowledged
 ```
 
 ## Do not claim
 
-Do not claim reliable startup, visible failure handling, cleanup, retry safety, first-frame readiness, or production readiness until the fixture matrix passes on `main`.
+Do not claim content safety, command-surface isolation, injection resistance, or production readiness until the fixture matrix passes on `main`.
