@@ -188,7 +188,7 @@
     "npmBuildRun": false,
     "cleanRunFixturesRun": false,
     "pagesCleanRunSmokeRun": false,
-    "centralLedgerSynchronized": false,
-    "centralChangeLogAdded": false
+    "centralLedgerSynchronized": true,
+    "centralChangeLogAdded": true
   }
 }
