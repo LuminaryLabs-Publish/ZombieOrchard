@@ -1,86 +1,83 @@
 # Next steps - ZombieOrchard
 
-**Timestamp:** `2026-07-14T10-59-56-04-00`
+**Timestamp:** `2026-07-14T16-41-33-04-00`
 
 ## Summary
 
-Turn roster hiring into a real gameplay capability. The next implementation should derive cost and role from authored offers, reject malformed or stale requests, reserve resources atomically, create safe actor identities, adopt deterministic worker effects, expose a browser Hire action and prove matching HTML and Canvas2D state.
+Turn Play, New Game, Start, Title, and retry into an explicit run lifecycle. The next implementation should allocate deterministic run identity, privately construct every mandatory domain candidate, atomically adopt the successor, suspend gameplay outside active play, reject predecessor work, and prove the first matching HTML/Canvas2D frame.
 
 ## Plan ledger
 
-**Goal:** make one hire settle exactly once across resources, roster, gameplay and presentation or leave every predecessor untouched.
+**Goal:** make one start settle exactly once across run identity, gameplay state, interface state, publication, and both render surfaces or leave the predecessor untouched.
 
-- [ ] Define `HireCommandId`, `RunGeneration`, `RosterRevision`, `WorkerCatalogRevision`, `ResourceRevision` and `WorkerEffectRevision`.
-- [ ] Replace caller-controlled costs with exact authored `HireOffer` lookup.
-- [ ] Reject negative, non-finite, string, fractional and unknown costs before reservation.
-- [ ] Add resource reservation, promotion and release semantics.
-- [ ] Add normalized, bounded and safely projected worker display names.
-- [ ] Define unique actor identity independent from current array length.
-- [ ] Add role catalog, capacity and duplicate policies.
-- [ ] Add authored worker capability, cadence, upkeep and presentation descriptors.
-- [ ] Add a Hire action to the roster route.
-- [ ] Return typed hire results through interface composition.
-- [ ] Prepare roster and worker-effect candidates before mutation.
-- [ ] Atomically commit roster, resource, active-session, HTML and Canvas2D consumers.
-- [ ] Make labor actions cite the accepted worker-effect revision.
-- [ ] Show worker identity, role and status in the roster screen.
-- [ ] Show worker count or active labor effect in the HUD.
-- [ ] Project workers or labor indicators in Canvas2D.
-- [ ] Roll back all partial consumers and release resource reservations after failure.
-- [ ] Add duplicate, stale, wrong-route, retired-run, unknown-offer, unknown-role and roster-full classification.
-- [ ] Publish `FirstVisibleRosterFrameAck`.
-- [ ] Add source, browser, dist and Pages roster-hiring fixtures.
+- [ ] Define `StartCommandId`, `HostGeneration`, `RunId`, `RunGeneration`, `PresetFingerprint`, `SeedPolicyRevision`, and `Seed`.
+- [ ] Define explicit start modes: `new`, `retry`, and `resume`.
+- [ ] Make Play choose resume only when an accepted resumable run exists.
+- [ ] Make New Game always allocate a distinct successor generation.
+- [ ] Make Start issue `RunStartCommand` instead of only routing.
+- [ ] Add deterministic orchard generation from the accepted seed.
+- [ ] Add reset candidates for resources, pressure, world, construction, roster, inventory, active-session, interface, events, HTML, and Canvas2D.
+- [ ] Keep accepted predecessor state immutable during candidate preparation.
+- [ ] Atomically adopt all mandatory candidates or retire the complete candidate.
+- [ ] Add predecessor outcome retention and retry lineage.
+- [ ] Suspend pressure and active gameplay outside accepted active play.
+- [ ] Make Title issue `RunExitCommand` before routing.
+- [ ] Reject duplicate, stale, retired, and superseded start/exit commands.
+- [ ] Reject predecessor ticks, events, commands, and frame publication after successor adoption.
+- [ ] Publish typed `RunStartResult` and `RunExitResult` values.
+- [ ] Expose `RunGeneration` in snapshots, HUD, GameHost, and Canvas2D evidence.
+- [ ] Publish `FirstVisibleRunFrameAck`.
+- [ ] Add source, browser, dist, and Pages clean-run fixtures.
 
 ## Immediate safe ledge
 
-1. Define one authored `harvest-hand` offer with a fixed positive money cost.
-2. Remove `payload.cost` from the accepted command contract.
-3. Validate finite positive integer offer cost before touching the ledger.
-4. Normalize and HTML-escape the display name.
-5. Add a roster capacity and unique actor ID generator bound to the run.
-6. Add an authored Hire button to the roster route.
-7. Define a minimal deterministic harvest effect descriptor.
-8. Make active-session adopt the worker effect only after roster and resource preparation succeed.
-9. Expose the accepted roster revision in roster cards, HUD and Canvas2D.
-10. Add success, rejection, duplicate, stale, rollback and visible-frame fixtures.
+1. Add one run-lifecycle coordinator without restructuring existing gameplay kits.
+2. Move all domain creation behind a function that accepts preset and deterministic seed.
+3. Add a candidate engine/domain graph rather than mutating the accepted graph in place.
+4. Route Play and Start only after candidate adoption succeeds.
+5. Gate `active-session.tick()` and `pressure-field.tick()` by accepted run activity.
+6. Preserve the prior engine graph until the successor's first frame is acknowledged.
+7. Retire the predecessor graph after acknowledgement.
+8. Add a failure-injection fixture for each mandatory participant.
 
 ## Target files
 
 ```txt
-src/kits/game-domains.js
-src/kits/scoped-interface-domains.js
+src/game.js
+src/start.js
+src/kits/runtime.js
 src/kits/composition.js
+src/kits/game-domains.js
 src/presets/orchard-preset.js
 src/renderer/html-interface-renderer.js
 src/renderer/world-canvas.js
-src/roster/hiring-authority.js
-src/roster/hire-offer-policy.js
-src/roster/worker-role-policy.js
-tests/roster-hiring.fixture.mjs
-scripts/smoke-roster-hiring-browser.mjs
+src/run/run-start-authority.js
+src/run/run-seed-policy.js
+src/run/run-adoption.js
+tests/clean-run-reset.fixture.mjs
+scripts/smoke-clean-run-browser.mjs
 package.json
 ```
 
 ## Required fixtures
 
 ```txt
-authored offer charges exact positive cost
-negative cost payload has no effect
-non-numeric cost payload has no effect
-unknown offer and role perform zero mutation
-unsafe name cannot create markup
-roster capacity is enforced
-duplicate command settles once
-stale command is rejected
-retired run is rejected
-worker effect is adopted exactly once
-resource, roster and gameplay receipts share one revision
-failed gameplay or render participant rolls back
-roster, HUD and Canvas2D show one accepted revision
-source, dist and Pages results match
-first visible roster frame is acknowledged
+first Play creates a clean generation
+New Game Start creates a distinct clean generation
+retry cites and preserves predecessor outcome
+preset values and empty mutable collections are restored
+same seed reproduces the first snapshot
+new seed changes the admitted orchard
+entry, setup, pause, menus, settings, and outcome suspend gameplay and pressure
+Title stops active gameplay admission
+duplicate and stale start commands do not mutate state
+candidate failure preserves predecessor state
+late predecessor work is rejected
+HTML and Canvas2D share one successor generation
+first visible successor frame is acknowledged
+source, dist, and Pages results match
 ```
 
 ## Do not claim
 
-Do not claim safe hiring, positive-cost settlement, actor identity safety, worker gameplay adoption, matching visible state, rollback, artifact parity or production readiness until the fixture matrix passes on `main`.
+Do not claim clean reset, deterministic replay, pause fidelity, atomic run adoption, predecessor isolation, matching visible state, artifact parity, or production readiness until the fixture matrix passes on `main`.
