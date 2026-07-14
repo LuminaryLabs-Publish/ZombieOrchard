@@ -1,75 +1,79 @@
 # Next steps - ZombieOrchard
 
-**Timestamp:** `2026-07-14T00-38-19-04-00`
+**Timestamp:** `2026-07-14T05-40-42-04-00`
 
 ## Summary
 
-Make the Storage Shed a real, attributable world object. The next implementation should validate the item and placement, reserve rather than immediately spend resources, adopt all mandatory consumers together, return the nested result to the interface command, and prove the first matching world frame.
+Turn inventory equipment into a real gameplay capability. The next implementation should validate exact owned items, resolve authored effects, commit inventory and active-session consumers together, expose a browser Equip action, and prove matching HTML and Canvas2D state.
 
 ## Plan ledger
 
-**Goal:** make construction settle exactly once and become visible, physical, and meaningful or leave the predecessor untouched.
+**Goal:** make equipment settle exactly once and affect gameplay and presentation or leave the predecessor untouched.
 
-- [ ] Define `ConstructionCommandId`, `RunGeneration`, `CatalogRevision`, `WorldRevision`, and `ResourceRevision`.
-- [ ] Reject unknown construction item IDs; remove the `catalog[0]` fallback.
-- [ ] Add an explicit placement intent or authored default placement policy.
-- [ ] Validate orchard bounds, tree/apple/player overlap, and structure overlap.
-- [ ] Quote and reserve resources before durable mutation.
-- [ ] Define construction geometry, collision, capacity, and gameplay-effect descriptors.
-- [ ] Prepare detached construction, render, collision, and effect candidates.
-- [ ] Commit resource debit and all mandatory consumers atomically.
-- [ ] Propagate `ConstructionSettlementResult` through `interface-composition`.
-- [ ] Render accepted structures in `world-canvas-renderer`.
-- [ ] Keep HTML and Canvas2D on one `ConstructionRevision`.
-- [ ] Roll back resources and partial consumers after failure.
-- [ ] Add idempotency and stale-command rejection.
-- [ ] Publish `FirstVisibleConstructionFrameAck`.
-- [ ] Add source, dist, and Pages construction fixtures.
+- [ ] Define `EquipmentCommandId`, `RunGeneration`, `InventoryRevision`, `ItemCatalogRevision`, and `EquipmentRevision`.
+- [ ] Replace arbitrary equipped-ID assignment with exact owned-item admission.
+- [ ] Add an equippable-item policy and slot contract.
+- [ ] Add authored range, power, stamina, cadence, durability, and presentation descriptors.
+- [ ] Add an Equip action to the inventory route.
+- [ ] Return typed equipment results through interface composition.
+- [ ] Prepare inventory and gameplay-effect candidates before mutation.
+- [ ] Atomically commit inventory, active-session, HTML, and Canvas2D consumers.
+- [ ] Make clear actions cite the accepted equipment revision.
+- [ ] Mark the equipped item in the inventory screen.
+- [ ] Show equipment in the active-session HUD.
+- [ ] Project the held item or effect in Canvas2D.
+- [ ] Roll back all partial consumers after failure.
+- [ ] Add duplicate, stale, wrong-route, retired-run, unknown-item, and unowned-item classification.
+- [ ] Publish `FirstVisibleEquipmentFrameAck`.
+- [ ] Add source, browser, dist, and Pages equipment fixtures.
 
 ## Immediate safe ledge
 
-1. Make catalog lookup exact and return `unknown-item`.
-2. Return the nested command result from `interface-composition`.
-3. Add a pure placement validator over orchard bounds and built occupancy.
-4. Add a descriptor for the Storage Shed's world rectangle and storage effect.
-5. Render `construction-runtime.built` in the Canvas2D world.
-6. Add a headless fixture for success, insufficient resources, unknown IDs, overlap, and duplicate commands.
-7. Add a browser fixture proving the structure appears in the matching frame.
-8. Preserve the predecessor state when any mandatory participant fails.
+1. Add item lookup and ownership validation to `inventory-runtime-kit`.
+2. Return `unknown-item` and `unowned-item` without mutation.
+3. Add an authored Equip action for the branch.
+4. Define a minimal branch effect descriptor.
+5. Make `clear` resolve range and power from the accepted equipment revision.
+6. Expose equipped state in the inventory screen and HUD.
+7. Render a simple held-item marker in Canvas2D.
+8. Add headless success, rejection, duplicate, stale, and rollback fixtures.
+9. Add a browser fixture proving HTML, Canvas2D, and gameplay use the same revision.
 
 ## Target files
 
 ```txt
-src/kits/composition.js
 src/kits/game-domains.js
+src/kits/scoped-interface-domains.js
+src/kits/composition.js
 src/presets/orchard-preset.js
-src/renderer/world-canvas.js
 src/renderer/html-interface-renderer.js
-src/construction/construction-authority.js
-src/construction/placement-policy.js
-tests/construction-settlement.fixture.mjs
-scripts/smoke-construction-browser.mjs
+src/renderer/world-canvas.js
+src/inventory/equipment-authority.js
+src/inventory/item-policy.js
+tests/inventory-equipment.fixture.mjs
+scripts/smoke-inventory-equipment-browser.mjs
 package.json
 ```
 
 ## Required fixtures
 
 ```txt
-known item settles exact quoted cost
+owned branch equips
 unknown item performs zero mutation
-insufficient resources performs zero mutation
+unowned item performs zero mutation
+invalid slot performs zero mutation
 duplicate command settles once
 stale command is rejected
-out-of-bounds placement is rejected
-tree/apple/player overlap is rejected
-structure overlap is rejected
-failed render/collision/effect participant rolls back
-accepted structure appears in HTML and Canvas2D on one revision
-storage effect activates only after commit
-source/dist/Pages results match
-first visible construction frame is acknowledged
+wrong route is rejected when policy requires it
+clear result cites matching EquipmentRevision
+authored effect changes range or power exactly once
+durability changes exactly once
+failed gameplay or render participant rolls back
+inventory, HUD, and Canvas2D show one revision
+source, dist, and Pages results match
+first visible equipment frame is acknowledged
 ```
 
 ## Do not claim
 
-Do not claim transactional construction, valid placement, visible world adoption, collision, storage effect, rollback, or production readiness until the fixture matrix passes on `main`.
+Do not claim valid equipment admission, equipment-aware gameplay, durability, visible equipment state, rollback, artifact parity, or production readiness until the fixture matrix passes on `main`.
