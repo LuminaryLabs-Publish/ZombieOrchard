@@ -1,55 +1,62 @@
 # Known gaps - ZombieOrchard
 
-**Timestamp:** `2026-07-13T18-00-38-04-00`
+**Timestamp:** `2026-07-14T00-38-19-04-00`
 
 ## Summary
 
-The current documented boundary is HTML content safety and delegated-command admission. Dynamic values are interpolated into `innerHTML`, while the same subtree is searched for executable `data-action` and `data-command` controls.
+The current documented boundary is construction settlement and world adoption. Resource debit and the built-record append occur, but item admission, spatial validity, downstream adoption, gameplay effect, result propagation, rollback, and visible proof remain incomplete.
 
 ## Plan ledger
 
-**Goal:** keep unresolved risks dependency ordered and tied to executable proof.
+**Goal:** keep construction risks dependency ordered and tied to executable proof.
 
-- [ ] Content origin, revision, field schema, and trust classification.
-- [ ] Safe text and attribute construction.
-- [ ] Trusted-markup capability separated from gameplay data.
-- [ ] Detached fragment preparation and atomic adoption.
-- [ ] Authored delegated-control manifest and route admission.
-- [ ] Unsafe-content and unauthorized-control rejection results.
-- [ ] First visible HTML content-frame acknowledgement.
-- [ ] Browser, dist, and Pages content-injection fixtures.
-- [ ] Browser startup identity, preparation, probe, adoption, fallback, and retry.
-- [ ] Runtime event provenance and observer publication fault isolation.
-- [ ] Canvas/HTML shared frame envelope and partial-frame recovery.
-- [ ] Kit graph, session, reset, clock, route, capability, action, economy, transaction, outcome, pest, random, and persistence authorities.
+- [ ] Exact item admission and catalog revision.
+- [ ] Command identity, expected revisions, idempotency, and stale rejection.
+- [ ] Cost quote and reversible resource reservation.
+- [ ] Placement intent, bounds, occupancy, and overlap admission.
+- [ ] Geometry, collision, capacity, and effect descriptors.
+- [ ] Atomic resource, construction, render, collision, and effect adoption.
+- [ ] Nested command result propagation to the interface boundary.
+- [ ] Shared HTML/Canvas construction revision.
+- [ ] Rollback and partial-consumer cleanup.
+- [ ] First visible construction-frame acknowledgement.
+- [ ] Headless, browser, dist, and Pages fixtures.
+- [ ] Retained content-safety, startup, frame-coherence, event, observer, clock, persistence, and transaction work.
 
-## Content-safety gaps
+## Construction gaps
 
 ```txt
-content origin identity: absent
-content revision: absent
-field-context schema: absent
-text encoding or direct-node result: absent
-attribute-token validation: absent
-trusted raw-markup capability: absent
-detached-fragment validation: absent
-delegated-control manifest: absent
-route-valid control admission: absent
-unsafe-content rejection result: absent
-unauthorized-control rejection result: absent
-first visible content-frame acknowledgement: absent
-content-injection fixtures: absent
+ConstructionCommandId: absent
+RunGeneration binding: absent
+CatalogRevision: absent
+exact unknown-item rejection: absent
+cost quote result: absent
+resource reservation: absent
+placement intent: absent
+orchard bounds admission: absent
+occupancy/overlap admission: absent
+geometry descriptor: absent
+collision descriptor: absent
+capacity/effect descriptor: absent
+multi-consumer prepare result: absent
+atomic adoption: absent
+nested result propagation: absent
+rollback result: absent
+ConstructionRevision: absent
+Canvas2D structure projection: absent
+first visible construction-frame acknowledgement: absent
+construction fixtures: absent
 ```
 
 ## Source consequences
 
-- `String()` preserves HTML metacharacters.
-- Card, message, title, description, action-label, and action-ID values can affect markup.
-- Roster names are caller provided.
-- `GameHost` exposes arbitrary runtime command dispatch.
-- Injected descendants can match delegated selectors.
-- `data-command` dispatch is not checked against the active route.
-- Existing smoke proof never constructs the HTML renderer.
+- Invalid construction IDs silently resolve to the first catalog entry.
+- Payment mutates before a durable construction result exists.
+- Fixed generated coordinates can overlap orchard content or leave the intended play area.
+- The construction screen can say a structure exists while the world surface shows none.
+- The Storage Shed consumes resources without increasing storage or changing gameplay.
+- The outer interface command cannot distinguish a successful build from an insufficient-resource rejection.
+- Smoke proof can pass while every construction consumer remains broken.
 
 ## Retained unresolved gaps
 
@@ -64,17 +71,18 @@ content-injection fixtures: absent
 
 - New Game and Start do not build a clean run.
 - Raw GameHost access bypasses intended boundaries.
-- Negative payments and unknown references remain unsafe.
-- Multi-domain operations lack prepare, commit, rollback, and idempotency.
+- Negative payments and unknown references remain unsafe outside this focused path.
+- Multi-domain operations lack general prepare, commit, rollback, and idempotency.
 - Terminal mutation and pest capacity remain unresolved.
 
-### Rendering and persistence
+### Rendering, content, and persistence
 
 - Canvas dimensions are rewritten every frame.
 - HTML replacement loses focus and selection continuity.
+- Dynamic HTML content is not yet safely constructed.
 - `Math.random()` prevents replay continuation.
 - Save Select has no versioned persistence authority.
 
 ## Do not claim
 
-Do not claim safe HTML projection, delegated-command isolation, startup reliability, atomic presentation, or production readiness until required fixtures pass on `main`.
+Do not claim valid construction placement, atomic resource settlement, world adoption, collision, gameplay effect, rollback, visible-frame convergence, or production readiness until required fixtures pass on `main`.

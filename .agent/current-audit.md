@@ -1,67 +1,70 @@
 # Current audit: ZombieOrchard
 
-**Timestamp:** `2026-07-13T18-00-38-04-00`  
-**Status:** `html-content-command-surface-authority-central-reconciled`  
+**Timestamp:** `2026-07-14T00-38-19-04-00`  
+**Status:** `construction-settlement-world-adoption-authority-central-reconciled`  
 **Branch:** `main`
 
 ## Summary
 
-The HTML renderer treats `String()` coercion as output encoding, then assigns template strings through `innerHTML`. Dynamic roster names, card labels, action labels and IDs, messages, titles, and descriptions can alter document structure. Because the same root uses delegated selectors for `data-action` and `data-command`, injected markup can also create executable controls.
+The Storage Shed path currently debits resources and appends an internal built record, but it does not settle one authoritative construction object. Unknown IDs fall back to the first catalog item, nested command results are discarded, placement is not validated, the Canvas2D world ignores built records, and no collision, gameplay effect, rollback, or visible-frame acknowledgement exists.
 
 ## Plan ledger
 
-**Goal:** preserve the full repository breakdown while making content trust, DOM construction, and command-surface admission explicit and testable.
+**Goal:** preserve the full repository breakdown while defining construction as one atomic resource, spatial, render, collision, and gameplay transaction.
 
 - [x] Compare the current Publish organization inventory and central tracking.
 - [x] Exclude `TheCavalryOfRome`.
 - [x] Confirm no higher-priority repository outranks the fallback rule.
 - [x] Select only ZombieOrchard as the oldest eligible central entry.
-- [x] Read runtime, interface, roster, renderer, host, preset, test, and build surfaces.
+- [x] Read boot, runtime, interface, composition, gameplay, preset, render, test, build, and deployment surfaces.
 - [x] Preserve all 27 implemented kits and offered services.
-- [x] Add and route the timestamped content-safety audit family.
+- [x] Add and route the timestamped construction audit family.
 - [x] Keep writes on `main`; create no branch or pull request.
-- [ ] Implement and run content-safety fixtures.
+- [ ] Implement and run construction-settlement and world-adoption fixtures.
 
 ## Selection comparison
 
 ```txt
-ZombieOrchard      2026-07-13T13-01-03-04-00 selected
-TheOpenAbove       2026-07-13T13-39-10-04-00
-MyCozyIsland       2026-07-13T14-39-40-04-00
-TheUnmappedHouse   2026-07-13T14-58-07-04-00
-AetherVale         2026-07-13T15-41-24-04-00
-IntoTheMeadow      2026-07-13T16-01-05-04-00
-PrehistoricRush    2026-07-13T16-41-10-04-00
-PhantomCommand     2026-07-13T17-00-59-04-00
-HorrorCorridor     2026-07-13T17-40-04-04-00
+ZombieOrchard      2026-07-13T18-00-38-04-00 selected
+TheUnmappedHouse   2026-07-13T19-58-19-04-00
+AetherVale         2026-07-13T20-40-15-04-00
+PhantomCommand     2026-07-13T21-02-54-04-00
+PrehistoricRush    2026-07-13T21-38-52-04-00
+IntoTheMeadow      2026-07-13T22-40-52-04-00
+TheOpenAbove       2026-07-13T22-58-22-04-00
+HorrorCorridor     2026-07-13T23-38-39-04-00
+MyCozyIsland       2026-07-13T23-58-48-04-00
 TheCavalryOfRome   excluded
 ```
 
 ## Complete interaction loop
 
 ```txt
-input or GameHost
-  -> engine.command(domain, type, payload)
-  -> mutable state
-  -> snapshot
-  -> String() and template string
-  -> innerHTML
-  -> DOM descendants
-  -> delegated data-action/data-command lookup
-  -> engine.command(...)
+click Build
+  -> interface-composition transitions to construction
+click Storage Shed
+  -> scoped action resolves
+  -> nested construction-runtime build command
+  -> requested ID matches or falls back to catalog[0]
+  -> resource-ledger immediately pays cost
+  -> construction-runtime appends built record with generated x/y
+  -> nested result is discarded
+  -> HTML construction route lists the built record
+  -> Canvas2D world still renders only trees, apples, pests, and player
+  -> return to active-session
+  -> no visible structure, collision, capacity, or gameplay effect
 ```
 
 ## Domains in use
 
 ```txt
-browser DOM, subtree replacement, delegated clicks, Canvas2D, RAF, and public GameHost
-runtime registration, arbitrary commands, ticks, events, snapshots, subscribers, and publication
+browser document, Canvas2D, HTML subtree replacement, delegated clicks, RAF, and public GameHost
+runtime registration, commands, ticks, events, snapshots, subscribers, and publication
 12 interface domains and interface composition
 resource ledger, pressure, orchard, construction, roster, and inventory
 movement, collection, phases, pests, score, damage, failure, and outcome
-dynamic content projection and executable-control admission
-content origin, trust, safe DOM construction, control manifests, rejection, and visible proof
-Node smoke, static build, Pages deployment, and central tracking
+construction catalog, payment, placement, adoption, collision, effect, rollback, and visible proof
+content safety, startup, frame coherence, validation, static build, Pages deployment, and central tracking
 ```
 
 ## Implemented kits and offered services
@@ -78,48 +81,48 @@ smoke, build, and Pages deployment
 
 ## Source-backed findings
 
-- `text()` only calls `String()`.
-- `button()` interpolates action IDs and labels into markup.
-- `cards()` interpolates labels, names, IDs, summaries, roles, and types.
-- Messages, titles, and descriptions enter `innerHTML`.
-- `roster-runtime` stores caller-provided `payload.name`.
-- `GameHost` exposes the raw engine.
-- The delegated listener accepts any matching descendant.
-- No content-origin, field-context, trusted-markup, control-manifest, rejection, or security fixture exists.
+- The Storage Shed descriptor contains only an ID, label, and cost.
+- Unknown item IDs fall back to `catalog[0]`.
+- Resource payment occurs before any multi-consumer construction settlement.
+- Built coordinates derive from array length and are not validated.
+- `interface-composition` discards the nested build result.
+- HTML lists built records, while Canvas2D ignores them.
+- Active-session has no construction collision or gameplay-effect consumer.
+- The smoke test never exercises construction.
 
 ## Required parent domain
 
 ```txt
-zombie-orchard-html-content-command-surface-authority-domain
+zombie-orchard-construction-settlement-world-adoption-authority-domain
 ```
 
 ## Required transaction
 
 ```txt
-HtmlProjectionCommand
-  -> bind snapshot, route, content origin, and expected revision
-  -> classify field context and trust
-  -> validate action and command tokens
-  -> encode or construct nodes directly
-  -> reject unsafe content with zero live mutation
-  -> prepare detached DOM and control manifest
-  -> atomically adopt the accepted revision
-  -> publish HtmlContentSafetyResult
-  -> acknowledge the first visible matching content frame
+ConstructionCommand
+  -> bind run, command, catalog, resource, world, route, and placement revisions
+  -> reject unknown, duplicate, stale, unaffordable, invalid, or overlapping work
+  -> reserve cost without durable mutation
+  -> prepare construction, canvas, collision, and effect candidates
+  -> commit all mandatory participants atomically
+  -> publish ConstructionSettlementResult
+  -> project one ConstructionRevision into HTML and Canvas2D
+  -> acknowledge the first matching visible frame
+  -> otherwise roll back resources and partial consumers
 ```
 
 ## Current file family
 
 ```txt
-.agent/trackers/2026-07-13T18-00-38-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-13T18-00-38-04-00.md
-.agent/architecture-audit/2026-07-13T18-00-38-04-00-html-content-command-surface-dsk-map.md
-.agent/render-audit/2026-07-13T18-00-38-04-00-unsafe-html-visible-projection-gap.md
-.agent/gameplay-audit/2026-07-13T18-00-38-04-00-roster-content-delegated-command-loop.md
-.agent/interaction-audit/2026-07-13T18-00-38-04-00-content-origin-projection-command-result-map.md
-.agent/content-safety-audit/2026-07-13T18-00-38-04-00-innerhtml-delegated-control-contract.md
-.agent/deploy-audit/2026-07-13T18-00-38-04-00-content-injection-fixture-gate.md
-.agent/central-sync-audit/2026-07-13T18-00-38-04-00-repo-ledger-content-safety-reconciliation.md
+.agent/trackers/2026-07-14T00-38-19-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-14T00-38-19-04-00.md
+.agent/architecture-audit/2026-07-14T00-38-19-04-00-construction-settlement-world-adoption-dsk-map.md
+.agent/render-audit/2026-07-14T00-38-19-04-00-built-structure-visible-world-gap.md
+.agent/gameplay-audit/2026-07-14T00-38-19-04-00-resource-payment-inert-construction-loop.md
+.agent/interaction-audit/2026-07-14T00-38-19-04-00-build-command-settlement-adoption-map.md
+.agent/construction-audit/2026-07-14T00-38-19-04-00-placement-collision-effect-contract.md
+.agent/deploy-audit/2026-07-14T00-38-19-04-00-construction-adoption-fixture-gate.md
+.agent/central-sync-audit/2026-07-14T00-38-19-04-00-repo-ledger-construction-adoption-reconciliation.md
 ```
 
 ## Validation boundary

@@ -1,58 +1,59 @@
 # Validation - ZombieOrchard
 
-**Timestamp:** `2026-07-13T18-00-38-04-00`
+**Timestamp:** `2026-07-14T00-38-19-04-00`
 
 ## Scope
 
-Documentation-only audit of organization selection, raw runtime command access, roster mutation, scoped interface actions, interface composition, HTML serialization, `innerHTML` adoption, delegated click handling, smoke proof, build, deployment gates, and central tracking.
+Documentation-only audit of organization selection, construction route activation, nested command dispatch, catalog lookup, resource payment, built-record placement, HTML projection, Canvas2D projection, smoke proof, static build, Pages deployment, and central tracking.
 
 ## Plan ledger
 
-**Goal:** record exact source evidence and the proof required before content-safety claims are made.
+**Goal:** record exact source evidence and the proof required before construction-settlement or world-adoption claims are made.
 
 - [x] Read the current Publish organization inventory.
 - [x] Compare all nine eligible repositories with central tracking.
+- [x] Confirm every current repository head matches the recorded repo-local documentation head.
 - [x] Select ZombieOrchard as the oldest eligible central entry.
-- [x] Read `src/start.js`.
+- [x] Read `index.html`, `src/boot.js`, `src/start.js`, and `src/game.js`.
 - [x] Read `src/kits/runtime.js`.
 - [x] Read `src/kits/scoped-interface-domains.js`.
 - [x] Read `src/kits/composition.js`.
 - [x] Read `src/kits/game-domains.js`.
 - [x] Read `src/presets/orchard-preset.js`.
-- [x] Read `src/renderer/html-interface-renderer.js`.
+- [x] Read both renderers.
 - [x] Read `tests/smoke.mjs` and `package.json`.
-- [x] Confirm dynamic values enter `innerHTML` without context-aware encoding.
-- [x] Confirm caller-provided roster names are reachable from the public raw engine.
-- [x] Confirm injected matching descendants are accepted by delegated selectors.
+- [x] Confirm purchase, built-record, HTML, and Canvas consumers are not one transaction.
 - [x] Preserve all 27 kit surfaces and services.
 - [x] Add timestamped audits and root routing.
 - [x] Keep documentation writes on `main` with no branch or pull request.
-- [ ] Implement and run content-safety fixtures.
+- [ ] Implement and run construction-settlement fixtures.
 
 ## Source-backed findings
 
 ```txt
-src/start.js
-  -> exposes window.GameHost.engine
+src/presets/orchard-preset.js
+  -> Storage Shed has id, label, and cost only
+  -> construction action dispatches construction-runtime/build
 
-src/kits/runtime.js
-  -> command(domainId, type, payload) accepts arbitrary identifiers and payload
-  -> notifies after command mutation
+src/kits/composition.js
+  -> nested command result is discarded
+  -> outer activation can return accepted independently
 
 src/kits/game-domains.js
-  -> roster hire stores payload.name
+  -> unknown item falls back to catalog[0]
+  -> resource payment occurs before built-record append
+  -> placement is derived from built count
+  -> no bounds, overlap, collision, or effect admission
 
 src/renderer/html-interface-renderer.js
-  -> text() calls String() only
-  -> button() interpolates action ID and label
-  -> cards() interpolates label/name/id and summary/role/type
-  -> messages, titles, and descriptions are interpolated
-  -> root.innerHTML adopts the generated markup
-  -> delegated listener accepts matching descendants
+  -> construction route lists construction-runtime.built
+
+src/renderer/world-canvas.js
+  -> reads orchard-world and active-session only
+  -> never projects construction-runtime.built
 
 tests/smoke.mjs
-  -> never constructs the HTML renderer
-  -> contains no malicious-content or delegated-control fixture
+  -> verifies Entry, Play, and apple presence only
 ```
 
 ## Deterministic observations
@@ -63,31 +64,32 @@ eligible repositories: 9
 implemented kit surfaces: 27
 engine-installed kits: 19
 host/support kits: 8
-innerHTML assignment sites in renderer: 2
-delegated command selector classes: 2
-content-origin identity types: 0
-content revisions: 0
-safe field-context result types: 0
-delegated-control manifests: 0
-unsafe-content result types: 0
-content-injection fixtures: 0
+construction catalog entries: 1
+built-record consumers in HTML: 1
+built-record consumers in Canvas2D: 0
+collision consumers: 0
+gameplay-effect consumers: 0
+construction command/result IDs: 0
+construction rollback results: 0
+construction fixtures: 0
 ```
 
 ## Required fixture matrix
 
 ```txt
-script markup remains literal
-event attributes remain literal
-closing tags cannot alter DOM structure
-injected data-action cannot dispatch
-injected data-command cannot dispatch
-action labels and IDs remain safe
-messages/titles/descriptions remain safe
-controls require active-route manifest membership
-stale controls are rejected
-failed candidate preserves predecessor subtree
+exact known-item admission
+unknown-item zero mutation
+insufficient-resource zero mutation
+duplicate and stale command rejection
+cost quote and reservation settlement
+bounds and overlap validation
+resource/construction/render/collision/effect atomicity
+failure rollback
+nested result propagation
+matching HTML and Canvas revisions
+gameplay effect activation
 source/dist/Pages parity
-first visible content revision acknowledgement
+first visible construction-frame acknowledgement
 ```
 
 ## Validation result
@@ -107,9 +109,9 @@ pull request created: no
 
 npm test: not run
 npm run build: not run
-browser content-safety fixtures: unavailable / not run
-delegated-control fixtures: unavailable / not run
-Pages content-safety smoke: unavailable / not run
+headless construction fixtures: unavailable / not run
+browser construction fixtures: unavailable / not run
+Pages construction smoke: unavailable / not run
 ```
 
-No safe HTML, command-origin, injection-resistance, visible-content, or production-readiness claim is made.
+No exact item admission, resource reservation, spatial validity, atomic adoption, visible construction, collision, gameplay effect, rollback, or production-readiness claim is made.

@@ -1,70 +1,75 @@
 # Next steps - ZombieOrchard
 
-**Timestamp:** `2026-07-13T18-00-38-04-00`
+**Timestamp:** `2026-07-14T00-38-19-04-00`
 
 ## Summary
 
-Replace dynamic `innerHTML` interpolation with safe DOM construction and bind delegated controls to an authored, route-specific manifest. Keep startup, frame-coherence, event, and observer work as retained dependencies.
+Make the Storage Shed a real, attributable world object. The next implementation should validate the item and placement, reserve rather than immediately spend resources, adopt all mandatory consumers together, return the nested result to the interface command, and prove the first matching world frame.
 
 ## Plan ledger
 
-**Goal:** make projected content inert and executable controls explicit.
+**Goal:** make construction settle exactly once and become visible, physical, and meaningful or leave the predecessor untouched.
 
-- [ ] Define `ContentOriginId`, `ContentRevision`, and `HtmlProjectionCommandId`.
-- [ ] Define a projection field schema for text, attribute tokens, and trusted markup.
-- [ ] Default every gameplay and interface value to inert text.
-- [ ] Build buttons and cards with DOM APIs and `textContent`.
-- [ ] Validate action IDs before setting `data-action`.
-- [ ] Build a route-specific delegated-control manifest.
-- [ ] Reject controls not present in the active manifest.
-- [ ] Reject stale controls from predecessor content revisions.
-- [ ] Gate raw engine command access through a capability.
-- [ ] Prepare HTML in a detached fragment before live adoption.
-- [ ] Publish `HtmlContentSafetyResult` and `FirstVisibleHtmlContentFrameAck`.
-- [ ] Add malicious roster-name, action-label, action-ID, message, title, and description fixtures.
-- [ ] Run source, dist, and Pages parity fixtures.
+- [ ] Define `ConstructionCommandId`, `RunGeneration`, `CatalogRevision`, `WorldRevision`, and `ResourceRevision`.
+- [ ] Reject unknown construction item IDs; remove the `catalog[0]` fallback.
+- [ ] Add an explicit placement intent or authored default placement policy.
+- [ ] Validate orchard bounds, tree/apple/player overlap, and structure overlap.
+- [ ] Quote and reserve resources before durable mutation.
+- [ ] Define construction geometry, collision, capacity, and gameplay-effect descriptors.
+- [ ] Prepare detached construction, render, collision, and effect candidates.
+- [ ] Commit resource debit and all mandatory consumers atomically.
+- [ ] Propagate `ConstructionSettlementResult` through `interface-composition`.
+- [ ] Render accepted structures in `world-canvas-renderer`.
+- [ ] Keep HTML and Canvas2D on one `ConstructionRevision`.
+- [ ] Roll back resources and partial consumers after failure.
+- [ ] Add idempotency and stale-command rejection.
+- [ ] Publish `FirstVisibleConstructionFrameAck`.
+- [ ] Add source, dist, and Pages construction fixtures.
 
 ## Immediate safe ledge
 
-1. Replace `text()` with DOM text-node construction rather than an escape helper.
-2. Replace `button()` and `cards()` string templates with element builders.
-3. Set attributes through DOM APIs after token validation.
-4. Store an authored control manifest per active route and content revision.
-5. Reject delegated clicks that do not map to the manifest.
-6. Add a browser fixture proving markup remains literal and cannot dispatch commands.
-7. Preserve the prior visible subtree when candidate construction fails.
+1. Make catalog lookup exact and return `unknown-item`.
+2. Return the nested command result from `interface-composition`.
+3. Add a pure placement validator over orchard bounds and built occupancy.
+4. Add a descriptor for the Storage Shed's world rectangle and storage effect.
+5. Render `construction-runtime.built` in the Canvas2D world.
+6. Add a headless fixture for success, insufficient resources, unknown IDs, overlap, and duplicate commands.
+7. Add a browser fixture proving the structure appears in the matching frame.
+8. Preserve the predecessor state when any mandatory participant fails.
 
 ## Target files
 
 ```txt
-src/renderer/html-interface-renderer.js
-src/start.js
-src/kits/runtime.js
 src/kits/composition.js
 src/kits/game-domains.js
-src/security/html-content-authority.js
-src/security/delegated-control-manifest.js
-tests/html-content-safety.fixture.mjs
-scripts/smoke-html-content-browser.mjs
+src/presets/orchard-preset.js
+src/renderer/world-canvas.js
+src/renderer/html-interface-renderer.js
+src/construction/construction-authority.js
+src/construction/placement-policy.js
+tests/construction-settlement.fixture.mjs
+scripts/smoke-construction-browser.mjs
 package.json
 ```
 
 ## Required fixtures
 
 ```txt
-script markup remains literal text
-event-handler attributes remain literal text
-closing tags cannot alter structure
-data-command text cannot create a control
-data-action text cannot create a control
-quoted action IDs cannot alter attributes
-inactive-route controls are rejected
-stale control generations are rejected
-failed candidate preserves predecessor DOM
+known item settles exact quoted cost
+unknown item performs zero mutation
+insufficient resources performs zero mutation
+duplicate command settles once
+stale command is rejected
+out-of-bounds placement is rejected
+tree/apple/player overlap is rejected
+structure overlap is rejected
+failed render/collision/effect participant rolls back
+accepted structure appears in HTML and Canvas2D on one revision
+storage effect activates only after commit
 source/dist/Pages results match
-first visible content revision is acknowledged
+first visible construction frame is acknowledged
 ```
 
 ## Do not claim
 
-Do not claim content safety, command-surface isolation, injection resistance, or production readiness until the fixture matrix passes on `main`.
+Do not claim transactional construction, valid placement, visible world adoption, collision, storage effect, rollback, or production readiness until the fixture matrix passes on `main`.

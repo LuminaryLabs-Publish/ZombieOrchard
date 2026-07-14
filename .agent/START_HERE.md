@@ -2,82 +2,89 @@
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Aligned:** `2026-07-13T18-00-38-04-00`  
-**Status:** `html-content-command-surface-authority-central-reconciled`  
-**Retained statuses:** `browser-startup-readiness-failure-authority-central-reconciled`, `canvas-html-frame-coherence-authority-central-reconciled`, `runtime-event-lifecycle-publication-authority-audited`, `runtime-observer-publication-authority-central-reconciled`
+**Aligned:** `2026-07-14T00-38-19-04-00`  
+**Status:** `construction-settlement-world-adoption-authority-central-reconciled`  
+**Retained statuses:** `html-content-command-surface-authority-central-reconciled`, `browser-startup-readiness-failure-authority-central-reconciled`, `canvas-html-frame-coherence-authority-central-reconciled`, `runtime-event-lifecycle-publication-authority-audited`, `runtime-observer-publication-authority-central-reconciled`
 
 ## Summary
 
 ZombieOrchard is a dependency-free orchard survival and economy shell built from a mutable kit runtime, 12 interface definitions, gameplay services, Canvas2D and HTML projection, diagnostics, Node smoke proof, static build, and Pages deployment.
 
-The current audit isolates the HTML content and delegated-command boundary. Dynamic values are coerced with `String()` and interpolated into `innerHTML`. The same root accepts any descendant carrying `data-action` or `data-command`, so caller-provided display data can become markup and then become a live command control.
+The current audit isolates construction settlement and world adoption. Buying the Storage Shed debits resources and records a structure, but the command result is not propagated, placement is not admitted against the orchard, the Canvas2D world ignores built records, and the purchased structure has no collision or gameplay effect.
 
 ## Plan ledger
 
-**Goal:** make every visible value inert by default and every executable control explicitly authored, route-valid, revisioned, and acknowledged.
+**Goal:** make construction one atomic transaction from authored item request through resource settlement, spatial adoption, gameplay effect, matching HTML/Canvas projection, rollback, and visible proof.
 
 - [x] Compare all ten current Publish repositories with central tracking.
 - [x] Exclude `TheCavalryOfRome`.
+- [x] Confirm every eligible repository is tracked, root-documented, and synchronized.
 - [x] Select only ZombieOrchard as the oldest eligible central entry.
-- [x] Preserve the complete interaction loop, domain inventory, 27-kit census, and services.
-- [x] Add the timestamped content-safety audit family.
-- [x] Refresh required root `.agent` documents.
-- [x] Keep writes on `main`; create no branch or pull request.
-- [ ] Implement safe DOM construction, delegated-control manifests, and executable fixtures.
+- [x] Read boot, runtime, interface, composition, gameplay, preset, renderer, smoke, build, and deployment surfaces.
+- [x] Preserve all 27 implemented kits and offered services.
+- [x] Add the timestamped construction-settlement audit family.
+- [x] Refresh required root `.agent` documents and the machine registry.
+- [x] Push only to `main`; create no branch or pull request.
+- [ ] Implement transactional construction adoption and executable fixtures.
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-13T18-00-38-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-13T18-00-38-04-00.md
-.agent/current-audit.md
-.agent/known-gaps.md
-.agent/next-steps.md
-.agent/validation.md
-.agent/kit-registry.json
-.agent/architecture-audit/2026-07-13T18-00-38-04-00-html-content-command-surface-dsk-map.md
-.agent/render-audit/2026-07-13T18-00-38-04-00-unsafe-html-visible-projection-gap.md
-.agent/gameplay-audit/2026-07-13T18-00-38-04-00-roster-content-delegated-command-loop.md
-.agent/interaction-audit/2026-07-13T18-00-38-04-00-content-origin-projection-command-result-map.md
-.agent/content-safety-audit/2026-07-13T18-00-38-04-00-innerhtml-delegated-control-contract.md
-.agent/deploy-audit/2026-07-13T18-00-38-04-00-content-injection-fixture-gate.md
-.agent/central-sync-audit/2026-07-13T18-00-38-04-00-repo-ledger-content-safety-reconciliation.md
+.agent/trackers/2026-07-14T00-38-19-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-14T00-38-19-04-00.md
+.agent/architecture-audit/2026-07-14T00-38-19-04-00-construction-settlement-world-adoption-dsk-map.md
+.agent/render-audit/2026-07-14T00-38-19-04-00-built-structure-visible-world-gap.md
+.agent/gameplay-audit/2026-07-14T00-38-19-04-00-resource-payment-inert-construction-loop.md
+.agent/interaction-audit/2026-07-14T00-38-19-04-00-build-command-settlement-adoption-map.md
+.agent/construction-audit/2026-07-14T00-38-19-04-00-placement-collision-effect-contract.md
+.agent/deploy-audit/2026-07-14T00-38-19-04-00-construction-adoption-fixture-gate.md
+.agent/central-sync-audit/2026-07-14T00-38-19-04-00-repo-ledger-construction-adoption-reconciliation.md
 ```
 
 ## Complete interaction loop
 
 ```txt
-browser or public-host input
-  -> runtime command(domain, type, payload)
-  -> domain mutates state
-  -> snapshot reaches HTML renderer
-  -> String() coercion and template interpolation
-  -> root.innerHTML replaces the subtree
-  -> delegated listener accepts matching descendants
-  -> injected data-action or data-command can dispatch a runtime command
+browser click or GameHost command
+  -> interface-composition transition to construction
+  -> construction route exposes Storage Shed action
+  -> interface-composition activate
+  -> scoped construction action resolves
+  -> nested construction-runtime build dispatch
+  -> requested catalog id resolves, or silently falls back to catalog[0]
+  -> resource-ledger pay mutates balances
+  -> construction-runtime appends a built record at generated x/y
+  -> nested command publishes one snapshot
+  -> outer composition ignores the nested command result
+  -> next RAF tick publishes another snapshot
+  -> HTML construction screen lists the built record
+  -> Canvas2D world renders trees, apples, pests, and player only
+  -> Back returns to active-session
+  -> purchased structure has no world projection, collision, capacity, or gameplay effect
 ```
 
 ## Required authority
 
 ```txt
-zombie-orchard-html-content-command-surface-authority-domain
+zombie-orchard-construction-settlement-world-adoption-authority-domain
 ```
 
 ## Required transaction
 
 ```txt
-HtmlProjectionCommand
-  -> bind snapshot revision, route, content origin, and projection ID
-  -> classify fields as text, attribute token, or explicitly trusted markup
-  -> validate authored controls against the active route
-  -> encode values or build nodes directly
-  -> reject untrusted markup without live DOM mutation
-  -> prepare and validate a detached fragment and control manifest
-  -> atomically adopt the accepted subtree
-  -> publish HtmlContentSafetyResult
-  -> publish FirstVisibleHtmlContentFrameAck
+ConstructionCommand
+  -> bind RunGeneration, ConstructionCommandId, CatalogRevision, WorldRevision,
+     ResourceRevision, expected route, requested item, and placement intent
+  -> reject unknown items instead of falling back
+  -> quote cost and reserve resources without durable mutation
+  -> validate bounds, occupancy, collision, capacity, and item policy
+  -> prepare immutable construction, canvas, collision, and effect candidates
+  -> commit resource debit and construction adoption atomically
+  -> publish ConstructionSettlementResult
+  -> project the same ConstructionRevision into HTML and Canvas2D
+  -> acknowledge FirstVisibleConstructionFrameAck
+  -> otherwise release reservations, remove partial consumers, and restore predecessor state
 ```
 
 ## Validation boundary
 
-Documentation only. Runtime source, HTML, CSS, gameplay, rendering, dependencies, package scripts, tests, workflows, and deployment were not changed. No injection resistance, command-surface isolation, visible content proof, or production-readiness claim is made.
+Documentation only. Runtime source, gameplay, HTML, CSS, Canvas2D behavior, dependencies, package scripts, tests, workflows, build, and deployment were not changed. No atomic settlement, spatial admission, visible construction, collision, gameplay effect, rollback, or production-readiness claim is made.
