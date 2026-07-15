@@ -1,92 +1,106 @@
-# Next steps: ZombieOrchard route-bound simulation suspension
+# Next steps: ZombieOrchard save-slot session selection
 
-**Timestamp:** `2026-07-15T08-26-01-04-00`  
-**Status:** `route-simulation-suspension-admission-authority-audited`
+**Timestamp:** `2026-07-15T12-39-01-04-00`  
+**Status:** `save-slot-session-selection-admission-authority-audited`
 
 ## Summary
 
-Add a route-simulation authority before changing individual gameplay domains. Every transition must settle the active route, pressure lease, active-session lease, stale input/time debt and render revision together.
+Implement one save/session authority before adding individual storage calls. Discovery, load, new-session creation, whole-runtime adoption, route transition and visible-frame acknowledgement must settle as one coordinated contract.
 
 ## Plan ledger
 
-**Goal:** make Pause and non-gameplay routes truly suspend hazards while preserving deterministic state and exact resume behavior.
+**Goal:** make Save Select truthful and ensure every active run has a stable, durable session identity.
 
-### Gate 1: identity and policy
+### Gate 1: identity and schema
 
-- [ ] Add `RunGeneration`, `RouteRevision`, `TransitionCommandId` and `SimulationPolicyRevision`.
-- [ ] Define policies for running, suspended, background-safe, terminal and retired.
-- [ ] Assign a default policy to all 12 routes.
-- [ ] Reject unknown, stale, duplicate and conflicting transitions.
+- [ ] Add `SaveSchemaVersion`, `SaveSlotId`, `SaveRevision`, `RunGeneration` and `StorageGeneration`.
+- [ ] Define the complete durable save envelope.
+- [ ] Classify valid, empty, migratable, corrupt and incompatible records.
+- [ ] Define checksum and migration provenance.
 
-### Gate 2: tick admission
+### Gate 2: catalog and route
 
-- [ ] Replace unconditional pressure ticking with a lease check.
-- [ ] Replace unconditional active-session ticking with a lease check.
-- [ ] Ensure a rejected transition changes no tick eligibility.
-- [ ] Ensure zero unauthorized mutation on suspended routes.
+- [ ] Route Play to an admitted save-catalog result.
+- [ ] Populate immutable slot summaries.
+- [ ] Add explicit Select, New and Delete actions.
+- [ ] Distinguish empty storage from discovery failure.
+- [ ] Bind the selected slot to the route revision.
 
-### Gate 3: transition settlement
+### Gate 3: serialization and durable commit
 
-- [ ] Adopt route and simulation policy atomically.
-- [ ] Preserve the predecessor on failure.
-- [ ] Suspend Pause and management routes.
-- [ ] Retire gameplay leases on Title and Outcome.
-- [ ] Define whether any future background-safe domain may continue.
+- [ ] Serialize all state-bearing domains through one authority.
+- [ ] Use atomic write or predecessor-preserving replacement.
+- [ ] Reject stale revisions and duplicate commands.
+- [ ] Publish typed commit, delete and storage-failure results.
 
-### Gate 4: resume
+### Gate 4: load and runtime adoption
 
-- [ ] Require the matching run generation and suspended route revision.
-- [ ] Clear or settle stale input.
-- [ ] Coordinate with the retained host-clock authority to avoid elapsed-time debt.
-- [ ] Reactivate each lease exactly once.
-- [ ] Publish `ResumeSimulationResult`.
+- [ ] Validate or migrate before changing runtime state.
+- [ ] Prepare every domain without publishing partial state.
+- [ ] Verify cross-domain invariants.
+- [ ] Atomically adopt all prepared state or preserve the predecessor.
+- [ ] Retire the prior session generation.
 
-### Gate 5: presentation and proof
+### Gate 5: new session
 
-- [ ] Add `SimulationRevision` to snapshots.
-- [ ] Add Canvas2D and HTML route projection receipts.
-- [ ] Publish `FirstRouteBoundVisibleFrameAck`.
-- [ ] Test source, production dist and Pages parity.
+- [ ] Coordinate with clean-run reset authority.
+- [ ] Allocate a fresh slot and run generation.
+- [ ] Reset all participating domains.
+- [ ] Commit the initial document before entering active-session.
+
+### Gate 6: presentation and proof
+
+- [ ] Add save-catalog and session revisions to snapshots.
+- [ ] Publish slot-card and active-session projection receipts.
+- [ ] Publish `FirstSaveCatalogFrameAck` and `FirstLoadedSessionFrameAck`.
+- [ ] Run source, browser, reload, dist and Pages fixtures.
 
 ## Recommended file cut
 
 ```txt
-src/host/
-  route-simulation-suspension-authority.js
-  simulation-policy-descriptor.js
-  simulation-lease.js
-  route-transition-result.js
+src/persistence/
+  save-schema.js
+  save-catalog.js
+  storage-adapter.js
+  save-migration.js
+  save-session-authority.js
 
 src/kits/
   runtime.js
   composition.js
+  scoped-interface-domains.js
   game-domains.js
 
 src/renderer/
-  world-canvas.js
   html-interface-renderer.js
+  world-canvas.js
 
 tests/
-  route-simulation-suspension.fixture.mjs
+  save-session.fixture.mjs
+  save-reload.browser.fixture.mjs
 ```
 
 ## Required fixtures
 
 ```txt
-entry/settings/run-setup -> no pressure growth
-pause/management routes -> no pest spawn movement or damage
-pause near defeat -> no hidden outcome
-resume -> progression restarts once
-title/outcome -> gameplay leases retired
-stale transition and stale tick -> rejected
-Canvas2D and HTML -> matching route/simulation revision
-source/dist/Pages -> matching results
+empty storage and discovery failure are distinct
+valid slots render with stable IDs and ordering
+new session creates one durable initial document
+save commit increments revision exactly once
+reload restores every participating domain
+stale writes are rejected
+corrupt and incompatible saves never adopt
+supported old schema migrates with provenance
+storage failure preserves predecessor
+load adopts all domains or none
+Canvas2D and HTML share loaded SessionRevision
+source/dist/Pages results match
 ```
 
 ## Retained next steps
 
-The host-clock fixed-step authority remains required and should be implemented before final suspension/resume timing proof. Clean run generations, public runtime capability, persistence, terminal settlement and presentation coherence remain open.
+Host-clock, route-suspension, clean-run reset, public capability, terminal settlement, Canvas/HTML coherence and focus-safe HTML projection remain open dependencies.
 
 ## Do not claim
 
-Do not claim pause safety, route-bound simulation, resume correctness, hidden-hazard prevention, frame convergence, artifact parity or production readiness until the full matrix passes.
+Do not claim persistence safety, save compatibility, atomic restore, reload recovery, frame convergence, artifact parity or production readiness until the complete matrix passes.
