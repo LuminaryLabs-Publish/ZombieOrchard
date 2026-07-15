@@ -1,73 +1,71 @@
 # Next steps - ZombieOrchard
 
-**Timestamp:** `2026-07-15T02-38-45-04-00`
+**Timestamp:** `2026-07-15T08-09-51-04-00`
 
 ## Summary
 
-Replace the one-step-per-RAF host loop with a monotonic clock sample, fixed-step accumulator, bounded catch-up budget, explicit visibility policy and render-once result. Keep external diagnostic ticking under the retained public-capability authority rather than mixing it into the production clock.
+Replace ambient per-frame canvas sizing with a versioned render-surface owner. Derive logical and physical dimensions once per accepted viewport/DPR change, preserve the context between unchanged frames, and bind visible output to the accepted state and surface revisions.
 
 ## Plan ledger
 
-**Goal:** make equivalent wall-time traces produce equivalent gameplay state across callback rates while preserving responsive rendering and bounded work.
+**Goal:** implement the smallest reliable Canvas2D sizing contract without moving gameplay ownership or changing logical world coordinates.
 
-- [ ] Define `HostFrameId`, `ClockRevision` and `SimulationStepId`.
-- [ ] Accept the RAF timestamp and validate monotonicity.
-- [ ] Derive and clamp wall delta.
-- [ ] Add a fixed-step accumulator.
-- [ ] Set an explicit fixed-step duration.
-- [ ] Bound catch-up steps per host frame.
-- [ ] Report deferred and dropped time.
-- [ ] Define hidden-tab suspend/reduced/continue policy.
-- [ ] Reset or settle accumulator debt on resume.
-- [ ] Render Canvas2D and HTML once from the latest accepted snapshot.
-- [ ] Bind both renderer receipts to one state revision.
-- [ ] Publish `HostFrameResult` and `FirstClockBoundVisibleFrameAck`.
-- [ ] Reject stale callbacks after host retirement.
-- [ ] Keep production external tick disabled or separately leased.
-- [ ] Add 30/60/120 Hz, stall, hide/resume, dist and Pages fixtures.
-- [ ] Retain clean-run, public capability and frame-coherence work.
+- [ ] Define `RenderSurfaceId`, `RenderSurfaceRevision`, and `ContextGeneration`.
+- [ ] Sample CSS viewport dimensions through one owner.
+- [ ] Define a capped device-pixel-ratio policy.
+- [ ] Derive immutable logical and physical sizes.
+- [ ] Add equality-based resize admission.
+- [ ] Add `ResizeObserver` or an equivalent viewport revision source.
+- [ ] Observe relevant DPR changes.
+- [ ] Write canvas width and height only for accepted changes.
+- [ ] Reapply a logical-coordinate transform after resize.
+- [ ] Preserve the predecessor on invalid or stale resize work.
+- [ ] Publish `CanvasRenderSurfaceResult` and retirement receipts.
+- [ ] Bind `CanvasFrameResult` to state and surface revisions.
+- [ ] Publish `FirstCanvasResizeFrameAck`.
+- [ ] Reject late callbacks after surface retirement.
+- [ ] Add source, `dist`, and Pages browser fixtures.
+- [ ] Retain RAF-clock, frame-coherence, clean-run, and public-capability work.
 
-## Immediate implementation ledge
+## Immediate implementation ledger
 
-1. Change `draw()` to receive the RAF timestamp.
-2. Store the first timestamp without synthesizing elapsed wall time.
-3. Accumulate a clamped wall delta.
-4. Execute at most the configured fixed-step budget.
-5. Render once after zero or more accepted steps.
-6. Clear stale timestamp debt on visibility resume.
-7. Expose timing diagnostics without exposing mutable clock internals.
-8. Add synthetic callback-trace fixtures before publishing claims.
+1. Move dimension ownership out of unconditional `render(snapshot)` work.
+2. Create a render-surface descriptor from CSS size and accepted DPR.
+3. Compare that descriptor with the accepted predecessor.
+4. Resize and rescale the context only when changed.
+5. Draw all world coordinates in logical CSS units.
+6. Expose immutable diagnostics for logical size, physical size, DPR, surface revision, and context generation.
+7. Add a 60-frame unchanged-size fixture that proves exactly one initial dimension assignment.
+8. Add viewport and DPR transition fixtures.
+9. Repeat the checks against source, `dist`, and Pages.
 
 ## Target files
 
 ```txt
 src/start.js
-src/kits/runtime.js
-src/host/raf-clock-authority.js
-src/host/visibility-clock-policy.js
 src/renderer/world-canvas.js
-src/renderer/html-interface-renderer.js
-tests/raf-clock.fixture.mjs
-scripts/smoke-raf-clock-browser.mjs
+src/renderer/canvas-render-surface.js
+src/renderer/canvas-dpr-policy.js
+tests/canvas-render-surface.fixture.mjs
+scripts/smoke-canvas-browser.mjs
 package.json
 ```
 
 ## Required fixtures
 
 ```txt
-30, 60 and 120 Hz traces produce equal fixed-step counts for equal wall time
-pressure and damage results match across traces
-long frames respect catch-up budget
-excess time is reported
-hidden tab follows declared policy
-resume applies no stale unbounded debt
-zero-step frame does not mutate gameplay
-multi-step host frame renders once
-Canvas2D and HTML cite the same state revision
-retired host rejects late callback
-source, dist and Pages behavior match
+DPR 1 and 2 derive expected physical dimensions
+unchanged 60-frame viewport does not rewrite dimensions
+viewport resize creates one successor generation
+DPR transition creates one successor generation
+logical tree, apple, pest, and player coordinates remain stable
+invalid dimensions preserve the accepted predecessor
+stale resize command is rejected
+retirement rejects late callbacks
+source, dist, and Pages descriptors match
+first matching frame cites accepted state and render-surface revisions
 ```
 
 ## Do not claim
 
-Do not claim refresh-rate independence, deterministic wall-time behavior, catch-up correctness, hidden-tab safety, visible-frame convergence, artifact parity or production readiness until the complete fixture matrix passes on `main`.
+Do not claim DPR correctness, allocation reduction, resize safety, sharpness improvement, frame-time improvement, visible-frame convergence, artifact parity, deployed parity, or production readiness until the complete browser fixture matrix passes on `main`.
