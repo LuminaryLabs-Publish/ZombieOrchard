@@ -1,91 +1,92 @@
-# START HERE: ZombieOrchard route-bound simulation suspension
+# START HERE: ZombieOrchard save-slot session selection
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Aligned:** `2026-07-15T08-26-01-04-00`  
-**Status:** `route-simulation-suspension-admission-authority-audited`  
-**Retained status:** `canvas-backing-store-dpr-resize-authority-central-reconciled`  
-**Retained statuses:** `raf-clock-fixed-step-admission-authority-central-reconciled`, `public-runtime-capability-frame-admission-authority-central-reconciled`, `run-start-clean-reset-authority-central-reconciled`, `roster-hiring-gameplay-adoption-authority-central-reconciled`, `inventory-equipment-gameplay-adoption-authority-central-reconciled`, `construction-settlement-world-adoption-authority-central-reconciled`, `html-content-command-surface-authority-central-reconciled`, `browser-startup-readiness-failure-authority-central-reconciled`, `canvas-html-frame-coherence-authority-central-reconciled`, `runtime-event-lifecycle-publication-authority-audited`, `runtime-observer-publication-authority-central-reconciled`
+**Aligned:** `2026-07-15T12-39-01-04-00`  
+**Status:** `save-slot-session-selection-admission-authority-audited`  
+**Retained status:** `route-simulation-suspension-admission-authority-central-reconciled`  
+**Retained statuses:** `canvas-backing-store-dpr-resize-authority-central-reconciled`, `raf-clock-fixed-step-admission-authority-central-reconciled`, `public-runtime-capability-frame-admission-authority-central-reconciled`, `run-start-clean-reset-authority-central-reconciled`, `roster-hiring-gameplay-adoption-authority-central-reconciled`, `inventory-equipment-gameplay-adoption-authority-central-reconciled`, `construction-settlement-world-adoption-authority-central-reconciled`, `html-content-command-surface-authority-central-reconciled`, `browser-startup-readiness-failure-authority-central-reconciled`, `canvas-html-frame-coherence-authority-central-reconciled`, `runtime-event-lifecycle-publication-authority-audited`, `runtime-observer-publication-authority-central-reconciled`
 
 ## Summary
 
-Interface composition changes the visible route but does not change simulation eligibility. Pressure and active-session hazards continue ticking during Pause, Build, Market, Roster, Inventory, Codex, Settings and title-facing screens.
+Save Select exists as a route and the HTML renderer can draw slot cards, but no action reaches it, no slots are supplied, and no persistence service exists. Play and New Game reach active-session without a selected save, validated load or durable new-session result.
 
 ## Plan ledger
 
-**Goal:** atomically bind every route transition to an explicit simulation policy and a matching visible-frame acknowledgement.
+**Goal:** make every playable session originate from an accepted loaded slot or an accepted, durably created new session.
 
 - [x] Compare the full Publish inventory, central ledger, current heads and root `.agent` coverage.
 - [x] Exclude TheCavalryOfRome.
-- [x] Select only ZombieOrchard because its completed canvas audit advanced beyond the central ledger.
-- [x] Identify the interaction loop, domains, all 27 implemented kits and offered services.
-- [x] Add the `2026-07-15T08-26-01-04-00` route-suspension audit family.
-- [x] Refresh required root documents and registry.
+- [x] Select only ZombieOrchard by the oldest synchronized timestamp.
+- [x] Identify the complete interaction loop, all domains, all 27 implemented kits and their services.
+- [x] Add the `2026-07-15T12-39-01-04-00` save-slot audit family.
+- [x] Refresh all required root documents and the machine registry.
 - [x] Push only to `main`; create no branch or pull request.
-- [ ] Implement route-bound tick leases and execute the fixture matrix.
+- [ ] Implement save discovery, selection, atomic restore, durable commit and reload fixtures.
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-15T08-26-01-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-15T08-26-01-04-00.md
-.agent/architecture-audit/2026-07-15T08-26-01-04-00-route-simulation-suspension-dsk-map.md
-.agent/render-audit/2026-07-15T08-26-01-04-00-hidden-gameplay-route-frame-gap.md
-.agent/gameplay-audit/2026-07-15T08-26-01-04-00-paused-and-management-screen-damage-loop.md
-.agent/interaction-audit/2026-07-15T08-26-01-04-00-route-simulation-command-result-map.md
-.agent/route-suspension-audit/2026-07-15T08-26-01-04-00-active-route-tick-lease-contract.md
-.agent/deploy-audit/2026-07-15T08-26-01-04-00-route-suspension-browser-fixture-gate.md
-.agent/central-sync-audit/2026-07-15T08-26-01-04-00-runtime-ahead-route-suspension-reconciliation.md
+.agent/trackers/2026-07-15T12-39-01-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-15T12-39-01-04-00.md
+.agent/architecture-audit/2026-07-15T12-39-01-04-00-save-slot-session-selection-dsk-map.md
+.agent/render-audit/2026-07-15T12-39-01-04-00-unreachable-empty-save-select-gap.md
+.agent/gameplay-audit/2026-07-15T12-39-01-04-00-play-new-game-session-adoption-loop.md
+.agent/interaction-audit/2026-07-15T12-39-01-04-00-save-session-command-result-map.md
+.agent/persistence-audit/2026-07-15T12-39-01-04-00-save-slot-schema-adoption-contract.md
+.agent/deploy-audit/2026-07-15T12-39-01-04-00-save-reload-browser-fixture-gate.md
+.agent/central-sync-audit/2026-07-15T12-39-01-04-00-oldest-selection-save-session-reconciliation.md
 ```
 
 ## Complete interaction loop
 
 ```txt
-page load
-  -> create all gameplay, interface and composition domains
-  -> interface-composition starts at entry
-  -> create Canvas2D and HTML renderers
-  -> start RAF loop
+boot
+  -> create all runtime and interface domains
+  -> register session-select
+  -> start at entry
 
-every runtime tick
-  -> pressure-field ticks regardless active route
-  -> active-session ticks unless its run has ended
-  -> pests may spawn, move and damage the player
-  -> interface-composition checks ended state and may route to outcome
-  -> Canvas2D renders orchard and active-session state
-  -> HTML renders only the selected interface route
+Play
+  -> move directly to active-session
+  -> adopt current in-memory state
 
-Pause, Build, Market, Roster, Inventory, Codex, Settings or Title
-  -> interface-composition changes active route
-  -> no simulation lease or suspension result changes
-  -> pressure and active-session continue ticking behind the selected screen
-  -> a paused or management-screen player can still be damaged
-  -> terminal state can route to outcome without an admitted resume
+New Game
+  -> move to run-setup
+  -> Start moves directly to active-session
+  -> no SaveSlotId or initial durable commit
+
+Save Select
+  -> no inbound action
+  -> Back only
+  -> renderer expects current.meta.slots
+  -> preset provides none
 ```
 
 ## Required authority
 
-`zombie-orchard-interface-route-simulation-suspension-authority-domain`
+`zombie-orchard-save-slot-session-selection-admission-authority-domain`
 
 ```txt
-RouteSimulationAdmissionCommand
-  -> bind RunGeneration RouteRevision TransitionCommandId and expected SimulationRevision
-  -> resolve the destination route and its SimulationPolicyDescriptor
-  -> classify running suspended background-safe terminal or retired
-  -> prepare pressure and active-session tick leases
-  -> atomically adopt the route and simulation policy
-  -> reject stale duplicate conflicting or retired transitions
-  -> publish RouteSimulationAdmissionResult
-  -> render Canvas2D and HTML from the accepted SimulationRevision
-  -> publish FirstRouteBoundVisibleFrameAck
+DiscoverSaveSlotsCommand
+  -> validate and classify stored records
+  -> publish immutable SaveCatalogResult
 
-ResumeSimulationCommand
-  -> require the matching suspended run and route revision
-  -> settle stale input and elapsed-time debt
-  -> reactivate pressure and active-session ticks exactly once
-  -> publish ResumeSimulationResult
+SelectSessionCommand
+  -> bind SaveSlotId expected SaveRevision and RouteRevision
+  -> validate or migrate one save
+  -> prepare every runtime participant
+  -> atomically adopt all state or preserve the predecessor
+  -> publish SessionSelectionResult
+  -> route only after acceptance
+  -> publish FirstLoadedSessionFrameAck
+
+CreateNewSessionCommand
+  -> allocate RunGeneration and SaveSlotId
+  -> reset every participant
+  -> commit the initial durable document
+  -> publish NewSessionResult
 ```
 
 ## Validation boundary
 
-Documentation only. No pause-safety, route-bound simulation, resume correctness, visible-frame convergence, artifact parity or production-readiness claim is made.
+Documentation only. No persistence, save selection, migration, durable commit, reload recovery, frame convergence, artifact parity or production-readiness claim is made.
