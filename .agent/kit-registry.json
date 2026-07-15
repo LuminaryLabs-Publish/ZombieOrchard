@@ -1,11 +1,12 @@
 {
-  "schemaVersion": 99,
-  "generatedAt": "2026-07-15T08-26-01-04-00",
+  "schemaVersion": 100,
+  "generatedAt": "2026-07-15T12-39-01-04-00",
   "repository": "LuminaryLabs-Publish/ZombieOrchard",
   "branch": "main",
-  "status": "route-simulation-suspension-admission-authority-audited",
-  "centralStatus": "route-simulation-suspension-admission-authority-central-reconciled",
+  "status": "save-slot-session-selection-admission-authority-audited",
+  "centralStatus": "save-slot-session-selection-admission-authority-central-reconciled",
   "retainedStatuses": [
+    "route-simulation-suspension-admission-authority-central-reconciled",
     "canvas-backing-store-dpr-resize-authority-central-reconciled",
     "raf-clock-fixed-step-admission-authority-central-reconciled",
     "public-runtime-capability-frame-admission-authority-central-reconciled",
@@ -19,7 +20,7 @@
     "runtime-event-lifecycle-publication-authority-audited",
     "runtime-observer-publication-authority-central-reconciled"
   ],
-  "reviewedPreAuditRepositoryHead": "da60ca3595e88d2ade7f284452d93c5452b7afd8",
+  "reviewedPreAuditRepositoryHead": "4b11f8445ac7a5c7f0b17cc04ffdb384783f897c",
   "selection": {
     "inventoryCount": 11,
     "eligibleCount": 10,
@@ -28,24 +29,24 @@
     "newEligibleCount": 0,
     "centralLedgerMissingCount": 0,
     "rootAgentMissingCount": 0,
-    "runtimeAheadCount": 1,
+    "runtimeAheadCount": 0,
     "excluded": [
       "LuminaryLabs-Publish/TheCavalryOfRome"
     ],
     "selectedRepository": "LuminaryLabs-Publish/ZombieOrchard",
-    "reason": "ZombieOrchard's completed canvas backing-store audit advanced beyond the recorded central ledger head.",
-    "priorCentralTimestamp": "2026-07-15T02-38-45-04-00"
+    "reason": "Oldest synchronized eligible central-ledger timestamp after all current heads matched their documented repo-local heads.",
+    "priorCentralTimestamp": "2026-07-15T08-26-01-04-00"
   },
   "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-15T08-26-01-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-15T08-26-01-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-15T08-26-01-04-00-route-simulation-suspension-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-15T08-26-01-04-00-hidden-gameplay-route-frame-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-15T08-26-01-04-00-paused-and-management-screen-damage-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-15T08-26-01-04-00-route-simulation-command-result-map.md",
-    "routeSuspensionAudit": ".agent/route-suspension-audit/2026-07-15T08-26-01-04-00-active-route-tick-lease-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-15T08-26-01-04-00-route-suspension-browser-fixture-gate.md",
-    "centralSyncAudit": ".agent/central-sync-audit/2026-07-15T08-26-01-04-00-runtime-ahead-route-suspension-reconciliation.md"
+    "tracker": ".agent/trackers/2026-07-15T12-39-01-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-15T12-39-01-04-00.md",
+    "architectureAudit": ".agent/architecture-audit/2026-07-15T12-39-01-04-00-save-slot-session-selection-dsk-map.md",
+    "renderAudit": ".agent/render-audit/2026-07-15T12-39-01-04-00-unreachable-empty-save-select-gap.md",
+    "gameplayAudit": ".agent/gameplay-audit/2026-07-15T12-39-01-04-00-play-new-game-session-adoption-loop.md",
+    "interactionAudit": ".agent/interaction-audit/2026-07-15T12-39-01-04-00-save-session-command-result-map.md",
+    "persistenceAudit": ".agent/persistence-audit/2026-07-15T12-39-01-04-00-save-slot-schema-adoption-contract.md",
+    "deployAudit": ".agent/deploy-audit/2026-07-15T12-39-01-04-00-save-reload-browser-fixture-gate.md",
+    "centralSyncAudit": ".agent/central-sync-audit/2026-07-15T12-39-01-04-00-oldest-selection-save-session-reconciliation.md"
   },
   "implementedKitSurfaceCount": 27,
   "engineInstalledKitCount": 19,
@@ -90,7 +91,7 @@
       "Play, New Game and Settings"
     ],
     "session-select-domain-kit": [
-      "save-select projection and Back"
+      "Save Select title, empty metadata and Back"
     ],
     "run-setup-domain-kit": [
       "run setup projection, Start and Back"
@@ -147,13 +148,13 @@
       "canvas sizing and world projection"
     ],
     "html-interface-render-kit": [
-      "delegated actions/commands and active-route HTML projection"
+      "delegated actions/commands, active-route HTML projection and slot-card rendering"
     ],
     "game-host-diagnostics-kit": [
       "raw engine exposure, state readback and manual tick"
     ],
     "smoke-fixture-kit": [
-      "entry, first Play and apple assertions"
+      "entry, direct Play and apple assertions"
     ],
     "static-build-copy-kit": [
       "static dist assembly"
@@ -163,68 +164,71 @@
     ]
   },
   "domainsInUse": [
-    "browser RAF, DOM input and page lifecycle",
+    "browser document, RAF, DOM input and page lifecycle",
     "kit runtime registration, command dispatch, tick scheduling, events, snapshots and subscriptions",
-    "interface route identity, transition and active-screen projection",
-    "route-bound simulation admission, suspension, resumption and conflict handling",
+    "interface route identity and active-screen projection",
+    "save schema, save-slot identity, discovery, validation, migration and durable storage",
+    "session selection, new-run allocation, load adoption, delete and conflict handling",
     "resource ledger, pressure field, orchard world, construction, roster and inventory",
     "active-session movement, collection, phase, pest, damage, score and outcome",
-    "Canvas2D world rendering and HTML interface rendering",
+    "Canvas2D world rendering and HTML route/card rendering",
     "public GameHost diagnostics",
     "smoke validation, static build, Pages deployment, repo-local audit and central tracking"
   ],
   "interactionLoop": [
-    "page creates all gameplay and interface domains",
+    "page creates all gameplay and interface domains including session-select",
     "interface composition starts at entry",
-    "runtime ticks pressure and active-session regardless route",
-    "composition checks terminal state after gameplay ticks",
-    "Canvas2D renders active-session world",
-    "HTML renders the selected interface route",
-    "route transitions publish no simulation suspension or resume result"
+    "Play routes directly to active-session without save discovery or load",
+    "New Game routes through run-setup then directly to active-session",
+    "session-select has no inbound action and only Back",
+    "HTML can render current.meta.slots but preset provides none",
+    "smoke requires Play to bypass session selection"
   ],
-  "routeSimulationFindings": {
-    "runtimeTicksAllDomains": true,
-    "pressureChecksActiveRoute": false,
-    "activeSessionChecksActiveRoute": false,
-    "activeSessionChecksEndedOnly": true,
-    "pauseSuspendsPressure": false,
-    "pauseSuspendsActiveSession": false,
-    "managementRoutesSuspendActiveSession": false,
-    "titleRetiresGameplayLease": false,
-    "routeRevision": "missing",
-    "simulationPolicyDescriptor": "missing",
-    "pressureTickLease": "missing",
-    "activeSessionTickLease": "missing",
-    "suspensionResult": "missing",
-    "resumeResult": "missing",
-    "firstRouteBoundVisibleFrameAck": "missing",
+  "saveSessionFindings": {
+    "sessionSelectRegistered": true,
+    "sessionSelectReachable": false,
+    "sessionSelectActionCountExcludingBack": 0,
+    "presetSlotCount": 0,
+    "rendererSlotCardPath": true,
+    "storageOwner": "missing",
+    "saveSchema": "missing",
+    "saveSlotIdentity": "missing",
+    "saveCatalog": "missing",
+    "serialization": "missing",
+    "migration": "missing",
+    "atomicRuntimeAdoption": "missing",
+    "durableCommit": "missing",
+    "staleWriteRejection": "missing",
+    "sessionSelectionResult": "missing",
+    "firstSaveCatalogFrameAck": "missing",
+    "firstLoadedSessionFrameAck": "missing",
     "fixtureCount": 0
   },
-  "plannedParentDomain": "zombie-orchard-interface-route-simulation-suspension-authority-domain",
+  "plannedParentDomain": "zombie-orchard-save-slot-session-selection-admission-authority-domain",
   "plannedKitCount": 20,
   "plannedKits": [
-    "zombie-orchard-interface-route-simulation-suspension-authority-domain",
-    "route-identity-kit",
-    "run-generation-kit",
-    "route-transition-command-kit",
-    "simulation-policy-descriptor-kit",
-    "simulation-lease-kit",
-    "tick-eligibility-kit",
-    "pressure-tick-admission-kit",
-    "active-session-tick-admission-kit",
-    "interrupt-suspension-kit",
-    "management-screen-suspension-kit",
-    "background-simulation-policy-kit",
-    "resume-settlement-kit",
-    "route-transition-conflict-kit",
-    "simulation-suspension-result-kit",
-    "route-transition-result-kit",
-    "simulation-revision-kit",
-    "route-bound-presentation-receipt-kit",
-    "first-route-bound-visible-frame-ack-kit",
-    "route-suspension-fixture-kit"
+    "zombie-orchard-save-slot-session-selection-admission-authority-domain",
+    "save-schema-kit",
+    "save-slot-identity-kit",
+    "save-catalog-kit",
+    "save-discovery-kit",
+    "save-record-validation-kit",
+    "state-serialization-kit",
+    "state-migration-kit",
+    "save-commit-command-kit",
+    "save-load-command-kit",
+    "save-delete-command-kit",
+    "session-selection-command-kit",
+    "new-run-command-kit",
+    "atomic-runtime-adoption-kit",
+    "storage-failure-rollback-kit",
+    "stale-save-conflict-kit",
+    "session-route-result-kit",
+    "persistence-presentation-receipt-kit",
+    "first-loaded-session-frame-ack-kit",
+    "save-slot-fixture-kit"
   ],
-  "serviceInventorySource": ".agent/trackers/2026-07-15T08-26-01-04-00/project-breakdown.md",
+  "serviceInventorySource": ".agent/trackers/2026-07-15T12-39-01-04-00/project-breakdown.md",
   "validation": {
     "documentationOnly": true,
     "sourceInspected": true,
@@ -234,6 +238,7 @@
     "allEligibleHeadsCompared": true,
     "runtimeSourceChanged": false,
     "gameplayChanged": false,
+    "storageChanged": false,
     "renderingChanged": false,
     "publicApiChanged": false,
     "dependenciesChanged": false,
@@ -244,7 +249,7 @@
     "pullRequestCreated": false,
     "npmTestRun": false,
     "npmBuildRun": false,
-    "routeSuspensionFixturesRun": false,
+    "saveSessionFixturesRun": false,
     "browserFixtureRun": false,
     "distSmokeRun": false,
     "pagesSmokeRun": false,
