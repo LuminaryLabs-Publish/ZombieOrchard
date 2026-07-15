@@ -1,106 +1,94 @@
 # Current audit: ZombieOrchard
 
-**Timestamp:** `2026-07-14T21-41-41-04-00`  
-**Status:** `public-runtime-capability-frame-admission-authority-central-reconciled`  
+**Timestamp:** `2026-07-15T02-38-45-04-00`  
+**Status:** `raf-clock-fixed-step-admission-authority-audited`  
 **Branch:** `main`
 
 ## Summary
 
-ZombieOrchard exposes its complete mutable runtime through `window.GameHost`. Public callers can manually tick all domains, dispatch arbitrary commands, add kits, access mutable context and domains, invoke direct domain APIs and create unscoped subscriptions. Manual ticks do not render; the next RAF advances again before Canvas2D and HTML present state.
+`src/start.js` ignores the RAF timestamp and calls `engine.tick(1 / 60)` once per animation callback. `kit-runtime` advances elapsed time and all domains from that submitted delta. Pressure growth, pest spawning, pest movement and damage are therefore coupled to callback frequency.
 
 ## Plan ledger
 
-**Goal:** preserve the complete repository breakdown while defining public runtime access as one least-authority, revisioned and visibly acknowledged transaction family.
+**Goal:** preserve deterministic fixed-step gameplay while admitting steps from measured wall time and rendering one coherent frame per browser callback.
 
-- [x] Compare the Publish inventory with central tracking.
-- [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm no higher-priority repository outranks the fallback rule.
-- [x] Select only ZombieOrchard as the oldest synchronized entry.
-- [x] Read boot, runtime, domain and renderer surfaces.
-- [x] Preserve all 27 implemented kits and offered services.
-- [x] Add and route the timestamped capability audit family.
-- [x] Keep writes on `main`; create no branch or pull request.
-- [ ] Implement and run public capability fixtures.
+- [x] Complete organization and ledger comparison.
+- [x] Apply the oldest synchronized fallback to ZombieOrchard only.
+- [x] Read host, runtime, gameplay-rate consumers and smoke coverage.
+- [x] Preserve all 27 implemented kits and services.
+- [x] Add and route the timestamped clock audit family.
+- [x] Keep all writes on `main`; create no branch or pull request.
+- [ ] Implement and execute the clock fixture matrix.
 
 ## Complete interaction loop
 
 ```txt
-boot
-  -> create engine and renderers
-  -> publish raw GameHost
-  -> start RAF
+page load
+  -> create runtime and renderers
+  -> publish GameHost
+  -> start draw loop
 
-RAF
-  -> tick all domains
-  -> render Canvas2D and HTML
+each RAF callback
+  -> submit fixed 1 / 60
+  -> runtime elapsed and frame advance
+  -> every ticking domain advances
+  -> Canvas2D and HTML render
 
-public manual tick
-  -> tick all domains
-  -> notify subscribers
-  -> do not render
-
-next RAF
-  -> tick all domains again
-  -> render later state
+callback frequency changes
+  -> simulated time per wall second changes
+  -> no accumulator, catch-up budget or visibility policy settles the difference
 ```
 
 ## Domains in use
 
 ```txt
-browser DOM, delegated input, Canvas2D, RAF and public global publication
-host readback, raw runtime mutation, manual tick, subscription and provider installation
-runtime registration, commands, unconditional ticks, events, snapshots and notification
-12 interface domains and interface composition
+browser RAF, visibility and monotonic time
+host clock sampling, fixed-step admission and frame publication
+runtime registration, commands, elapsed/frame state, ticks, snapshots and subscriptions
+12 interface domains plus interface composition
 resource, pressure, orchard, construction, roster and inventory
-movement, collection, phases, pests, clearing, score, damage, failure and outcome
-public capability identity, caller admission, command policy, external-tick lease, typed results and retirement
-HTML and Canvas2D presentation
-validation, static build, Pages deployment and central tracking
+movement, collection, phases, pests, damage, score, failure and outcome
+Canvas2D and HTML presentation
+public diagnostics, smoke, build, Pages and central tracking
 ```
 
-## Implemented kits and services
+## Implemented inventory
 
 ```txt
-27 total surfaces: 19 engine-installed and 8 host/tooling/support
-runtime and scoped interface composition
-12 route/interface domains
-resource, pressure, orchard, construction, roster and inventory services
-active-session movement, collection, phases, pests, clearing, score, damage and failure
-Canvas2D and HTML projection
-raw GameHost diagnostics, smoke, build and Pages deployment
+engine-installed kits: 19
+host/tooling/support kits: 8
+total implemented surfaces: 27
 ```
+
+The complete kit-by-kit service list remains in the current tracker and `.agent/kit-registry.json`.
 
 ## Source-backed findings
 
-- `src/start.js` publishes raw `engine`, `getState` and `tick` before `draw()`.
-- `GameHost.tick()` advances runtime only; neither renderer runs.
-- The next RAF performs another fixed tick before rendering.
-- `engine.snapshot()` omits runtime frame, elapsed time, caller, host generation and run generation.
-- Raw callers can invoke arbitrary commands, `addKit`, mutable context, domains and direct APIs.
-- Direct domain APIs bypass engine command publication.
-- Public capabilities have no policy revision, lease, expiry or retirement.
-- Existing smoke proof does not exercise the public host boundary.
+- `draw()` takes no RAF timestamp and always submits `1 / 60`.
+- The runtime clamps submitted deltas but cannot infer omitted wall time.
+- Pressure, spawn probability, movement and damage consume `dt` directly.
+- Both renderers execute once after every submitted simulation step.
+- There is no clock revision, accumulator, catch-up budget, dropped-time result, visibility settlement or renderer timing receipt.
+- The smoke test exercises one explicit fixed tick, not real browser cadence.
 
 ## Required parent domain
 
-```txt
-zombie-orchard-public-runtime-capability-frame-admission-authority-domain
-```
+`zombie-orchard-raf-clock-fixed-step-admission-authority-domain`
 
 ## Current file family
 
 ```txt
-.agent/trackers/2026-07-14T21-41-41-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-14T21-41-41-04-00.md
-.agent/architecture-audit/2026-07-14T21-41-41-04-00-public-runtime-capability-frame-admission-dsk-map.md
-.agent/render-audit/2026-07-14T21-41-41-04-00-manual-tick-visible-frame-divergence-gap.md
-.agent/gameplay-audit/2026-07-14T21-41-41-04-00-external-tick-double-step-loop.md
-.agent/interaction-audit/2026-07-14T21-41-41-04-00-public-capability-command-result-map.md
-.agent/host-capability-audit/2026-07-14T21-41-41-04-00-gamehost-read-write-tick-contract.md
-.agent/deploy-audit/2026-07-14T21-41-41-04-00-public-capability-browser-fixture-gate.md
-.agent/central-sync-audit/2026-07-14T21-41-41-04-00-oldest-selection-public-capability-reconciliation.md
+.agent/trackers/2026-07-15T02-38-45-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-15T02-38-45-04-00.md
+.agent/architecture-audit/2026-07-15T02-38-45-04-00-raf-clock-fixed-step-dsk-map.md
+.agent/render-audit/2026-07-15T02-38-45-04-00-render-rate-simulation-rate-coupling-gap.md
+.agent/gameplay-audit/2026-07-15T02-38-45-04-00-refresh-rate-gameplay-speed-loop.md
+.agent/interaction-audit/2026-07-15T02-38-45-04-00-host-frame-command-result-map.md
+.agent/clock-audit/2026-07-15T02-38-45-04-00-raf-accumulator-visibility-contract.md
+.agent/deploy-audit/2026-07-15T02-38-45-04-00-refresh-rate-browser-fixture-gate.md
+.agent/central-sync-audit/2026-07-15T02-38-45-04-00-oldest-selection-clock-reconciliation.md
 ```
 
 ## Validation boundary
 
-Documentation only. No runtime, public API, gameplay, renderer, dependency, package-script, test, workflow, build or deployment behavior changed.
+Documentation only. Runtime source and behavior are unchanged.
