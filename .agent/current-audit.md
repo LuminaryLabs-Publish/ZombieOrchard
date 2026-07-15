@@ -1,55 +1,63 @@
-# Current audit: ZombieOrchard
+# Current audit: ZombieOrchard route-bound simulation suspension
 
-**Timestamp:** `2026-07-15T08-09-51-04-00`  
-**Status:** `canvas-backing-store-dpr-resize-authority-audited`  
+**Timestamp:** `2026-07-15T08-26-01-04-00`  
+**Status:** `route-simulation-suspension-admission-authority-audited`  
+**Retained status:** `canvas-backing-store-dpr-resize-authority-central-reconciled`  
 **Branch:** `main`
 
 ## Summary
 
-`src/renderer/world-canvas.js` reads CSS dimensions and unconditionally assigns `canvas.width` and `canvas.height` on every rendered frame. The world backing store has no stable generation, no DPR policy, no conditional resize admission, and no first matching resize-frame acknowledgement.
+The runtime ticks all domains without consulting `interface-composition.active`. Route actions change only the selected HTML screen. Pressure growth, pest spawning, pest movement and damage can therefore continue while gameplay controls are replaced by Pause or management screens.
 
 ## Plan ledger
 
-**Goal:** derive one versioned logical/physical Canvas2D surface descriptor, resize only when it changes, preserve one context generation across unchanged frames, and prove source/build/Pages parity.
+**Goal:** preserve current product domains while making route selection and simulation admission one transaction.
 
-- [x] Compare the complete Publish inventory with central tracking.
-- [x] Exclude `TheCavalryOfRome`.
-- [x] Confirm ten eligible repositories are tracked, root-documented, and synchronized.
-- [x] Select ZombieOrchard as the oldest synchronized entry.
-- [x] Read the host, Canvas2D renderer, CSS, HTML renderer, tests, package, and prior audit state.
-- [x] Preserve all 27 implemented kits and services.
-- [x] Add and route the timestamped canvas audit family.
-- [x] Keep all writes on `main`; create no branch or pull request.
-- [ ] Implement and execute render-surface fixtures.
+- [x] Complete organization, ledger, head and root-agent comparison.
+- [x] Select ZombieOrchard as the only runtime-ahead eligible repository.
+- [x] Inspect runtime tick order, route composition, product preset and both renderers.
+- [x] Preserve all 27 implemented surfaces and services.
+- [x] Define 20 route-suspension authority surfaces.
+- [x] Add and route the timestamped audit family.
+- [ ] Implement and prove route-bound suspension and resumption.
 
 ## Complete interaction loop
 
 ```txt
 page load
-  -> create runtime, Canvas2D renderer, and HTML renderer
-  -> publish GameHost
-  -> start recursive RAF
+  -> create all gameplay, interface and composition domains
+  -> interface-composition starts at entry
+  -> create Canvas2D and HTML renderers
+  -> start RAF loop
 
-host frame
-  -> engine tick and snapshot
-  -> Canvas2D render
-       -> sample clientWidth/clientHeight
-       -> assign width and height every frame
-       -> clear and redraw world
-  -> HTML render
-  -> request next frame
+every runtime tick
+  -> pressure-field ticks regardless active route
+  -> active-session ticks unless its run has ended
+  -> pests may spawn, move and damage the player
+  -> interface-composition checks ended state and may route to outcome
+  -> Canvas2D renders orchard and active-session state
+  -> HTML renders only the selected interface route
+
+Pause, Build, Market, Roster, Inventory, Codex, Settings or Title
+  -> interface-composition changes active route
+  -> no simulation lease or suspension result changes
+  -> pressure and active-session continue ticking behind the selected screen
+  -> a paused or management-screen player can still be damaged
+  -> terminal state can route to outcome without an admitted resume
 ```
 
 ## Domains in use
 
 ```txt
-browser RAF viewport CSS sizing and device pixel ratio
-Canvas2D backing-store context lifecycle and world projection
-HTML projection and delegated interface commands
-runtime registration commands ticks snapshots and subscriptions
-12 interface domains plus composition
-resource pressure orchard construction roster inventory and active gameplay
-public diagnostics smoke build Pages and central tracking
+browser RAF, DOM input and page lifecycle
+kit runtime registration, command dispatch, tick scheduling, events, snapshots and subscriptions
+interface route identity, transition and active-screen projection
+route-bound simulation admission, suspension, resumption and conflict handling
+resource ledger, pressure field, orchard world, construction, roster and inventory
+active-session movement, collection, phase, pest, damage, score and outcome
+Canvas2D world rendering and HTML interface rendering
+public GameHost diagnostics
+smoke validation, static build, Pages deployment, repo-local audit and central tracking
 ```
 
 ## Implemented inventory
@@ -58,38 +66,45 @@ public diagnostics smoke build Pages and central tracking
 engine-installed kits: 19
 host/tooling/support kits: 8
 total implemented surfaces: 27
-planned canvas authority surfaces: 18
+planned route-suspension surfaces: 20
 ```
 
-The complete kit-by-kit service list is preserved in the current tracker and `.agent/kit-registry.json`.
+The complete kit-by-kit service list is in the current tracker and `.agent/kit-registry.json`.
 
 ## Source-backed findings
 
-- Every `world.render(snapshot)` call writes both canvas dimensions.
-- The assignments are not guarded by size equality.
-- Backing-store dimensions equal logical CSS dimensions.
-- The renderer does not read `devicePixelRatio`.
-- No `ResizeObserver`, DPR observer, physical-size descriptor, context generation, resize result, stale-work rejection, or first matching frame acknowledgement exists.
-- The Node smoke test does not construct a browser canvas.
+- Runtime ticks every domain.
+- Pressure has no route predicate.
+- Active-session ticks until `ended`, not until the route stops admitting gameplay.
+- Pause and management transitions change interface state only.
+- Active-session advances before composition checks defeat.
+- Canvas2D continues rendering active-session state behind the selected HTML screen.
+- No route revision, simulation lease, suspension result, resume result or matching frame acknowledgement exists.
+
+## Main finding
+
+`kit-runtime.tick()` iterates over every registered domain and calls every available `tick()` without consulting the active interface route. `pressure-field.tick()` always grows pressure, while `active-session.tick()` continues pest spawning, movement and player damage whenever the run has not ended. `interface-composition` changes only `state.active`; its route transitions do not publish or consume a simulation suspension lease.
+
+Because the active-session kit is registered before interface composition, gameplay advances first on each tick and composition checks for defeat afterward. A player can therefore open Pause, Build, Market, Roster, Inventory or Codex, continue receiving damage behind that screen, and be routed to Outcome without an admitted Resume. Pressure also grows on Entry, Run Setup, Settings and Title.
 
 ## Required parent domain
 
-`zombie-orchard-canvas-backing-store-dpr-resize-authority-domain`
+`zombie-orchard-interface-route-simulation-suspension-authority-domain`
 
 ## Current file family
 
 ```txt
-.agent/trackers/2026-07-15T08-09-51-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-15T08-09-51-04-00.md
-.agent/architecture-audit/2026-07-15T08-09-51-04-00-canvas-backing-store-dpr-dsk-map.md
-.agent/render-audit/2026-07-15T08-09-51-04-00-per-frame-backing-store-reset-gap.md
-.agent/gameplay-audit/2026-07-15T08-09-51-04-00-simulation-to-canvas-frame-loop.md
-.agent/interaction-audit/2026-07-15T08-09-51-04-00-canvas-render-surface-command-result-map.md
-.agent/canvas-system-audit/2026-07-15T08-09-51-04-00-backing-store-resize-contract.md
-.agent/deploy-audit/2026-07-15T08-09-51-04-00-canvas-dpr-browser-fixture-gate.md
-.agent/central-sync-audit/2026-07-15T08-09-51-04-00-oldest-selection-canvas-reconciliation.md
+.agent/trackers/2026-07-15T08-26-01-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-15T08-26-01-04-00.md
+.agent/architecture-audit/2026-07-15T08-26-01-04-00-route-simulation-suspension-dsk-map.md
+.agent/render-audit/2026-07-15T08-26-01-04-00-hidden-gameplay-route-frame-gap.md
+.agent/gameplay-audit/2026-07-15T08-26-01-04-00-paused-and-management-screen-damage-loop.md
+.agent/interaction-audit/2026-07-15T08-26-01-04-00-route-simulation-command-result-map.md
+.agent/route-suspension-audit/2026-07-15T08-26-01-04-00-active-route-tick-lease-contract.md
+.agent/deploy-audit/2026-07-15T08-26-01-04-00-route-suspension-browser-fixture-gate.md
+.agent/central-sync-audit/2026-07-15T08-26-01-04-00-runtime-ahead-route-suspension-reconciliation.md
 ```
 
 ## Validation boundary
 
-Documentation only. Runtime source and behavior are unchanged. No DPR correctness, resize safety, backing-store reuse, allocation reduction, visual equivalence, artifact parity, deployed parity, or production-readiness claim is made.
+Documentation only. Runtime source and behavior are unchanged.

@@ -1,82 +1,77 @@
-# Known gaps - ZombieOrchard
+# Known gaps: ZombieOrchard route-bound simulation suspension
 
-**Timestamp:** `2026-07-15T08-09-51-04-00`
+**Timestamp:** `2026-07-15T08-26-01-04-00`  
+**Status:** `route-simulation-suspension-admission-authority-audited`
 
 ## Summary
 
-The current priority gap is Canvas2D render-surface ownership. The renderer rewrites its backing-store dimensions every frame, uses CSS dimensions as physical dimensions, and has no explicit resize transaction, DPR policy, context generation, or matching visible-frame proof.
+The current priority gap is that interface routes do not own simulation eligibility. Every runtime step advances pressure and active-session hazards even when HTML presents Pause, management, setup, settings or title routes.
 
 ## Plan ledger
 
-**Goal:** keep presentation-resource risks dependency ordered and tied to executable source, build, and deployed proof.
+**Goal:** keep suspension, resume, timing, presentation and proof gaps dependency ordered.
 
-- [ ] Render-surface identity and revision.
-- [ ] CSS viewport revision and validation.
-- [ ] Device-pixel-ratio policy.
-- [ ] Logical/physical size descriptor.
-- [ ] Equality-based resize admission.
-- [ ] Resize and DPR observers.
-- [ ] Context-generation ownership.
-- [ ] Logical-coordinate transform restoration.
-- [ ] Atomic resize result.
-- [ ] Stale-work rejection.
-- [ ] Predecessor preservation on failure.
-- [ ] Context and observer retirement receipts.
-- [ ] State/surface-bound Canvas frame result.
-- [ ] First resize-frame acknowledgement.
-- [ ] Source, `dist`, and Pages fixture matrix.
+- [ ] Route, run and transition identity.
+- [ ] Simulation policy descriptors.
+- [ ] Pressure and active-session tick leases.
+- [ ] Atomic route/policy adoption.
+- [ ] Pause and management suspension.
+- [ ] Title/outcome retirement.
+- [ ] Resume input and clock settlement.
+- [ ] Stale transition and tick rejection.
+- [ ] Route/simulation presentation receipts.
+- [ ] First route-bound visible-frame acknowledgement.
+- [ ] Headless, browser, dist and Pages fixtures.
 
-## Canvas gaps
+## Route-simulation gaps
 
 ```txt
-conditional width assignment: absent
-conditional height assignment: absent
-devicePixelRatio policy: absent
-logical/physical size descriptor: absent
-ResizeObserver: absent
-DPR-change observation: absent
-RenderSurfaceId: absent
-RenderSurfaceRevision: absent
-ContextGeneration: absent
-CanvasRenderSurfaceResult: absent
-stale resize rejection: absent
-retirement receipt: absent
-CanvasFrameResult: absent
-FirstCanvasResizeFrameAck: absent
-browser DPR fixtures: absent
+route revision: absent
+run generation bound to route: absent
+simulation policy descriptor: absent
+pressure tick lease: absent
+active-session tick lease: absent
+pause suspension result: absent
+management-screen suspension result: absent
+resume result: absent
+terminal lease retirement: absent
+stale tick rejection: absent
+Canvas route receipt: absent
+HTML route receipt: absent
+FirstRouteBoundVisibleFrameAck: absent
 ```
 
 ## Source consequences
 
-- Every accepted host frame permits two backing-store dimension assignments.
-- The context is reinitialized before each world draw.
-- High-DPR output is not explicitly provisioned with a high-density backing store.
-- Viewport and DPR changes are ambient rather than command/result transactions.
-- No evidence binds a visible frame to one accepted state and render-surface revision.
-- The Node smoke test cannot detect browser canvas sizing behavior.
+- Pressure grows on every route.
+- Active-session hazards continue while Pause or management screens are visible.
+- A hidden player can lose condition and reach Outcome without Resume.
+- UI route state and gameplay tick state can disagree.
+- Canvas2D and HTML do not expose a shared route/simulation revision.
+- Existing smoke tests cannot detect hidden gameplay mutation.
 
 ## Retained unresolved gaps
 
-### Timing and lifecycle
+### Host clock and lifecycle
 
 - RAF callback count still controls simulation rate.
+- Hidden-tab and resume clock policy remain undefined.
 - New Game and retry still lack clean deterministic run generations.
-- Gameplay and pressure are not route-suspended.
-- Public `GameHost` still exposes mutable runtime access and manual tick.
-- Runtime observers and events lack immutable generation-bound publication.
+- Public `GameHost` exposes raw runtime and manual tick.
 
-### Gameplay transactions
+### Transactions and persistence
 
-- Roster, inventory, and construction transaction boundaries remain incomplete.
+- Roster, inventory and construction transactions remain incomplete.
+- Save Select has no versioned persistence authority.
 - Pest capacity and terminal settlement remain unresolved.
 
-### Presentation and persistence
+### Presentation
 
-- Canvas2D and HTML still lack one atomic frame result.
+- Canvas2D and HTML lack one atomic frame result.
+- Canvas dimensions are rewritten every frame.
 - HTML replacement loses focus and selection continuity.
-- Dynamic HTML content is not safely constructed.
-- Save Select has no versioned persistence authority.
+- Dynamic HTML construction remains unsafe.
 
 ## Do not claim
 
-Do not claim stable backing-store reuse, DPR correctness, resize safety, visual improvement, performance improvement, frame convergence, artifact parity, deployed parity, or production readiness until required fixtures pass on `main`.
+Do not claim suspension safety, hidden-hazard prevention, resume correctness, route/frame coherence, artifact parity or production readiness until fixtures pass.

@@ -1,71 +1,92 @@
-# Next steps - ZombieOrchard
+# Next steps: ZombieOrchard route-bound simulation suspension
 
-**Timestamp:** `2026-07-15T08-09-51-04-00`
+**Timestamp:** `2026-07-15T08-26-01-04-00`  
+**Status:** `route-simulation-suspension-admission-authority-audited`
 
 ## Summary
 
-Replace ambient per-frame canvas sizing with a versioned render-surface owner. Derive logical and physical dimensions once per accepted viewport/DPR change, preserve the context between unchanged frames, and bind visible output to the accepted state and surface revisions.
+Add a route-simulation authority before changing individual gameplay domains. Every transition must settle the active route, pressure lease, active-session lease, stale input/time debt and render revision together.
 
 ## Plan ledger
 
-**Goal:** implement the smallest reliable Canvas2D sizing contract without moving gameplay ownership or changing logical world coordinates.
+**Goal:** make Pause and non-gameplay routes truly suspend hazards while preserving deterministic state and exact resume behavior.
 
-- [ ] Define `RenderSurfaceId`, `RenderSurfaceRevision`, and `ContextGeneration`.
-- [ ] Sample CSS viewport dimensions through one owner.
-- [ ] Define a capped device-pixel-ratio policy.
-- [ ] Derive immutable logical and physical sizes.
-- [ ] Add equality-based resize admission.
-- [ ] Add `ResizeObserver` or an equivalent viewport revision source.
-- [ ] Observe relevant DPR changes.
-- [ ] Write canvas width and height only for accepted changes.
-- [ ] Reapply a logical-coordinate transform after resize.
-- [ ] Preserve the predecessor on invalid or stale resize work.
-- [ ] Publish `CanvasRenderSurfaceResult` and retirement receipts.
-- [ ] Bind `CanvasFrameResult` to state and surface revisions.
-- [ ] Publish `FirstCanvasResizeFrameAck`.
-- [ ] Reject late callbacks after surface retirement.
-- [ ] Add source, `dist`, and Pages browser fixtures.
-- [ ] Retain RAF-clock, frame-coherence, clean-run, and public-capability work.
+### Gate 1: identity and policy
 
-## Immediate implementation ledger
+- [ ] Add `RunGeneration`, `RouteRevision`, `TransitionCommandId` and `SimulationPolicyRevision`.
+- [ ] Define policies for running, suspended, background-safe, terminal and retired.
+- [ ] Assign a default policy to all 12 routes.
+- [ ] Reject unknown, stale, duplicate and conflicting transitions.
 
-1. Move dimension ownership out of unconditional `render(snapshot)` work.
-2. Create a render-surface descriptor from CSS size and accepted DPR.
-3. Compare that descriptor with the accepted predecessor.
-4. Resize and rescale the context only when changed.
-5. Draw all world coordinates in logical CSS units.
-6. Expose immutable diagnostics for logical size, physical size, DPR, surface revision, and context generation.
-7. Add a 60-frame unchanged-size fixture that proves exactly one initial dimension assignment.
-8. Add viewport and DPR transition fixtures.
-9. Repeat the checks against source, `dist`, and Pages.
+### Gate 2: tick admission
 
-## Target files
+- [ ] Replace unconditional pressure ticking with a lease check.
+- [ ] Replace unconditional active-session ticking with a lease check.
+- [ ] Ensure a rejected transition changes no tick eligibility.
+- [ ] Ensure zero unauthorized mutation on suspended routes.
+
+### Gate 3: transition settlement
+
+- [ ] Adopt route and simulation policy atomically.
+- [ ] Preserve the predecessor on failure.
+- [ ] Suspend Pause and management routes.
+- [ ] Retire gameplay leases on Title and Outcome.
+- [ ] Define whether any future background-safe domain may continue.
+
+### Gate 4: resume
+
+- [ ] Require the matching run generation and suspended route revision.
+- [ ] Clear or settle stale input.
+- [ ] Coordinate with the retained host-clock authority to avoid elapsed-time debt.
+- [ ] Reactivate each lease exactly once.
+- [ ] Publish `ResumeSimulationResult`.
+
+### Gate 5: presentation and proof
+
+- [ ] Add `SimulationRevision` to snapshots.
+- [ ] Add Canvas2D and HTML route projection receipts.
+- [ ] Publish `FirstRouteBoundVisibleFrameAck`.
+- [ ] Test source, production dist and Pages parity.
+
+## Recommended file cut
 
 ```txt
-src/start.js
-src/renderer/world-canvas.js
-src/renderer/canvas-render-surface.js
-src/renderer/canvas-dpr-policy.js
-tests/canvas-render-surface.fixture.mjs
-scripts/smoke-canvas-browser.mjs
-package.json
+src/host/
+  route-simulation-suspension-authority.js
+  simulation-policy-descriptor.js
+  simulation-lease.js
+  route-transition-result.js
+
+src/kits/
+  runtime.js
+  composition.js
+  game-domains.js
+
+src/renderer/
+  world-canvas.js
+  html-interface-renderer.js
+
+tests/
+  route-simulation-suspension.fixture.mjs
 ```
 
 ## Required fixtures
 
 ```txt
-DPR 1 and 2 derive expected physical dimensions
-unchanged 60-frame viewport does not rewrite dimensions
-viewport resize creates one successor generation
-DPR transition creates one successor generation
-logical tree, apple, pest, and player coordinates remain stable
-invalid dimensions preserve the accepted predecessor
-stale resize command is rejected
-retirement rejects late callbacks
-source, dist, and Pages descriptors match
-first matching frame cites accepted state and render-surface revisions
+entry/settings/run-setup -> no pressure growth
+pause/management routes -> no pest spawn movement or damage
+pause near defeat -> no hidden outcome
+resume -> progression restarts once
+title/outcome -> gameplay leases retired
+stale transition and stale tick -> rejected
+Canvas2D and HTML -> matching route/simulation revision
+source/dist/Pages -> matching results
 ```
+
+## Retained next steps
+
+The host-clock fixed-step authority remains required and should be implemented before final suspension/resume timing proof. Clean run generations, public runtime capability, persistence, terminal settlement and presentation coherence remain open.
 
 ## Do not claim
 
-Do not claim DPR correctness, allocation reduction, resize safety, sharpness improvement, frame-time improvement, visible-frame convergence, artifact parity, deployed parity, or production readiness until the complete browser fixture matrix passes on `main`.
+Do not claim pause safety, route-bound simulation, resume correctness, hidden-hazard prevention, frame convergence, artifact parity or production readiness until the full matrix passes.

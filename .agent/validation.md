@@ -1,91 +1,92 @@
-# Validation - ZombieOrchard
+# Validation: ZombieOrchard route-bound simulation suspension
 
-**Timestamp:** `2026-07-15T08-09-51-04-00`
+**Timestamp:** `2026-07-15T08-26-01-04-00`
 
 ## Scope
 
-Documentation-only audit of Publish selection, Canvas2D CSS sizing, backing-store assignment, DPR policy, context lifecycle, world projection, browser proof, static build, Pages, and central tracking.
+Documentation-only audit of the full Publish selection, current heads, root `.agent` coverage, runtime tick order, interface transitions, pressure and active-session predicates, renderer projections, existing smoke coverage, build, Pages and central tracking.
 
 ## Plan ledger
 
-**Goal:** record exact source evidence and the proof required before Canvas2D sizing, sharpness, stability, or performance claims are made.
+**Goal:** distinguish source-proven unconditional ticking from unexecuted browser outcomes.
 
-- [x] Read the complete Publish organization inventory.
-- [x] Compare all ten eligible repositories with central tracking.
-- [x] Confirm no new, ledger-missing, root-agent-missing, undocumented, or runtime-ahead repository has priority.
-- [x] Select ZombieOrchard as the oldest synchronized eligible entry.
-- [x] Read `index.html`, `src/start.js`, `src/game.js`, `src/renderer/world-canvas.js`, `src/renderer/html-interface-renderer.js`, `src/styles.css`, `tests/smoke.mjs`, `package.json`, and prior `.agent` state.
+- [x] Read all 11 accessible Publish repositories.
+- [x] Compare ten eligible ledgers, heads and root `.agent` entrypoints.
+- [x] Exclude TheCavalryOfRome.
+- [x] Select ZombieOrchard because its completed canvas audit advanced beyond the central ledger.
+- [x] Inspect runtime, game composition, interface domains, preset, gameplay domains and renderers.
 - [x] Preserve all 27 kit surfaces and services.
-- [x] Add timestamped canvas audits and root routing.
-- [x] Keep writes on `main` with no branch or pull request.
-- [ ] Implement and run Canvas2D browser fixtures.
+- [x] Add the timestamped audit family.
+- [x] Keep writes on `main`; create no branch or pull request.
+- [ ] Implement and run route-suspension fixtures.
 
 ## Source-backed findings
 
 ```txt
-src/renderer/world-canvas.js
-  -> reads clientWidth/clientHeight for every render
-  -> assigns canvas.width and canvas.height for every render
-  -> does not compare with accepted dimensions
-  -> does not consume devicePixelRatio
-  -> clears and redraws trees apples pests and player
+kit-runtime
+  -> ticks every domain on every submitted step
 
-src/styles.css
-  -> canvas occupies 100vw by 100vh in CSS pixels
+pressure-field
+  -> grows rowPressure and curse on every tick
 
-src/start.js
-  -> invokes world.render(snapshot) once per RAF callback
+active-session
+  -> ticks until ended
+  -> has no route or pause predicate
+  -> spawns/moves pests and applies damage
 
-tests/smoke.mjs
-  -> constructs no canvas, DOM, viewport, DPR, or browser frame
+interface-composition
+  -> changes active route only
+  -> checks ended state after active-session tick
 
-package.json
-  -> test is Node-only smoke
-  -> build copies index.html and src into dist
+renderers
+  -> Canvas2D always projects active-session world
+  -> HTML projects the selected route
 ```
 
-## Deterministic observations
+## What source inspection proves
 
 ```txt
-accessible Publish repositories: 11
-eligible repositories: 10
-implemented kit surfaces: 27
-engine-installed kits: 19
-host/support kits: 8
-canvas width assignments per render: 1
-canvas height assignments per render: 1
-conditional resize guards: 0
-explicit DPR consumers: 0
-ResizeObserver owners: 0
-render-surface revisions: 0
-context generations: 0
-browser canvas fixtures: 0
+route changes do not alter tick eligibility
+pressure and active-session may mutate on non-gameplay routes
+Pause and management routes do not implement suspension
+defeat routing can follow a hidden active-session tick
+no typed suspension/resume result exists
+no shared route/simulation frame acknowledgement exists
+```
+
+## What is not proven
+
+```txt
+a reproduced browser defeat while paused
+exact user-perceived timing
+correct future route policy for every product screen
+artifact or Pages parity
+production readiness
 ```
 
 ## Required fixture matrix
 
 ```txt
-DPR 1 and DPR 2 physical-size checks
-60 unchanged frames produce one initial dimension adoption
-viewport resize produces one successor generation
-DPR transition produces one successor generation
-world coordinates remain stable in logical units
-invalid size preserves predecessor
-stale resize command is rejected
-retirement rejects late callbacks
-CanvasFrameResult cites state and surface revisions
-source server and dist results match
-Pages result matches source and dist
-screenshots meet declared pixel-density and visual-tolerance policy
+entry/settings/run-setup pressure immutability
+active-session pressure admission
+night pest movement and damage admission
+pause/management pest and condition immutability
+pause near defeat without outcome transition
+resume exactly-once reactivation
+title/outcome lease retirement
+stale transition and stale tick rejection
+Canvas2D/HTML revision equality
+source/dist/Pages parity
 ```
 
-## Validation result
+## Change scope
 
 ```txt
 documentation changed: yes
 runtime source changed: no
-Canvas2D behavior changed: no
 gameplay changed: no
+timing changed: no
+Canvas2D or HTML behavior changed: no
 public API changed: no
 dependencies or scripts changed: no
 tests or workflows changed: no
@@ -95,11 +96,12 @@ pull request created: no
 
 npm test: not run
 npm run build: not run
-browser canvas fixtures: unavailable / not run
-dimension-write trace: unavailable / not run
-DPR screenshot fixture: unavailable / not run
-dist smoke: unavailable / not run
-Pages smoke: unavailable / not run
+route suspension fixtures: unavailable / not run
+browser interaction fixtures: unavailable / not run
+dist smoke: not run
+Pages smoke: not run
 ```
 
-No backing-store reuse, DPR correctness, resize safety, context-lifecycle correctness, visual sharpness, allocation reduction, frame-time improvement, visible-frame convergence, artifact parity, deployed parity, or production-readiness claim is made.
+## Claims intentionally withheld
+
+No pause safety, route-bound simulation, resume correctness, terminal settlement, visible-frame convergence, artifact parity or production-readiness claim is made.
