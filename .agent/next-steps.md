@@ -1,83 +1,77 @@
 # Next steps - ZombieOrchard
 
-**Timestamp:** `2026-07-14T16-41-33-04-00`
+**Timestamp:** `2026-07-14T21-41-41-04-00`
 
 ## Summary
 
-Turn Play, New Game, Start, Title, and retry into an explicit run lifecycle. The next implementation should allocate deterministic run identity, privately construct every mandatory domain candidate, atomically adopt the successor, suspend gameplay outside active play, reject predecessor work, and prove the first matching HTML/Canvas2D frame.
+Replace raw `window.GameHost` publication with immutable readback and allowlisted product commands. External ticking should be unavailable in production by default and available only through an explicit diagnostic lease that binds one runtime result to one HTML and Canvas2D acknowledgement.
 
 ## Plan ledger
 
-**Goal:** make one start settle exactly once across run identity, gameplay state, interface state, publication, and both render surfaces or leave the predecessor untouched.
+**Goal:** make public runtime access least-authority, revisioned, idempotent, route-aware, pause-aware and visibly provable.
 
-- [ ] Define `StartCommandId`, `HostGeneration`, `RunId`, `RunGeneration`, `PresetFingerprint`, `SeedPolicyRevision`, and `Seed`.
-- [ ] Define explicit start modes: `new`, `retry`, and `resume`.
-- [ ] Make Play choose resume only when an accepted resumable run exists.
-- [ ] Make New Game always allocate a distinct successor generation.
-- [ ] Make Start issue `RunStartCommand` instead of only routing.
-- [ ] Add deterministic orchard generation from the accepted seed.
-- [ ] Add reset candidates for resources, pressure, world, construction, roster, inventory, active-session, interface, events, HTML, and Canvas2D.
-- [ ] Keep accepted predecessor state immutable during candidate preparation.
-- [ ] Atomically adopt all mandatory candidates or retire the complete candidate.
-- [ ] Add predecessor outcome retention and retry lineage.
-- [ ] Suspend pressure and active gameplay outside accepted active play.
-- [ ] Make Title issue `RunExitCommand` before routing.
-- [ ] Reject duplicate, stale, retired, and superseded start/exit commands.
-- [ ] Reject predecessor ticks, events, commands, and frame publication after successor adoption.
-- [ ] Publish typed `RunStartResult` and `RunExitResult` values.
-- [ ] Expose `RunGeneration` in snapshots, HUD, GameHost, and Canvas2D evidence.
-- [ ] Publish `FirstVisibleRunFrameAck`.
-- [ ] Add source, browser, dist, and Pages clean-run fixtures.
+- [ ] Define `HostGeneration`, `RunGeneration`, `CapabilityPolicyRevision` and `CapabilitySetId`.
+- [ ] Publish immutable detached readback rather than the raw engine.
+- [ ] Remove `ctx`, `domains`, `addKit`, direct APIs and arbitrary tick from the production global.
+- [ ] Define an allowlist of product-level public commands.
+- [ ] Add `CallerId`, `PublicCommandId` and expected state revision.
+- [ ] Reject duplicate, stale, retired, wrong-generation, route-ineligible and pause-ineligible commands.
+- [ ] Publish typed `PublicMutationResult` values.
+- [ ] Disable external ticking in production by default.
+- [ ] Add scoped debug/test tick leases with expiry and operation limits.
+- [ ] Classify every external step as headless or visible.
+- [ ] Bind visible steps to exact runtime, HTML and Canvas2D frame revisions.
+- [ ] Publish `FirstVisiblePublicMutationFrameAck`.
+- [ ] Revoke capability sets and leases on host retirement.
+- [ ] Add source, dist and Pages fixtures.
+- [ ] Retain clean-run generation, observer isolation and frame-coherence work.
 
 ## Immediate safe ledge
 
-1. Add one run-lifecycle coordinator without restructuring existing gameplay kits.
-2. Move all domain creation behind a function that accepts preset and deterministic seed.
-3. Add a candidate engine/domain graph rather than mutating the accepted graph in place.
-4. Route Play and Start only after candidate adoption succeeds.
-5. Gate `active-session.tick()` and `pressure-field.tick()` by accepted run activity.
-6. Preserve the prior engine graph until the successor's first frame is acknowledged.
-7. Retire the predecessor graph after acknowledgement.
-8. Add a failure-injection fixture for each mandatory participant.
+1. Replace `window.GameHost.engine` with a frozen product facade.
+2. Keep `getState()` but add state, host and run revisions.
+3. Replace `tick()` with no production equivalent.
+4. Add a test-only lease factory behind an explicit build/runtime policy.
+5. Route public commands through one admission coordinator.
+6. Return typed results with stable command IDs.
+7. Render accepted visible results before acknowledging them.
+8. Revoke the facade during page or host retirement.
 
 ## Target files
 
 ```txt
-src/game.js
 src/start.js
+src/game.js
 src/kits/runtime.js
-src/kits/composition.js
-src/kits/game-domains.js
-src/presets/orchard-preset.js
+src/host/public-capability-authority.js
+src/host/public-command-admission.js
+src/host/external-tick-lease.js
+src/host/public-capability-retirement.js
 src/renderer/html-interface-renderer.js
 src/renderer/world-canvas.js
-src/run/run-start-authority.js
-src/run/run-seed-policy.js
-src/run/run-adoption.js
-tests/clean-run-reset.fixture.mjs
-scripts/smoke-clean-run-browser.mjs
+tests/public-capability.fixture.mjs
+scripts/smoke-public-capability-browser.mjs
 package.json
 ```
 
 ## Required fixtures
 
 ```txt
-first Play creates a clean generation
-New Game Start creates a distinct clean generation
-retry cites and preserves predecessor outcome
-preset values and empty mutable collections are restored
-same seed reproduces the first snapshot
-new seed changes the admitted orchard
-entry, setup, pause, menus, settings, and outcome suspend gameplay and pressure
-Title stops active gameplay admission
-duplicate and stale start commands do not mutate state
-candidate failure preserves predecessor state
-late predecessor work is rejected
-HTML and Canvas2D share one successor generation
-first visible successor frame is acknowledged
-source, dist, and Pages results match
+production global has no raw engine or mutable internals
+readback is immutable and revisioned
+allowlisted command settles once
+unknown, duplicate and stale commands are rejected
+wrong host/run generation is rejected
+route and pause policy are enforced
+external tick is disabled in production
+diagnostic tick requires a valid lease
+expired and retired leases are rejected
+headless and visible steps are distinct
+visible mutation produces matching HTML and Canvas2D receipts
+retirement rejects late callers
+source, dist and Pages behavior match
 ```
 
 ## Do not claim
 
-Do not claim clean reset, deterministic replay, pause fidelity, atomic run adoption, predecessor isolation, matching visible state, artifact parity, or production readiness until the fixture matrix passes on `main`.
+Do not claim least-authority publication, safe diagnostics, external-tick correctness, public-command idempotency, visible-frame convergence, capability retirement, artifact parity or production readiness until the fixture matrix passes on `main`.
