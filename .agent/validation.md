@@ -1,115 +1,55 @@
-# Validation: ZombieOrchard save-slot session selection
+# Validation: ZombieOrchard player movement control coverage
 
-**Timestamp:** `2026-07-15T12-39-01-04-00`
+**Timestamp:** `2026-07-15T17-38-05-04-00`
 
 ## Scope
 
-Documentation-only audit of the full Publish selection, current heads, root `.agent` coverage, route graph, scoped interface domains, Save Select projection, state-bearing runtime domains, smoke coverage, build, Pages and central tracking.
+Documentation-only audit of the full Publish selection, current heads, root `.agent` coverage, browser host, HTML command producers, active-session movement, proximity interactions, Canvas2D projection, smoke coverage, static build, Pages deployment, and central tracking.
 
 ## Plan ledger
 
-**Goal:** distinguish source-proven absence of persistence/session admission from unexecuted browser outcomes.
+**Goal:** distinguish source-backed findings from unexecuted movement and device proofs.
 
-- [x] Read all 11 accessible Publish repositories.
-- [x] Compare ten eligible ledgers, heads and root `.agent` entrypoints.
-- [x] Exclude TheCavalryOfRome.
-- [x] Select ZombieOrchard by the oldest synchronized timestamp.
-- [x] Inspect preset, interface domains, composition, renderer, game composition and smoke test.
-- [x] Preserve all 27 kit surfaces and services.
-- [x] Add the timestamped audit family.
-- [x] Keep writes on `main`; create no branch or pull request.
-- [ ] Implement and run persistence/session fixtures.
+- [x] Source inspected.
+- [x] Organization and central ledger compared.
+- [x] Root `.agent` coverage checked.
+- [x] Eligible current heads compared with documented heads.
+- [x] Movement command and proximity consumers traced.
+- [x] Browser and visible movement producers inventoried.
+- [x] Required fixture gate documented.
+- [ ] Execute runtime and deployed fixtures.
 
-## Source-backed findings
-
-```txt
-entry preset
-  -> Play routes directly to active-session
-  -> New Game routes to run-setup
-
-session-select preset
-  -> domain exists
-  -> only Back action
-  -> no meta.slots
-
-interface composition
-  -> moves routes directly
-  -> no save/load/new-session command boundary
-
-HTML renderer
-  -> can render current.meta.slots
-  -> receives no discovered save catalog
-
-source repository
-  -> no localStorage or IndexedDB owner found
-  -> no save schema, serialization, migration or restore service
-
-smoke
-  -> requires Play -> active-session
-  -> does not test storage or reload
-```
-
-## What source inspection proves
-
-```txt
-Save Select is unreachable through current actions
-Save Select has no slot catalog or selection command
-Play adopts current in-memory state without a load result
-New Game enters play without a durable initial-session result
-no whole-runtime save/restore transaction exists
-no typed persistence result or loaded-frame acknowledgement exists
-```
-
-## What is not proven
-
-```txt
-a reproduced user-visible Save Select defect
-a storage implementation outside the repository
-a chosen future save format or storage backend
-correct migration behavior
-artifact or Pages persistence parity
-production readiness
-```
-
-## Required fixture matrix
-
-```txt
-empty, unavailable, corrupt and incompatible storage classification
-stable slot identity and ordering
-new-session initial commit
-save revision and stale-write rejection
-whole-runtime reload equality
-migration with provenance
-storage failure predecessor preservation
-atomic load adoption
-slot deletion and catalog refresh
-Canvas2D/HTML loaded-session revision equality
-source/dist/Pages parity
-```
-
-## Change scope
+## Change boundary
 
 ```txt
 documentation changed: yes
-runtime source changed: no
+runtime JavaScript changed: no
+HTML CSS or Canvas2D behavior changed: no
 gameplay changed: no
-storage behavior changed: no
-Canvas2D or HTML behavior changed: no
 public API changed: no
-dependencies or scripts changed: no
+dependencies or package scripts changed: no
 tests or workflows changed: no
 deployment changed: no
 branch created: no
 pull request created: no
+```
 
+## Execution boundary
+
+```txt
 npm test: not run
 npm run build: not run
-persistence fixtures: unavailable / not run
-browser save/reload fixtures: unavailable / not run
+headless movement fixture: unavailable
+keyboard browser fixture: unavailable
+touch browser fixture: unavailable
+gamepad browser fixture: unavailable
+hybrid and lifecycle fixtures: unavailable
+proximity loop fixture: unavailable
+FirstPlayerMovementFrameAck fixture: unavailable
 dist smoke: not run
 Pages smoke: not run
 ```
 
-## Claims intentionally withheld
+## Claims not made
 
-No durable-save correctness, migration safety, atomic restore, reload recovery, session-route settlement, visible-frame convergence, artifact parity or production-readiness claim is made.
+No claim is made for player-control completeness, keyboard support, touch support, gamepad support, movement-rate correctness, lifecycle safety, intentional proximity-loop playability, visible-frame convergence, artifact parity, Pages parity, or production readiness.
