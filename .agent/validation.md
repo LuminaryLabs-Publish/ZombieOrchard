@@ -1,81 +1,89 @@
-# Validation: ZombieOrchard route-bound simulation suspension
+# Validation: ZombieOrchard save-slot session selection
 
-**Timestamp:** `2026-07-15T08-26-01-04-00`
+**Timestamp:** `2026-07-15T12-39-01-04-00`
 
 ## Scope
 
-Documentation-only audit of the full Publish selection, current heads, root `.agent` coverage, runtime tick order, interface transitions, pressure and active-session predicates, renderer projections, existing smoke coverage, build, Pages and central tracking.
+Documentation-only audit of the full Publish selection, current heads, root `.agent` coverage, route graph, scoped interface domains, Save Select projection, state-bearing runtime domains, smoke coverage, build, Pages and central tracking.
 
 ## Plan ledger
 
-**Goal:** distinguish source-proven unconditional ticking from unexecuted browser outcomes.
+**Goal:** distinguish source-proven absence of persistence/session admission from unexecuted browser outcomes.
 
 - [x] Read all 11 accessible Publish repositories.
 - [x] Compare ten eligible ledgers, heads and root `.agent` entrypoints.
 - [x] Exclude TheCavalryOfRome.
-- [x] Select ZombieOrchard because its completed canvas audit advanced beyond the central ledger.
-- [x] Inspect runtime, game composition, interface domains, preset, gameplay domains and renderers.
+- [x] Select ZombieOrchard by the oldest synchronized timestamp.
+- [x] Inspect preset, interface domains, composition, renderer, game composition and smoke test.
 - [x] Preserve all 27 kit surfaces and services.
 - [x] Add the timestamped audit family.
 - [x] Keep writes on `main`; create no branch or pull request.
-- [ ] Implement and run route-suspension fixtures.
+- [ ] Implement and run persistence/session fixtures.
 
 ## Source-backed findings
 
 ```txt
-kit-runtime
-  -> ticks every domain on every submitted step
+entry preset
+  -> Play routes directly to active-session
+  -> New Game routes to run-setup
 
-pressure-field
-  -> grows rowPressure and curse on every tick
+session-select preset
+  -> domain exists
+  -> only Back action
+  -> no meta.slots
 
-active-session
-  -> ticks until ended
-  -> has no route or pause predicate
-  -> spawns/moves pests and applies damage
+interface composition
+  -> moves routes directly
+  -> no save/load/new-session command boundary
 
-interface-composition
-  -> changes active route only
-  -> checks ended state after active-session tick
+HTML renderer
+  -> can render current.meta.slots
+  -> receives no discovered save catalog
 
-renderers
-  -> Canvas2D always projects active-session world
-  -> HTML projects the selected route
+source repository
+  -> no localStorage or IndexedDB owner found
+  -> no save schema, serialization, migration or restore service
+
+smoke
+  -> requires Play -> active-session
+  -> does not test storage or reload
 ```
 
 ## What source inspection proves
 
 ```txt
-route changes do not alter tick eligibility
-pressure and active-session may mutate on non-gameplay routes
-Pause and management routes do not implement suspension
-defeat routing can follow a hidden active-session tick
-no typed suspension/resume result exists
-no shared route/simulation frame acknowledgement exists
+Save Select is unreachable through current actions
+Save Select has no slot catalog or selection command
+Play adopts current in-memory state without a load result
+New Game enters play without a durable initial-session result
+no whole-runtime save/restore transaction exists
+no typed persistence result or loaded-frame acknowledgement exists
 ```
 
 ## What is not proven
 
 ```txt
-a reproduced browser defeat while paused
-exact user-perceived timing
-correct future route policy for every product screen
-artifact or Pages parity
+a reproduced user-visible Save Select defect
+a storage implementation outside the repository
+a chosen future save format or storage backend
+correct migration behavior
+artifact or Pages persistence parity
 production readiness
 ```
 
 ## Required fixture matrix
 
 ```txt
-entry/settings/run-setup pressure immutability
-active-session pressure admission
-night pest movement and damage admission
-pause/management pest and condition immutability
-pause near defeat without outcome transition
-resume exactly-once reactivation
-title/outcome lease retirement
-stale transition and stale tick rejection
-Canvas2D/HTML revision equality
+empty, unavailable, corrupt and incompatible storage classification
+stable slot identity and ordering
+new-session initial commit
+save revision and stale-write rejection
+whole-runtime reload equality
+migration with provenance
+storage failure predecessor preservation
+atomic load adoption
+slot deletion and catalog refresh
+Canvas2D/HTML loaded-session revision equality
 source/dist/Pages parity
 ```
 
@@ -85,7 +93,7 @@ source/dist/Pages parity
 documentation changed: yes
 runtime source changed: no
 gameplay changed: no
-timing changed: no
+storage behavior changed: no
 Canvas2D or HTML behavior changed: no
 public API changed: no
 dependencies or scripts changed: no
@@ -96,12 +104,12 @@ pull request created: no
 
 npm test: not run
 npm run build: not run
-route suspension fixtures: unavailable / not run
-browser interaction fixtures: unavailable / not run
+persistence fixtures: unavailable / not run
+browser save/reload fixtures: unavailable / not run
 dist smoke: not run
 Pages smoke: not run
 ```
 
 ## Claims intentionally withheld
 
-No pause safety, route-bound simulation, resume correctness, terminal settlement, visible-frame convergence, artifact parity or production-readiness claim is made.
+No durable-save correctness, migration safety, atomic restore, reload recovery, session-route settlement, visible-frame convergence, artifact parity or production-readiness claim is made.
