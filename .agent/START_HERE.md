@@ -1,92 +1,69 @@
-# START HERE: ZombieOrchard save-slot session selection
+# START HERE: ZombieOrchard player movement control coverage
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Aligned:** `2026-07-15T12-39-01-04-00`  
-**Status:** `save-slot-session-selection-admission-authority-audited`  
-**Retained status:** `route-simulation-suspension-admission-authority-central-reconciled`  
-**Retained statuses:** `canvas-backing-store-dpr-resize-authority-central-reconciled`, `raf-clock-fixed-step-admission-authority-central-reconciled`, `public-runtime-capability-frame-admission-authority-central-reconciled`, `run-start-clean-reset-authority-central-reconciled`, `roster-hiring-gameplay-adoption-authority-central-reconciled`, `inventory-equipment-gameplay-adoption-authority-central-reconciled`, `construction-settlement-world-adoption-authority-central-reconciled`, `html-content-command-surface-authority-central-reconciled`, `browser-startup-readiness-failure-authority-central-reconciled`, `canvas-html-frame-coherence-authority-central-reconciled`, `runtime-event-lifecycle-publication-authority-audited`, `runtime-observer-publication-authority-central-reconciled`
+**Aligned:** `2026-07-15T17-38-05-04-00`  
+**Status:** `player-movement-action-coverage-authority-audited`  
+**Retained status:** `save-slot-session-selection-admission-authority-central-reconciled`  
+**Retained statuses:** `route-simulation-suspension-admission-authority-central-reconciled`, `canvas-backing-store-dpr-resize-authority-central-reconciled`, `raf-clock-fixed-step-admission-authority-central-reconciled`, `public-runtime-capability-frame-admission-authority-central-reconciled`, `run-start-clean-reset-authority-central-reconciled`, `roster-hiring-gameplay-adoption-authority-central-reconciled`, `inventory-equipment-gameplay-adoption-authority-central-reconciled`, `construction-settlement-world-adoption-authority-central-reconciled`, `html-content-command-surface-authority-central-reconciled`, `browser-startup-readiness-failure-authority-central-reconciled`, `canvas-html-frame-coherence-authority-central-reconciled`, `runtime-event-lifecycle-publication-authority-audited`, `runtime-observer-publication-authority-central-reconciled`
 
 ## Summary
 
-Save Select exists as a route and the HTML renderer can draw slot cards, but no action reaches it, no slots are supplied, and no persistence service exists. Play and New Game reach active-session without a selected save, validated load or durable new-session result.
+The active session implements movement and Canvas2D renders player position, but the shipped browser host and HTML surface expose no directional producer. Collect and Clear are proximity-gated, so players cannot intentionally navigate the core harvest-and-defend loop through the product UI.
 
 ## Plan ledger
 
-**Goal:** make every playable session originate from an accepted loaded slot or an accepted, durably created new session.
+**Goal:** provide complete, lifecycle-safe movement action coverage from supported input devices through accepted player position and the first matching visible frame.
 
-- [x] Compare the full Publish inventory, central ledger, current heads and root `.agent` coverage.
+- [x] Compare the full Publish inventory, central ledger, current heads, and root `.agent` coverage.
 - [x] Exclude TheCavalryOfRome.
 - [x] Select only ZombieOrchard by the oldest synchronized timestamp.
-- [x] Identify the complete interaction loop, all domains, all 27 implemented kits and their services.
-- [x] Add the `2026-07-15T12-39-01-04-00` save-slot audit family.
+- [x] Identify the interaction loop, all domains, all 27 implemented kits, and their services.
+- [x] Add the `2026-07-15T17-38-05-04-00` player-control audit family.
 - [x] Refresh all required root documents and the machine registry.
 - [x] Push only to `main`; create no branch or pull request.
-- [ ] Implement save discovery, selection, atomic restore, durable commit and reload fixtures.
+- [ ] Implement keyboard and visible touch-compatible controls, then execute device, lifecycle, build, and Pages fixtures.
 
 ## Read this run first
 
 ```txt
-.agent/trackers/2026-07-15T12-39-01-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-15T12-39-01-04-00.md
-.agent/architecture-audit/2026-07-15T12-39-01-04-00-save-slot-session-selection-dsk-map.md
-.agent/render-audit/2026-07-15T12-39-01-04-00-unreachable-empty-save-select-gap.md
-.agent/gameplay-audit/2026-07-15T12-39-01-04-00-play-new-game-session-adoption-loop.md
-.agent/interaction-audit/2026-07-15T12-39-01-04-00-save-session-command-result-map.md
-.agent/persistence-audit/2026-07-15T12-39-01-04-00-save-slot-schema-adoption-contract.md
-.agent/deploy-audit/2026-07-15T12-39-01-04-00-save-reload-browser-fixture-gate.md
-.agent/central-sync-audit/2026-07-15T12-39-01-04-00-oldest-selection-save-session-reconciliation.md
+.agent/trackers/2026-07-15T17-38-05-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-15T17-38-05-04-00.md
+.agent/architecture-audit/2026-07-15T17-38-05-04-00-player-movement-control-action-coverage-dsk-map.md
+.agent/render-audit/2026-07-15T17-38-05-04-00-missing-movement-control-visible-frame-gap.md
+.agent/gameplay-audit/2026-07-15T17-38-05-04-00-unreachable-proximity-gameplay-loop.md
+.agent/interaction-audit/2026-07-15T17-38-05-04-00-player-movement-command-result-map.md
+.agent/input-audit/2026-07-15T17-38-05-04-00-device-action-coverage-lifecycle-contract.md
+.agent/deploy-audit/2026-07-15T17-38-05-04-00-movement-control-browser-fixture-gate.md
+.agent/central-sync-audit/2026-07-15T17-38-05-04-00-oldest-selection-player-control-reconciliation.md
 ```
 
-## Complete interaction loop
+## Interaction loop
 
 ```txt
-boot
-  -> create all runtime and interface domains
-  -> register session-select
-  -> start at entry
-
-Play
-  -> move directly to active-session
-  -> adopt current in-memory state
-
-New Game
-  -> move to run-setup
-  -> Start moves directly to active-session
-  -> no SaveSlotId or initial durable commit
-
-Save Select
-  -> no inbound action
-  -> Back only
-  -> renderer expects current.meta.slots
-  -> preset provides none
+boot -> create engine and renderers -> start RAF
+active session -> tick -> draw player/apples/pests -> render HTML commands
+HTML -> Collect / Clear / Next Phase / route actions
+active-session -> move command exists but receives no shipped input
+collect radius 42 and clear distance 58 -> intentional approach unavailable
 ```
 
 ## Required authority
 
-`zombie-orchard-save-slot-session-selection-admission-authority-domain`
+`zombie-orchard-player-movement-control-action-coverage-authority-domain`
 
 ```txt
-DiscoverSaveSlotsCommand
-  -> validate and classify stored records
-  -> publish immutable SaveCatalogResult
-
-SelectSessionCommand
-  -> bind SaveSlotId expected SaveRevision and RouteRevision
-  -> validate or migrate one save
-  -> prepare every runtime participant
-  -> atomically adopt all state or preserve the predecessor
-  -> publish SessionSelectionResult
-  -> route only after acceptance
-  -> publish FirstLoadedSessionFrameAck
-
-CreateNewSessionCommand
-  -> allocate RunGeneration and SaveSlotId
-  -> reset every participant
-  -> commit the initial durable document
-  -> publish NewSessionResult
+PlayerControlAdmissionCommand
+  -> bind document runtime route device capability action map and control generation
+  -> require complete movement coverage
+  -> publish visible controls where required
+  -> normalize all device producers
+  -> settle focus route blur visibility and hybrid conflicts
+  -> submit MovementCommand against expected PlayerPositionRevision
+  -> publish MovementResult
+  -> publish FirstPlayerMovementFrameAck
 ```
 
 ## Validation boundary
 
-Documentation only. No persistence, save selection, migration, durable commit, reload recovery, frame convergence, artifact parity or production-readiness claim is made.
+Documentation only. No movement producer, input lifecycle, browser proof, artifact parity, Pages parity, or production-readiness claim is made.
