@@ -1,77 +1,73 @@
 # Next steps - ZombieOrchard
 
-**Timestamp:** `2026-07-14T21-41-41-04-00`
+**Timestamp:** `2026-07-15T02-38-45-04-00`
 
 ## Summary
 
-Replace raw `window.GameHost` publication with immutable readback and allowlisted product commands. External ticking should be unavailable in production by default and available only through an explicit diagnostic lease that binds one runtime result to one HTML and Canvas2D acknowledgement.
+Replace the one-step-per-RAF host loop with a monotonic clock sample, fixed-step accumulator, bounded catch-up budget, explicit visibility policy and render-once result. Keep external diagnostic ticking under the retained public-capability authority rather than mixing it into the production clock.
 
 ## Plan ledger
 
-**Goal:** make public runtime access least-authority, revisioned, idempotent, route-aware, pause-aware and visibly provable.
+**Goal:** make equivalent wall-time traces produce equivalent gameplay state across callback rates while preserving responsive rendering and bounded work.
 
-- [ ] Define `HostGeneration`, `RunGeneration`, `CapabilityPolicyRevision` and `CapabilitySetId`.
-- [ ] Publish immutable detached readback rather than the raw engine.
-- [ ] Remove `ctx`, `domains`, `addKit`, direct APIs and arbitrary tick from the production global.
-- [ ] Define an allowlist of product-level public commands.
-- [ ] Add `CallerId`, `PublicCommandId` and expected state revision.
-- [ ] Reject duplicate, stale, retired, wrong-generation, route-ineligible and pause-ineligible commands.
-- [ ] Publish typed `PublicMutationResult` values.
-- [ ] Disable external ticking in production by default.
-- [ ] Add scoped debug/test tick leases with expiry and operation limits.
-- [ ] Classify every external step as headless or visible.
-- [ ] Bind visible steps to exact runtime, HTML and Canvas2D frame revisions.
-- [ ] Publish `FirstVisiblePublicMutationFrameAck`.
-- [ ] Revoke capability sets and leases on host retirement.
-- [ ] Add source, dist and Pages fixtures.
-- [ ] Retain clean-run generation, observer isolation and frame-coherence work.
+- [ ] Define `HostFrameId`, `ClockRevision` and `SimulationStepId`.
+- [ ] Accept the RAF timestamp and validate monotonicity.
+- [ ] Derive and clamp wall delta.
+- [ ] Add a fixed-step accumulator.
+- [ ] Set an explicit fixed-step duration.
+- [ ] Bound catch-up steps per host frame.
+- [ ] Report deferred and dropped time.
+- [ ] Define hidden-tab suspend/reduced/continue policy.
+- [ ] Reset or settle accumulator debt on resume.
+- [ ] Render Canvas2D and HTML once from the latest accepted snapshot.
+- [ ] Bind both renderer receipts to one state revision.
+- [ ] Publish `HostFrameResult` and `FirstClockBoundVisibleFrameAck`.
+- [ ] Reject stale callbacks after host retirement.
+- [ ] Keep production external tick disabled or separately leased.
+- [ ] Add 30/60/120 Hz, stall, hide/resume, dist and Pages fixtures.
+- [ ] Retain clean-run, public capability and frame-coherence work.
 
-## Immediate safe ledge
+## Immediate implementation ledge
 
-1. Replace `window.GameHost.engine` with a frozen product facade.
-2. Keep `getState()` but add state, host and run revisions.
-3. Replace `tick()` with no production equivalent.
-4. Add a test-only lease factory behind an explicit build/runtime policy.
-5. Route public commands through one admission coordinator.
-6. Return typed results with stable command IDs.
-7. Render accepted visible results before acknowledging them.
-8. Revoke the facade during page or host retirement.
+1. Change `draw()` to receive the RAF timestamp.
+2. Store the first timestamp without synthesizing elapsed wall time.
+3. Accumulate a clamped wall delta.
+4. Execute at most the configured fixed-step budget.
+5. Render once after zero or more accepted steps.
+6. Clear stale timestamp debt on visibility resume.
+7. Expose timing diagnostics without exposing mutable clock internals.
+8. Add synthetic callback-trace fixtures before publishing claims.
 
 ## Target files
 
 ```txt
 src/start.js
-src/game.js
 src/kits/runtime.js
-src/host/public-capability-authority.js
-src/host/public-command-admission.js
-src/host/external-tick-lease.js
-src/host/public-capability-retirement.js
-src/renderer/html-interface-renderer.js
+src/host/raf-clock-authority.js
+src/host/visibility-clock-policy.js
 src/renderer/world-canvas.js
-tests/public-capability.fixture.mjs
-scripts/smoke-public-capability-browser.mjs
+src/renderer/html-interface-renderer.js
+tests/raf-clock.fixture.mjs
+scripts/smoke-raf-clock-browser.mjs
 package.json
 ```
 
 ## Required fixtures
 
 ```txt
-production global has no raw engine or mutable internals
-readback is immutable and revisioned
-allowlisted command settles once
-unknown, duplicate and stale commands are rejected
-wrong host/run generation is rejected
-route and pause policy are enforced
-external tick is disabled in production
-diagnostic tick requires a valid lease
-expired and retired leases are rejected
-headless and visible steps are distinct
-visible mutation produces matching HTML and Canvas2D receipts
-retirement rejects late callers
+30, 60 and 120 Hz traces produce equal fixed-step counts for equal wall time
+pressure and damage results match across traces
+long frames respect catch-up budget
+excess time is reported
+hidden tab follows declared policy
+resume applies no stale unbounded debt
+zero-step frame does not mutate gameplay
+multi-step host frame renders once
+Canvas2D and HTML cite the same state revision
+retired host rejects late callback
 source, dist and Pages behavior match
 ```
 
 ## Do not claim
 
-Do not claim least-authority publication, safe diagnostics, external-tick correctness, public-command idempotency, visible-frame convergence, capability retirement, artifact parity or production readiness until the fixture matrix passes on `main`.
+Do not claim refresh-rate independence, deterministic wall-time behavior, catch-up correctness, hidden-tab safety, visible-frame convergence, artifact parity or production readiness until the complete fixture matrix passes on `main`.
