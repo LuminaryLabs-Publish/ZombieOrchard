@@ -1,55 +1,55 @@
 # Current audit: ZombieOrchard
 
-**Timestamp:** `2026-07-15T02-38-45-04-00`  
-**Status:** `raf-clock-fixed-step-admission-authority-audited`  
+**Timestamp:** `2026-07-15T08-09-51-04-00`  
+**Status:** `canvas-backing-store-dpr-resize-authority-audited`  
 **Branch:** `main`
 
 ## Summary
 
-`src/start.js` ignores the RAF timestamp and calls `engine.tick(1 / 60)` once per animation callback. `kit-runtime` advances elapsed time and all domains from that submitted delta. Pressure growth, pest spawning, pest movement and damage are therefore coupled to callback frequency.
+`src/renderer/world-canvas.js` reads CSS dimensions and unconditionally assigns `canvas.width` and `canvas.height` on every rendered frame. The world backing store has no stable generation, no DPR policy, no conditional resize admission, and no first matching resize-frame acknowledgement.
 
 ## Plan ledger
 
-**Goal:** preserve deterministic fixed-step gameplay while admitting steps from measured wall time and rendering one coherent frame per browser callback.
+**Goal:** derive one versioned logical/physical Canvas2D surface descriptor, resize only when it changes, preserve one context generation across unchanged frames, and prove source/build/Pages parity.
 
-- [x] Complete organization and ledger comparison.
-- [x] Apply the oldest synchronized fallback to ZombieOrchard only.
-- [x] Read host, runtime, gameplay-rate consumers and smoke coverage.
+- [x] Compare the complete Publish inventory with central tracking.
+- [x] Exclude `TheCavalryOfRome`.
+- [x] Confirm ten eligible repositories are tracked, root-documented, and synchronized.
+- [x] Select ZombieOrchard as the oldest synchronized entry.
+- [x] Read the host, Canvas2D renderer, CSS, HTML renderer, tests, package, and prior audit state.
 - [x] Preserve all 27 implemented kits and services.
-- [x] Add and route the timestamped clock audit family.
+- [x] Add and route the timestamped canvas audit family.
 - [x] Keep all writes on `main`; create no branch or pull request.
-- [ ] Implement and execute the clock fixture matrix.
+- [ ] Implement and execute render-surface fixtures.
 
 ## Complete interaction loop
 
 ```txt
 page load
-  -> create runtime and renderers
+  -> create runtime, Canvas2D renderer, and HTML renderer
   -> publish GameHost
-  -> start draw loop
+  -> start recursive RAF
 
-each RAF callback
-  -> submit fixed 1 / 60
-  -> runtime elapsed and frame advance
-  -> every ticking domain advances
-  -> Canvas2D and HTML render
-
-callback frequency changes
-  -> simulated time per wall second changes
-  -> no accumulator, catch-up budget or visibility policy settles the difference
+host frame
+  -> engine tick and snapshot
+  -> Canvas2D render
+       -> sample clientWidth/clientHeight
+       -> assign width and height every frame
+       -> clear and redraw world
+  -> HTML render
+  -> request next frame
 ```
 
 ## Domains in use
 
 ```txt
-browser RAF, visibility and monotonic time
-host clock sampling, fixed-step admission and frame publication
-runtime registration, commands, elapsed/frame state, ticks, snapshots and subscriptions
-12 interface domains plus interface composition
-resource, pressure, orchard, construction, roster and inventory
-movement, collection, phases, pests, damage, score, failure and outcome
-Canvas2D and HTML presentation
-public diagnostics, smoke, build, Pages and central tracking
+browser RAF viewport CSS sizing and device pixel ratio
+Canvas2D backing-store context lifecycle and world projection
+HTML projection and delegated interface commands
+runtime registration commands ticks snapshots and subscriptions
+12 interface domains plus composition
+resource pressure orchard construction roster inventory and active gameplay
+public diagnostics smoke build Pages and central tracking
 ```
 
 ## Implemented inventory
@@ -58,37 +58,38 @@ public diagnostics, smoke, build, Pages and central tracking
 engine-installed kits: 19
 host/tooling/support kits: 8
 total implemented surfaces: 27
+planned canvas authority surfaces: 18
 ```
 
-The complete kit-by-kit service list remains in the current tracker and `.agent/kit-registry.json`.
+The complete kit-by-kit service list is preserved in the current tracker and `.agent/kit-registry.json`.
 
 ## Source-backed findings
 
-- `draw()` takes no RAF timestamp and always submits `1 / 60`.
-- The runtime clamps submitted deltas but cannot infer omitted wall time.
-- Pressure, spawn probability, movement and damage consume `dt` directly.
-- Both renderers execute once after every submitted simulation step.
-- There is no clock revision, accumulator, catch-up budget, dropped-time result, visibility settlement or renderer timing receipt.
-- The smoke test exercises one explicit fixed tick, not real browser cadence.
+- Every `world.render(snapshot)` call writes both canvas dimensions.
+- The assignments are not guarded by size equality.
+- Backing-store dimensions equal logical CSS dimensions.
+- The renderer does not read `devicePixelRatio`.
+- No `ResizeObserver`, DPR observer, physical-size descriptor, context generation, resize result, stale-work rejection, or first matching frame acknowledgement exists.
+- The Node smoke test does not construct a browser canvas.
 
 ## Required parent domain
 
-`zombie-orchard-raf-clock-fixed-step-admission-authority-domain`
+`zombie-orchard-canvas-backing-store-dpr-resize-authority-domain`
 
 ## Current file family
 
 ```txt
-.agent/trackers/2026-07-15T02-38-45-04-00/project-breakdown.md
-.agent/turn-ledger/2026-07-15T02-38-45-04-00.md
-.agent/architecture-audit/2026-07-15T02-38-45-04-00-raf-clock-fixed-step-dsk-map.md
-.agent/render-audit/2026-07-15T02-38-45-04-00-render-rate-simulation-rate-coupling-gap.md
-.agent/gameplay-audit/2026-07-15T02-38-45-04-00-refresh-rate-gameplay-speed-loop.md
-.agent/interaction-audit/2026-07-15T02-38-45-04-00-host-frame-command-result-map.md
-.agent/clock-audit/2026-07-15T02-38-45-04-00-raf-accumulator-visibility-contract.md
-.agent/deploy-audit/2026-07-15T02-38-45-04-00-refresh-rate-browser-fixture-gate.md
-.agent/central-sync-audit/2026-07-15T02-38-45-04-00-oldest-selection-clock-reconciliation.md
+.agent/trackers/2026-07-15T08-09-51-04-00/project-breakdown.md
+.agent/turn-ledger/2026-07-15T08-09-51-04-00.md
+.agent/architecture-audit/2026-07-15T08-09-51-04-00-canvas-backing-store-dpr-dsk-map.md
+.agent/render-audit/2026-07-15T08-09-51-04-00-per-frame-backing-store-reset-gap.md
+.agent/gameplay-audit/2026-07-15T08-09-51-04-00-simulation-to-canvas-frame-loop.md
+.agent/interaction-audit/2026-07-15T08-09-51-04-00-canvas-render-surface-command-result-map.md
+.agent/canvas-system-audit/2026-07-15T08-09-51-04-00-backing-store-resize-contract.md
+.agent/deploy-audit/2026-07-15T08-09-51-04-00-canvas-dpr-browser-fixture-gate.md
+.agent/central-sync-audit/2026-07-15T08-09-51-04-00-oldest-selection-canvas-reconciliation.md
 ```
 
 ## Validation boundary
 
-Documentation only. Runtime source and behavior are unchanged.
+Documentation only. Runtime source and behavior are unchanged. No DPR correctness, resize safety, backing-store reuse, allocation reduction, visual equivalence, artifact parity, deployed parity, or production-readiness claim is made.
