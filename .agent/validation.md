@@ -1,55 +1,47 @@
 # Validation - ZombieOrchard
 
-**Timestamp:** `2026-07-14T21-41-41-04-00`
+**Timestamp:** `2026-07-15T02-38-45-04-00`
 
 ## Scope
 
-Documentation-only audit of organization selection, browser boot, `window.GameHost`, raw engine publication, runtime commands, domain APIs, manual ticking, snapshots, subscriptions, HTML/Canvas2D projection, smoke proof, static build, Pages deployment and central tracking.
+Documentation-only audit of Publish selection, browser RAF scheduling, runtime delta handling, time-based gameplay consumers, Canvas2D/HTML render order, smoke coverage, build, Pages and central tracking.
 
 ## Plan ledger
 
-**Goal:** record exact source evidence and the proof required before public runtime capability or visible-frame claims are made.
+**Goal:** record exact source evidence and the proof required before refresh-rate-independent timing claims are made.
 
-- [x] Read the current Publish organization inventory.
+- [x] Read the complete Publish organization inventory.
 - [x] Compare all ten eligible repositories with central tracking.
 - [x] Confirm no new, ledger-missing, root-agent-missing or runtime-ahead repository has priority.
 - [x] Select ZombieOrchard as the oldest synchronized eligible entry.
-- [x] Read `index.html`, `src/boot.js`, `src/start.js` and `src/game.js`.
-- [x] Read `src/kits/runtime.js` and `src/kits/game-domains.js`.
-- [x] Read both renderers.
-- [x] Inspect the existing smoke and deployment coverage recorded in repo-local docs.
-- [x] Preserve all 27 kit surfaces and offered services.
-- [x] Add timestamped audits and root routing.
-- [x] Keep documentation writes on `main` with no branch or pull request.
-- [ ] Implement and run public capability fixtures.
+- [x] Read `src/start.js`, `src/game.js`, `src/kits/runtime.js`, `src/kits/game-domains.js` and `tests/smoke.mjs`.
+- [x] Preserve all 27 kit surfaces and services.
+- [x] Add timestamped clock audits and root routing.
+- [x] Keep writes on `main` with no branch or pull request.
+- [ ] Implement and run timing fixtures.
 
 ## Source-backed findings
 
 ```txt
 src/start.js
-  -> creates one engine and two renderers
-  -> publishes raw engine through window.GameHost
-  -> publishes getState and manual tick
-  -> starts recursive RAF
+  -> draw ignores the RAF timestamp
+  -> every callback submits engine.tick(1 / 60)
+  -> renders Canvas2D and HTML once after the step
 
 src/kits/runtime.js
-  -> engine exposes ctx, domains, addKit, command, tick, snapshot and subscribe
-  -> tick advances frame and elapsed
-  -> tick clears events and invokes every domain tick
-  -> snapshot returns domain snapshots only
-  -> subscribers receive unversioned snapshots
+  -> clamps only the submitted delta
+  -> advances elapsed and frame from submitted delta
+  -> ticks every domain
 
 src/kits/game-domains.js
-  -> resource, pressure and orchard direct APIs are reachable through raw domains
-  -> pressure and active-session mutate during runtime ticks
+  -> pressure growth consumes dt
+  -> pest spawn probability consumes dt
+  -> pest movement consumes dt
+  -> player damage consumes dt
 
-src/renderer/world-canvas.js
-  -> renders only when called by RAF draw
-  -> exposes no frame revision or result acknowledgement
-
-src/renderer/html-interface-renderer.js
-  -> renders only when called by RAF draw
-  -> exposes no frame revision or result acknowledgement
+tests/smoke.mjs
+  -> executes one explicit 1 / 60 step
+  -> does not exercise RAF frequency, visibility or catch-up
 ```
 
 ## Deterministic observations
@@ -60,52 +52,44 @@ eligible repositories: 10
 implemented kit surfaces: 27
 engine-installed kits: 19
 host/support kits: 8
-raw engine globals: 1
-public manual tick methods: 1
-public arbitrary command paths: at least 1
-public addKit paths: 1
-public mutable ctx paths: 1
-public mutable domains paths: 1
-public capability policy revisions: 0
-public capability-set IDs: 0
-external-tick leases: 0
-runtime frame revisions in public snapshots: 0
-HTML frame revisions: 0
-Canvas frame revisions: 0
-first-visible public-mutation acknowledgements: 0
-public capability fixtures: 0
+RAF timestamp consumers in active host: 0
+constant ticks per RAF callback: 1
+fixed-step accumulators: 0
+catch-up budgets: 0
+visibility clock policies: 0
+dropped-time diagnostics: 0
+clock-bound renderer receipts: 0
+refresh-rate fixtures: 0
 ```
 
 ## Required fixture matrix
 
 ```txt
-production GameHost excludes raw engine and mutable internals
-state readback is immutable and revisioned
-allowlisted public command settles once
-unknown, duplicate and stale commands are rejected
-wrong host and run generations are rejected
-route and pause policies are enforced
-external tick is disabled in production
-diagnostic tick requires a valid lease
-expired and retired leases are rejected
-headless and visible steps are distinct
-visible step produces one matching HTML frame
-visible step produces one matching Canvas2D frame
-capability retirement rejects late work
+synthetic 30 Hz callback trace
+synthetic 60 Hz callback trace
+synthetic 120 Hz callback trace
+equal wall duration yields equal admitted step count
+equal traces yield matching pressure and damage state
+long frame respects catch-up budget
+excess time produces explicit deferred/dropped result
+hidden tab follows declared policy
+resume applies no stale unbounded debt
+zero-step frame does not mutate gameplay
+multi-step frame renders once
+Canvas2D and HTML cite one state revision
+retired host rejects late callbacks
 source, dist and Pages behavior match
 ```
 
 ## Validation result
 
 ```txt
+documentation changed: yes
 runtime source changed: no
-public API behavior changed: no
-HTML or CSS changed: no
-dependencies changed: no
-package scripts changed: no
-gameplay behavior changed: no
-canvas behavior changed: no
-HTML behavior changed: no
+gameplay timing changed: no
+Canvas2D or HTML behavior changed: no
+public API changed: no
+dependencies or scripts changed: no
 tests or workflows changed: no
 deployment changed: no
 branch created: no
@@ -113,10 +97,10 @@ pull request created: no
 
 npm test: not run
 npm run build: not run
-headless public capability fixtures: unavailable / not run
-browser public capability fixtures: unavailable / not run
-dist public capability smoke: unavailable / not run
-Pages public capability smoke: unavailable / not run
+headless timing fixtures: unavailable / not run
+browser timing fixtures: unavailable / not run
+dist timing smoke: unavailable / not run
+Pages timing smoke: unavailable / not run
 ```
 
-No least-authority publication, public-command admission, external-tick safety, visible-frame convergence, capability retirement, artifact parity or production-readiness claim is made.
+No refresh-rate independence, fixed-step correctness, catch-up correctness, hidden-tab safety, visible-frame convergence, artifact parity or production-readiness claim is made.
