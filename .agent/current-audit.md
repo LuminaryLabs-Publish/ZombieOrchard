@@ -1,46 +1,47 @@
-# Current audit: ZombieOrchard pressure gameplay adoption
+# Current audit: ZombieOrchard game audio event projection
 
-**Timestamp:** `2026-07-16T03-41-28-04-00`  
-**Status:** `pressure-threshold-gameplay-adoption-authority-audited`  
-**Retained status:** `run-seed-rng-replay-authority-central-reconciled`  
+**Timestamp:** `2026-07-16T09-02-09-04-00`  
+**Status:** `game-audio-event-projection-authority-audited`  
+**Retained status:** `pressure-threshold-gameplay-adoption-authority-central-reconciled`  
 **Branch:** `main`
 
 ## Summary
 
-`pressure-field-kit` owns `rowPressure` and `curse`, advances both on every runtime tick and accepts adjustments. `active-session-domain-kit` writes `rowPressure` after collection but never reads either channel. Pest spawn probability, pest speed, contact damage, phase changes and terminal failure remain fixed and independent from pressure.
+ZombieOrchard produces accepted route, gameplay, economy, phase, damage, failure, and outcome results, then projects snapshots through Canvas2D and HTML. The browser host has no audio capability observer, accepted gesture unlock, semantic event schema, cue registry, preference bus, lifecycle settlement, deduplication, voice budget, or audible acknowledgement.
 
 ## Plan ledger
 
-**Goal:** bind pressure revisions to authored gameplay effects, typed threshold results and a matching HUD/world frame without moving session truth out of existing domains.
+**Goal:** bind accepted semantic results to lifecycle-safe browser audio while preserving current gameplay and renderer ownership.
 
-- [x] Inspect pressure initialization, tick growth, commands and snapshots.
-- [x] Inspect collection-side pressure writes.
-- [x] Inspect pest spawn, movement, damage, phase and outcome consumers.
-- [x] Inspect HUD projection and smoke coverage.
+- [x] Inspect boot, runtime, command dispatch, gameplay transitions, HTML, Canvas2D, smoke, build, and deployment.
 - [x] Preserve all 27 implemented kits and services.
-- [x] Define the 18-surface pressure-adoption authority.
+- [x] Define the 20-surface game-audio authority.
+- [x] Define browser unlock, lifecycle, parity, and audiovisual convergence fixtures.
 - [ ] Implement and validate the authority.
 
 ## Source-backed finding
 
 ```txt
-pressure channels: rowPressure, curse
-automatic growth: rowPressure +0.8/sec, curse +0.2/sec
-collection write: +0.5 red apple, +2 gold apple to rowPressure
-active-session pressure reads: 0
-pest spawn pressure modifier: absent
-pest speed pressure modifier: absent
-contact damage pressure modifier: absent
-phase or outcome threshold: absent
-HUD projection: rowPressure only
-curse projection: absent
-pressure-effect fixture count: 0
+AudioContext creation: absent
+audio provider import: absent
+accepted user-gesture unlock: absent
+semantic AudioEventId: absent
+cue descriptor registry: absent
+audio preferences: absent
+ambience lifecycle: absent
+spatial projection: absent
+cue deduplication: absent
+voice pooling/budget: absent
+page lifecycle audio settlement: absent
+FirstAudibleCueAck: absent
+FirstAudioVisualConvergenceAck: absent
+browser audio fixture count: 0
 ```
 
 ## Required authority
 
-`zombie-orchard-pressure-threshold-gameplay-adoption-authority-domain`
+`zombie-orchard-game-audio-event-projection-authority-domain`
 
 ## Validation boundary
 
-Documentation only. No pressure behavior, gameplay consequence, renderer output, test, artifact or deployment result changed.
+Documentation only. No runtime, gameplay, HTML, Canvas2D, audio, dependency, test, artifact, workflow, or deployment behavior changed.
