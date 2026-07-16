@@ -1,63 +1,17 @@
 {
-  "schemaVersion": 103,
-  "generatedAt": "2026-07-16T03-41-28-04-00",
+  "schemaVersion": 104,
+  "generatedAt": "2026-07-16T09-02-09-04-00",
   "repository": "LuminaryLabs-Publish/ZombieOrchard",
   "branch": "main",
-  "status": "pressure-threshold-gameplay-adoption-authority-audited",
-  "centralStatus": "pressure-threshold-gameplay-adoption-authority-central-reconciled",
-  "retainedStatuses": [
-    "run-seed-rng-replay-authority-central-reconciled",
-    "player-movement-action-coverage-authority-central-reconciled",
-    "save-slot-session-selection-admission-authority-central-reconciled",
-    "route-simulation-suspension-admission-authority-central-reconciled",
-    "canvas-backing-store-dpr-resize-authority-central-reconciled",
-    "raf-clock-fixed-step-admission-authority-central-reconciled",
-    "public-runtime-capability-frame-admission-authority-central-reconciled",
-    "run-start-clean-reset-authority-central-reconciled",
-    "roster-hiring-gameplay-adoption-authority-central-reconciled",
-    "inventory-equipment-gameplay-adoption-authority-central-reconciled",
-    "construction-settlement-world-adoption-authority-central-reconciled",
-    "html-content-command-surface-authority-central-reconciled",
-    "browser-startup-readiness-failure-authority-central-reconciled",
-    "canvas-html-frame-coherence-authority-central-reconciled",
-    "runtime-event-lifecycle-publication-authority-audited",
-    "runtime-observer-publication-authority-central-reconciled",
-    "html-interface-projection-authority-central-reconciled",
-    "economy-command-admission-authority-central-reconciled"
-  ],
-  "reviewedPreAuditRepositoryHead": "54beb1bbb775780ab43dae1def3def4239df6c9e",
+  "status": "game-audio-event-projection-authority-audited",
   "selection": {
-    "inventoryCount": 11,
-    "eligibleCount": 10,
-    "centralLedgerCount": 10,
-    "rootAgentCount": 10,
-    "newEligibleCount": 0,
-    "centralLedgerMissingCount": 0,
-    "rootAgentMissingCount": 0,
-    "runtimeAheadCount": 0,
-    "excluded": [
-      "LuminaryLabs-Publish/TheCavalryOfRome"
-    ],
-    "selectedRepository": "LuminaryLabs-Publish/ZombieOrchard",
-    "reason": "Oldest synchronized eligible central-ledger timestamp after all current heads matched their documented repo-local heads.",
-    "priorCentralTimestamp": "2026-07-15T22-40-29-04-00",
-    "nextOldestRepository": "LuminaryLabs-Publish/TheUnmappedHouse",
-    "nextOldestTimestamp": "2026-07-15T23-00-03-04-00"
+    "reason": "oldest-synchronized-eligible-repository",
+    "publishRepositoryCount": 11,
+    "eligibleRepositoryCount": 10,
+    "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
+    "nextOldest": "LuminaryLabs-Publish/TheUnmappedHouse"
   },
-  "latestFiles": {
-    "tracker": ".agent/trackers/2026-07-16T03-41-28-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-16T03-41-28-04-00.md",
-    "architectureAudit": ".agent/architecture-audit/2026-07-16T03-41-28-04-00-pressure-threshold-gameplay-adoption-dsk-map.md",
-    "renderAudit": ".agent/render-audit/2026-07-16T03-41-28-04-00-pressure-telemetry-no-effect-visible-frame-gap.md",
-    "gameplayAudit": ".agent/gameplay-audit/2026-07-16T03-41-28-04-00-pressure-growth-without-gameplay-consequence-loop.md",
-    "interactionAudit": ".agent/interaction-audit/2026-07-16T03-41-28-04-00-pressure-effect-command-result-map.md",
-    "pressureSystemAudit": ".agent/pressure-system-audit/2026-07-16T03-41-28-04-00-channel-threshold-consumer-contract.md",
-    "deployAudit": ".agent/deploy-audit/2026-07-16T03-41-28-04-00-pressure-effect-browser-fixture-gate.md",
-    "centralSyncAudit": ".agent/central-sync-audit/2026-07-16T03-41-28-04-00-oldest-selection-pressure-adoption-reconciliation.md"
-  },
-  "implementedKitSurfaceCount": 27,
-  "engineInstalledKitCount": 19,
-  "hostSupportKitCount": 8,
+  "implementedSurfaceCount": 27,
   "implementedKits": [
     "kit-runtime",
     "scoped-interface-domain-kit",
@@ -87,186 +41,39 @@
     "static-build-copy-kit",
     "pages-deploy-kit"
   ],
-  "servicesByKit": {
-    "kit-runtime": [
-      "registration, domain creation, command dispatch, delta clamping, ticking, events, snapshots and subscriptions"
-    ],
-    "scoped-interface-domain-kit": [
-      "screen state, field mutation, selection, action activation, events and snapshots"
-    ],
-    "entry-domain-kit": [
-      "Play, New Game and Settings"
-    ],
-    "session-select-domain-kit": [
-      "Save Select projection and Back"
-    ],
-    "run-setup-domain-kit": [
-      "run setup projection, Start and Back"
-    ],
-    "active-session-domain-kit": [
-      "movement, collection, phase changes, fixed-rate pest spawning and movement, fixed-rate contact damage, clearing, score and failure"
-    ],
-    "interrupt-domain-kit": [
-      "Pause, Resume and Title"
-    ],
-    "construction-domain-kit": [
-      "construction projection, Storage Shed action and Back"
-    ],
-    "exchange-domain-kit": [
-      "Market projection and Back"
-    ],
-    "roster-domain-kit": [
-      "Roster projection and Back"
-    ],
-    "inventory-domain-kit": [
-      "Inventory projection and Back"
-    ],
-    "knowledge-domain-kit": [
-      "Codex projection and Back"
-    ],
-    "preferences-domain-kit": [
-      "Settings projection and Back"
-    ],
-    "outcome-domain-kit": [
-      "outcome projection and Title"
-    ],
-    "interface-composition-kit": [
-      "route transitions, nested commands, Back and outcome routing"
-    ],
-    "resource-ledger-kit": [
-      "balance checks, payments, grants and snapshots"
-    ],
-    "pressure-field-kit": [
-      "rowPressure and curse channel state, clamped adjustment, fixed time growth, commands and snapshots"
-    ],
-    "orchard-world-kit": [
-      "tree generation, ambient-random apple generation and refill, collection, bounds and snapshots"
-    ],
-    "construction-runtime-kit": [
-      "catalog lookup, payment, built records, messages and snapshots"
-    ],
-    "roster-runtime-kit": [
-      "hiring payment, actor records, messages and snapshots"
-    ],
-    "inventory-runtime-kit": [
-      "item snapshots and equipment mutation"
-    ],
-    "world-canvas-render-kit": [
-      "canvas sizing and world projection"
-    ],
-    "html-interface-render-kit": [
-      "delegated gameplay and route commands, HTML projection and card rendering"
-    ],
-    "game-host-diagnostics-kit": [
-      "raw engine exposure, state readback and manual ticking"
-    ],
-    "smoke-fixture-kit": [
-      "entry, direct Play and orchard apple assertions"
-    ],
-    "static-build-copy-kit": [
-      "static dist assembly"
-    ],
-    "pages-deploy-kit": [
-      "GitHub Pages publication"
-    ]
-  },
-  "domainsInUse": [
-    "browser document, RAF, click input, focus, visibility and page lifecycle",
-    "kit runtime registration, command dispatch, ticking, events, snapshots and subscriptions",
-    "interface route identity and active-screen projection",
-    "resource ledger, pressure field, orchard world, construction, roster and inventory",
-    "active-session movement, collection, phase, pest, damage, score and outcome",
-    "pressure channel schema, revision, policy, threshold evaluation and consumer adoption",
-    "Canvas2D world rendering and HTML command/HUD rendering",
-    "public GameHost diagnostics",
-    "smoke validation, static build, Pages deployment, repo-local audit and central tracking"
+  "plannedAuthority": "zombie-orchard-game-audio-event-projection-authority-domain",
+  "plannedSurfaceCount": 20,
+  "plannedSurfaces": [
+    "zombie-orchard-game-audio-event-projection-authority-domain",
+    "audio-capability-observer-kit",
+    "audio-context-lifecycle-kit",
+    "audio-user-gesture-unlock-kit",
+    "audio-event-schema-kit",
+    "audio-cue-registry-kit",
+    "interface-audio-event-adapter-kit",
+    "collection-audio-event-adapter-kit",
+    "combat-audio-event-adapter-kit",
+    "economy-audio-event-adapter-kit",
+    "phase-audio-event-adapter-kit",
+    "outcome-audio-event-adapter-kit",
+    "orchard-ambience-audio-kit",
+    "audio-listener-spatial-projection-kit",
+    "audio-preference-bus-kit",
+    "audio-cue-deduplication-kit",
+    "audio-voice-pool-budget-kit",
+    "audio-projection-result-kit",
+    "audio-lifecycle-settlement-kit",
+    "audio-browser-parity-fixture-kit"
   ],
-  "interactionLoop": [
-    "page creates pressure-field with rowPressure 0 and curse 4",
-    "fixed RAF ticks grow rowPressure by dt*0.8 and curse by dt*0.2",
-    "collect adjusts rowPressure by 0.5 or 2",
-    "active-session uses fixed pest spawn, motion and damage formulas without pressure reads",
-    "HTML projects rowPressure only; curse and active effects are absent",
-    "outcome routing depends on player condition only"
-  ],
-  "pressureAdoptionFindings": {
-    "channels": [
-      "rowPressure",
-      "curse"
-    ],
-    "initial": {
-      "rowPressure": 0,
-      "curse": 4
-    },
-    "automaticGrowthPerSecond": {
-      "rowPressure": 0.8,
-      "curse": 0.2
-    },
-    "collectionAdjustments": {
-      "redAppleRowPressure": 0.5,
-      "goldAppleRowPressure": 2
-    },
-    "activeSessionPressureReadCount": 0,
-    "pestSpawnFormula": "Math.random() < dt * 0.55",
-    "pestMotionSpeed": 36,
-    "contactDamagePerSecond": 7,
-    "thresholdPolicy": "missing",
-    "consumerRegistry": "missing",
-    "thresholdResults": "missing",
-    "rowPressureHudProjection": "present",
-    "curseProjection": "missing",
-    "pressureLinkedOutcome": "missing",
-    "firstPressureEffectFrameAck": "missing",
-    "pressureFixtureCount": 0
-  },
-  "plannedParentDomain": "zombie-orchard-pressure-threshold-gameplay-adoption-authority-domain",
-  "plannedKitCount": 18,
-  "plannedKits": [
-    "zombie-orchard-pressure-threshold-gameplay-adoption-authority-domain",
-    "pressure-channel-schema-kit",
-    "pressure-snapshot-revision-kit",
-    "pressure-threshold-policy-kit",
-    "pressure-effect-evaluation-kit",
-    "pressure-threshold-crossing-kit",
-    "phase-pressure-modifier-kit",
-    "collection-pressure-consequence-kit",
-    "pest-spawn-pressure-consumer-kit",
-    "pest-motion-pressure-consumer-kit",
-    "pest-damage-pressure-consumer-kit",
-    "curse-effect-consumer-kit",
-    "pressure-outcome-gate-kit",
-    "pressure-effect-result-kit",
-    "pressure-feedback-projection-kit",
-    "pressure-effect-frame-ack-kit",
-    "pressure-gameplay-fixture-kit",
-    "pressure-pages-parity-fixture-kit"
-  ],
-  "serviceInventorySource": ".agent/trackers/2026-07-16T03-41-28-04-00/project-breakdown.md",
-  "validation": {
-    "documentationOnly": true,
-    "sourceInspected": true,
-    "organizationInventoryCompared": true,
-    "centralLedgerCompared": true,
-    "allEligibleRootAgentsChecked": true,
-    "allEligibleHeadsCompared": true,
-    "runtimeSourceChanged": false,
-    "pressureBehaviorChanged": false,
-    "gameplayChanged": false,
-    "renderingChanged": false,
-    "publicApiChanged": false,
-    "dependenciesChanged": false,
-    "packageScriptsChanged": false,
-    "testsWorkflowsChanged": false,
-    "deploymentChanged": false,
-    "branchCreated": false,
-    "pullRequestCreated": false,
-    "npmTestRun": false,
-    "npmBuildRun": false,
-    "pressureFixturesRun": false,
-    "browserFixtureRun": false,
-    "distSmokeRun": false,
-    "pagesSmokeRun": false,
-    "centralLedgerSynchronized": true,
-    "centralChangeLogAdded": true
+  "auditRoutes": {
+    "tracker": ".agent/trackers/2026-07-16T09-02-09-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-16T09-02-09-04-00.md",
+    "architecture": ".agent/architecture-audit/2026-07-16T09-02-09-04-00-game-audio-event-projection-dsk-map.md",
+    "render": ".agent/render-audit/2026-07-16T09-02-09-04-00-silent-audiovisual-frame-gap.md",
+    "gameplay": ".agent/gameplay-audit/2026-07-16T09-02-09-04-00-silent-orchard-action-outcome-loop.md",
+    "interaction": ".agent/interaction-audit/2026-07-16T09-02-09-04-00-audio-projection-command-result-map.md",
+    "audio": ".agent/audio-audit/2026-07-16T09-02-09-04-00-browser-unlock-cue-lifecycle-contract.md",
+    "deploy": ".agent/deploy-audit/2026-07-16T09-02-09-04-00-game-audio-browser-fixture-gate.md",
+    "centralSync": ".agent/central-sync-audit/2026-07-16T09-02-09-04-00-oldest-selection-game-audio-reconciliation.md"
   }
 }
