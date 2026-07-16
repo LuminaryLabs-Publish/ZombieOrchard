@@ -1,29 +1,30 @@
-# Next steps: ZombieOrchard player movement control coverage
+# Next steps: ZombieOrchard run seed, RNG state and replay
 
-**Timestamp:** `2026-07-15T17-38-05-04-00`  
-**Status:** `player-movement-action-coverage-authority-audited`
+**Timestamp:** `2026-07-15T22-40-29-04-00`  
+**Status:** `run-seed-rng-replay-authority-audited`
 
 ## Summary
 
-Implement one normalized player-control authority before adding isolated key listeners. Movement must remain gameplay-owned, while device adapters produce only normalized intent and lifecycle-safe held-action state.
+Replace direct `Math.random()` calls with one versioned run authority and isolated named streams. Do not use a single shared stream for unrelated systems because extra apple draws would perturb pest results.
 
 ## Plan ledger
 
-**Goal:** make the harvest-and-defend loop intentionally navigable across keyboard and touch-compatible profiles, with explicit results and visible-frame proof.
+**Goal:** make same-seed runs exactly reproducible and version-compatible across create, retry, save, restore, replay, build and Pages.
 
-- [ ] Define `PlayerActionState`, `MovementCommand`, `MovementResult`, and `PlayerPositionRevision`.
-- [ ] Add keyboard WASD and arrow-key production.
-- [ ] Add visible touch-compatible directional controls.
-- [ ] Add optional gamepad production behind the same action map.
-- [ ] Convert movement from event-repeat steps to a time-based movement policy.
-- [ ] Block movement while non-gameplay routes or overlays own focus.
-- [ ] Cancel held actions on keyup, pointerup, pointercancel, blur, hide, route transition, and page retirement.
-- [ ] Deduplicate hybrid-device input.
-- [ ] Bind accepted movement to Canvas2D and HTML receipts.
-- [ ] Publish `FirstPlayerMovementFrameAck`.
-- [ ] Add headless bounds and stale-revision fixtures.
-- [ ] Add browser keyboard, touch, gamepad, hybrid, lifecycle, proximity, source/dist, and Pages fixtures.
+- [ ] Define `RunIdentity`, seed encoding and RNG algorithm version.
+- [ ] Add seed admission to new-run creation.
+- [ ] Inject the random authority into `createOrchardGame()`.
+- [ ] Partition `orchard-layout`, `apple-refill`, `pest-spawn` and `entity-id` streams.
+- [ ] Remove direct gameplay calls to global `Math.random()`.
+- [ ] Publish stream revisions, draw counts and serializable cursors.
+- [ ] Use deterministic entity IDs.
+- [ ] Include seed and stream state in save/restore contracts.
+- [ ] Add same-seed retry and explicit new-seed creation.
+- [ ] Record accepted commands and fixed-step revisions for replay.
+- [ ] Canonically hash snapshots at checkpoints.
+- [ ] Publish `FirstSeedBoundWorldFrameAck`.
+- [ ] Add same-seed, different-seed, stream-isolation, refill, pest, restore, replay, source/dist and Pages fixtures.
 
 ## Checkpoint
 
-Do not claim playable movement until a user can intentionally approach an apple, collect it, approach a pest, clear it, release all held movement, and observe matching frame revisions through at least keyboard and touch-compatible profiles.
+Do not claim deterministic runs until two independent runtimes reproduce identical canonical hashes through initial creation, apple refill, pest spawning, save/restore and same-seed retry.
