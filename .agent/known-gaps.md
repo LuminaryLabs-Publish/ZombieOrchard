@@ -1,43 +1,46 @@
-# Known gaps: ZombieOrchard game audio event projection
+# Known gaps: ZombieOrchard cross-domain gameplay transaction settlement
 
-**Timestamp:** `2026-07-16T09-02-09-04-00`  
-**Status:** `game-audio-event-projection-authority-audited`
+**Timestamp:** `2026-07-16T16-40-45-04-00`  
+**Status:** `cross-domain-gameplay-transaction-settlement-authority-audited`
 
 ## Summary
 
-The game has no owned audio projection surface. Visual gameplay remains functional, but audible feedback, unlock, lifecycle, preferences, budgets, and browser proof are absent.
+Multi-domain gameplay actions can report acceptance after sequential, independently owned mutations without proof that all intended participants settled together.
 
 ## Plan ledger
 
-**Goal:** keep the missing audio work explicit and prevent unsupported readiness claims.
+**Goal:** keep transaction ownership and proof gaps explicit until implemented and executed.
 
-- [x] Record source-backed gaps.
-- [x] Separate gameplay meaning from provider effects.
-- [x] Define required fixtures and acknowledgements.
+- [x] Record source-backed mutation-order and result-propagation gaps.
+- [x] Preserve participant ownership boundaries.
+- [x] Define required settlement results and fixtures.
 - [ ] Close the gaps in runtime code.
 
 ## Gaps
 
 ```txt
-browser audio capability observer
-accepted user-gesture unlock transaction
-AudioContext/provider generation ownership
-stable semantic AudioEventId
-versioned cue descriptor registry
-interface, collection, combat, economy, phase and outcome adapters
-day/night ambience lifecycle
-listener and optional spatial-source projection
-master/category preferences
-cue deduplication
-priority, pooling and voice budgets
-pause/blur/visibility/pagehide/route settlement
-stale provider-generation rejection
-AudioProjectionResult
-FirstAudibleCueAck
-FirstAudioVisualConvergenceAck
-source/dist/Pages browser parity fixtures
+stable TransactionId and IdempotencyKey
+canonical payload digest and attempt identity
+expected participant revisions
+required-participant capability admission
+preflight before mutation
+immutable prepared participant intents
+atomic multi-participant commit
+rollback or explicit compensation
+terminal transaction journal
+exact duplicate-result replay
+nested command result propagation
+partial/ambiguous failure classification
+transaction-bound HTML revision
+transaction-bound Canvas2D revision
+FirstTransactionBoundFrameAck
+missing-participant fixtures
+stale-revision fixtures
+duplicate-delivery fixtures
+rollback/compensation fixtures
+source/dist/Pages transaction parity fixtures
 ```
 
 ## Retained gaps
 
-Previously documented pressure, determinism, persistence, lifecycle, rendering, command, and gameplay-adoption gaps remain retained unless separately implemented and validated.
+The game-audio authority and previously documented pressure, determinism, persistence, lifecycle, rendering, command, accessibility, and gameplay-adoption gaps remain retained unless separately implemented and validated.
