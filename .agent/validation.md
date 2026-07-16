@@ -1,54 +1,47 @@
-# Validation: ZombieOrchard pressure gameplay adoption
+# Validation: ZombieOrchard game audio event projection
 
-**Timestamp:** `2026-07-16T03-41-28-04-00`
+**Timestamp:** `2026-07-16T09-02-09-04-00`
 
 ## Scope
 
-Documentation-only audit of the full Publish selection, current heads, root `.agent` coverage, pressure initialization and growth, collection-side pressure writes, active-session consumers, phase and outcome routing, HTML projection, smoke coverage, static build, Pages deployment and central tracking.
+Documentation-only audit of the missing browser-audio event projection authority.
 
 ## Plan ledger
 
-**Goal:** separate source-backed pressure-adoption findings from unexecuted gameplay, replay and deployed proofs.
+**Goal:** state exactly what changed, what was inspected, and what remains unproven.
 
-- [x] Source inspected.
-- [x] Organization and central ledger compared.
-- [x] Root `.agent` coverage checked through synchronized documented heads.
-- [x] Eligible current heads compared with documented heads.
-- [x] Pressure producers, snapshots and potential consumers traced.
-- [x] Required pressure-effect fixture gate documented.
-- [ ] Execute runtime and deployed fixtures.
+- [x] Reviewed page boot, runtime, game domains, delegated HTML input, Canvas2D/HTML projection, package scripts, and existing audit inventory.
+- [x] Added timestamped repo-local documentation.
+- [x] Changed no runtime or deployment behavior.
+- [ ] Execute runtime and browser fixtures after implementation.
 
 ## Change boundary
 
 ```txt
 documentation changed: yes
 runtime JavaScript changed: no
-HTML CSS or Canvas2D behavior changed: no
-pressure values or gameplay changed: no
-public API changed: no
-dependencies or package scripts changed: no
+HTML or CSS changed: no
+gameplay, pressure, economy, and rendering changed: no
+audio behavior changed: no
+packages or dependencies changed: no
 tests or workflows changed: no
-deployment changed: no
+build or deployment changed: no
 branch created: no
 pull request created: no
 ```
 
-## Execution boundary
+## Execution status
 
 ```txt
 npm test: not run
 npm run build: not run
-pressure threshold fixture: unavailable
-pressure consumer fixture: unavailable
-boundary-crossing deduplication fixture: unavailable
-save/restore pressure fixture: unavailable
-replay pressure fixture: unavailable
-FirstPressureEffectFrameAck fixture: unavailable
-dist smoke: not run
-Pages smoke: not run
-combined commit statuses: not yet reviewed
+browser audio unlock fixture: unavailable
+game cue fixture: unavailable
+audio lifecycle fixture: unavailable
+deduplication and voice-budget fixture: unavailable
+audiovisual convergence fixture: unavailable
+source/dist parity: not run
+Pages parity: not run
 ```
 
-## Claims not made
-
-No claim is made for pressure gameplay adoption, threshold correctness, modifier balance, curse behavior, deterministic pressure effects, visible-frame convergence, artifact parity, Pages parity or production readiness.
+No audible gameplay, unlock reliability, cue correctness, lifecycle safety, spatial correctness, artifact parity, deployed parity, or production readiness is claimed.
