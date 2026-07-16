@@ -4,7 +4,7 @@
 
 ## Summary
 
-The complete current Publish installation contains 11 repositories. Ten remain eligible after excluding TheCavalryOfRome. Every eligible repository has a central ledger, root `.agent` state and current head matching its documented repo-local head. ZombieOrchard has the oldest synchronized central timestamp and was the only selected project.
+The complete current Publish installation contains 11 repositories. Ten remain eligible after excluding TheCavalryOfRome. Every eligible repository has a central ledger, root `.agent` state and current head matching its documented repo-local head. ZombieOrchard had the oldest synchronized central timestamp and was the only selected project. The central ledger and internal change log now record this seeded-run audit.
 
 ## Plan ledger
 
@@ -17,7 +17,7 @@ The complete current Publish installation contains 11 repositories. Ten remain e
 - [x] Exclude TheCavalryOfRome.
 - [x] Select only ZombieOrchard.
 - [x] Record the run-seed/RNG/replay audit family.
-- [ ] Bind the final repo-local documentation head in the central ledger and change log.
+- [x] Bind the repo-local documentation head in the central ledger and change log.
 
 ## Selection evidence
 
