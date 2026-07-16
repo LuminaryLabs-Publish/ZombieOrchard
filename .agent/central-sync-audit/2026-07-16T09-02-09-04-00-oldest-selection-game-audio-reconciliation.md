@@ -18,8 +18,8 @@ The current Publish inventory contained 11 repositories. Ten were eligible after
 - [x] Select only ZombieOrchard.
 - [x] Add timestamped repo-local documentation.
 - [x] Refresh required root `.agent` files.
-- [ ] Bind the final repo-local documentation head in the central ledger.
-- [ ] Add the central internal change log.
+- [x] Bind the final repo-local documentation head in the central ledger.
+- [x] Add the central internal change log.
 - [x] Push only to `main` and create no branch or pull request.
 
 ## Selection
@@ -31,6 +31,10 @@ selected timestamp: 2026-07-16T03-41-28-04-00
 next oldest: LuminaryLabs-Publish/TheUnmappedHouse
 next timestamp: 2026-07-16T04-02-40-04-00
 ```
+
+## Central status
+
+`game-audio-event-projection-authority-central-reconciled`
 
 ## Boundary
 
