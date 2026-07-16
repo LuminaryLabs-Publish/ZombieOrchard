@@ -1,22 +1,21 @@
-# Validation: ZombieOrchard run seed, RNG state and replay
+# Validation: ZombieOrchard pressure gameplay adoption
 
-**Timestamp:** `2026-07-15T22-40-29-04-00`
+**Timestamp:** `2026-07-16T03-41-28-04-00`
 
 ## Scope
 
-Documentation-only audit of the full Publish selection, current heads, root `.agent` coverage, preset/run setup, runtime composition, orchard and pest randomness, snapshots, diagnostics, Canvas2D projection, smoke coverage, static build, Pages deployment and central tracking.
+Documentation-only audit of the full Publish selection, current heads, root `.agent` coverage, pressure initialization and growth, collection-side pressure writes, active-session consumers, phase and outcome routing, HTML projection, smoke coverage, static build, Pages deployment and central tracking.
 
 ## Plan ledger
 
-**Goal:** separate source-backed ambient-randomness findings from unexecuted determinism and replay proofs.
+**Goal:** separate source-backed pressure-adoption findings from unexecuted gameplay, replay and deployed proofs.
 
 - [x] Source inspected.
 - [x] Organization and central ledger compared.
-- [x] Root `.agent` coverage checked.
+- [x] Root `.agent` coverage checked through synchronized documented heads.
 - [x] Eligible current heads compared with documented heads.
-- [x] All random consumers traced.
-- [x] Seed, stream, snapshot and replay surfaces inventoried.
-- [x] Required fixture gate documented.
+- [x] Pressure producers, snapshots and potential consumers traced.
+- [x] Required pressure-effect fixture gate documented.
 - [ ] Execute runtime and deployed fixtures.
 
 ## Change boundary
@@ -25,7 +24,7 @@ Documentation-only audit of the full Publish selection, current heads, root `.ag
 documentation changed: yes
 runtime JavaScript changed: no
 HTML CSS or Canvas2D behavior changed: no
-gameplay changed: no
+pressure values or gameplay changed: no
 public API changed: no
 dependencies or package scripts changed: no
 tests or workflows changed: no
@@ -39,17 +38,17 @@ pull request created: no
 ```txt
 npm test: not run
 npm run build: not run
-same-seed fixture: unavailable
-different-seed fixture: unavailable
-stream-isolation fixture: unavailable
-apple-refill and pest-spawn fixtures: unavailable
-save/restore RNG fixture: unavailable
-replay and canonical-hash fixtures: unavailable
-FirstSeedBoundWorldFrameAck fixture: unavailable
+pressure threshold fixture: unavailable
+pressure consumer fixture: unavailable
+boundary-crossing deduplication fixture: unavailable
+save/restore pressure fixture: unavailable
+replay pressure fixture: unavailable
+FirstPressureEffectFrameAck fixture: unavailable
 dist smoke: not run
 Pages smoke: not run
+combined commit statuses: not yet reviewed
 ```
 
 ## Claims not made
 
-No claim is made for deterministic generation, same-seed equivalence, stream isolation, deterministic IDs, exact RNG restoration, replay correctness, visible-frame convergence, artifact parity, Pages parity or production readiness.
+No claim is made for pressure gameplay adoption, threshold correctness, modifier balance, curse behavior, deterministic pressure effects, visible-frame convergence, artifact parity, Pages parity or production readiness.

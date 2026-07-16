@@ -1,45 +1,44 @@
-# Known gaps: ZombieOrchard run seed, RNG state and replay
+# Known gaps: ZombieOrchard pressure gameplay adoption
 
-**Timestamp:** `2026-07-15T22-40-29-04-00`  
-**Status:** `run-seed-rng-replay-authority-audited`
+**Timestamp:** `2026-07-16T03-41-28-04-00`  
+**Status:** `pressure-threshold-gameplay-adoption-authority-audited`
 
 ## Summary
 
-The current priority gap is ambient randomness without run identity or replay state. Generated apples and pests are visible and playable, but their origin cannot be reconstructed from a seed, algorithm version, stream cursor or command log.
+The current priority gap is a continuously changing pressure model with no gameplay consumer contract. The values are real state and one is visible, but neither channel has an authored threshold, modifier, terminal rule or typed effect result.
 
 ## Plan ledger
 
-**Goal:** close identity, stream isolation, snapshot, replay and visible-frame evidence gaps without moving world or session truth out of their existing domains.
+**Goal:** close channel identity, policy, consumer, threshold, replay and visible-frame evidence gaps while preserving pressure ownership in `pressure-field-kit`.
 
-- [ ] Run seed schema and admission.
-- [ ] Run generation identity.
-- [ ] RNG algorithm and stream-derivation versioning.
-- [ ] Named independent random streams.
-- [ ] Deterministic entity IDs.
-- [ ] Stream revision, draw count and cursor snapshots.
-- [ ] Exact RNG restore.
-- [ ] Same-seed retry and new-seed run creation.
-- [ ] Seed-version migration or typed rejection.
-- [ ] Accepted command replay log.
-- [ ] Canonical deterministic snapshot hashing.
-- [ ] First seed-bound visible-frame acknowledgement.
-- [ ] Source, dist and Pages deterministic fixtures.
+- [ ] Pressure channel schema and units.
+- [ ] Pressure snapshot revision.
+- [ ] Versioned threshold/modifier policy.
+- [ ] Explicit consumer registration.
+- [ ] Threshold crossing identity and deduplication.
+- [ ] Typed pressure-effect and no-effect results.
+- [ ] `rowPressure` gameplay consumer.
+- [ ] `curse` gameplay consumer or explicit non-gameplay classification.
+- [ ] Save/restore and replay compatibility.
+- [ ] HUD projection of active pressure effects.
+- [ ] First pressure-effect frame acknowledgement.
+- [ ] Source, dist and Pages pressure fixtures.
 
 ## Current evidence gaps
 
 ```txt
-seed fields: 0
-RNG provider surfaces: 0
-named streams: 0
-serialized RNG states: 0
-same-seed retry paths: 0
-replay logs: 0
-deterministic snapshot hashes: 0
-browser deterministic traces: 0
-artifact deterministic traces: 0
-deployed deterministic traces: 0
+active-session pressure reads: 0
+configured thresholds: 0
+configured modifiers: 0
+threshold events/results: 0
+curse consumers: 0
+pressure-linked outcome gates: 0
+pressure-effect acknowledgements: 0
+browser pressure traces: 0
+artifact pressure traces: 0
+deployed pressure traces: 0
 ```
 
 ## Retained gaps
 
-Prior player-control, save, route-suspension, clock, canvas, diagnostic, reset, roster, inventory, construction, HTML, startup, frame-coherence, event and observer findings remain retained in their timestamped audit families.
+Prior seeded-run, player-control, save, route-suspension, clock, canvas, diagnostic, reset, roster, inventory, construction, HTML, startup, frame-coherence, event, observer and economy findings remain retained in their timestamped audit families.
