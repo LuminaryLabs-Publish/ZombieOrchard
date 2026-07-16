@@ -1,19 +1,19 @@
-# Validation: ZombieOrchard game audio event projection
+# Validation: ZombieOrchard cross-domain gameplay transaction settlement
 
-**Timestamp:** `2026-07-16T09-02-09-04-00`
+**Timestamp:** `2026-07-16T16-40-45-04-00`
 
 ## Scope
 
-Documentation-only audit of the missing browser-audio event projection authority.
+Documentation-only audit of multi-domain gameplay command settlement, nested result propagation, and matching HTML/Canvas frame evidence.
 
 ## Plan ledger
 
 **Goal:** state exactly what changed, what was inspected, and what remains unproven.
 
-- [x] Reviewed page boot, runtime, game domains, delegated HTML input, Canvas2D/HTML projection, package scripts, and existing audit inventory.
+- [x] Reviewed page boot, runtime, composition, game domains, delegated HTML input, Canvas2D/HTML projection, package scripts, smoke, and existing audit inventory.
 - [x] Added timestamped repo-local documentation.
 - [x] Changed no runtime or deployment behavior.
-- [ ] Execute runtime and browser fixtures after implementation.
+- [ ] Execute transaction and browser fixtures after implementation.
 
 ## Change boundary
 
@@ -21,7 +21,8 @@ Documentation-only audit of the missing browser-audio event projection authority
 documentation changed: yes
 runtime JavaScript changed: no
 HTML or CSS changed: no
-gameplay, pressure, economy, and rendering changed: no
+gameplay, pressure, economy, world, construction, roster and inventory changed: no
+Canvas2D or HTML rendering changed: no
 audio behavior changed: no
 packages or dependencies changed: no
 tests or workflows changed: no
@@ -35,13 +36,14 @@ pull request created: no
 ```txt
 npm test: not run
 npm run build: not run
-browser audio unlock fixture: unavailable
-game cue fixture: unavailable
-audio lifecycle fixture: unavailable
-deduplication and voice-budget fixture: unavailable
-audiovisual convergence fixture: unavailable
+missing-participant fixture: unavailable
+stale-revision fixture: unavailable
+duplicate-delivery fixture: unavailable
+rollback/compensation fixture: unavailable
+nested-result propagation fixture: unavailable
+transaction-bound frame fixture: unavailable
 source/dist parity: not run
 Pages parity: not run
 ```
 
-No audible gameplay, unlock reliability, cue correctness, lifecycle safety, spatial correctness, artifact parity, deployed parity, or production readiness is claimed.
+No atomic settlement, rollback correctness, retry safety, idempotency, exact nested result, transaction-frame convergence, artifact parity, deployed parity, or production readiness is claimed.
