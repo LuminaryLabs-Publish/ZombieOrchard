@@ -1,44 +1,43 @@
-# Known gaps: ZombieOrchard pressure gameplay adoption
+# Known gaps: ZombieOrchard game audio event projection
 
-**Timestamp:** `2026-07-16T03-41-28-04-00`  
-**Status:** `pressure-threshold-gameplay-adoption-authority-audited`
+**Timestamp:** `2026-07-16T09-02-09-04-00`  
+**Status:** `game-audio-event-projection-authority-audited`
 
 ## Summary
 
-The current priority gap is a continuously changing pressure model with no gameplay consumer contract. The values are real state and one is visible, but neither channel has an authored threshold, modifier, terminal rule or typed effect result.
+The game has no owned audio projection surface. Visual gameplay remains functional, but audible feedback, unlock, lifecycle, preferences, budgets, and browser proof are absent.
 
 ## Plan ledger
 
-**Goal:** close channel identity, policy, consumer, threshold, replay and visible-frame evidence gaps while preserving pressure ownership in `pressure-field-kit`.
+**Goal:** keep the missing audio work explicit and prevent unsupported readiness claims.
 
-- [ ] Pressure channel schema and units.
-- [ ] Pressure snapshot revision.
-- [ ] Versioned threshold/modifier policy.
-- [ ] Explicit consumer registration.
-- [ ] Threshold crossing identity and deduplication.
-- [ ] Typed pressure-effect and no-effect results.
-- [ ] `rowPressure` gameplay consumer.
-- [ ] `curse` gameplay consumer or explicit non-gameplay classification.
-- [ ] Save/restore and replay compatibility.
-- [ ] HUD projection of active pressure effects.
-- [ ] First pressure-effect frame acknowledgement.
-- [ ] Source, dist and Pages pressure fixtures.
+- [x] Record source-backed gaps.
+- [x] Separate gameplay meaning from provider effects.
+- [x] Define required fixtures and acknowledgements.
+- [ ] Close the gaps in runtime code.
 
-## Current evidence gaps
+## Gaps
 
 ```txt
-active-session pressure reads: 0
-configured thresholds: 0
-configured modifiers: 0
-threshold events/results: 0
-curse consumers: 0
-pressure-linked outcome gates: 0
-pressure-effect acknowledgements: 0
-browser pressure traces: 0
-artifact pressure traces: 0
-deployed pressure traces: 0
+browser audio capability observer
+accepted user-gesture unlock transaction
+AudioContext/provider generation ownership
+stable semantic AudioEventId
+versioned cue descriptor registry
+interface, collection, combat, economy, phase and outcome adapters
+day/night ambience lifecycle
+listener and optional spatial-source projection
+master/category preferences
+cue deduplication
+priority, pooling and voice budgets
+pause/blur/visibility/pagehide/route settlement
+stale provider-generation rejection
+AudioProjectionResult
+FirstAudibleCueAck
+FirstAudioVisualConvergenceAck
+source/dist/Pages browser parity fixtures
 ```
 
 ## Retained gaps
 
-Prior seeded-run, player-control, save, route-suspension, clock, canvas, diagnostic, reset, roster, inventory, construction, HTML, startup, frame-coherence, event, observer and economy findings remain retained in their timestamped audit families.
+Previously documented pressure, determinism, persistence, lifecycle, rendering, command, and gameplay-adoption gaps remain retained unless separately implemented and validated.
