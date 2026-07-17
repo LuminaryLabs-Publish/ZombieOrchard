@@ -1,19 +1,19 @@
-# Validation: ZombieOrchard cross-domain gameplay transaction settlement
+# Validation: ZombieOrchard interactive control stability
 
-**Timestamp:** `2026-07-16T16-40-45-04-00`
+**Timestamp:** `2026-07-16T22-40-53-04-00`
 
 ## Scope
 
-Documentation-only audit of multi-domain gameplay command settlement, nested result propagation, and matching HTML/Canvas frame evidence.
+Documentation-only audit of HTML control node lifetime, delegated activation, focus continuity, pointer-press ownership, and matching browser-frame evidence.
 
 ## Plan ledger
 
 **Goal:** state exactly what changed, what was inspected, and what remains unproven.
 
-- [x] Reviewed page boot, runtime, composition, game domains, delegated HTML input, Canvas2D/HTML projection, package scripts, smoke, and existing audit inventory.
+- [x] Reviewed page boot, RAF scheduling, HTML rendering, delegated click handling, domain composition, smoke, build, and deployment.
 - [x] Added timestamped repo-local documentation.
 - [x] Changed no runtime or deployment behavior.
-- [ ] Execute transaction and browser fixtures after implementation.
+- [ ] Execute browser control fixtures after implementation.
 
 ## Change boundary
 
@@ -21,8 +21,8 @@ Documentation-only audit of multi-domain gameplay command settlement, nested res
 documentation changed: yes
 runtime JavaScript changed: no
 HTML or CSS changed: no
-gameplay, pressure, economy, world, construction, roster and inventory changed: no
-Canvas2D or HTML rendering changed: no
+gameplay, pressure, economy and world behavior changed: no
+Canvas2D or HTML rendering behavior changed: no
 audio behavior changed: no
 packages or dependencies changed: no
 tests or workflows changed: no
@@ -36,14 +36,13 @@ pull request created: no
 ```txt
 npm test: not run
 npm run build: not run
-missing-participant fixture: unavailable
-stale-revision fixture: unavailable
-duplicate-delivery fixture: unavailable
-rollback/compensation fixture: unavailable
-nested-result propagation fixture: unavailable
-transaction-bound frame fixture: unavailable
+pointer-hold click fixture: unavailable
+keyboard focus persistence fixture: unavailable
+Enter/Space activation fixture: unavailable
+route replacement fixture: unavailable
+FirstStableControlFrameAck fixture: unavailable
 source/dist parity: not run
 Pages parity: not run
 ```
 
-No atomic settlement, rollback correctness, retry safety, idempotency, exact nested result, transaction-frame convergence, artifact parity, deployed parity, or production readiness is claimed.
+No stable-node continuity, pointer-gesture correctness, keyboard accessibility, exact activation settlement, browser-frame convergence, artifact parity, deployed parity, or production readiness is claimed.
