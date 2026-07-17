@@ -1,19 +1,19 @@
-# Validation: ZombieOrchard interactive control stability
+# Validation: ZombieOrchard day/phase transition admission
 
-**Timestamp:** `2026-07-16T22-40-53-04-00`
+**Timestamp:** `2026-07-16T22-59-23-04-00`
 
 ## Scope
 
-Documentation-only audit of HTML control node lifetime, delegated activation, focus continuity, pointer-press ownership, and matching browser-frame evidence.
+Documentation-only audit of direct phase commands, transition eligibility, minimum simulation settlement, day increments, participant revisions, and matching HTML/Canvas evidence.
 
 ## Plan ledger
 
 **Goal:** state exactly what changed, what was inspected, and what remains unproven.
 
-- [x] Reviewed page boot, RAF scheduling, HTML rendering, delegated click handling, domain composition, smoke, build, and deployment.
+- [x] Reviewed page boot, RAF scheduling, HTML command delegation, active-session phase mutation, pressure, pest simulation, snapshots, smoke, build, and deployment.
 - [x] Added timestamped repo-local documentation.
 - [x] Changed no runtime or deployment behavior.
-- [ ] Execute browser control fixtures after implementation.
+- [ ] Execute phase-transition fixtures after implementation.
 
 ## Change boundary
 
@@ -21,7 +21,7 @@ Documentation-only audit of HTML control node lifetime, delegated activation, fo
 documentation changed: yes
 runtime JavaScript changed: no
 HTML or CSS changed: no
-gameplay, pressure, economy and world behavior changed: no
+phase timing, day progression, pressure, economy and world behavior changed: no
 Canvas2D or HTML rendering behavior changed: no
 audio behavior changed: no
 packages or dependencies changed: no
@@ -36,13 +36,13 @@ pull request created: no
 ```txt
 npm test: not run
 npm run build: not run
-pointer-hold click fixture: unavailable
-keyboard focus persistence fixture: unavailable
-Enter/Space activation fixture: unavailable
-route replacement fixture: unavailable
-FirstStableControlFrameAck fixture: unavailable
+rapid-double-activation fixture: unavailable
+zero-night-tick fixture: unavailable
+stale-phase fixture: unavailable
+duplicate-delivery fixture: unavailable
+FirstPhaseBoundFrameAck fixture: unavailable
 source/dist parity: not run
 Pages parity: not run
 ```
 
-No stable-node continuity, pointer-gesture correctness, keyboard accessibility, exact activation settlement, browser-frame convergence, artifact parity, deployed parity, or production readiness is claimed.
+No phase-admission correctness, minimum-duration policy, exactly-once day progression, participant settlement, browser-frame convergence, artifact parity, deployed parity, or production readiness is claimed.
