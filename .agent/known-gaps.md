@@ -1,46 +1,49 @@
-# Known gaps: ZombieOrchard browser host lifecycle ownership
+# Known gaps: ZombieOrchard player stamina adoption
 
-**Timestamp:** `2026-07-17T04-41-15-04-00`  
-**Status:** `browser-host-single-runtime-lifecycle-retirement-authority-audited`
+**Timestamp:** `2026-07-17T09-43-24-04-00`  
+**Status:** `player-stamina-effort-recovery-projection-authority-audited`
 
 ## Summary
 
-The current host assumes a single successful module execution but does not encode or prove single-runtime ownership, exact retirement, replacement, page lifecycle handling, or frame correlation.
+Stamina is currently a dead public state field. The game has no effort policy, exhaustion behavior, recovery path, visible projection, typed result or executable proof.
 
 ## Checklist
 
-**Goal:** keep host ownership and proof gaps explicit until implemented and executed.
+**Goal:** keep the capability and proof gaps explicit until stamina is either implemented or removed.
 
-- [x] Record source-backed boot, RAF, listener, renderer, engine, and GameHost lifecycle gaps.
-- [x] Preserve current game, renderer, and interface boundaries.
+- [x] Record source-backed state, command, tick, phase, pressure and projection gaps.
+- [x] Preserve current product boundaries.
 - [x] Define required results and fixtures.
-- [ ] Close the gaps in runtime code.
+- [ ] Close the gaps in runtime code or remove the field.
 
 ## Gaps
 
 ```txt
-HostSessionId and HostGeneration
-DocumentGeneration and root revisions
-singleton runtime lease
-boot duplicate/stale/replacement policy
-stored RAF handle and RafLoopGeneration
-stale RAF rejection
-DOM listener lease and removal
-Canvas2D/HTML renderer disposal
-engine/domain/subscription disposal
-partial-construction rollback
-pagehide/pageshow and BFCache policy
-GameHost capability generation and retirement
-HostBootAdmissionResult
-HostLifecycleResult
-FirstHostBoundFrameAck
-duplicate-boot fixture
-listener-retirement fixture
-stale-RAF fixture
-BFCache fixture
-source/dist/Pages lifecycle parity
+StaminaState schema and revision
+maximum and threshold policy
+effort-cost policy
+movement effort settlement
+collection effort settlement
+clearing effort settlement
+failed-attempt cost policy
+exhaustion state and action admission
+passive recovery
+phase-entry recovery
+pressure modifier policy
+equipment modifier policy
+reset and future restore generation
+StaminaActionResult
+StaminaRecoveryResult
+stamina HUD projection
+stamina outcome policy
+FirstStaminaBoundFrameAck
+depletion boundary fixture
+exhausted-action fixture
+recovery fixture
+stale/duplicate action fixture
+source/dist/Pages stamina parity
 ```
 
 ## Retained gaps
 
-The day/phase transition audit and all earlier control, transaction, audio, pressure, determinism, persistence, lifecycle, rendering, command, accessibility, kit-graph, and gameplay-adoption gaps remain retained unless separately implemented and validated.
+The browser-host lifecycle audit and all earlier phase, control, transaction, audio, pressure, determinism, persistence, rendering, command, accessibility, kit-graph and gameplay-adoption gaps remain retained unless separately implemented and validated.
