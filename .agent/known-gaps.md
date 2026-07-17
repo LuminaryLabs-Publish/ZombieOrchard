@@ -1,46 +1,42 @@
-# Known gaps: ZombieOrchard cross-domain gameplay transaction settlement
+# Known gaps: ZombieOrchard interactive control stability
 
-**Timestamp:** `2026-07-16T16-40-45-04-00`  
-**Status:** `cross-domain-gameplay-transaction-settlement-authority-audited`
+**Timestamp:** `2026-07-16T22-40-53-04-00`  
+**Status:** `interactive-dom-control-stability-focus-authority-audited`
 
 ## Summary
 
-Multi-domain gameplay actions can report acceptance after sequential, independently owned mutations without proof that all intended participants settled together.
+The current renderer does not prove that the control pressed, focused, or activated by the player is the same control generation displayed across adjacent frames.
 
 ## Plan ledger
 
-**Goal:** keep transaction ownership and proof gaps explicit until implemented and executed.
+**Goal:** keep browser-control ownership and proof gaps explicit until implemented and executed.
 
-- [x] Record source-backed mutation-order and result-propagation gaps.
-- [x] Preserve participant ownership boundaries.
-- [x] Define required settlement results and fixtures.
+- [x] Record source-backed node-replacement and focus-continuity gaps.
+- [x] Preserve interface and domain ownership boundaries.
+- [x] Define required results and browser fixtures.
 - [ ] Close the gaps in runtime code.
 
 ## Gaps
 
 ```txt
-stable TransactionId and IdempotencyKey
-canonical payload digest and attempt identity
-expected participant revisions
-required-participant capability admission
-preflight before mutation
-immutable prepared participant intents
-atomic multi-participant commit
-rollback or explicit compensation
-terminal transaction journal
-exact duplicate-result replay
-nested command result propagation
-partial/ambiguous failure classification
-transaction-bound HTML revision
-transaction-bound Canvas2D revision
-FirstTransactionBoundFrameAck
-missing-participant fixtures
-stale-revision fixtures
-duplicate-delivery fixtures
-rollback/compensation fixtures
-source/dist/Pages transaction parity fixtures
+stable ControlId
+ControlGeneration and RouteGeneration
+keyed DOM reconciliation
+stable button node lifetime
+pointerdown-to-pointerup control lease
+keyboard focus continuity
+focus restoration policy
+removed-control retirement result
+click/Enter/Space deduplication
+stale delegated-event rejection
+InterfaceControlResult
+FirstStableControlFrameAck
+pointer-hold browser fixture
+keyboard-focus browser fixture
+route-transition interaction fixture
+source/dist/Pages control parity
 ```
 
 ## Retained gaps
 
-The game-audio authority and previously documented pressure, determinism, persistence, lifecycle, rendering, command, accessibility, and gameplay-adoption gaps remain retained unless separately implemented and validated.
+The cross-domain transaction authority and previously documented audio, pressure, determinism, persistence, lifecycle, rendering, command, accessibility, and gameplay-adoption gaps remain retained unless separately implemented and validated.
