@@ -1,36 +1,37 @@
-# Next steps: ZombieOrchard day/phase transition admission
+# Next steps: ZombieOrchard browser host lifecycle ownership
 
-**Timestamp:** `2026-07-16T22-59-23-04-00`  
-**Status:** `day-phase-transition-admission-settlement-authority-audited`
+**Timestamp:** `2026-07-17T04-41-15-04-00`  
+**Status:** `browser-host-single-runtime-lifecycle-retirement-authority-audited`
 
 ## Summary
 
-The next implementation slice is a revision-bound phase transition command that enforces minimum settlement policy, rejects rapid or stale requests, increments day exactly once, and publishes one matching HTML/Canvas frame acknowledgement.
+The next implementation slice is a small browser-host wrapper that admits one HostSessionId, owns all boot resources, retires them exactly once, and proves the first visible frame from the accepted generation.
 
-## Plan ledger
+## Checklist
 
-**Goal:** prevent phase and day progression from bypassing required simulation settlement.
+**Goal:** prevent duplicate, stale, or replaced host generations from ticking, handling controls, mutating the DOM, or exposing live capabilities.
 
-- [ ] Add `TransitionId`, `IdempotencyKey`, expected session revision, expected phase generation, expected phase, and expected day.
-- [ ] Define minimum day/night duration or completion criteria.
-- [ ] Reject a second transition while one settlement is pending.
-- [ ] Require at least one admitted night settlement tick before night exit under the minimal policy.
-- [ ] Move day increment into accepted day-entry settlement.
-- [ ] Bind pressure and pest settlement to the same transition generation.
-- [ ] Publish `PhaseTransitionResult` and `FirstPhaseBoundFrameAck`.
-- [ ] Add rapid-double-click, duplicate-delivery, stale-phase, zero-night-tick, source, dist, and Pages fixtures.
+- [ ] Export an explicit `startZombieOrchardHost()` instead of relying only on side-effect startup.
+- [ ] Allocate `HostSessionId`, document/root revisions, and one singleton runtime lease.
+- [ ] Store the active RAF handle and reject stale callbacks by generation.
+- [ ] Make the HTML renderer return listener disposal.
+- [ ] Add renderer and engine/domain disposal adapters.
+- [ ] Retire or replace `window.GameHost` by capability generation.
+- [ ] Define pagehide/pageshow and BFCache suspend/resume/replace policy.
+- [ ] Publish `HostLifecycleResult` and `FirstHostBoundFrameAck`.
+- [ ] Add duplicate-boot, listener-retirement, stale-RAF, BFCache, source, dist, and Pages fixtures.
 
 ## Ordering
 
 ```txt
-phase identity and expected revisions
-  -> admission and duration policy
-  -> pending transition lock
-  -> outgoing phase settlement
-  -> participant adapters
-  -> terminal transition result
-  -> HTML/Canvas projection acknowledgement
+host identity and root revisions
+  -> singleton boot admission
+  -> detached resource construction
+  -> atomic host commit
+  -> first accepted frame acknowledgement
+  -> exact retirement and stale-work rejection
+  -> replacement/BFCache policy
   -> source/dist/Pages parity
 ```
 
-Preserve the existing active-session domain. This is targeted command and settlement wiring, not a domain-wide rewrite.
+Preserve all existing product domains. This is targeted host ownership around `src/start.js`, not a runtime or gameplay rewrite.
