@@ -1,6 +1,7 @@
 # Central sync audit: oldest selection interactive-control reconciliation
 
-**Timestamp:** `2026-07-16T22-40-53-04-00`
+**Timestamp:** `2026-07-16T22-40-53-04-00`  
+**Status:** `interactive-dom-control-stability-focus-authority-central-reconciled`
 
 ## Selection
 
@@ -14,12 +15,12 @@ next oldest: LuminaryLabs-Publish/TheUnmappedHouse
 next timestamp: 2026-07-16T16-58-39-04-00
 ```
 
-## Central update required
+## Central reconciliation
 
-- Replace `repo-ledger/LuminaryLabs-Publish/ZombieOrchard.md`.
-- Add the matching internal change-log entry.
-- Bind the final repo-local documentation head after all `.agent` writes.
-- Preserve all earlier statuses and validation boundaries.
+- [x] Replaced `repo-ledger/LuminaryLabs-Publish/ZombieOrchard.md`.
+- [x] Added `internal-change-log/2026-07-16T22-40-53-04-00-zombie-orchard-interactive-control-stability.md`.
+- [x] Preserved all earlier statuses and validation boundaries.
+- [x] Pushed only to `main` and created no branch or pull request.
 
 ## Boundary
 
