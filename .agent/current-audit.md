@@ -1,50 +1,50 @@
-# Current audit: ZombieOrchard browser host lifecycle ownership
+# Current audit: ZombieOrchard player stamina adoption
 
-**Timestamp:** `2026-07-17T04-41-15-04-00`  
-**Status:** `browser-host-single-runtime-lifecycle-retirement-authority-audited`  
-**Retained status:** `day-phase-transition-admission-settlement-authority-audited`  
+**Timestamp:** `2026-07-17T09-43-24-04-00`  
+**Status:** `player-stamina-effort-recovery-projection-authority-audited`  
+**Retained status:** `browser-host-single-runtime-lifecycle-retirement-authority-central-reconciled`  
 **Branch:** `main`
 
 ## Summary
 
-`src/start.js` constructs the engine, Canvas2D renderer, HTML renderer, click listener, public `GameHost`, and recursive RAF as one-way module side effects. No accepted host identity owns those resources, and no stop, dispose, replacement, page-lifecycle, or first-frame result exists.
+The active-session player snapshot includes stamina, but the implemented game has no stamina capability. Commands do not resolve effort costs, ticks and phases do not recover it, pressure does not modify it, and renderers do not project it.
 
 ## Checklist
 
-**Goal:** bind boot, runtime ownership, retirement, replacement, and visible presentation to one HostSessionId.
+**Goal:** make the public stamina field truthful by admitting deterministic effort, exhaustion, recovery and visible projection, or remove it until such a capability exists.
 
-- [x] Inspect page boot, module evaluation, engine creation, renderer creation, listener installation, RAF scheduling, public capabilities, smoke, build, and deployment.
+- [x] Inspect player construction, move, collect, clear, next-phase, tick, pressure, HUD, outcome and smoke paths.
 - [x] Preserve all 27 implemented kits and services.
-- [x] Define the 18-surface host-lifecycle authority.
-- [x] Define duplicate-boot, stale-RAF, listener-retirement, BFCache, artifact, and Pages fixtures.
+- [x] Define the 19-surface stamina authority.
+- [x] Define depletion, rejection, recovery, frame and origin-parity fixtures.
 - [ ] Implement and validate the authority.
 
 ## Source-backed finding
 
 ```txt
-side-effect host construction: present
-recursive RAF with closure-only ownership: present
-root delegated click listener: present
-window.GameHost publication: present
-
-HostSessionId: absent
-singleton runtime lease: absent
-stored/cancellable RAF generation: absent
-listener disposal: absent
-renderer disposal: absent
-engine/domain disposal: absent
-pagehide/pageshow policy: absent
-HostLifecycleResult: absent
-FirstHostBoundFrameAck: absent
-browser lifecycle fixtures: 0
+player.stamina initialized to 100: present
+stamina included in snapshot: present
+action cost policy: absent
+movement depletion: absent
+collection depletion: absent
+clearing depletion: absent
+exhaustion state: absent
+passive recovery: absent
+phase recovery: absent
+pressure coupling: absent
+HUD projection: absent
+outcome projection: absent
+StaminaActionResult: absent
+FirstStaminaBoundFrameAck: absent
+stamina fixtures: 0
 ```
 
-A normal static load currently creates one host. No duplicate-runtime, leaked-listener, BFCache, or stale-capability incident was reproduced. This is a source-backed lifecycle ownership and executable-proof gap.
+No player-facing stamina failure was reproduced because the game currently ignores the field. This is a gameplay-capability, state-truthfulness and executable-proof gap.
 
 ## Required authority
 
-`zombie-orchard-browser-host-single-runtime-lifecycle-retirement-authority-domain`
+`zombie-orchard-player-stamina-effort-recovery-projection-authority-domain`
 
 ## Validation boundary
 
-Documentation only. No runtime, gameplay, HTML, CSS, Canvas2D, input, dependency, test, artifact, workflow, or deployment behavior changed.
+Documentation only. No runtime, gameplay, HTML, CSS, Canvas2D, input, dependency, test, artifact, workflow or deployment behavior changed.
