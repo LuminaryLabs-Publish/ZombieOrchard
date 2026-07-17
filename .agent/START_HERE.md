@@ -1,39 +1,39 @@
-# START HERE: ZombieOrchard cross-domain transaction settlement
+# START HERE: ZombieOrchard interactive control stability
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Aligned:** `2026-07-16T16-40-45-04-00`  
-**Status:** `cross-domain-gameplay-transaction-settlement-authority-audited`
+**Aligned:** `2026-07-16T22-40-53-04-00`  
+**Status:** `interactive-dom-control-stability-focus-authority-audited`
 
 ## Summary
 
-The current priority is exact settlement of player actions that span orchard, resources, pressure, session, construction, roster, and interface composition. These actions currently mutate participants sequentially without transaction identity, preflight, atomic commit, rollback, idempotency, exact nested results, or a matching frame acknowledgement.
+The HTML interface is rebuilt with `root.innerHTML` during every animation frame. All menu and gameplay buttons are therefore replaced continuously while pointer presses, keyboard focus, and activation gestures are still in progress. The root click delegate survives, but individual controls have no stable node identity, control generation, press lease, focus restoration, retirement result, or matching-frame acknowledgement.
 
 ## Plan ledger
 
-**Goal:** make every multi-domain gameplay action commit exactly once across all required participants or reject without mutation.
+**Goal:** preserve one admitted interactive control from press or focus through exact activation or retirement.
 
 - [x] Compare the full Publish inventory and central ledger.
 - [x] Select only ZombieOrchard by the oldest synchronized timestamp.
-- [x] Identify the interaction loop, domains, 27 implemented kits, and services.
-- [x] Document the 20-surface transaction-settlement authority and browser fixture gate.
-- [ ] Implement and execute participant-failure, rollback, retry, source, dist, and Pages proofs.
+- [x] Identify the complete interaction loop, domains, 27 implemented kits, and services.
+- [x] Document the 18-surface interactive-control authority and browser fixture gate.
+- [ ] Implement stable DOM reconciliation and execute pointer, keyboard, route, dist, and Pages proofs.
 
 ## Read first
 
 1. `.agent/current-audit.md`
-2. `.agent/trackers/2026-07-16T16-40-45-04-00/project-breakdown.md`
-3. `.agent/architecture-audit/2026-07-16T16-40-45-04-00-cross-domain-transaction-settlement-dsk-map.md`
-4. `.agent/transaction-audit/2026-07-16T16-40-45-04-00-participant-prepare-commit-rollback-contract.md`
+2. `.agent/trackers/2026-07-16T22-40-53-04-00/project-breakdown.md`
+3. `.agent/architecture-audit/2026-07-16T22-40-53-04-00-interactive-dom-control-stability-dsk-map.md`
+4. `.agent/interface-control-audit/2026-07-16T22-40-53-04-00-stable-node-focus-press-contract.md`
 5. `.agent/validation.md`
 
 ## Required authority
 
-`zombie-orchard-cross-domain-gameplay-transaction-settlement-authority-domain`
+`zombie-orchard-interactive-dom-control-stability-focus-authority-domain`
 
 ## Retained audit
 
-The game-audio event projection authority and all earlier pressure, determinism, persistence, lifecycle, rendering, command, and gameplay-adoption findings remain retained.
+The cross-domain transaction authority and all earlier audio, pressure, determinism, persistence, lifecycle, rendering, command, accessibility, and gameplay-adoption findings remain retained.
 
 ## Boundary
 
