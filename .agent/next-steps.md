@@ -1,37 +1,39 @@
-# Next steps: ZombieOrchard browser host lifecycle ownership
+# Next steps: ZombieOrchard player stamina adoption
 
-**Timestamp:** `2026-07-17T04-41-15-04-00`  
-**Status:** `browser-host-single-runtime-lifecycle-retirement-authority-audited`
+**Timestamp:** `2026-07-17T09-43-24-04-00`  
+**Status:** `player-stamina-effort-recovery-projection-authority-audited`
 
 ## Summary
 
-The next implementation slice is a small browser-host wrapper that admits one HostSessionId, owns all boot resources, retires them exactly once, and proves the first visible frame from the accepted generation.
+The next implementation slice is a targeted stamina authority around `active-session-domain-kit`. It should make action costs, exhaustion, recovery and projection explicit without creating a parallel player system.
 
 ## Checklist
 
-**Goal:** prevent duplicate, stale, or replaced host generations from ticking, handling controls, mutating the DOM, or exposing live capabilities.
+**Goal:** ensure every stamina-affecting action and recovery step settles once and reaches a matching visible frame.
 
-- [ ] Export an explicit `startZombieOrchardHost()` instead of relying only on side-effect startup.
-- [ ] Allocate `HostSessionId`, document/root revisions, and one singleton runtime lease.
-- [ ] Store the active RAF handle and reject stale callbacks by generation.
-- [ ] Make the HTML renderer return listener disposal.
-- [ ] Add renderer and engine/domain disposal adapters.
-- [ ] Retire or replace `window.GameHost` by capability generation.
-- [ ] Define pagehide/pageshow and BFCache suspend/resume/replace policy.
-- [ ] Publish `HostLifecycleResult` and `FirstHostBoundFrameAck`.
-- [ ] Add duplicate-boot, listener-retirement, stale-RAF, BFCache, source, dist, and Pages fixtures.
+- [ ] Decide whether stamina is adopted or removed from public state.
+- [ ] Define current, maximum, exhaustion threshold, recovery threshold and revision.
+- [ ] Add declarative movement, collect and clear effort policies.
+- [ ] Admit actions against expected stamina revision before gameplay mutation.
+- [ ] Define cost policy for failed collect and clear attempts.
+- [ ] Add deterministic passive and/or phase recovery through accepted simulation time.
+- [ ] Keep condition damage separate from stamina depletion.
+- [ ] Add optional pressure and equipment modifiers only through explicit adapters.
+- [ ] Publish `StaminaActionResult` and `StaminaRecoveryResult`.
+- [ ] Project current/max stamina and exhaustion state in the HUD.
+- [ ] Publish `FirstStaminaBoundFrameAck`.
+- [ ] Add depletion, rejection, recovery, reset, source, dist and Pages fixtures.
 
 ## Ordering
 
 ```txt
-host identity and root revisions
-  -> singleton boot admission
-  -> detached resource construction
-  -> atomic host commit
-  -> first accepted frame acknowledgement
-  -> exact retirement and stale-work rejection
-  -> replacement/BFCache policy
-  -> source/dist/Pages parity
+state schema and policy
+  -> action admission
+  -> gameplay mutation plus exact charge
+  -> recovery settlement
+  -> HUD projection
+  -> matching-frame acknowledgement
+  -> deterministic and deployed-origin fixtures
 ```
 
-Preserve all existing product domains. This is targeted host ownership around `src/start.js`, not a runtime or gameplay rewrite.
+Preserve the existing active-session, pressure, renderer and interface boundaries. This is targeted product capability adoption, not an engine restructure.
