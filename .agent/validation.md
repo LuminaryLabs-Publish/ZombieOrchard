@@ -1,19 +1,19 @@
-# Validation: ZombieOrchard browser host lifecycle ownership
+# Validation: ZombieOrchard player stamina adoption
 
-**Timestamp:** `2026-07-17T04-41-15-04-00`
+**Timestamp:** `2026-07-17T09-43-24-04-00`
 
 ## Scope
 
-Documentation-only audit of browser boot admission, singleton runtime ownership, RAF/listener leases, renderer and engine disposal, page lifecycle policy, public capability retirement, and first-frame evidence.
+Documentation-only audit of player stamina state, action effort admission, exhaustion, recovery, pressure/equipment adapters, HUD and outcome projection, matching-frame evidence and source/build/Pages fixtures.
 
 ## Checklist
 
-**Goal:** state exactly what changed, what was inspected, and what remains unproven.
+**Goal:** state exactly what changed, what was inspected and what remains unproven.
 
-- [x] Reviewed `index.html`, `src/boot.js`, `src/start.js`, runtime creation, Canvas2D, HTML listener installation, public `GameHost`, smoke, build, and deployment.
+- [x] Reviewed `src/kits/game-domains.js`, `src/renderer/html-interface-renderer.js`, `src/renderer/world-canvas.js`, `src/presets/orchard-preset.js`, current smoke coverage and deployment boundary.
 - [x] Added timestamped repo-local documentation.
 - [x] Changed no runtime or deployment behavior.
-- [ ] Execute host-lifecycle fixtures after implementation.
+- [ ] Execute stamina fixtures after implementation.
 
 ## Change boundary
 
@@ -35,13 +35,13 @@ pull request created: no
 ```txt
 npm test: not run
 npm run build: not run
-duplicate-boot fixture: unavailable
-listener-retirement fixture: unavailable
-stale-RAF fixture: unavailable
-BFCache fixture: unavailable
-FirstHostBoundFrameAck fixture: unavailable
+depletion fixture: unavailable
+exhausted-action fixture: unavailable
+recovery fixture: unavailable
+stale/duplicate action fixture: unavailable
+FirstStaminaBoundFrameAck fixture: unavailable
 source/dist parity: not run
 Pages parity: not run
 ```
 
-No singleton-host correctness, exact retirement, replacement safety, listener/RAF cleanup, BFCache correctness, public capability retirement, browser-frame convergence, artifact parity, deployed parity, or production readiness is claimed.
+No stamina capability, effort-cost correctness, exhaustion correctness, recovery correctness, state-to-frame convergence, artifact parity, deployed parity or production readiness is claimed.
