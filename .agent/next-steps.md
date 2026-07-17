@@ -1,37 +1,36 @@
-# Next steps: ZombieOrchard cross-domain gameplay transaction settlement
+# Next steps: ZombieOrchard interactive control stability
 
-**Timestamp:** `2026-07-16T16-40-45-04-00`  
-**Status:** `cross-domain-gameplay-transaction-settlement-authority-audited`
+**Timestamp:** `2026-07-16T22-40-53-04-00`  
+**Status:** `interactive-dom-control-stability-focus-authority-audited`
 
 ## Summary
 
-The next implementation slice is a transaction coordinator that preflights all required participants, prepares immutable effects, commits them exactly once, and publishes an exact terminal result consumed by interface composition and both render surfaces.
+The next implementation slice is a keyed HTML renderer that preserves control identity and focus, binds pointer and keyboard gestures to one control generation, and settles activation or retirement exactly once.
 
 ## Plan ledger
 
-**Goal:** eliminate partial gameplay settlement without moving domain truth into the coordinator.
+**Goal:** stop frame projection from silently invalidating in-progress UI interaction.
 
-- [ ] Add stable transaction IDs, idempotency keys, canonical payload digests, and expected participant revisions.
-- [ ] Add preflight for participants, targets, funds, item identity, route, and policy.
-- [ ] Add prepared intents for orchard, resources, pressure, session, pests, construction, roster, and inventory.
-- [ ] Add atomic commit ordering plus rollback or explicit compensation.
-- [ ] Add a terminal transaction journal and exact duplicate-result replay.
-- [ ] Propagate nested command results through `interface-composition`.
-- [ ] Add `GameplayTransactionResult` and `FirstTransactionBoundFrameAck`.
-- [ ] Add source, dist, and Pages failure/retry/parity fixtures.
+- [ ] Emit a stable `ControlId` and `ControlGeneration` for every visible action.
+- [ ] Replace unconditional `innerHTML` assignment with keyed DOM reconciliation.
+- [ ] Preserve the active control and restore focus only when policy allows.
+- [ ] Bind pointerdown and keyboard activation to one control generation.
+- [ ] Retire removed or route-replaced controls with an explicit result.
+- [ ] Deduplicate click, Enter, and Space activation.
+- [ ] Publish `InterfaceControlResult` and `FirstStableControlFrameAck`.
+- [ ] Add real-browser pointer-hold, keyboard-focus, route-transition, dist, and Pages fixtures.
 
 ## Ordering
 
 ```txt
-transaction envelope
-  -> participant revisions
-  -> preflight
-  -> prepare
-  -> commit or rollback/compensate
-  -> terminal journal
-  -> exact nested result
-  -> HTML/Canvas acknowledgement
-  -> parity fixtures
+control manifest
+  -> route and render generation
+  -> keyed DOM reconciliation
+  -> focus and pointer lease admission
+  -> exact activation or retirement
+  -> interface control result
+  -> stable-control frame acknowledgement
+  -> source/dist/Pages parity
 ```
 
-Do not implement settlement by duplicating gameplay state inside the transaction coordinator.
+Do not solve this by pausing the entire simulation while a control is focused. Preserve stable control identity while domain truth continues to tick.
