@@ -1,10 +1,11 @@
 {
-  "schemaVersion": 106,
-  "generatedAt": "2026-07-16T22-40-53-04-00",
+  "schemaVersion": 107,
+  "generatedAt": "2026-07-16T22-59-23-04-00",
   "repository": "LuminaryLabs-Publish/ZombieOrchard",
   "branch": "main",
-  "status": "interactive-dom-control-stability-focus-authority-audited",
+  "status": "day-phase-transition-admission-settlement-authority-audited",
   "retainedStatuses": [
+    "interactive-dom-control-stability-focus-authority-audited",
     "cross-domain-gameplay-transaction-settlement-authority-central-reconciled",
     "game-audio-event-projection-authority-central-reconciled",
     "pressure-threshold-gameplay-adoption-authority-central-reconciled",
@@ -28,18 +29,16 @@
     "economy-command-admission-authority-central-reconciled"
   ],
   "selection": {
-    "reason": "oldest-synchronized-eligible-repository",
+    "reason": "repo-local-ahead-central-ledger-reconciliation",
     "publishRepositoryCount": 11,
     "eligibleRepositoryCount": 10,
-    "excluded": [
-      "LuminaryLabs-Publish/TheCavalryOfRome"
-    ],
+    "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
     "newOrMissingLedgerCount": 0,
     "rootUndocumentedCount": 0,
-    "runtimeAheadCount": 0,
-    "priorCentralTimestamp": "2026-07-16T16-40-45-04-00",
-    "nextOldest": "LuminaryLabs-Publish/TheUnmappedHouse",
-    "nextOldestTimestamp": "2026-07-16T16-58-39-04-00"
+    "repoLocalAheadOfCentralCount": 1,
+    "repoLocalHeadBeforeRun": "daa0d61a562f980a4a52c591752664ec7ad58430",
+    "centralBoundRepoLocalHead": "5492bae4c3186744a758a4b825ec77e484eb0804",
+    "aheadByDocumentationCommits": 15
   },
   "implementedSurfaceCount": 27,
   "implementedKits": [
@@ -72,188 +71,68 @@
     "pages-deploy-kit"
   ],
   "implementedKitServices": {
-    "kit-runtime": [
-      "registration",
-      "domain creation",
-      "command dispatch",
-      "delta clamping",
-      "ticking",
-      "event buffering",
-      "snapshots",
-      "subscriptions"
-    ],
-    "scoped-interface-domain-kit": [
-      "screen state",
-      "field mutation",
-      "selection",
-      "action activation",
-      "events",
-      "snapshots"
-    ],
-    "entry-domain-kit": [
-      "Play",
-      "New Game",
-      "Settings"
-    ],
-    "session-select-domain-kit": [
-      "Save Select projection",
-      "Back"
-    ],
-    "run-setup-domain-kit": [
-      "run setup projection",
-      "Start",
-      "Back"
-    ],
-    "active-session-domain-kit": [
-      "movement",
-      "collection",
-      "phase changes",
-      "pest simulation",
-      "contact damage",
-      "clearing",
-      "score",
-      "failure"
-    ],
-    "interrupt-domain-kit": [
-      "Pause",
-      "Resume",
-      "Title"
-    ],
-    "construction-domain-kit": [
-      "construction projection",
-      "Storage Shed action",
-      "Back"
-    ],
-    "exchange-domain-kit": [
-      "Market projection",
-      "Back"
-    ],
-    "roster-domain-kit": [
-      "Roster projection",
-      "Back"
-    ],
-    "inventory-domain-kit": [
-      "Inventory projection",
-      "Back"
-    ],
-    "knowledge-domain-kit": [
-      "Codex projection",
-      "Back"
-    ],
-    "preferences-domain-kit": [
-      "Settings projection",
-      "Back"
-    ],
-    "outcome-domain-kit": [
-      "outcome projection",
-      "Title"
-    ],
-    "interface-composition-kit": [
-      "route transitions",
-      "nested commands",
-      "Back",
-      "outcome routing"
-    ],
-    "resource-ledger-kit": [
-      "balance checks",
-      "payments",
-      "grants",
-      "snapshots"
-    ],
-    "pressure-field-kit": [
-      "pressure channels",
-      "clamped adjustment",
-      "time growth",
-      "commands",
-      "snapshots"
-    ],
-    "orchard-world-kit": [
-      "tree generation",
-      "apple generation and refill",
-      "collection",
-      "bounds",
-      "snapshots"
-    ],
-    "construction-runtime-kit": [
-      "catalog lookup",
-      "payment",
-      "built records",
-      "messages",
-      "snapshots"
-    ],
-    "roster-runtime-kit": [
-      "hiring payment",
-      "actor records",
-      "messages",
-      "snapshots"
-    ],
-    "inventory-runtime-kit": [
-      "item snapshots",
-      "equipment mutation"
-    ],
-    "world-canvas-render-kit": [
-      "canvas sizing",
-      "player projection",
-      "tree projection",
-      "apple projection",
-      "pest projection"
-    ],
-    "html-interface-render-kit": [
-      "delegated route commands",
-      "delegated gameplay commands",
-      "HUD projection",
-      "card projection"
-    ],
-    "game-host-diagnostics-kit": [
-      "raw engine exposure",
-      "state readback",
-      "manual ticking"
-    ],
-    "smoke-fixture-kit": [
-      "entry assertion",
-      "Play assertion",
-      "orchard apple assertion"
-    ],
-    "static-build-copy-kit": [
-      "static dist assembly"
-    ],
-    "pages-deploy-kit": [
-      "GitHub Pages publication"
-    ]
+    "kit-runtime": ["registration", "domain creation", "command dispatch", "delta clamping", "ticking", "event buffering", "snapshots", "subscriptions"],
+    "scoped-interface-domain-kit": ["screen state", "field mutation", "selection", "action activation", "events", "snapshots"],
+    "entry-domain-kit": ["Play", "New Game", "Settings"],
+    "session-select-domain-kit": ["Save Select projection", "Back"],
+    "run-setup-domain-kit": ["run setup projection", "Start", "Back"],
+    "active-session-domain-kit": ["movement", "collection", "phase changes", "pest simulation", "contact damage", "clearing", "score", "failure"],
+    "interrupt-domain-kit": ["Pause", "Resume", "Title"],
+    "construction-domain-kit": ["construction projection", "Storage Shed action", "Back"],
+    "exchange-domain-kit": ["Market projection", "Back"],
+    "roster-domain-kit": ["Roster projection", "Back"],
+    "inventory-domain-kit": ["Inventory projection", "Back"],
+    "knowledge-domain-kit": ["Codex projection", "Back"],
+    "preferences-domain-kit": ["Settings projection", "Back"],
+    "outcome-domain-kit": ["outcome projection", "Title"],
+    "interface-composition-kit": ["route transitions", "nested commands", "Back", "outcome routing"],
+    "resource-ledger-kit": ["balance checks", "payments", "grants", "snapshots"],
+    "pressure-field-kit": ["pressure channels", "clamped adjustment", "time growth", "commands", "snapshots"],
+    "orchard-world-kit": ["tree generation", "apple generation and refill", "collection", "bounds", "snapshots"],
+    "construction-runtime-kit": ["catalog lookup", "payment", "built records", "messages", "snapshots"],
+    "roster-runtime-kit": ["hiring payment", "actor records", "messages", "snapshots"],
+    "inventory-runtime-kit": ["item snapshots", "equipment mutation"],
+    "world-canvas-render-kit": ["canvas sizing", "player projection", "tree projection", "apple projection", "pest projection"],
+    "html-interface-render-kit": ["delegated route commands", "delegated gameplay commands", "HUD projection", "card projection"],
+    "game-host-diagnostics-kit": ["raw engine exposure", "state readback", "manual ticking"],
+    "smoke-fixture-kit": ["entry assertion", "Play assertion", "orchard apple assertion"],
+    "static-build-copy-kit": ["static dist assembly"],
+    "pages-deploy-kit": ["GitHub Pages publication"]
   },
-  "plannedAuthority": "zombie-orchard-interactive-dom-control-stability-focus-authority-domain",
-  "plannedSurfaceCount": 18,
+  "plannedAuthority": "zombie-orchard-day-phase-transition-admission-settlement-authority-domain",
+  "plannedSurfaceCount": 19,
   "plannedSurfaces": [
-    "zombie-orchard-interactive-dom-control-stability-focus-authority-domain",
-    "interface-control-manifest-kit",
-    "interface-control-identity-kit",
-    "interface-render-generation-kit",
-    "stable-dom-reconciliation-kit",
-    "control-retirement-settlement-kit",
-    "focus-continuity-observer-kit",
-    "focus-restoration-policy-kit",
-    "pointer-press-lease-kit",
-    "keyboard-activation-adapter-kit",
-    "delegated-command-generation-adapter-kit",
-    "control-activation-idempotency-kit",
-    "interface-control-result-kit",
-    "first-stable-control-frame-ack-kit",
-    "pointer-hold-browser-fixture-kit",
-    "keyboard-focus-browser-fixture-kit",
-    "route-transition-control-fixture-kit",
-    "source-dist-pages-control-parity-kit"
+    "zombie-orchard-day-phase-transition-admission-settlement-authority-domain",
+    "phase-transition-command-envelope-kit",
+    "phase-generation-identity-kit",
+    "expected-phase-precondition-kit",
+    "phase-duration-policy-kit",
+    "transition-eligibility-policy-kit",
+    "transition-cooldown-kit",
+    "pending-transition-lock-kit",
+    "night-entry-settlement-kit",
+    "day-entry-settlement-kit",
+    "pressure-settlement-adapter-kit",
+    "pest-settlement-adapter-kit",
+    "session-day-counter-adapter-kit",
+    "phase-transition-idempotency-kit",
+    "phase-transition-result-kit",
+    "first-phase-bound-frame-ack-kit",
+    "rapid-double-activation-fixture-kit",
+    "zero-night-tick-fixture-kit",
+    "source-dist-pages-phase-parity-kit"
   ],
   "auditRoutes": {
-    "tracker": ".agent/trackers/2026-07-16T22-40-53-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-16T22-40-53-04-00.md",
-    "architecture": ".agent/architecture-audit/2026-07-16T22-40-53-04-00-interactive-dom-control-stability-dsk-map.md",
-    "render": ".agent/render-audit/2026-07-16T22-40-53-04-00-recreated-control-visible-frame-gap.md",
-    "gameplay": ".agent/gameplay-audit/2026-07-16T22-40-53-04-00-control-gesture-frame-replacement-loop.md",
-    "interaction": ".agent/interaction-audit/2026-07-16T22-40-53-04-00-interface-control-command-result-map.md",
-    "interfaceControl": ".agent/interface-control-audit/2026-07-16T22-40-53-04-00-stable-node-focus-press-contract.md",
-    "deploy": ".agent/deploy-audit/2026-07-16T22-40-53-04-00-interactive-control-browser-fixture-gate.md",
-    "centralSync": ".agent/central-sync-audit/2026-07-16T22-40-53-04-00-oldest-selection-control-stability-reconciliation.md",
-    "previousTransaction": ".agent/transaction-audit/2026-07-16T16-40-45-04-00-participant-prepare-commit-rollback-contract.md"
+    "tracker": ".agent/trackers/2026-07-16T22-59-23-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-16T22-59-23-04-00.md",
+    "architecture": ".agent/architecture-audit/2026-07-16T22-59-23-04-00-day-phase-transition-admission-dsk-map.md",
+    "render": ".agent/render-audit/2026-07-16T22-59-23-04-00-unsettled-phase-visible-frame-gap.md",
+    "gameplay": ".agent/gameplay-audit/2026-07-16T22-59-23-04-00-zero-night-tick-day-advance-loop.md",
+    "interaction": ".agent/interaction-audit/2026-07-16T22-59-23-04-00-phase-transition-command-result-map.md",
+    "phaseSystem": ".agent/phase-system-audit/2026-07-16T22-59-23-04-00-day-night-admission-settlement-contract.md",
+    "deploy": ".agent/deploy-audit/2026-07-16T22-59-23-04-00-phase-transition-source-build-pages-fixture-gate.md",
+    "centralSync": ".agent/central-sync-audit/2026-07-16T22-59-23-04-00-repo-local-ahead-phase-transition-reconciliation.md",
+    "previousInteractiveControl": ".agent/interface-control-audit/2026-07-16T22-40-53-04-00-stable-node-focus-press-contract.md"
   },
   "validation": {
     "documentationOnly": true,
@@ -268,7 +147,7 @@
     "pullRequestCreated": false,
     "npmTest": "not run",
     "npmBuild": "not run",
-    "browserControlFixtures": "unavailable",
+    "phaseTransitionFixtures": "unavailable",
     "productionArtifactSmoke": "not run",
     "pagesSmoke": "not run",
     "kitRegistryJson": "valid JSON"
