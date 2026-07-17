@@ -1,48 +1,50 @@
-# Current audit: ZombieOrchard cross-domain gameplay transaction settlement
+# Current audit: ZombieOrchard interactive DOM control stability
 
-**Timestamp:** `2026-07-16T16-40-45-04-00`  
-**Status:** `cross-domain-gameplay-transaction-settlement-authority-audited`  
-**Retained status:** `game-audio-event-projection-authority-central-reconciled`  
+**Timestamp:** `2026-07-16T22-40-53-04-00`  
+**Status:** `interactive-dom-control-stability-focus-authority-audited`  
+**Retained status:** `cross-domain-gameplay-transaction-settlement-authority-central-reconciled`  
 **Branch:** `main`
 
 ## Summary
 
-Collection, clearing, construction, and hiring are single player actions implemented as several immediate domain mutations. No authority binds their participants to one transaction identity, expected revisions, preflight, prepared intents, atomic commit, rollback, duplicate handling, exact nested result, or presented-frame acknowledgement.
+`start.js` calls `ui.render(snapshot)` on every RAF. Both branches of `html-interface-renderer.js` then replace `root.innerHTML`, destroying and recreating every interactive button. The root-level click listener remains installed, but a pointer press or focused control can be retired before activation without an explicit result.
 
 ## Plan ledger
 
-**Goal:** settle every multi-domain gameplay command exactly once, or reject it before any participant changes.
+**Goal:** make every visible control stable for the lifetime of an admitted pointer or keyboard gesture.
 
-- [x] Inspect boot, runtime, composition, game domains, delegated HTML input, Canvas2D/HTML projection, smoke, build, and deployment.
+- [x] Inspect page boot, RAF scheduling, HTML projection, delegated click handling, domains, smoke, build, and deployment.
 - [x] Preserve all 27 implemented kits and services.
-- [x] Define the 20-surface cross-domain transaction authority.
-- [x] Define participant failure, rollback, retry, nested-result, parity, and frame-convergence fixtures.
+- [x] Define the 18-surface control-stability authority.
+- [x] Define pointer-hold, keyboard-focus, route-transition, dist, and Pages fixtures.
 - [ ] Implement and validate the authority.
 
 ## Source-backed finding
 
 ```txt
-collect removes/replaces apple before optional rewards and pressure
-clear can remove pest before optional scrap reward
-construction and roster debit before acquired-record mutation
-interface composition discards nested command result
-TransactionId: absent
-IdempotencyKey: absent
-expected participant revisions: absent
-preflight and prepare: absent
-atomic commit: absent
-rollback or compensation: absent
-terminal transaction journal: absent
-FirstTransactionBoundFrameAck: absent
-cross-domain failure fixture count: 0
+ui.render(snapshot) every RAF: present
+root.innerHTML replacement every RAF: present
+root-level click delegation: present
+
+stable control node identity: absent
+keyed DOM reconciliation: absent
+ControlGeneration: absent
+pointer press lease: absent
+focus capture/restoration: absent
+removed-control settlement: absent
+exact activation result: absent
+FirstStableControlFrameAck: absent
+browser DOM interaction fixtures: 0
 ```
 
-No partial-settlement incident was reproduced. This is an ownership and proof gap.
+A control can be replaced between `pointerdown` and `pointerup`, and keyboard focus can be lost on the next frame. The current smoke test bypasses the DOM and dispatches engine commands directly, so it cannot prove browser control continuity.
+
+No specific failed click or keyboard incident was reproduced. This is a source-backed ownership and executable-proof gap.
 
 ## Required authority
 
-`zombie-orchard-cross-domain-gameplay-transaction-settlement-authority-domain`
+`zombie-orchard-interactive-dom-control-stability-focus-authority-domain`
 
 ## Validation boundary
 
-Documentation only. No runtime, gameplay, HTML, Canvas2D, audio, dependency, test, artifact, workflow, or deployment behavior changed.
+Documentation only. No runtime, gameplay, HTML, CSS, Canvas2D, audio, dependency, test, artifact, workflow, or deployment behavior changed.
