@@ -1,41 +1,41 @@
-# START HERE: ZombieOrchard browser host lifecycle ownership
+# START HERE: ZombieOrchard player stamina adoption
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Aligned:** `2026-07-17T04-41-15-04-00`  
-**Status:** `browser-host-single-runtime-lifecycle-retirement-authority-audited`
+**Aligned:** `2026-07-17T09-43-24-04-00`  
+**Status:** `player-stamina-effort-recovery-projection-authority-audited`
 
 ## Summary
 
-The browser host is created through side-effect module evaluation. Engine, renderers, delegated click listener, recursive RAF, and `window.GameHost` are made live without one HostSessionId, singleton lease, stop/dispose path, replacement policy, or first host-bound frame acknowledgement.
+`active-session.player.stamina` is initialized to 100 and exposed in snapshots, but no action, tick, phase transition, pressure policy or renderer uses it. Movement, collection and clearing remain available at full effectiveness, while the HUD and outcome summary omit stamina entirely.
 
-A normal static load currently executes once; no duplicate-runtime incident was reproduced. The gap is explicit lifecycle ownership for future recovery, replacement, BFCache handling, and re-execution.
+The focused decision is to either make stamina a real admitted gameplay capability with deterministic costs, exhaustion, recovery and visible proof, or remove the dead public field until that capability exists.
 
 ## Checklist
 
 - [x] Compare the full Publish inventory and central ledger.
 - [x] Select only ZombieOrchard by the oldest synchronized timestamp.
-- [x] Identify the complete interaction loop, all domains, 27 implemented kits, and their services.
-- [x] Document the 18-surface host-lifecycle authority and deployment fixture gate.
-- [x] Retain the prior phase-transition audit and all earlier findings.
-- [ ] Implement host admission/retirement and execute browser lifecycle fixtures.
+- [x] Identify the complete interaction loop, all domains, 27 implemented kits and their services.
+- [x] Document the 19-surface stamina authority and deployment fixture gate.
+- [x] Retain the browser-host lifecycle audit and all earlier findings.
+- [ ] Implement stamina policy and execute depletion, recovery, projection and origin-parity fixtures.
 
 ## Read first
 
 1. `.agent/current-audit.md`
-2. `.agent/trackers/2026-07-17T04-41-15-04-00/project-breakdown.md`
-3. `.agent/architecture-audit/2026-07-17T04-41-15-04-00-browser-host-lifecycle-dsk-map.md`
-4. `.agent/host-lifecycle-audit/2026-07-17T04-41-15-04-00-single-runtime-retirement-contract.md`
+2. `.agent/trackers/2026-07-17T09-43-24-04-00/project-breakdown.md`
+3. `.agent/architecture-audit/2026-07-17T09-43-24-04-00-player-stamina-adoption-dsk-map.md`
+4. `.agent/stamina-system-audit/2026-07-17T09-43-24-04-00-effort-recovery-projection-contract.md`
 5. `.agent/validation.md`
 
 ## Required authority
 
-`zombie-orchard-browser-host-single-runtime-lifecycle-retirement-authority-domain`
+`zombie-orchard-player-stamina-effort-recovery-projection-authority-domain`
 
 ## Retained audits
 
-The `2026-07-16T22-59-23-04-00` day/phase transition audit and all earlier control, transaction, audio, pressure, determinism, persistence, lifecycle, rendering, command, accessibility, kit-graph, and gameplay-adoption findings remain retained.
+The `2026-07-17T04-41-15-04-00` browser-host lifecycle audit and all earlier phase, control, transaction, audio, pressure, determinism, persistence, rendering, command, accessibility, kit-graph and gameplay-adoption findings remain retained.
 
 ## Boundary
 
-Documentation only. Runtime behavior, gameplay, rendering, input, tests, build, and deployment remain unchanged.
+Documentation only. Runtime behavior, gameplay, rendering, input, tests, build and deployment remain unchanged.
