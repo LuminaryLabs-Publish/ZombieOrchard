@@ -1,40 +1,39 @@
-# Next steps: ZombieOrchard pest population budget
+# Next steps: ZombieOrchard world viewport and camera coverage
 
-**Timestamp:** `2026-07-17T21-40-33-04-00`  
-**Status:** `pest-population-spawn-budget-retirement-authority-audited`
+**Timestamp:** `2026-07-18T08-39-41-04-00`  
+**Status:** `world-viewport-camera-coverage-authority-audited`
 
 ## Summary
 
-The next implementation slice is a targeted population-policy boundary inside `active-session-domain-kit`. It should cap and retire pests before considering pooling, culling or a separate enemy subsystem.
+The next implementation slice is a targeted camera/projection boundary around `world-canvas-render-kit`. It should preserve world coordinates and Canvas2D drawing while making viewport coverage explicit.
 
 ## Checklist
 
-**Goal:** ensure pest creation, update, retirement and projection are bounded and settle against one accepted population revision.
+**Goal:** ensure every supported viewport settles one camera/projection generation and presents a frame in which the player and active interaction context follow the accepted visibility policy.
 
-- [ ] Define soft capacity, hard capacity, spawn rate and policy revision.
-- [ ] Replace direct `pests.push()` with one admitted spawn function.
-- [ ] Bind spawn admission to run, phase and population generations.
-- [ ] Add stable pest generation and creation-time evidence.
-- [ ] Decide day-entry, lifetime and distance-retirement policies.
-- [ ] Preserve clear rewards only for accepted player-clear retirement.
-- [ ] Publish `PestSpawnAdmissionResult` and `PestPopulationResult`.
-- [ ] Bound per-tick update work and record deferred work if needed.
-- [ ] Bound or cull visible pest projection only after the gameplay cap exists.
-- [ ] Project population or threat evidence in the HUD.
-- [ ] Publish `FirstPestBudgetBoundFrameAck`.
-- [ ] Add long-night, capacity, phase-toggle, clear-retirement, reset, source, dist and Pages fixtures.
+- [ ] Define supported viewport profiles and a versioned world-coverage policy.
+- [ ] Consume `orchard-world.bounds` when settling camera and scale.
+- [ ] Add source-neutral viewport metrics and safe-area inputs.
+- [ ] Add camera center, follow and clamp state.
+- [ ] Decide when to fit the complete world and when to follow the player.
+- [ ] Keep the nearest accepted collect/clear focus visible where possible.
+- [ ] Publish `ViewportAdmissionResult`, `CameraSettlementResult` and `WorldProjectionResult`.
+- [ ] Classify player, target and threat visibility.
+- [ ] Reject stale viewport and camera generations after resize/orientation changes.
+- [ ] Publish `WorldViewportFrameDigest` and `FirstCameraBoundFrameAck`.
+- [ ] Add portrait, small-landscape, edge-traversal, safe-area, source, dist and Pages fixtures.
 
 ## Ordering
 
 ```txt
-population policy
-  -> spawn admission
-  -> lifetime and phase retirement
-  -> reward-safe retirement settlement
-  -> bounded update snapshot
-  -> bounded visible projection
+world and viewport policy
+  -> viewport admission
+  -> camera follow/clamp settlement
+  -> immutable projection snapshot
+  -> entity visibility classification
+  -> Canvas2D render
   -> matching-frame acknowledgement
   -> source/dist/Pages fixtures
 ```
 
-Preserve the existing active-session, pressure, renderer and interface boundaries. This is targeted workload ownership, not an engine restructure.
+Preserve the current active-session simulation and world coordinates. This is targeted presentation ownership, not an engine restructure.
