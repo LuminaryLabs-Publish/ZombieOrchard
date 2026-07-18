@@ -1,49 +1,52 @@
-# Known gaps: ZombieOrchard player stamina adoption
+# Known gaps: ZombieOrchard pest population budget
 
-**Timestamp:** `2026-07-17T09-43-24-04-00`  
-**Status:** `player-stamina-effort-recovery-projection-authority-audited`
+**Timestamp:** `2026-07-17T21-40-33-04-00`  
+**Status:** `pest-population-spawn-budget-retirement-authority-audited`
 
 ## Summary
 
-Stamina is currently a dead public state field. The game has no effort policy, exhaustion behavior, recovery path, visible projection, typed result or executable proof.
+Pest threat and workload have no explicit ceiling. Spawn, retained population, simulation work, snapshot size and Canvas2D projection can all grow with time spent at night.
 
 ## Checklist
 
-**Goal:** keep the capability and proof gaps explicit until stamina is either implemented or removed.
+**Goal:** keep the population and proof gaps explicit until creation, retirement and projection are bounded.
 
-- [x] Record source-backed state, command, tick, phase, pressure and projection gaps.
+- [x] Record source-backed spawn, storage, update, retirement and projection gaps.
 - [x] Preserve current product boundaries.
 - [x] Define required results and fixtures.
-- [ ] Close the gaps in runtime code or remove the field.
+- [ ] Close the gaps in runtime code and executable proof.
 
 ## Gaps
 
 ```txt
-StaminaState schema and revision
-maximum and threshold policy
-effort-cost policy
-movement effort settlement
-collection effort settlement
-clearing effort settlement
-failed-attempt cost policy
-exhaustion state and action admission
-passive recovery
-phase-entry recovery
-pressure modifier policy
-equipment modifier policy
-reset and future restore generation
-StaminaActionResult
-StaminaRecoveryResult
-stamina HUD projection
-stamina outcome policy
-FirstStaminaBoundFrameAck
-depletion boundary fixture
-exhausted-action fixture
-recovery fixture
-stale/duplicate action fixture
-source/dist/Pages stamina parity
+PestPopulationPolicy schema and revision
+soft and hard population capacity
+spawn admission command
+spawn acceptance/defer/rejection result
+deterministic spawn cadence
+maximum spawn per accepted tick
+run and phase generation binding
+stable pest generation identity
+spawn timestamp or age evidence
+maximum lifetime policy
+day-entry retirement/preservation policy
+distance retirement policy
+capacity-reached behavior
+pressure-to-spawn policy adapter
+bounded per-tick update work
+bounded visible projection work
+reward-safe retirement reason
+PestPopulationResult
+pest/threat HUD projection
+FirstPestBudgetBoundFrameAck
+long-night capacity fixture
+phase-toggle fixture
+clear-versus-spawn fixture
+retirement reward fixture
+reset/new-run fixture
+source/dist/Pages pest parity
 ```
 
 ## Retained gaps
 
-The browser-host lifecycle audit and all earlier phase, control, transaction, audio, pressure, determinism, persistence, rendering, command, accessibility, kit-graph and gameplay-adoption gaps remain retained unless separately implemented and validated.
+The player-stamina audit and all earlier host lifecycle, phase, control, transaction, audio, pressure, determinism, persistence, rendering, command, accessibility, kit-graph and gameplay-adoption gaps remain retained unless separately implemented and validated.
