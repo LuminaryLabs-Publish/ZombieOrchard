@@ -1,10 +1,11 @@
 {
-  "schemaVersion": 109,
-  "generatedAt": "2026-07-17T09-43-24-04-00",
+  "schemaVersion": 110,
+  "generatedAt": "2026-07-17T21-40-33-04-00",
   "repository": "LuminaryLabs-Publish/ZombieOrchard",
   "branch": "main",
-  "status": "player-stamina-effort-recovery-projection-authority-audited",
+  "status": "pest-population-spawn-budget-retirement-authority-audited",
   "retainedStatuses": [
+    "player-stamina-effort-recovery-projection-authority-central-reconciled",
     "browser-host-single-runtime-lifecycle-retirement-authority-central-reconciled",
     "day-phase-transition-admission-settlement-authority-central-reconciled",
     "interactive-dom-control-stability-focus-authority-central-reconciled",
@@ -35,13 +36,15 @@
     "reason": "oldest-synchronized-documented-timestamp",
     "publishRepositoryCount": 11,
     "eligibleRepositoryCount": 10,
-    "excluded": ["LuminaryLabs-Publish/TheCavalryOfRome"],
+    "excluded": [
+      "LuminaryLabs-Publish/TheCavalryOfRome"
+    ],
     "newOrMissingLedgerCount": 0,
     "rootUndocumentedCount": 0,
     "runtimeAheadCount": 0,
-    "selectedPriorTimestamp": "2026-07-17T04-41-15-04-00",
-    "repoLocalHeadBeforeRun": "0233b458bb895a1ca8ccd07cb2ecd8f56208325f",
-    "centralBoundRepoLocalHead": "0233b458bb895a1ca8ccd07cb2ecd8f56208325f"
+    "selectedPriorTimestamp": "2026-07-17T09-43-24-04-00",
+    "repoLocalHeadBeforeRun": "003d862f386d8d47a5f544aeaa851c04a2c9d3e8",
+    "centralBoundRepoLocalHead": "003d862f386d8d47a5f544aeaa851c04a2c9d3e8"
   },
   "implementedSurfaceCount": 27,
   "implementedKits": [
@@ -74,68 +77,190 @@
     "pages-deploy-kit"
   ],
   "implementedKitServices": {
-    "kit-runtime": ["registration", "domain creation", "command dispatch", "delta clamping", "ticking", "event buffering", "snapshots", "subscriptions"],
-    "scoped-interface-domain-kit": ["screen state", "field mutation", "selection", "action activation", "events", "snapshots"],
-    "entry-domain-kit": ["Play", "New Game", "Settings"],
-    "session-select-domain-kit": ["Save Select projection", "Back"],
-    "run-setup-domain-kit": ["run setup projection", "Start", "Back"],
-    "active-session-domain-kit": ["movement", "collection", "phase changes", "pest simulation", "contact damage", "clearing", "score", "failure", "public player stamina field"],
-    "interrupt-domain-kit": ["Pause", "Resume", "Title"],
-    "construction-domain-kit": ["construction projection", "Storage Shed action", "Back"],
-    "exchange-domain-kit": ["Market projection", "Back"],
-    "roster-domain-kit": ["Roster projection", "Back"],
-    "inventory-domain-kit": ["Inventory projection", "Back"],
-    "knowledge-domain-kit": ["Codex projection", "Back"],
-    "preferences-domain-kit": ["Settings projection", "Back"],
-    "outcome-domain-kit": ["outcome projection", "Title"],
-    "interface-composition-kit": ["route transitions", "nested commands", "Back", "outcome routing"],
-    "resource-ledger-kit": ["balance checks", "payments", "grants", "snapshots"],
-    "pressure-field-kit": ["pressure channels", "clamped adjustment", "time growth", "commands", "snapshots"],
-    "orchard-world-kit": ["tree generation", "apple generation and refill", "collection", "bounds", "snapshots"],
-    "construction-runtime-kit": ["catalog lookup", "payment", "built records", "messages", "snapshots"],
-    "roster-runtime-kit": ["hiring payment", "actor records", "messages", "snapshots"],
-    "inventory-runtime-kit": ["item snapshots", "equipment mutation"],
-    "world-canvas-render-kit": ["canvas sizing", "player projection", "tree projection", "apple projection", "pest projection"],
-    "html-interface-render-kit": ["delegated route commands", "delegated gameplay commands", "HUD projection", "card projection"],
-    "game-host-diagnostics-kit": ["raw engine exposure", "state readback", "manual ticking"],
-    "smoke-fixture-kit": ["entry assertion", "Play assertion", "orchard apple assertion"],
-    "static-build-copy-kit": ["static dist assembly"],
-    "pages-deploy-kit": ["GitHub Pages publication"]
+    "kit-runtime": [
+      "registration",
+      "domain creation",
+      "command dispatch",
+      "delta clamping",
+      "ticking",
+      "event buffering",
+      "snapshots",
+      "subscriptions"
+    ],
+    "scoped-interface-domain-kit": [
+      "screen state",
+      "field mutation",
+      "selection",
+      "action activation",
+      "events",
+      "snapshots"
+    ],
+    "entry-domain-kit": [
+      "Play",
+      "New Game",
+      "Settings"
+    ],
+    "session-select-domain-kit": [
+      "Save Select projection",
+      "Back"
+    ],
+    "run-setup-domain-kit": [
+      "run setup projection",
+      "Start",
+      "Back"
+    ],
+    "active-session-domain-kit": [
+      "movement",
+      "collection",
+      "phase changes",
+      "pest simulation",
+      "contact damage",
+      "clearing",
+      "score",
+      "failure",
+      "public player stamina field"
+    ],
+    "interrupt-domain-kit": [
+      "Pause",
+      "Resume",
+      "Title"
+    ],
+    "construction-domain-kit": [
+      "construction projection",
+      "Storage Shed action",
+      "Back"
+    ],
+    "exchange-domain-kit": [
+      "Market projection",
+      "Back"
+    ],
+    "roster-domain-kit": [
+      "Roster projection",
+      "Back"
+    ],
+    "inventory-domain-kit": [
+      "Inventory projection",
+      "Back"
+    ],
+    "knowledge-domain-kit": [
+      "Codex projection",
+      "Back"
+    ],
+    "preferences-domain-kit": [
+      "Settings projection",
+      "Back"
+    ],
+    "outcome-domain-kit": [
+      "outcome projection",
+      "Title"
+    ],
+    "interface-composition-kit": [
+      "route transitions",
+      "nested commands",
+      "Back",
+      "outcome routing"
+    ],
+    "resource-ledger-kit": [
+      "balance checks",
+      "payments",
+      "grants",
+      "snapshots"
+    ],
+    "pressure-field-kit": [
+      "pressure channels",
+      "clamped adjustment",
+      "time growth",
+      "commands",
+      "snapshots"
+    ],
+    "orchard-world-kit": [
+      "tree generation",
+      "apple generation and refill",
+      "collection",
+      "bounds",
+      "snapshots"
+    ],
+    "construction-runtime-kit": [
+      "catalog lookup",
+      "payment",
+      "built records",
+      "messages",
+      "snapshots"
+    ],
+    "roster-runtime-kit": [
+      "hiring payment",
+      "actor records",
+      "messages",
+      "snapshots"
+    ],
+    "inventory-runtime-kit": [
+      "item snapshots",
+      "equipment mutation"
+    ],
+    "world-canvas-render-kit": [
+      "canvas sizing",
+      "player projection",
+      "tree projection",
+      "apple projection",
+      "pest projection"
+    ],
+    "html-interface-render-kit": [
+      "delegated route commands",
+      "delegated gameplay commands",
+      "HUD projection",
+      "card projection"
+    ],
+    "game-host-diagnostics-kit": [
+      "raw engine exposure",
+      "state readback",
+      "manual ticking"
+    ],
+    "smoke-fixture-kit": [
+      "entry assertion",
+      "Play assertion",
+      "orchard apple assertion"
+    ],
+    "static-build-copy-kit": [
+      "static dist assembly"
+    ],
+    "pages-deploy-kit": [
+      "GitHub Pages publication"
+    ]
   },
-  "plannedAuthority": "zombie-orchard-player-stamina-effort-recovery-projection-authority-domain",
+  "plannedAuthority": "zombie-orchard-pest-population-spawn-budget-retirement-authority-domain",
   "plannedSurfaceCount": 19,
   "plannedSurfaces": [
-    "zombie-orchard-player-stamina-effort-recovery-projection-authority-domain",
-    "stamina-state-schema-kit",
-    "effort-cost-policy-kit",
-    "action-effort-admission-kit",
-    "movement-effort-adapter-kit",
-    "collection-effort-adapter-kit",
-    "clearing-effort-adapter-kit",
-    "phase-recovery-policy-kit",
-    "passive-recovery-tick-kit",
-    "exhaustion-state-kit",
-    "stamina-command-result-kit",
-    "pressure-stamina-coupling-kit",
-    "stamina-hud-projection-kit",
-    "stamina-outcome-projection-kit",
-    "first-stamina-bound-frame-ack-kit",
-    "depletion-boundary-fixture-kit",
-    "recovery-boundary-fixture-kit",
-    "action-rejection-fixture-kit",
-    "source-dist-pages-stamina-parity-kit"
+    "zombie-orchard-pest-population-spawn-budget-retirement-authority-domain",
+    "pest-population-policy-kit",
+    "pest-spawn-admission-kit",
+    "pest-capacity-budget-kit",
+    "spawn-rate-policy-kit",
+    "phase-spawn-adapter-kit",
+    "pest-lifetime-retirement-kit",
+    "pest-distance-retirement-kit",
+    "pest-wave-generation-kit",
+    "pest-update-budget-kit",
+    "pest-render-budget-kit",
+    "pest-population-result-kit",
+    "pest-pressure-coupling-kit",
+    "pest-hud-projection-kit",
+    "first-pest-budget-bound-frame-ack-kit",
+    "long-night-population-fixture-kit",
+    "phase-toggle-population-fixture-kit",
+    "clear-retirement-fixture-kit",
+    "source-dist-pages-pest-parity-kit"
   ],
   "auditRoutes": {
-    "tracker": ".agent/trackers/2026-07-17T09-43-24-04-00/project-breakdown.md",
-    "turnLedger": ".agent/turn-ledger/2026-07-17T09-43-24-04-00.md",
-    "architecture": ".agent/architecture-audit/2026-07-17T09-43-24-04-00-player-stamina-adoption-dsk-map.md",
-    "render": ".agent/render-audit/2026-07-17T09-43-24-04-00-unprojected-stamina-visible-frame-gap.md",
-    "gameplay": ".agent/gameplay-audit/2026-07-17T09-43-24-04-00-stamina-free-action-loop.md",
-    "interaction": ".agent/interaction-audit/2026-07-17T09-43-24-04-00-stamina-command-result-map.md",
-    "staminaSystem": ".agent/stamina-system-audit/2026-07-17T09-43-24-04-00-effort-recovery-projection-contract.md",
-    "deploy": ".agent/deploy-audit/2026-07-17T09-43-24-04-00-stamina-source-build-pages-fixture-gate.md",
-    "centralSync": ".agent/central-sync-audit/2026-07-17T09-43-24-04-00-oldest-selection-stamina-reconciliation.md",
-    "previousHostLifecycle": ".agent/host-lifecycle-audit/2026-07-17T04-41-15-04-00-single-runtime-retirement-contract.md"
+    "tracker": ".agent/trackers/2026-07-17T21-40-33-04-00/project-breakdown.md",
+    "turnLedger": ".agent/turn-ledger/2026-07-17T21-40-33-04-00.md",
+    "architecture": ".agent/architecture-audit/2026-07-17T21-40-33-04-00-pest-population-budget-dsk-map.md",
+    "render": ".agent/render-audit/2026-07-17T21-40-33-04-00-unbounded-pest-projection-cost-gap.md",
+    "gameplay": ".agent/gameplay-audit/2026-07-17T21-40-33-04-00-night-pest-accumulation-loop.md",
+    "interaction": ".agent/interaction-audit/2026-07-17T21-40-33-04-00-pest-spawn-retirement-command-result-map.md",
+    "pestSystem": ".agent/pest-system-audit/2026-07-17T21-40-33-04-00-population-capacity-lifetime-contract.md",
+    "deploy": ".agent/deploy-audit/2026-07-17T21-40-33-04-00-pest-budget-browser-fixture-gate.md",
+    "centralSync": ".agent/central-sync-audit/2026-07-17T21-40-33-04-00-oldest-selection-pest-budget-reconciliation.md",
+    "previousStamina": ".agent/stamina-system-audit/2026-07-17T09-43-24-04-00-effort-recovery-projection-contract.md"
   },
   "validation": {
     "documentationOnly": true,
@@ -150,7 +275,7 @@
     "pullRequestCreated": false,
     "npmTest": "not run",
     "npmBuild": "not run",
-    "staminaFixtures": "unavailable",
+    "pestPopulationFixtures": "unavailable",
     "productionArtifactSmoke": "not run",
     "pagesSmoke": "not run",
     "kitRegistryJson": "valid JSON"
