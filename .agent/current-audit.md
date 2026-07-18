@@ -1,49 +1,50 @@
-# Current audit: ZombieOrchard player stamina adoption
+# Current audit: ZombieOrchard pest population budget
 
-**Timestamp:** `2026-07-17T09-43-24-04-00`  
-**Status:** `player-stamina-effort-recovery-projection-authority-audited`  
-**Retained status:** `browser-host-single-runtime-lifecycle-retirement-authority-central-reconciled`  
+**Timestamp:** `2026-07-17T21-40-33-04-00`  
+**Status:** `pest-population-spawn-budget-retirement-authority-audited`  
+**Retained status:** `player-stamina-effort-recovery-projection-authority-central-reconciled`  
 **Branch:** `main`
 
 ## Summary
 
-The active-session player snapshot includes stamina, but the implemented game has no stamina capability. Commands do not resolve effort costs, ticks and phases do not recover it, pressure does not modify it, and renderers do not project it.
+Night simulation admits pest creation through an inline random predicate and appends directly to `state.pests`. There is no capacity, lifetime, wave, phase-exit or distance-retirement policy. Every retained pest is updated each tick and projected each frame.
 
 ## Checklist
 
-**Goal:** make the public stamina field truthful by admitting deterministic effort, exhaustion, recovery and visible projection, or remove it until such a capability exists.
+**Goal:** make pest threat and workload bounded, explicit and provable without replacing the existing active-session simulation.
 
-- [x] Inspect player construction, move, collect, clear, next-phase, tick, pressure, HUD, outcome and smoke paths.
+- [x] Inspect runtime ticking, phase transition, spawn, movement, contact, clearing, snapshot and Canvas2D projection paths.
 - [x] Preserve all 27 implemented kits and services.
-- [x] Define the 19-surface stamina authority.
-- [x] Define depletion, rejection, recovery, frame and origin-parity fixtures.
+- [x] Define the 19-surface pest population authority.
+- [x] Define long-night, capacity, retirement, frame and deployed-origin fixtures.
 - [ ] Implement and validate the authority.
 
 ## Source-backed finding
 
 ```txt
-player.stamina initialized to 100: present
-stamina included in snapshot: present
-action cost policy: absent
-movement depletion: absent
-collection depletion: absent
-clearing depletion: absent
-exhaustion state: absent
-passive recovery: absent
-phase recovery: absent
-pressure coupling: absent
-HUD projection: absent
-outcome projection: absent
-StaminaActionResult: absent
-FirstStaminaBoundFrameAck: absent
-stamina fixtures: 0
+spawn source: night tick
+spawn predicate: Math.random() < dt * 0.55
+expected spawn rate: about 0.55 pests/second
+append capacity check: absent
+maximum population: absent
+lifetime retirement: absent
+phase-exit retirement: absent
+distance retirement: absent
+player clear retirement: present, one nearby target
+tick work: all retained pests
+render work: all retained pests
+population HUD: absent
+PestSpawnAdmissionResult: absent
+PestPopulationResult: absent
+FirstPestBudgetBoundFrameAck: absent
+pest population fixtures: 0
 ```
 
-No player-facing stamina failure was reproduced because the game currently ignores the field. This is a gameplay-capability, state-truthfulness and executable-proof gap.
+A ten-minute uncleared night has an expected addition of roughly 330 pests. No production regression was reproduced; this is a gameplay-envelope, workload-bounding and executable-proof gap.
 
 ## Required authority
 
-`zombie-orchard-player-stamina-effort-recovery-projection-authority-domain`
+`zombie-orchard-pest-population-spawn-budget-retirement-authority-domain`
 
 ## Validation boundary
 
