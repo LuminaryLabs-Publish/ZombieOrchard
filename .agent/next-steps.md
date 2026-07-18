@@ -1,39 +1,40 @@
-# Next steps: ZombieOrchard player stamina adoption
+# Next steps: ZombieOrchard pest population budget
 
-**Timestamp:** `2026-07-17T09-43-24-04-00`  
-**Status:** `player-stamina-effort-recovery-projection-authority-audited`
+**Timestamp:** `2026-07-17T21-40-33-04-00`  
+**Status:** `pest-population-spawn-budget-retirement-authority-audited`
 
 ## Summary
 
-The next implementation slice is a targeted stamina authority around `active-session-domain-kit`. It should make action costs, exhaustion, recovery and projection explicit without creating a parallel player system.
+The next implementation slice is a targeted population-policy boundary inside `active-session-domain-kit`. It should cap and retire pests before considering pooling, culling or a separate enemy subsystem.
 
 ## Checklist
 
-**Goal:** ensure every stamina-affecting action and recovery step settles once and reaches a matching visible frame.
+**Goal:** ensure pest creation, update, retirement and projection are bounded and settle against one accepted population revision.
 
-- [ ] Decide whether stamina is adopted or removed from public state.
-- [ ] Define current, maximum, exhaustion threshold, recovery threshold and revision.
-- [ ] Add declarative movement, collect and clear effort policies.
-- [ ] Admit actions against expected stamina revision before gameplay mutation.
-- [ ] Define cost policy for failed collect and clear attempts.
-- [ ] Add deterministic passive and/or phase recovery through accepted simulation time.
-- [ ] Keep condition damage separate from stamina depletion.
-- [ ] Add optional pressure and equipment modifiers only through explicit adapters.
-- [ ] Publish `StaminaActionResult` and `StaminaRecoveryResult`.
-- [ ] Project current/max stamina and exhaustion state in the HUD.
-- [ ] Publish `FirstStaminaBoundFrameAck`.
-- [ ] Add depletion, rejection, recovery, reset, source, dist and Pages fixtures.
+- [ ] Define soft capacity, hard capacity, spawn rate and policy revision.
+- [ ] Replace direct `pests.push()` with one admitted spawn function.
+- [ ] Bind spawn admission to run, phase and population generations.
+- [ ] Add stable pest generation and creation-time evidence.
+- [ ] Decide day-entry, lifetime and distance-retirement policies.
+- [ ] Preserve clear rewards only for accepted player-clear retirement.
+- [ ] Publish `PestSpawnAdmissionResult` and `PestPopulationResult`.
+- [ ] Bound per-tick update work and record deferred work if needed.
+- [ ] Bound or cull visible pest projection only after the gameplay cap exists.
+- [ ] Project population or threat evidence in the HUD.
+- [ ] Publish `FirstPestBudgetBoundFrameAck`.
+- [ ] Add long-night, capacity, phase-toggle, clear-retirement, reset, source, dist and Pages fixtures.
 
 ## Ordering
 
 ```txt
-state schema and policy
-  -> action admission
-  -> gameplay mutation plus exact charge
-  -> recovery settlement
-  -> HUD projection
+population policy
+  -> spawn admission
+  -> lifetime and phase retirement
+  -> reward-safe retirement settlement
+  -> bounded update snapshot
+  -> bounded visible projection
   -> matching-frame acknowledgement
-  -> deterministic and deployed-origin fixtures
+  -> source/dist/Pages fixtures
 ```
 
-Preserve the existing active-session, pressure, renderer and interface boundaries. This is targeted product capability adoption, not an engine restructure.
+Preserve the existing active-session, pressure, renderer and interface boundaries. This is targeted workload ownership, not an engine restructure.
