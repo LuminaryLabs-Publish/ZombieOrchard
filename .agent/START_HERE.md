@@ -1,40 +1,40 @@
-# START HERE: ZombieOrchard player stamina adoption
+# START HERE: ZombieOrchard pest population budget
 
 **Repository:** `LuminaryLabs-Publish/ZombieOrchard`  
 **Branch:** `main`  
-**Aligned:** `2026-07-17T09-43-24-04-00`  
-**Status:** `player-stamina-effort-recovery-projection-authority-audited`
+**Aligned:** `2026-07-17T21-40-33-04-00`  
+**Status:** `pest-population-spawn-budget-retirement-authority-audited`
 
 ## Summary
 
-`active-session.player.stamina` is initialized to 100 and exposed in snapshots, but no action, tick, phase transition, pressure policy or renderer uses it. Movement, collection and clearing remain available at full effectiveness, while the HUD and outcome summary omit stamina entirely.
+Night simulation can append pests indefinitely. Each retained pest is updated every tick and drawn every frame, while retirement occurs only through successful nearby clearing. There is no authored population capacity, lifetime, phase-exit policy, update budget, render budget or visible population proof.
 
-The focused decision is to either make stamina a real admitted gameplay capability with deterministic costs, exhaustion, recovery and visible proof, or remove the dead public field until that capability exists.
+The focused next authority should bound pest creation and retirement inside the existing active-session domain and bind the accepted population revision to the matching Canvas2D frame.
 
 ## Checklist
 
 - [x] Compare the full Publish inventory and central ledger.
 - [x] Select only ZombieOrchard by the oldest synchronized timestamp.
 - [x] Identify the complete interaction loop, all domains, 27 implemented kits and their services.
-- [x] Document the 19-surface stamina authority and deployment fixture gate.
-- [x] Retain the browser-host lifecycle audit and all earlier findings.
-- [ ] Implement stamina policy and execute depletion, recovery, projection and origin-parity fixtures.
+- [x] Document the 19-surface pest population authority and deployment fixture gate.
+- [x] Retain the stamina audit and all earlier findings.
+- [ ] Implement a population policy and execute long-night, retirement, frame and origin-parity fixtures.
 
 ## Read first
 
 1. `.agent/current-audit.md`
-2. `.agent/trackers/2026-07-17T09-43-24-04-00/project-breakdown.md`
-3. `.agent/architecture-audit/2026-07-17T09-43-24-04-00-player-stamina-adoption-dsk-map.md`
-4. `.agent/stamina-system-audit/2026-07-17T09-43-24-04-00-effort-recovery-projection-contract.md`
+2. `.agent/trackers/2026-07-17T21-40-33-04-00/project-breakdown.md`
+3. `.agent/architecture-audit/2026-07-17T21-40-33-04-00-pest-population-budget-dsk-map.md`
+4. `.agent/pest-system-audit/2026-07-17T21-40-33-04-00-population-capacity-lifetime-contract.md`
 5. `.agent/validation.md`
 
 ## Required authority
 
-`zombie-orchard-player-stamina-effort-recovery-projection-authority-domain`
+`zombie-orchard-pest-population-spawn-budget-retirement-authority-domain`
 
 ## Retained audits
 
-The `2026-07-17T04-41-15-04-00` browser-host lifecycle audit and all earlier phase, control, transaction, audio, pressure, determinism, persistence, rendering, command, accessibility, kit-graph and gameplay-adoption findings remain retained.
+The `2026-07-17T09-43-24-04-00` player-stamina audit and all earlier host lifecycle, phase, control, transaction, audio, pressure, determinism, persistence, rendering, command, accessibility, kit-graph and gameplay-adoption findings remain retained.
 
 ## Boundary
 
