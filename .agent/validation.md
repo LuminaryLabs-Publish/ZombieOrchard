@@ -1,19 +1,19 @@
-# Validation: ZombieOrchard player stamina adoption
+# Validation: ZombieOrchard pest population budget
 
-**Timestamp:** `2026-07-17T09-43-24-04-00`
+**Timestamp:** `2026-07-17T21-40-33-04-00`
 
 ## Scope
 
-Documentation-only audit of player stamina state, action effort admission, exhaustion, recovery, pressure/equipment adapters, HUD and outcome projection, matching-frame evidence and source/build/Pages fixtures.
+Documentation-only audit of night pest creation, retained population, simulation work, retirement, Canvas2D projection, matching-frame evidence and source/build/Pages fixtures.
 
 ## Checklist
 
 **Goal:** state exactly what changed, what was inspected and what remains unproven.
 
-- [x] Reviewed `src/kits/game-domains.js`, `src/renderer/html-interface-renderer.js`, `src/renderer/world-canvas.js`, `src/presets/orchard-preset.js`, current smoke coverage and deployment boundary.
+- [x] Reviewed `src/kits/runtime.js`, `src/kits/game-domains.js`, `src/renderer/world-canvas.js`, `src/renderer/html-interface-renderer.js`, `src/presets/orchard-preset.js`, current smoke coverage and deployment boundary.
 - [x] Added timestamped repo-local documentation.
 - [x] Changed no runtime or deployment behavior.
-- [ ] Execute stamina fixtures after implementation.
+- [ ] Execute pest population fixtures after implementation.
 
 ## Change boundary
 
@@ -35,13 +35,14 @@ pull request created: no
 ```txt
 npm test: not run
 npm run build: not run
-depletion fixture: unavailable
-exhausted-action fixture: unavailable
-recovery fixture: unavailable
-stale/duplicate action fixture: unavailable
-FirstStaminaBoundFrameAck fixture: unavailable
+long-night fixture: unavailable
+capacity fixture: unavailable
+phase-toggle fixture: unavailable
+clear-retirement fixture: unavailable
+FirstPestBudgetBoundFrameAck fixture: unavailable
+browser profiler: not run
 source/dist parity: not run
 Pages parity: not run
 ```
 
-No stamina capability, effort-cost correctness, exhaustion correctness, recovery correctness, state-to-frame convergence, artifact parity, deployed parity or production readiness is claimed.
+No bounded population, spawn-settlement correctness, retirement correctness, update/render budget, state-to-frame convergence, artifact parity, deployed parity or production readiness is claimed.
